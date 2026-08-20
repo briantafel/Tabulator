@@ -1,0 +1,29 @@
+{
+  "name": "tabulator",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "description": "A ski trip decision tool: I can take these days off \u2014 where should I go?",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "node --test 'test/*.test.js'",
+    "test:smoke": "node test/smoke.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.10.0",
+    "playwright": "^1.62.1",
+    "vite": "^5.4.9"
+  }
+}
