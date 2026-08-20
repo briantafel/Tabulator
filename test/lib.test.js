@@ -14,14 +14,26 @@ test("resort list is intact and well-formed", () => {
   assert.equal(RESORTS.length, 23);
   for (const r of RESORTS) {
     assert.ok(r.id && r.name && r.region, `${r.name} missing a field`);
-    assert.ok(r.lat >= -90 && r.lat <= 90, `${r.name} latitude out of range`);
-    assert.ok(r.lon >= -180 && r.lon <= 180, `${r.name} longitude out of range`);
-    assert.ok(r.elev > 0 && r.elev < 5000, `${r.name} elevation implausible`);
+    assert.ok(Array.isArray(r.slugs) && r.slugs.length, `${r.name} has no Snow-Forecast slug`);
+    for (const s of r.slugs) assert.match(s, /^[A-Za-z][A-Za-z0-9-]*$/, `${r.name}: bad slug "${s}"`);
   }
   assert.equal(new Set(RESORTS.map((r) => r.id)).size, 23, "duplicate resort id");
+  const slugs = RESORTS.flatMap((r) => r.slugs);
+  assert.equal(new Set(slugs).size, slugs.length, "a slug is used by two resorts");
 });
 
-test("request carries every resort and the load-bearing past_days", () => {
+test("Palisades is one entry backed by both lift-connected faces", () => {
+  // Snow-Forecast still files the mountain under its former name, and lists
+  // Alpine Meadows separately. Scraping only Squaw-Valley gives half the hill.
+  const p = RESORTS.find((r) => r.id === "palisades");
+  assert.deepEqual(p.slugs, ["Squaw-Valley", "Alpine-Meadows"]);
+  assert.equal(p.name, "Palisades");
+});
+
+// RETIRED with the Open-Meteo layer: resorts.json no longer carries lat/lon.
+// See claude/data-source-decisions.md. Removed when App.jsx is wired to
+// forecast.json.
+test.skip("request carries every resort and the load-bearing past_days", () => {
   const url = new URL(buildUrl());
   assert.equal(url.searchParams.get("latitude").split(",").length, 23);
   assert.equal(url.searchParams.get("longitude").split(",").length, 23);

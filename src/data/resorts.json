@@ -1,44 +1,43 @@
 {
   "_provenance": {
-    "status": "MEMBERSHIP VERIFIED · COORDINATES UNVERIFIED",
-    "extractedFrom": "Tabulator.jsx (v3), the hard-coded RESORTS constant",
-    "extractedOn": "2026-08-20",
-    "reconciledAgainst": "Tafel's Ski Tabulator 2025+ (Google Sheet), AllResorts tab, read 2026-08-20",
-    "reconciliation": [
-      "All 23 resorts match the sheet exactly, in the same order, under the same 10 regions. Nothing added, nothing missing.",
-      "One name difference: the sheet writes 'BigSky' as a single word. Kept as 'Big Sky' here, which is the resort's actual name; the sheet's form looks like a label artifact.",
-      "The sheet contains NO coordinates and NO elevations — it scraped by resort name, not by lat/lon. So it cannot verify the geographic values below, and open item #5 stays open for want of a different source."
-    ],
-    "warnings": [
-      "Coordinates and elevations are mid-mountain approximations carried over from the previous build. They remain unverified. Elevation materially changes the snowfall figure Open-Meteo returns. See docs/OPEN-ITEMS.md #5.",
-      "The Figma prototype shows Park City, Ski Arlberg, and Mount Baker, which are in neither the sheet nor this list. Ski Arlberg implies a Europe region the sheet does not cover. See docs/OPEN-ITEMS.md #6.",
-      "This list is a placeholder for a user-editable one. Its membership is now confirmed; its order and geography are not final."
+    "status": "SLUGS VERIFIED",
+    "verifiedOn": "2026-08-20",
+    "method": "Each slug fetched and checked for HTTP 200 plus a .forecast-table__table in the response. Four supplied directly by Brian.",
+    "source": "snow-forecast.com",
+    "notes": [
+      "The per-resort key is a Snow-Forecast URL slug. Coordinates and elevations are no longer stored here — the scraper reads tier elevations off each page.",
+      "Palisades is one entry backed by TWO slugs. Snow-Forecast still files the mountain under its former name Squaw-Valley and lists Alpine-Meadows separately; the real resort is the merged, lift-connected operation. Combined per the rule in `combine` below.",
+      "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one — verify by fetching."
     ]
   },
-  "units": { "elevation": "metres (mid-mountain)" },
+  "tier": "mid",
+  "combine": {
+    "rule": "max",
+    "why": "Where a resort has several slugs they are lift-connected faces of one mountain. If one side got 30cm and the other 10cm you ski the side that got it, so snow takes the max. Temp and wind also take the max because the warning thresholds are worst-case by design."
+  },
   "resorts": [
-    { "id": "palisades-tahoe",  "name": "Palisades Tahoe",  "region": "California", "lat": 39.1967, "lon": -120.2356, "elev": 2100, "verified": false },
-    { "id": "heavenly",         "name": "Heavenly",         "region": "California", "lat": 38.9353, "lon": -119.9400, "elev": 2600, "verified": false },
-    { "id": "kirkwood",         "name": "Kirkwood",         "region": "California", "lat": 38.6849, "lon": -120.0653, "elev": 2600, "verified": false },
-    { "id": "mammoth",          "name": "Mammoth",          "region": "California", "lat": 37.6308, "lon": -119.0326, "elev": 2900, "verified": false },
-    { "id": "telluride",        "name": "Telluride",        "region": "Colorado",   "lat": 37.9375, "lon": -107.8123, "elev": 3200, "verified": false },
-    { "id": "crested-butte",    "name": "Crested Butte",    "region": "Colorado",   "lat": 38.8991, "lon": -106.9656, "elev": 3200, "verified": false },
-    { "id": "aspen-highlands",  "name": "Aspen Highlands",  "region": "Colorado",   "lat": 39.1821, "lon": -106.8556, "elev": 3200, "verified": false },
-    { "id": "steamboat",        "name": "Steamboat",        "region": "Colorado",   "lat": 40.4572, "lon": -106.8045, "elev": 2700, "verified": false },
-    { "id": "snowbird",         "name": "Snowbird",         "region": "Utah",       "lat": 40.5830, "lon": -111.6556, "elev": 2700, "verified": false },
-    { "id": "alta",             "name": "Alta",             "region": "Utah",       "lat": 40.5883, "lon": -111.6358, "elev": 2700, "verified": false },
-    { "id": "jackson-hole",     "name": "Jackson Hole",     "region": "Wyoming",    "lat": 43.5875, "lon": -110.8279, "elev": 2400, "verified": false },
-    { "id": "grand-targhee",    "name": "Grand Targhee",    "region": "Wyoming",    "lat": 43.7880, "lon": -110.9596, "elev": 2600, "verified": false },
-    { "id": "sun-valley",       "name": "Sun Valley",       "region": "Idaho",      "lat": 43.6714, "lon": -114.3517, "elev": 2400, "verified": false },
-    { "id": "big-sky",          "name": "Big Sky",          "region": "Montana",    "lat": 45.2856, "lon": -111.4014, "elev": 2500, "verified": false },
-    { "id": "taos",             "name": "Taos",             "region": "New Mexico", "lat": 36.5959, "lon": -105.4500, "elev": 3300, "verified": false },
-    { "id": "revelstoke",       "name": "Revelstoke",       "region": "Canada",     "lat": 50.9583, "lon": -118.1636, "elev": 1700, "verified": false },
-    { "id": "whistler",         "name": "Whistler",         "region": "Canada",     "lat": 50.0594, "lon": -122.9574, "elev": 1500, "verified": false },
-    { "id": "lake-louise",      "name": "Lake Louise",      "region": "Canada",     "lat": 51.4419, "lon": -116.1653, "elev": 2100, "verified": false },
-    { "id": "kicking-horse",    "name": "Kicking Horse",    "region": "Canada",     "lat": 51.2980, "lon": -117.0492, "elev": 1900, "verified": false },
-    { "id": "whiteface",        "name": "Whiteface",        "region": "New York",   "lat": 44.3658, "lon": -73.9026,  "elev": 1000, "verified": false },
-    { "id": "stowe",            "name": "Stowe",            "region": "Vermont",    "lat": 44.5303, "lon": -72.7814,  "elev": 900,  "verified": false },
-    { "id": "killington",       "name": "Killington",       "region": "Vermont",    "lat": 43.6045, "lon": -72.8201,  "elev": 900,  "verified": false },
-    { "id": "jay-peak",         "name": "Jay Peak",         "region": "Vermont",    "lat": 44.9243, "lon": -72.5253,  "elev": 900,  "verified": false }
+    { "id": "palisades",       "name": "Palisades",       "region": "California", "slugs": ["Squaw-Valley", "Alpine-Meadows"] },
+    { "id": "heavenly",        "name": "Heavenly",        "region": "California", "slugs": ["Heavenly-Ski"] },
+    { "id": "kirkwood",        "name": "Kirkwood",        "region": "California", "slugs": ["Kirkwood-Mountain"] },
+    { "id": "mammoth",         "name": "Mammoth",         "region": "California", "slugs": ["Mammoth-Mountain"] },
+    { "id": "telluride",       "name": "Telluride",       "region": "Colorado",   "slugs": ["Telluride"] },
+    { "id": "crested-butte",   "name": "Crested Butte",   "region": "Colorado",   "slugs": ["Crested-Butte-Mountain"] },
+    { "id": "aspen-highlands", "name": "Aspen Highlands", "region": "Colorado",   "slugs": ["Aspen-Highlands"] },
+    { "id": "steamboat",       "name": "Steamboat",       "region": "Colorado",   "slugs": ["Steamboat-Ski"] },
+    { "id": "snowbird",        "name": "Snowbird",        "region": "Utah",       "slugs": ["Snowbird"] },
+    { "id": "alta",            "name": "Alta",            "region": "Utah",       "slugs": ["Alta"] },
+    { "id": "jackson-hole",    "name": "Jackson Hole",    "region": "Wyoming",    "slugs": ["Jackson-Hole"] },
+    { "id": "grand-targhee",   "name": "Grand Targhee",   "region": "Wyoming",    "slugs": ["Grand-Targhee"] },
+    { "id": "sun-valley",      "name": "Sun Valley",      "region": "Idaho",      "slugs": ["Sun-Valley"] },
+    { "id": "big-sky",         "name": "Big Sky",         "region": "Montana",    "slugs": ["Big-Sky"] },
+    { "id": "taos",            "name": "Taos",            "region": "New Mexico", "slugs": ["Taos"] },
+    { "id": "revelstoke",      "name": "Revelstoke",      "region": "Canada",     "slugs": ["Revelstoke"] },
+    { "id": "whistler",        "name": "Whistler",        "region": "Canada",     "slugs": ["Whistler-Blackcomb"] },
+    { "id": "lake-louise",     "name": "Lake Louise",     "region": "Canada",     "slugs": ["Lake-Louise"] },
+    { "id": "kicking-horse",   "name": "Kicking Horse",   "region": "Canada",     "slugs": ["Kicking-Horse"] },
+    { "id": "whiteface",       "name": "Whiteface",       "region": "New York",   "slugs": ["Whiteface-Mountain"] },
+    { "id": "stowe",           "name": "Stowe",           "region": "Vermont",    "slugs": ["Stowe"] },
+    { "id": "killington",      "name": "Killington",      "region": "Vermont",    "slugs": ["Killington"] },
+    { "id": "jay-peak",        "name": "Jay Peak",        "region": "Vermont",    "slugs": ["Jay-Peak"] }
   ]
 }
