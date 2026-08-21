@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.4.0",
   "type": "module",
-  "description": "A ski trip decision tool: I can take these days off \u2014 where should I go?",
+  "description": "A ski trip decision tool: I can take these days off — where should I go?",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -27,6 +27,7 @@
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.10.0",
     "playwright": "^1.62.1",
-    "vite": "^5.4.9"
+    "vite": "^5.4.9",
+    "yaml": "^2.9.0"
   }
 }
