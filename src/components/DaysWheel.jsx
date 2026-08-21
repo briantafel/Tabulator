@@ -1,15 +1,17 @@
 import { useEffect, useRef } from "react";
+import { HORIZON_DAYS } from "../lib/constants.js";
 
 /** Horizontal number wheel. The selected value sits centre-stage; its
  *  neighbours bleed off both edges so the range is felt, not read.
- *  This is the signature interaction — see docs/DESIGN.md. */
+ *  This is the signature interaction — see docs/DESIGN.md.
+ *
+ *  The range now stops at Snow-Forecast's 6-day horizon. It used to run to 14
+ *  on Open-Meteo's 16-day window, most of which the app then had to disclaim. */
 export default function DaysWheel({ value, onChange }) {
   const ref = useRef(null);
   const settle = useRef(null);
-  const opts = Array.from({ length: 13 }, (_, i) => i + 2);
+  const opts = Array.from({ length: HORIZON_DAYS - 1 }, (_, i) => i + 2); // 2…6
 
-  // Centre once on mount. Deliberately not re-run on `value` change: scrolling
-  // the wheel is what sets the value, so re-centring would fight the finger.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -30,10 +32,7 @@ export default function DaysWheel({ value, onChange }) {
       let bestD = Infinity;
       Array.from(el.children).forEach((c, i) => {
         const d = Math.abs(c.offsetLeft + c.clientWidth / 2 - mid);
-        if (d < bestD) {
-          bestD = d;
-          best = i;
-        }
+        if (d < bestD) { bestD = d; best = i; }
       });
       if (opts[best] !== value) onChange(opts[best]);
     }, 90);

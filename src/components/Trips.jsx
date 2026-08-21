@@ -1,4 +1,4 @@
-import { snowTxt } from "../lib/units.js";
+import { snowWithUnit } from "../lib/units.js";
 
 /** Saved windows. In-memory only for now — see docs/OPEN-ITEMS.md #3. */
 export default function Trips({ trips, metric }) {
@@ -15,7 +15,7 @@ export default function Trips({ trips, metric }) {
           <div className="trip" key={t.label}>
             <span className="trip-when">{t.label}</span>
             <span className="trip-top">{t.top}</span>
-            <span className="trip-n">{snowTxt(t.snow, metric)}"</span>
+            <span className="trip-n">{snowWithUnit(t.snow, metric)}</span>
           </div>
         ))
       )}

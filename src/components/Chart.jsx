@@ -1,5 +1,5 @@
 import { SERIES } from "../lib/constants.js";
-import { snowTxt } from "../lib/units.js";
+import { snowTxt, snowUnit } from "../lib/units.js";
 
 const W = 300;
 const H = 190;
@@ -49,7 +49,7 @@ export default function Chart({ data, metric }) {
         <line x1={L} x2={W} y1={H - B} y2={H - B} className="c-axis" />
         {top.map((r, i) => (
           <path
-            key={r.name}
+            key={r.id}
             d={path(r)}
             className="c-line"
             style={{ stroke: SERIES[i], strokeDasharray: i === 3 ? "5 4" : "none" }}
@@ -59,7 +59,7 @@ export default function Chart({ data, metric }) {
 
       <div className="chart-key">
         {top.map((r, i) => (
-          <span key={r.name} className="ck">
+          <span key={r.id} className="ck">
             <i style={{ background: SERIES[i] }} />
             {r.name}
           </span>
@@ -67,7 +67,7 @@ export default function Chart({ data, metric }) {
       </div>
 
       <p className="t-key">
-        Cumulative snowfall across the window, in {metric ? "centimetres" : "inches"}.
+        Cumulative snowfall across the window, in {metric ? "centimetres" : "inches"} ({snowUnit(metric)}).
         Five deepest only — the rest are in the table.
       </p>
     </div>

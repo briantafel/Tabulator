@@ -1,14 +1,12 @@
-/* Pure-logic checks. No browser, no network. Run: node --test test/ */
-
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { score, flags } from "../src/lib/scoring.js";
-import { snowTxt, tempTxt, windTxt, toCm, toC } from "../src/lib/units.js";
-import { buildUrl, shapeDays, RESORTS } from "../src/lib/openMeteo.js";
-import { TODAY_IDX, WARM_LIMIT, COLD_LIMIT, WIND_LIMIT } from "../src/lib/constants.js";
-import { fromIso, shortDate } from "../src/lib/dates.js";
-import { makeFixture, EXPECTED_DAYS } from "./fixture.js";
+import { RESORT_META as RESORTS, isStale } from "../src/lib/forecast.js";
+import { score, before, flags, rainRisk } from "../src/lib/scoring.js";
+import { snowTxt, snowUnit, snowWithUnit, tempTxt, windTxt, cmToIn, cToF, kmhToMph } from "../src/lib/units.js";
+import { WARM_LIMIT, COLD_LIMIT, WIND_LIMIT, HORIZON_DAYS } from "../src/lib/constants.js";
+
+/* ---------------------------- resort list ---------------------------- */
 
 test("resort list is intact and well-formed", () => {
   assert.equal(RESORTS.length, 23);
@@ -23,92 +21,129 @@ test("resort list is intact and well-formed", () => {
 });
 
 test("Palisades is one entry backed by both lift-connected faces", () => {
-  // Snow-Forecast still files the mountain under its former name, and lists
-  // Alpine Meadows separately. Scraping only Squaw-Valley gives half the hill.
   const p = RESORTS.find((r) => r.id === "palisades");
   assert.deepEqual(p.slugs, ["Squaw-Valley", "Alpine-Meadows"]);
-  assert.equal(p.name, "Palisades");
 });
 
-// RETIRED with the Open-Meteo layer: resorts.json no longer carries lat/lon.
-// See claude/data-source-decisions.md. Removed when App.jsx is wired to
-// forecast.json.
-test.skip("request carries every resort and the load-bearing past_days", () => {
-  const url = new URL(buildUrl());
-  assert.equal(url.searchParams.get("latitude").split(",").length, 23);
-  assert.equal(url.searchParams.get("longitude").split(",").length, 23);
-  assert.equal(url.searchParams.get("elevation").split(",").length, 23);
-  assert.equal(url.searchParams.get("past_days"), "3");
-  assert.equal(url.searchParams.get("forecast_days"), "16");
-  assert.equal(url.searchParams.get("temperature_unit"), "fahrenheit");
-  assert.match(url.searchParams.get("daily"), /snowfall_sum/);
+/* ------------------------------- units ------------------------------- */
+
+test("metric mode does not render an inch mark", () => {
+  // The bug carried over from the Open-Meteo build: snowTxt converted
+  // correctly but every call site appended a literal `"`, so cm/°C mode
+  // rendered centimetres with an inch mark.
+  assert.equal(snowUnit(true), "cm");
+  assert.equal(snowUnit(false), "″");
+  assert.equal(snowWithUnit(25.4, true), "25cm");
+  assert.equal(snowWithUnit(25.4, false), "10″");
+  assert.ok(!snowWithUnit(25.4, true).includes("″"), "metric must never show an inch mark");
 });
 
-test("shapeDays maps the daily arrays one-to-one", () => {
-  const days = shapeDays(makeFixture()[0]);
-  assert.equal(days.length, EXPECTED_DAYS);
-  assert.ok("snow" in days[0] && "hi" in days[0] && "lo" in days[0] && "wind" in days[0]);
+test("storage is metric and converts outward", () => {
+  assert.equal(snowTxt(10, true), "10");         // 10cm stays 10
+  assert.equal(snowTxt(2.54, false), "1.0");     // 2.54cm is one inch
+  assert.equal(tempTxt(0, true), "0");
+  assert.equal(tempTxt(0, false), "32");
+  assert.equal(windTxt(100, true), "100");
+  assert.equal(windTxt(100, false), "62");
+  assert.equal(Math.round(cmToIn(2.54)), 1);
+  assert.equal(cToF(100), 212);
+  assert.equal(Math.round(kmhToMph(160.934)), 100);
 });
 
-test("today sits at index 3 in the combined series", () => {
-  const days = shapeDays(makeFixture(new Date("2026-08-20T12:00:00Z"))[0]);
-  assert.equal(days[TODAY_IDX].date, "2026-08-20");
-});
-
-test("score sums the window and reads `before` from the three prior days", () => {
-  const resort = { name: "Test", all: shapeDays(makeFixture()[0]) };
-  const s = score(resort, TODAY_IDX, TODAY_IDX + 3);
-
-  assert.equal(s.win.length, 4, "inclusive window");
-  const manual = resort.all.slice(TODAY_IDX, TODAY_IDX + 4).reduce((a, d) => a + d.snow, 0);
-  assert.ok(Math.abs(s.total - manual) < 1e-9);
-
-  const priorManual = resort.all.slice(TODAY_IDX - 3, TODAY_IDX).reduce((a, d) => a + d.snow, 0);
-  assert.ok(Math.abs(s.before - priorManual) < 1e-9, "`before` is the base you land on");
-
-  assert.ok(Math.abs(s.cumulative.at(-1) - s.total) < 1e-9, "curve ends at the total");
-  assert.equal(s.cumulative.length, s.win.length);
-});
-
-test("score clamps `before` at the start of the series", () => {
-  const resort = { name: "Test", all: shapeDays(makeFixture()[0]) };
-  assert.equal(score(resort, 0, 2).before, 0, "nothing before day zero");
-});
-
-test("warning flags fire exactly at the thresholds", () => {
-  assert.equal(flags({ hi: WARM_LIMIT, lo: 10, wind: 0 }).warm, true);
-  assert.equal(flags({ hi: WARM_LIMIT - 1, lo: 10, wind: 0 }).warm, false);
-  assert.equal(flags({ hi: 20, lo: COLD_LIMIT, wind: 0 }).cold, true);
-  assert.equal(flags({ hi: 20, lo: COLD_LIMIT + 1, wind: 0 }).cold, false);
-  assert.equal(flags({ hi: 20, lo: 10, wind: WIND_LIMIT }).wind, true);
-  assert.equal(flags({ hi: 20, lo: 10, wind: WIND_LIMIT - 1 }).wind, false);
-});
-
-test("unit conversion and display formatting", () => {
-  assert.equal(snowTxt(0, false), "0");
-  assert.equal(snowTxt(0.01, false), "0", "sub-threshold reads as zero, not 0.0");
-  assert.equal(snowTxt(5.25, false), "5.3");
-  assert.equal(snowTxt(12.4, false), "12", "double digits lose the decimal");
-  assert.equal(snowTxt(10, true), Math.round(toCm(10)).toString());
-
+test("nulls display as an em-dash rather than zero or NaN", () => {
+  assert.equal(snowTxt(null, false), "—");
+  assert.equal(snowWithUnit(null, false), "—");
   assert.equal(tempTxt(null, false), "—");
-  assert.equal(tempTxt(32, false), "32");
-  assert.equal(tempTxt(32, true), Math.round(toC(32)).toString());
-
   assert.equal(windTxt(null, false), "—");
-  assert.equal(windTxt(35, false), "35");
 });
 
-test("dates are midday-anchored so offsets can't shunt the day", () => {
-  assert.equal(fromIso("2026-08-20").getHours(), 12);
-  assert.ok(shortDate("2026-08-20").length > 0);
+test("thresholds are metric and match the imperial intent", () => {
+  // Stored metric because that is what the source serves, but these numbers
+  // were chosen in F and mph. Assert closeness, not exact rounding — the
+  // cold threshold lands a hair below zero and Math.round returns -0.
+  const near = (a, b, tol = 0.5) => assert.ok(Math.abs(a - b) < tol, `${a} vs ${b}`);
+  near(cToF(WARM_LIMIT), 34);
+  near(cToF(COLD_LIMIT), 0);
+  near(kmhToMph(WIND_LIMIT), 35);
+  assert.equal(HORIZON_DAYS, 6, "Snow-Forecast's free horizon");
 });
 
-test("ranking puts the deepest resort first", () => {
-  const raw = makeFixture().map((x, i) => ({ ...RESORTS[i], all: shapeDays(x) }));
-  const ranked = raw.map((r) => score(r, TODAY_IDX, TODAY_IDX + 3)).sort((a, b) => b.total - a.total);
-  assert.equal(ranked.length, 23);
-  for (let i = 1; i < ranked.length; i++) {
-    assert.ok(ranked[i - 1].total >= ranked[i].total, "sorted descending by snow");
-  }
+/* ------------------------------ scoring ------------------------------ */
+
+const day = (date, snow, tempMax = -5, tempMin = -12, windMax = 10, freezeMin = 1200) =>
+  ({ date, snow, tempMax, tempMin, windMax, freezeMin });
+
+const RESORT = {
+  id: "alta", name: "Alta", region: "Utah",
+  elevation: { top: 3373, mid: 2986, bot: 2600 },
+  days: [
+    day("2026-01-10", 5), day("2026-01-11", 12), day("2026-01-12", 0),
+    day("2026-01-13", 3), day("2026-01-14", 8), day("2026-01-15", 1),
+  ],
+};
+
+const HISTORY = {
+  "2026-01-07": { alta: 2 },
+  "2026-01-08": { alta: 4 },
+  "2026-01-09": { alta: 6 },
+};
+
+test("score sums the window and tracks the running total", () => {
+  const s = score(RESORT, 0, 2, HISTORY);
+  assert.equal(s.total, 17);
+  assert.deepEqual(s.cumulative, [5, 17, 17]);
+  assert.equal(s.win.length, 3);
+});
+
+test("-3 days reads the three days before the window from history", () => {
+  const s = score(RESORT, 0, 2, HISTORY);
+  assert.equal(s.before, 12); // 2 + 4 + 6
+});
+
+test("-3 days is null, never zero, when history is short", () => {
+  // A missing base and a bare mountain are the same number and opposite
+  // decisions. Cold start must be distinguishable from no snow.
+  assert.equal(before({ "2026-01-09": { alta: 6 } }, "alta", "2026-01-10"), null);
+  assert.equal(before({}, "alta", "2026-01-10"), null);
+  assert.equal(before(null, "alta", "2026-01-10"), null);
+  assert.equal(score(RESORT, 0, 2, {}).before, null);
+});
+
+test("temp takes the window max, wind the max, freezing level the min", () => {
+  const r = { ...RESORT, days: [day("2026-01-10", 0, -2, -20, 60, 900), day("2026-01-11", 0, 3, -8, 20, 2500)] };
+  const s = score(r, 0, 1, {});
+  assert.equal(s.hi, 3);
+  assert.equal(s.lo, -20);
+  assert.equal(s.wind, 60);
+  assert.equal(s.freezeMin, 900);
+});
+
+test("flags fire on the metric thresholds", () => {
+  assert.equal(flags({ hi: 2, lo: -5, wind: 10 }).warm, true);    // above 1C
+  assert.equal(flags({ hi: 0, lo: -5, wind: 10 }).warm, false);
+  assert.equal(flags({ hi: 0, lo: -20, wind: 10 }).cold, true);   // below -18C
+  assert.equal(flags({ hi: 0, lo: -5, wind: 60 }).wind, true);    // above 56km/h
+});
+
+test("absent data raises no warning", () => {
+  // A partial scrape must not dot every resort as dangerous.
+  const f = flags({ hi: null, lo: null, wind: null });
+  assert.deepEqual(f, { wind: false, warm: false, cold: false });
+});
+
+test("rain risk reads freezing level against the mid station", () => {
+  // The thing Open-Meteo could only have inferred from max temp.
+  assert.equal(rainRisk({ freezeMin: 3200, elevation: { mid: 2986 } }), true);
+  assert.equal(rainRisk({ freezeMin: 1200, elevation: { mid: 2986 } }), false);
+  assert.equal(rainRisk({ freezeMin: null, elevation: { mid: 2986 } }), false);
+});
+
+/* ----------------------------- staleness ----------------------------- */
+
+test("a forecast older than a day is flagged stale", () => {
+  const now = new Date("2026-01-10T12:00:00Z");
+  assert.equal(isStale("2026-01-10T06:00:00Z", now), false);
+  assert.equal(isStale("2026-01-09T00:00:00Z", now), true);
+  assert.equal(isStale(undefined, now), true);
+  assert.equal(isStale("not a date", now), true);
 });

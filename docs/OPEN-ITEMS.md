@@ -1,108 +1,84 @@
 # Open items
 
-Carried over from the handoff, with the current state of each after the
-single-file build was split into a project.
+Status as of the Snow-Forecast wiring pass, 2026-08-21.
 
 ---
 
-### 1. Real typeface
-Inter Tight 600–800 is standing in for whatever the prototype actually
-specifies (it reads as Helvetica Now / SF Pro). The font is now loaded via a
-`<link>` in `index.html` rather than injected from JavaScript at runtime, so
-swapping it is a one-line change in two places: that link, and the
-`font-family` on `.app` in `src/styles.css`.
+## 1. Real typeface — OPEN
 
-**Status:** unchanged, but cheaper to act on.
+Inter Tight 600–800 stands in for whatever the prototype specifies (it reads as
+Helvetica Now / SF Pro). The Figma design file contains a **numeral specimen
+`123456789` in the real face** — mine that rather than guessing.
 
----
+The font moved from runtime JS injection to a `<link>` in `index.html`, so
+swapping it is a two-line change.
 
-### 2. Editable resort list
-Add / remove / reorder, persisted.
+## 2. Editable resort list — OPEN
 
-`src/data/resorts.json` is now a real data file rather than a constant, and
-each resort carries a stable `id` slug intended for exactly this. The list is
-still read once at module load and never mutated.
+Add / remove / reorder, persisted. `src/data/resorts.json` is now keyed by
+Snow-Forecast slug, which makes this *harder* than it was under Open-Meteo:
+adding a resort means finding its slug, and slugs follow no pattern. Any UI for
+this needs slug validation — fetch the page, check for a `.forecast-table__table`
+— or users will silently add resorts that never return data.
 
-**Status:** groundwork laid, feature not built.
+## 3. Persistence — OPEN
 
----
+Saved trips are in-memory. Unit preference is too, and resets on reload.
 
-### 3. Persistence
-Saved trips and the resort list are in-memory and die with the tab.
+## 4. Warning-dot encoding — PARTLY ADDRESSED, not ruled on
 
-**Status:** unchanged.
+Brian deferred this. The Figma turned out to have most of an answer: the header
+reads `-3 days | snow | ↑ temp | ↑ wind`, and those **↑ arrows carry the
+"this is a maximum" meaning** the old build spelled out in the key. Those labels
+are now implemented.
 
----
+Still unresolved: red means "too warm" in one column and "too windy" in another,
+which is the bit that needs a key. Now partly mitigated by
+`rainRisk()` — freezing level against the mid station gives a *specific*
+statement ("expect rain, not snow") in the detail sheet, rather than a red dot
+that needs decoding.
 
-### 4. The warning-dot encoding
-In the prototype these three conditions used two colours with no key, so a red
-dot meant "too windy" in one column and "too warm" in another. The current
-build keeps that encoding but adds a one-line key, reserving amber strictly for
-cold — so red reads as *bad in a warm way* and amber as *bad in a cold way*.
+## 5. Verify coordinates and elevations — CLOSED
 
-It is the only place in the design that needs explaining, which is a smell.
-An alternative worth weighing: let each column warn in its own terms and drop
-the shared colour vocabulary entirely, removing the need for a key.
+Dissolved rather than solved. Snow-Forecast addresses resorts by slug and
+elevation *tier* (top/mid/bot), and **publishes the tier elevations on the
+page**, so the parser reads them. Coordinates and elevations are gone from
+`resorts.json` entirely — there is nothing left to verify.
 
-**Status:** explicitly deferred, not ruled on. Behaviour unchanged in the split.
+For the record, the old guesses were off by up to ~290m against the real mid
+stations, which materially affects a model's snowfall figure.
 
----
+## 6. Europe — OPEN
 
-### 5. Verify coordinates and elevations
-Every entry in `resorts.json` carries `"verified": false`.
+The Figma shows Ski Arlberg, which implies a continent level in the region
+model. Snow-Forecast covers Europe, so the data side is free; it is a UI and
+data-model question, not a sourcing one.
 
-**Reconciled against the source sheet on 2026-08-20.** The result splits in two:
+## 7. Freezing level — CLOSED
 
-- **Membership is now confirmed.** All 23 resorts match "Tafel's Ski Tabulator
-  2025+" exactly — same names, same order, same ten regions. Nothing added,
-  nothing missing. The only difference is that the sheet writes `BigSky` as one
-  word; `Big Sky` is kept here as the resort's actual name.
-- **Geography still isn't.** The sheet contains no coordinates and no
-  elevations — it scraped by resort *name*, not by lat/lon. So it cannot verify
-  these values, and no amount of access to it ever will. This needs a different
-  source: resort websites, OpenStreetMap, or a lift-served terrain dataset.
-
-Elevation materially changes the snowfall figure Open-Meteo returns, so this is
-not cosmetic.
-
-**Status:** half-closed. Membership done; the 23 lat/lon/elev triples remain
-unverified and now have no obvious source.
+Snow-Forecast publishes `freezing-level` per period. The parser captures it,
+`score()` reduces it to a window minimum, and `rainRisk()` compares it against
+the resort's mid-station elevation. Rain-vs-snow is now read rather than
+inferred from max temperature.
 
 ---
 
-### 6. Europe
-The Figma prototype shows Park City, Ski Arlberg, and Mount Baker, none of
-which are in the list. Ski Arlberg implies Europe, which the sheet doesn't
-cover. If it's in, the region model needs a continent level above region.
+## Recently closed
 
-**Status:** unchanged.
+- **Inch mark in metric mode** — `snowTxt()` converted correctly but four call
+  sites appended a literal `"` regardless of unit. Fixed by `snowWithUnit()`,
+  which owns the unit. Pinned by a unit test and a browser check.
+- **Silent staleness** — a forecast older than 26 hours now shows a banner, and
+  synthetic sample data is labelled. The spreadsheet rotted for months because
+  broken and quiet looked identical; the app should not repeat that.
+- **`-3 days` had no source** after Open-Meteo was dropped. Now accumulated
+  from our own scrape archive (`public/history.json`) rather than a second
+  provider. Reads `—` for the first three days after deployment, and `before()`
+  returns null rather than 0 when the archive is short — a missing base and a
+  bare mountain are the same number and opposite decisions.
 
----
+## Still undecided
 
-### 7. Freezing level
-Rain-vs-snow is currently inferred from max temperature. Open-Meteo exposes
-`freezing_level_height` hourly, which would be more honest, but adds payload
-across 23 locations.
-
-**Status:** unchanged.
-
----
-
-## Found during the split
-
-Not acted on — the brief for this pass was structure, with behaviour held
-constant. Recorded so they aren't lost.
-
-- **The inch mark is hard-coded in metric mode.** `snowTxt()` converts the
-  value to centimetres correctly, but several call sites append a literal `"`
-  regardless of the unit setting — so metric users see `12.7"` where they
-  should see `12.7cm`. Affects `Table.jsx`, `Detail.jsx`, `Trips.jsx`, and the
-  `title` attribute in `Radar.jsx`.
-- **`Detail` assumes a non-empty window.** `r.win[0].date` will throw if the
-  window ever scores to zero days. Not currently reachable through the UI, but
-  it is one off-by-one away from being so.
-- **`iso()` formats via `toISOString()`, which is UTC.** Dates are anchored at
-  midday to compensate, which holds for offsets within ±12h. It's a compensation
-  rather than a fix.
-- **The days-mode window silently clamps** at the end of the forecast horizon.
-  Asking for 14 days when 12 remain returns 12 days without saying so.
+**Does radar earn its tab at six days?** It was built to spot a storm before
+committing to dates, which needed the 16-day horizon. At six it shows the shape
+of this week. Brian flagged it as challengeable before this came up.

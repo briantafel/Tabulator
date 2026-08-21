@@ -1,54 +1,40 @@
 # Data
 
-## Source: Open-Meteo
+> **Superseded.** This app no longer uses Open-Meteo. The live data contract is
+> in [`SCRAPING.md`](SCRAPING.md). This file is kept for the reasoning, because
+> the decision was reversed and the reversal is worth understanding.
 
-Free, no API key, CORS-friendly, returns JSON. One request covers all 23
-resorts via comma-separated coordinates.
+## What happened
 
-This was a deliberate departure from the original spec. The ask was to scrape
-specific sites (OpenSnow, Snow-Forecast.com, resort pages). Those have no open
-APIs and block cross-origin requests, so a browser-based app cannot reach them
-— which is exactly why the spreadsheet broke. Open-Meteo serves the same
-underlying model output those sites repackage.
+The original spreadsheet scraped **Snow-Forecast.com** and broke. The first
+rebuild moved to **Open-Meteo** — free, no key, CORS-friendly, so a browser app
+could call it directly. That solved a real problem: Snow-Forecast blocks
+cross-origin requests, so no client-side app can reach it.
 
-**The trade-off, stated plainly:** you lose human forecaster commentary. You
-gain something that doesn't break on a site redesign.
+The trade was stated plainly at the time: *you lose human forecaster
+commentary, you gain something that doesn't break on a site redesign.*
 
-## Request shape
+**Brian rejected that trade.** Open-Meteo is raw model output; Snow-Forecast is
+a forecaster reading those same models and applying judgement. For deciding
+where to spend a week's holiday, the judgement is the product.
 
-```
-https://api.open-meteo.com/v1/forecast
-  ?latitude=<23 comma-separated>
-  &longitude=<23 comma-separated>
-  &elevation=<23 comma-separated>        // mid-mountain, in metres
-  &daily=snowfall_sum,precipitation_sum,temperature_2m_max,temperature_2m_min,wind_speed_10m_max
-  &past_days=3&forecast_days=16
-  &timezone=auto
-  &temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch
-```
+## How the CORS problem got solved instead
 
-Built in `src/lib/openMeteo.js`.
+By moving the fetch off the browser entirely. A scheduled GitHub Action scrapes
+Snow-Forecast server-side and commits `public/forecast.json`; the app reads a
+static file and makes no third-party request at runtime.
 
-`past_days=3` is **load-bearing** — it feeds the "before" column. Today sits at
-index 3 in the combined series (`TODAY_IDX` in `lib/constants.js`).
+That was always available — it just wasn't considered, because the first
+rebuild took "must run in the browser" as a fixed constraint rather than a
+choice.
 
-Imperial is the stored unit throughout; the API is asked for °F, mph and inches
-and conversion to metric happens only at the point of display, in `lib/units.js`.
+## What carried over
 
-## Derived metrics
-
-Computed in `src/lib/scoring.js`.
-
-| Metric | How it's computed | Why it matters |
-| :--- | :--- | :--- |
-| **before** | Snowfall in the 3 days *prior* to window start | The base you're landing on. 20" on rock ≠ 20" on 20". From the prototype. |
-| **snow** | Sum of `snowfall_sum` across the window | The headline number. |
-| **temp** | Max of `temperature_2m_max` across window | Warm days mean unreliable precipitation. |
-| **wind** | Max of `wind_speed_10m_max` across window | Lift holds. |
-
-## Warning thresholds
-
-- **Red dot** — max temp ≥ 34°F, **or** max wind ≥ 35 mph
-- **Amber dot** — min temp ≤ 0°F
-
-How these are colour-coded is unresolved. See open item #4.
+- **Metric storage.** Snow-Forecast serves cm, °C, km/h. The app now stores
+  those and converts outward for display — inverted from this file's original
+  design, which stored imperial.
+- **The derived metrics.** `-3 days`, `snow`, `↑ temp`, `↑ wind` are unchanged
+  in meaning. Only their source moved.
+- **The honesty rule.** Open-Meteo offered 16 days and the footer had to
+  disclaim most of them. Snow-Forecast's free tier gives 6, all of which the
+  app can stand behind. Fewer days, no disclaimer.

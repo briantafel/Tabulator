@@ -8,17 +8,19 @@ import Radar from "./components/Radar.jsx";
 import Detail from "./components/Detail.jsx";
 import Trips from "./components/Trips.jsx";
 
-import { fetchForecast } from "./lib/openMeteo.js";
+import { loadForecast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
-import { TODAY_IDX } from "./lib/constants.js";
+import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
 
 /* ------------------------------------------------------------------ *
  * Tabulator
- * A ski trip decision tool. The question it answers is "I can take
- * these days off — where should I go?" — not "what's the weather at
- * Alta." The comparison across resorts, scoped to a date window, is
- * the whole product.
+ * "I can take these days off — where should I go?" The comparison
+ * across resorts, scoped to a date window, is the whole product.
+ *
+ * Data is a static forecast.json committed by a scheduled scrape of
+ * Snow-Forecast. Indices here address days 0…5 of that file; there is
+ * no past/forecast combined series any more, so no TODAY_IDX.
  * ------------------------------------------------------------------ */
 
 const TABS = [
@@ -28,7 +30,7 @@ const TABS = [
 ];
 
 export default function Tabulator() {
-  const [raw, setRaw] = useState(null);
+  const [feed, setFeed] = useState(null);
   const [err, setErr] = useState(null);
 
   const [metric, setMetric] = useState(false);
@@ -37,46 +39,47 @@ export default function Tabulator() {
   const [tab, setTab] = useState("mountains");
   const [mode, setMode] = useState("days"); // days | calendar
   const [days, setDays] = useState(4);
-  const [a, setA] = useState(TODAY_IDX);
-  const [b, setB] = useState(TODAY_IDX + 3);
+  const [a, setA] = useState(0);
+  const [b, setB] = useState(3);
 
-  const [shown, setShown] = useState(false); // results revealed
+  const [shown, setShown] = useState(false);
   const [page, setPage] = useState(0); // 0 table, 1 chart
   const [open, setOpen] = useState(null);
   const [trips, setTrips] = useState([]);
 
   const load = useCallback(async () => {
     setErr(null);
-    setRaw(null);
+    setFeed(null);
     try {
-      setRaw(await fetchForecast());
+      setFeed(await loadForecast());
     } catch (e) {
       setErr(e.message || "unknown");
     }
   }, []);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
-  const dates = useMemo(() => (raw ? raw[0].all.map((d) => d.date) : []), [raw]);
+  const dates = feed?.dates ?? [];
 
-  // Days mode drives the window from today; calendar mode sets it explicitly.
+  // Days mode runs from the first forecast day; calendar mode sets the window
+  // explicitly. Both clamp to the horizon.
+  const last = Math.max(0, dates.length - 1);
   const [wa, wb] =
-    mode === "days"
-      ? [TODAY_IDX, Math.min(TODAY_IDX + days - 1, dates.length - 1)]
-      : [a, b];
+    mode === "days" ? [0, Math.min(days - 1, last)] : [Math.min(a, last), Math.min(b, last)];
 
   const data = useMemo(
-    () => (raw ? raw.map((r) => score(r, wa, wb)).sort((x, y) => y.total - x.total) : null),
-    [raw, wa, wb]
+    () =>
+      feed
+        ? feed.resorts
+            .map((r) => score(r, wa, wb, feed.history))
+            .sort((x, y) => y.total - x.total)
+        : null,
+    [feed, wa, wb]
   );
 
   const pick = (i) => {
-    if (a !== null && b !== null && a === b && i > a) {
-      setB(i);
-      return;
-    }
+    if (i < 0) return;
+    if (a === b && i > a) { setB(i); return; }
     setA(i);
     setB(i);
   };
@@ -95,7 +98,7 @@ export default function Tabulator() {
   const jumpToDate = (i) => {
     setMode("calendar");
     setA(i);
-    setB(Math.min(i + 3, dates.length - 1));
+    setB(Math.min(i + 3, last));
     setTab("mountains");
     setShown(true);
   };
@@ -105,62 +108,53 @@ export default function Tabulator() {
       <div className="phone">
         <header className="bar">
           <span className="mark">Tabulator</span>
-          <button className="gear" onClick={() => setSettings((s) => !s)} aria-label="Settings">
-            ⚙
-          </button>
+          <button className="gear" onClick={() => setSettings((s) => !s)} aria-label="Settings">⚙</button>
         </header>
 
         {settings && (
           <div className="settings">
             <span>Units</span>
             <div className="pill sm">
-              <button className={!metric ? "on" : ""} onClick={() => setMetric(false)}>
-                in / °F
-              </button>
-              <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>
-                cm / °C
-              </button>
+              <button className={!metric ? "on" : ""} onClick={() => setMetric(false)}>in / °F</button>
+              <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
             </div>
-            <button className="link" onClick={load}>Refresh forecast</button>
+            <button className="link" onClick={load}>Reload forecast</button>
+            {feed?.generatedAt && (
+              <span className="stamp">
+                scraped {new Date(feed.generatedAt).toLocaleString(undefined, {
+                  month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+                })}
+              </span>
+            )}
           </div>
         )}
 
         <main className="body">
           {err && (
             <div className="msg">
-              <strong>The forecast service didn't respond.</strong>
-              <span>Error {err}. Data comes from Open-Meteo.</span>
+              <strong>No forecast available.</strong>
+              <span>{err}. The scheduled scrape writes forecast.json — check the Actions tab.</span>
               <button className="link" onClick={load}>Try again</button>
             </div>
           )}
 
-          {!raw && !err && <div className="loading">Reading the models…</div>}
+          {!feed && !err && <div className="loading">Reading the forecast…</div>}
+
+          {/* Silent staleness is what let the spreadsheet rot. Say it out loud. */}
+          {feed?.stale && <p className="banner">This forecast is over a day old — the scrape may be failing.</p>}
+          {feed?.synthetic && <p className="banner">Sample data, not a real forecast.</p>}
 
           {data && tab === "mountains" && (
             <>
               <p className="ask">
                 Find me snow {mode === "days" ? "in" : "on"}{" "}
-                {mode === "calendar" && <em>{monthName(fromIso(dates[wa]))}</em>}
+                {mode === "calendar" && dates[wa] && <em>{monthName(fromIso(dates[wa]))}</em>}
               </p>
 
               {mode === "days" ? (
-                <DaysWheel
-                  value={days}
-                  onChange={(n) => {
-                    setDays(n);
-                    setShown(false);
-                  }}
-                />
+                <DaysWheel value={days} onChange={(n) => { setDays(n); setShown(false); }} />
               ) : (
-                <MonthGrid
-                  dates={dates}
-                  a={wa}
-                  b={wb}
-                  onPick={(i) => {
-                    pick(i);
-                    setShown(false);
-                  }}
-                />
+                <MonthGrid dates={dates} a={wa} b={wb} onPick={(i) => { pick(i); setShown(false); }} />
               )}
 
               <div className="go">
@@ -168,36 +162,25 @@ export default function Tabulator() {
                   <button className={mode === "days" ? "on" : ""} onClick={() => setMode("days")}>
                     {mode === "days" ? "days" : "☀"}
                   </button>
-                  <button
-                    className={mode === "calendar" ? "on" : ""}
-                    onClick={() => setMode("calendar")}
-                  >
+                  <button className={mode === "calendar" ? "on" : ""} onClick={() => setMode("calendar")}>
                     {mode === "calendar" ? label : "▦"}
                   </button>
                 </div>
-                <button className="arrow" onClick={() => setShown(true)} aria-label="Show results">
-                  →
-                </button>
+                <button className="arrow" onClick={() => setShown(true)} aria-label="Show results">→</button>
               </div>
 
               {shown && (
                 <>
                   <div className="pages">
-                    {page === 0 ? (
-                      <Table data={data} metric={metric} onOpen={setOpen} />
-                    ) : (
-                      <Chart data={data} metric={metric} />
-                    )}
+                    {page === 0
+                      ? <Table data={data} metric={metric} onOpen={setOpen} />
+                      : <Chart data={data} metric={metric} />}
                   </div>
 
                   <div className="dots">
                     {[0, 1].map((i) => (
-                      <button
-                        key={i}
-                        className={page === i ? "on" : ""}
-                        onClick={() => setPage(i)}
-                        aria-label={i === 0 ? "Table" : "Chart"}
-                      />
+                      <button key={i} className={page === i ? "on" : ""} onClick={() => setPage(i)}
+                              aria-label={i === 0 ? "Table" : "Chart"} />
                     ))}
                   </div>
 
@@ -207,11 +190,11 @@ export default function Tabulator() {
             </>
           )}
 
-          {data && tab === "radar" && (
-            <Radar raw={raw} dates={dates} metric={metric} onJump={jumpToDate} />
+          {feed && tab === "radar" && (
+            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} />
           )}
 
-          {data && tab === "trips" && <Trips trips={trips} metric={metric} />}
+          {feed && tab === "trips" && <Trips trips={trips} metric={metric} />}
         </main>
 
         <nav className="tabs">

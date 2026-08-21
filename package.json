@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "test": "node --test 'test/*.test.js'",
     "test:smoke": "node test/smoke.mjs",
-    "scrape": "node scripts/scrape.js"
+    "scrape": "node scripts/scrape.js",
+    "fixture": "node scripts/make-dev-fixture.js"
   },
   "dependencies": {
     "cheerio": "^1.2.0",
