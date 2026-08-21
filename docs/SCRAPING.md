@@ -55,6 +55,13 @@ nowcast, accumulated over time, rather than a second provider.
 **Cold start:** the column reads `—` for the first three days after deployment.
 That is correct rather than convenient; it should not be faked.
 
+**Contamination guard.** `npm run fixture` and `npm run scrape` write the same
+path. The fixture marks its archive `synthetic: true`, and the scraper
+*discards* such an archive rather than appending to it — mixing invented and
+observed snowfall would present fabricated numbers as fact in the one column
+read as ground truth. If you see "discarded a synthetic history.json" in the
+scrape output, that is the guard doing its job.
+
 ## Multi-slug resorts
 
 Palisades is one entry backed by `Squaw-Valley` and `Alpine-Meadows` — the site

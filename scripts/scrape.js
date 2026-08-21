@@ -11,12 +11,12 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import { parseResortPage } from "./parse.js";
+import { openHistory, recordDay } from "./history.js";
 
 const BASE = "https://www.snow-forecast.com/resorts";
 const UA = "Tabulator/1.0 (personal ski-trip planner; low volume; 1 req/1.5s)";
 const DELAY_MS = 1500;      // deliberately unhurried
 const RETRIES = 2;
-const HISTORY_DAYS = 14;
 const MIN_OK_RATIO = 0.8;   // below this the run is considered failed
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -105,16 +105,17 @@ async function main() {
   // Roll the observed day-0 snowfall into a history file. Three days of runs
   // and the "-3 days" column has a real source again — our own archive of
   // Snow-Forecast's nowcast, rather than a second provider.
-  const history = await readJson(`${root}public/history.json`, { days: {} });
-  for (const r of out) {
-    const d0 = r.days[0];
-    if (!d0?.date) continue;
-    history.days[d0.date] ??= {};
-    history.days[d0.date][r.id] = d0.snow;
+  //
+  // A synthetic archive left behind by `npm run fixture` is discarded, not
+  // appended to: mixing invented and observed snowfall would present fabricated
+  // numbers as fact in the one column the user reads as ground truth.
+  const existing = await readJson(`${root}public/history.json`, null);
+  const opened = openHistory(existing);
+  if (opened.discarded) {
+    console.error("\nnote: discarded a synthetic history.json (from `npm run fixture`).");
+    console.error('      "-3 days" will read "—" until three real runs accumulate.');
   }
-  const keep = Object.keys(history.days).sort().slice(-HISTORY_DAYS);
-  history.days = Object.fromEntries(keep.map((k) => [k, history.days[k]]));
-  history.updatedAt = now.toISOString();
+  const history = recordDay(opened, out, now);
 
   const forecast = {
     generatedAt: now.toISOString(),
@@ -130,7 +131,7 @@ async function main() {
 
   await writeFile(`${root}public/forecast.json`, JSON.stringify(forecast, null, 1));
   await writeFile(`${root}public/history.json`, JSON.stringify(history, null, 1));
-  console.error(`\nwrote public/forecast.json (${out.length} resorts) and public/history.json (${keep.length} days)`);
+  console.error(`\nwrote public/forecast.json (${out.length} resorts) and public/history.json (${Object.keys(history.days).length} days)`);
   if (failures.length) console.error(`\n${failures.length} slug failure(s) — output written, but investigate:`);
   failures.forEach((f) => console.error(`  - ${f}`));
 }

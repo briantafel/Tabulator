@@ -48,7 +48,9 @@ const resorts = cfg.resorts.map((r, ri) => {
 });
 
 // Three days of history so "-3 days" renders rather than sitting at "—".
-const history = { days: {}, updatedAt: now.toISOString() };
+// Marked synthetic so a later real scrape discards it rather than
+// appending observed snowfall onto invented numbers.
+const history = { synthetic: true, days: {}, updatedAt: now.toISOString() };
 for (let i = 1; i <= 3; i++) {
   const d = new Date(now); d.setUTCDate(d.getUTCDate() - i);
   const key = d.toISOString().slice(0, 10);
