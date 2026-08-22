@@ -221,8 +221,9 @@ await check("radar shows the six-day horizon", async () => {
 
 await check("trips screen renders empty state", async () => {
   await page.getByRole("button", { name: /trips/ }).click();
-  await page.waitForSelector(".screen-h");
-  assert.match(await page.locator(".trips").textContent(), /Nothing saved yet/);
+  await page.waitForSelector(".fav-head");
+  assert.match(await page.locator(".trips").textContent(), /No favourites yet/);
+  assert.equal(await page.locator(".fav-edit").count(), 0, "Edit shows with nothing to edit");
 });
 
 await check("the star favourites; the calendar-plus opens the trip panel", async () => {
@@ -239,6 +240,25 @@ await check("the star favourites; the calendar-plus opens the trip panel", async
   await page.locator(".sheet-star").click();
   assert.equal(await page.locator(".sheet-star.on").count(), 1, "star did not light");
   assert.equal(await page.locator(".addtrip").count(), 0, "the star opened the panel");
+
+  // Brian's bug: the table UNDER the sheet must gain the star immediately,
+  // without waiting for the sheet to close.
+  const live = await page.evaluate((n) => {
+    const row = [...document.querySelectorAll(".t-row")]
+      .find((r) => r.textContent.includes(n));
+    return row ? !!row.querySelector(".t-star svg") : null;
+  }, name.trim());
+  assert.equal(live, true, "the row behind the sheet did not gain a star");
+
+  // And every name keeps the same x, starred or not — the star sits in a
+  // reserved slot, the same rule the severity markers follow.
+  const xs = await page.evaluate(() => [...document.querySelectorAll(".t-row")].map((r) => {
+    const t = [...r.querySelector(".t-name").childNodes]
+      .find((c) => c.nodeType === 3 && c.textContent.trim());
+    const rg = document.createRange(); rg.selectNode(t);
+    return +rg.getBoundingClientRect().x.toFixed(1);
+  }));
+  assert.equal(new Set(xs).size, 1, `names are ragged: ${[...new Set(xs)].join(", ")}`);
 
   await page.locator(".sheet-add").click();
   await page.waitForSelector(".addtrip");
@@ -258,9 +278,26 @@ await check("the star favourites; the calendar-plus opens the trip panel", async
   await page.locator(".sheet-close").click();
 
   await page.getByRole("button", { name: /trips/ }).click();
-  await page.waitForSelector(".trip");
-  const listed = await page.locator(".trip-r").first().innerText();
-  assert.ok(listed.includes(name), `trips shows "${listed}", expected ${name} in it`);
+  await page.waitForSelector(".tp-row");
+  assert.ok(await page.locator(".tp-name").count() >= 2, "no trip row and New trip row");
+
+  // The favourited resort is listed under Favorites, with Brian's star before
+  // the name — and the star is black even on the coral leading row.
+  await page.waitForSelector(".t-star");
+  const fav = await page.evaluate((n) => {
+    const row = [...document.querySelectorAll(".trips .t-row")]
+      .find((r) => r.textContent.includes(n));
+    if (!row) return null;
+    const slot = row.querySelector(".t-star");
+    const path = row.querySelector(".t-star path");
+    const name2 = row.querySelector(".t-name");
+    return { hasStar: !!path,
+             starFirst: slot ? name2.firstElementChild === slot : false,
+             starColour: path ? getComputedStyle(path).fill : null };
+  }, name.trim());
+  assert.ok(fav && fav.hasStar, `${name} is not listed under Favorites`);
+  assert.ok(fav.starFirst, "the star must come before the name");
+  assert.match(fav.starColour, /17,\s*17,\s*17/, `star should be ink, got ${fav.starColour}`);
 
   await page.getByRole("button", { name: /mountains/ }).click();
   await page.waitForSelector(".t-row");

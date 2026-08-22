@@ -244,7 +244,7 @@ export default function Tabulator() {
 
                   <div className="pages">
                     {page === 0
-                      ? <Table data={data} metric={metric} onOpen={setOpen} />
+                      ? <Table data={data} metric={metric} onOpen={setOpen} favs={favs} />
                       : <Chart data={data} metric={metric} />}
                   </div>
 
@@ -265,7 +265,16 @@ export default function Tabulator() {
             <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} />
           )}
 
-          {feed && tab === "trips" && <Trips trips={trips} metric={metric} />}
+          {feed && tab === "trips" && (
+            <Trips
+              trips={trips}
+              favs={favs}
+              data={data ?? []}
+              metric={metric}
+              onOpen={setOpen}
+              onNewTrip={() => newTrip(null)}
+            />
+          )}
         </main>
 
         <nav className="tabs">

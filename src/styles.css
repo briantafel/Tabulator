@@ -196,8 +196,22 @@ body { background: #F2F2F2; }
   width: 100%; height: 31px; padding: 0;   /* measured row pitch, no rules */
   font-weight: 400; letter-spacing: -.01em;
 }
-.t-row.best { color: #FF383C; }
-.t-name { text-align: left; }
+/* #FB2C36, not the marker red. It reads as Tailwind's default, but it is drawn
+   this way in BOTH the resort-table PDF and the Trips screen, so it ships as
+   drawn — see open-questions #6. */
+.t-row.best { color: #FB2C36; }
+
+/* Favourite marker in the results row. Brian's own 10x10 export, sitting after
+   the name so the name's left edge stays on the column grid. Placement is a
+   first pass — the Trips-main design will settle it. */
+.t-star {
+  display: block; width: 10px; height: 10px; flex: none;
+  margin-right: calc(4 * var(--u));
+}
+.t-star svg { display: block; width: 10px; height: 10px; }
+/* Black even on the coral leading row — that is how the design draws it. */
+.t-star path { fill: var(--ink); }
+.t-name { text-align: left; display: flex; align-items: center; min-width: 0; }
 .t-num { white-space: nowrap; }
 .t-before { color: inherit; font-weight: 400; }
 .t-row.best .t-before { color: #FF383C; opacity: 1; }
@@ -267,19 +281,78 @@ body { background: #F2F2F2; }
 .rd-cell { height: 18px; border-radius: 2px; background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
 
 /* trips */
-/* A trip is a named container now, so it lists as a heading plus its resorts.
-   Brian has not designed this screen — plain and legible until he does. */
-.trip { padding: 14px 0; border-bottom: 1px solid var(--line); }
-.trip-name {
-  display: block; font-size: 17px; font-weight: 700; letter-spacing: -.02em;
+/* ------------------------------------------------------------------
+ * Trips screen — measured off Brian's Tabulator-trips-main export.
+ * Favourites at the top on the same column grid as the mountains table,
+ * then full-bleed trip rows. The `.body` wrapper pads 16 each side, so
+ * the rules break out with a negative margin and pad back in.
+ * ------------------------------------------------------------------ */
+.fav-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-top: calc(30.8 * var(--u)); padding-right: calc(13 * var(--u));
 }
-.trip-when { display: block; margin-top: 2px; font-size: 12.5px; color: #8A8A8A; }
-.trip-empty { display: block; margin-top: 10px; font-size: 13px; color: #9A9A9A; }
-.trip-r {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-top: 10px; font-size: 13px;
+.fav-head h2 {
+  margin: 0; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
 }
-.trip-n { font-weight: 700; color: var(--red); }
+.fav-head p {
+  margin: calc(7.9 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
+  line-height: calc(12.5 * var(--u)); color: #8A8A8A;
+}
+/* #FF383C — the marker red, not the leading-row red. Measured, not assumed. */
+.fav-edit {
+  padding: 0; margin-top: calc(8 * var(--u));
+  font-size: calc(13 * var(--u)); font-weight: 500; color: #FF383C;
+}
+
+/* The rule under the heading is inset, unlike the trip rules below it:
+   x 15 to 373 in a 402 frame. */
+.trips .fav-rule {
+  height: 1px; background: var(--line);
+  margin: calc(14.1 * var(--u)) calc(13 * var(--u)) 0 calc(-1 * var(--u));
+}
+.trips .table { margin-top: calc(22.4 * var(--u)); }
+
+/* Two dots, 12 on a 24 pitch — larger than the calendar's 6. */
+.fav-dots {
+  display: flex; justify-content: center; gap: calc(12 * var(--u));
+  margin-top: calc(22.6 * var(--u));
+}
+.fav-dots button {
+  width: calc(12 * var(--u)); height: calc(12 * var(--u));
+  flex: none; padding: 0; border-radius: 50%; background: #DBDBDB;
+}
+.fav-dots button.on { background: #0F0F0F; }
+
+/* Trip rows: full bleed, 82.5 pitch, rule on every edge. */
+.trip-list { margin: calc(29 * var(--u)) -16px 0; }
+.tp-row {
+  display: block; width: 100%; text-align: left; box-sizing: border-box;
+  height: calc(82.5 * var(--u)); padding: calc(18.2 * var(--u)) 16px 0;
+  border-top: 1px solid var(--line); position: relative;
+}
+.trip-list .tp-row:last-child { border-bottom: 1px solid var(--line); }
+.tp-name {
+  display: block; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em; color: var(--ink);
+}
+.tp-when {
+  display: block; margin-top: calc(6.9 * var(--u));
+  font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
+  color: #8A8A8A;
+}
+/* On white the ghost is #DCDCDC; on the grey Add-to-trip panel it is #ECECEC.
+   Same element, two contexts, two greys — both measured. */
+.tp-new .tp-name { color: var(--fill); }
+.tp-plus {
+  position: absolute; right: calc(18 * var(--u)); top: calc(33.1 * var(--u));
+  width: calc(11.6 * var(--u)); height: calc(11.6 * var(--u));
+}
+.tp-plus::before, .tp-plus::after {
+  content: ""; position: absolute; inset: 0; margin: auto; background: var(--fill);
+}
+.tp-plus::before { width: calc(2.9 * var(--u)); }
+.tp-plus::after { height: calc(2.9 * var(--u)); }
 
 /* tabs */
 .tabs {

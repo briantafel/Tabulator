@@ -5,7 +5,18 @@ import { snowWithUnit, tempTxt, windTxt } from "../lib/units.js";
 /* Column labels follow the Figma: "-3 days" rather than "before", and the ↑
  * arrows carry the "this is a maximum" meaning that the old build had to
  * spell out in the key. */
-export default function Table({ data, metric, onOpen }) {
+/* Brian's 10x10 favourite star, drawn on a 10x10 grid rather than the sheet's
+   20x19 one — a distinct export, not the big star scaled down. */
+const STAR10 =
+  "M4.75537 0L5.87794 3.45492H9.51065L6.57173 5.59017L7.6943 9.04508L4.75537 6.90983L1.81644 9.04508L2.93901 5.59017L8.86917e-05 3.45492H3.6328L4.75537 0Z";
+
+export default function Table({ data, metric, onOpen, favs = [] }) {
+  /* Coral marks the deepest total, wherever it sits. On the mountains screen
+     that is row 0 because the list is sorted; on the favourites list it is
+     whichever row happens to have it, which is what the design draws. */
+  let best = -1, deepest = -Infinity;
+  data.forEach((r, i) => { if ((r.total ?? 0) > deepest) { deepest = r.total ?? 0; best = i; } });
+
   return (
     <div className="table">
       <div className="t-head">
@@ -21,10 +32,22 @@ export default function Table({ data, metric, onOpen }) {
         return (
           <button
             key={r.id}
-            className={`t-row${i === 0 ? " best" : ""}`}
+            className={`t-row${i === best ? " best" : ""}`}
             onClick={() => onOpen(r)}
           >
-            <span className="t-name">{r.name}</span>
+            {/* The star sits in a reserved slot, filled or not — the same rule
+                the severity markers follow, so a resort's name does not jump
+                sideways the moment you favourite it. */}
+            <span className="t-name">
+              <span className="t-star">
+                {favs.includes(r.name) && (
+                  <svg viewBox="0 0 10 10" role="img" aria-label="Favourite">
+                    <path d={STAR10} />
+                  </svg>
+                )}
+              </span>
+              {r.name}
+            </span>
             {/* null means the archive doesn't reach back that far — not zero snow */}
             <span className="t-num t-before" title={r.before == null ? "No record for those days yet" : undefined}>
               {r.before == null ? "—" : snowWithUnit(r.before, metric)}
