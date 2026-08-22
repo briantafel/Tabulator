@@ -10,7 +10,8 @@ import { HORIZON_DAYS } from "../lib/constants.js";
 export default function DaysWheel({ value, onChange }) {
   const ref = useRef(null);
   const settle = useRef(null);
-  const opts = Array.from({ length: HORIZON_DAYS - 1 }, (_, i) => i + 2); // 2…6
+  const mounted = useRef(false);
+  const opts = Array.from({ length: HORIZON_DAYS }, (_, i) => i + 1); // 1…6
 
   useEffect(() => {
     const el = ref.current;
@@ -21,6 +22,41 @@ export default function DaysWheel({ value, onChange }) {
   }, []);
 
   useEffect(() => () => clearTimeout(settle.current), []);
+
+  /* A vertical mouse wheel does not scroll a horizontal container, and
+     nudging scrollLeft directly fights `scroll-snap-type: mandatory` — the
+     snap pulls it straight back. Step the selection instead and let the
+     browser animate to the snap point, which is what the gesture means. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let acc = 0;
+    const onWheel = (e) => {
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (!d) return;
+      e.preventDefault();
+      acc += d;
+      if (Math.abs(acc) < 40) return;
+      const step = acc > 0 ? 1 : -1;
+      acc = 0;
+      const i = opts.indexOf(value) + step;
+      if (i >= 0 && i < opts.length) onChange(opts[i]);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [value, onChange, opts]);
+
+  /* Keep the selected numeral centred whenever it changes from outside the
+     scroll gesture — a wheel step, a click, or the arrow keys. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const item = el.children[opts.indexOf(value)];
+    if (item) item.scrollIntoView({ inline: "center", block: "nearest",
+      behavior: mounted.current ? "smooth" : "auto" });
+    mounted.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   const onScroll = () => {
     clearTimeout(settle.current);
@@ -45,6 +81,11 @@ export default function DaysWheel({ value, onChange }) {
           key={n}
           className={`wheel-n${n === value ? " on" : ""}`}
           onClick={() => onChange(n)}
+          onKeyDown={(e) => {
+            const i = opts.indexOf(value);
+            if (e.key === "ArrowRight" && i < opts.length - 1) onChange(opts[i + 1]);
+            if (e.key === "ArrowLeft" && i > 0) onChange(opts[i - 1]);
+          }}
           aria-pressed={n === value}
         >
           {n}

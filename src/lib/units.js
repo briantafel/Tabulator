@@ -10,7 +10,7 @@ export const kmhToMph = (k) => k / 1.60934;
 
 /** The unit mark for snow. Previously hard-coded as `"` at every call site,
  *  which meant metric mode rendered centimetres with an inch mark. */
-export const snowUnit = (metric) => (metric ? "cm" : "″");
+export const snowUnit = (metric) => (metric ? "cm" : '"');
 
 export const snowTxt = (cm, metric) => {
   if (cm == null) return "—";

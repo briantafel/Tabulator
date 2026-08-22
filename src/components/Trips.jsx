@@ -12,7 +12,7 @@ export default function Trips({ trips, metric }) {
         </p>
       ) : (
         trips.map((t) => (
-          <div className="trip" key={t.label}>
+          <div className="trip" key={t.id}>
             <span className="trip-when">{t.label}</span>
             <span className="trip-top">{t.top}</span>
             <span className="trip-n">{snowWithUnit(t.snow, metric)}</span>

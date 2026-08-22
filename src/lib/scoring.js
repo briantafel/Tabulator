@@ -1,4 +1,9 @@
-import { WIND_LIMIT, WARM_LIMIT, COLD_LIMIT, HISTORY_DAYS } from "./constants.js";
+import {
+  HISTORY_DAYS,
+  COLD_RED, COLD_AMBER_LO, COLD_AMBER_HI,
+  WARM_AMBER_LO, WARM_AMBER_HI, WARM_RED,
+  WIND_AMBER, WIND_RED,
+} from "./constants.js";
 
 /** The three days before the window, summed from our own archive of
  *  Snow-Forecast's day-0 nowcast (public/history.json).
@@ -45,13 +50,33 @@ export function score(resort, a, b, history) {
   };
 }
 
-/** Warning flags. A null metric raises nothing — absence of data is not a
- *  warning, and pretending otherwise would put dots on every resort during a
- *  partial scrape. */
+/** Severity of the temperature reading, worst-first.
+ *
+ *  Temperature is bad in two directions and shares one column, so the marker
+ *  answers "is temperature a problem, and how much" rather than naming which
+ *  direction — the number in the cell tells you that. Cold is judged on the
+ *  window's minimum, warm on its maximum; whichever is worse wins. */
+export function tempSeverity(hi, lo) {
+  if (lo != null && lo <= COLD_RED) return "red";
+  if (hi != null && hi > WARM_RED) return "red";
+  if (lo != null && lo >= COLD_AMBER_LO && lo <= COLD_AMBER_HI) return "amber";
+  if (hi != null && hi >= WARM_AMBER_LO && hi <= WARM_AMBER_HI) return "amber";
+  return null;
+}
+
+/** Wind is bad in one direction only, so this is a simple ladder. */
+export function windSeverity(w) {
+  if (w == null) return null;
+  if (w >= WIND_RED) return "red";
+  if (w >= WIND_AMBER) return "amber";
+  return null;
+}
+
+/** Absent data raises nothing — a partial scrape must not mark every resort
+ *  dangerous. Both helpers return null rather than a severity for null input. */
 export const flags = (r) => ({
-  wind: r.wind != null && r.wind >= WIND_LIMIT,
-  warm: r.hi != null && r.hi >= WARM_LIMIT,
-  cold: r.lo != null && r.lo <= COLD_LIMIT,
+  temp: tempSeverity(r.hi, r.lo),
+  wind: windSeverity(r.wind),
 });
 
 /** Snow-Forecast gives freezing level per period, so rain-vs-snow can be read

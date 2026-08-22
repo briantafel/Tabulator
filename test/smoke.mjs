@@ -79,6 +79,34 @@ await check("table headers follow the Figma", async () => {
   }
 });
 
+await check("severity markers use shape as well as colour", async () => {
+  // Colour alone fails in greyscale and for a colourblind reader, so red is a
+  // circle and amber a triangle. Assert both exist and are shaped differently.
+  const red = page.locator(".sev-red").first();
+  const amber = page.locator(".sev-amber").first();
+  assert.ok(await red.count() > 0, "no red markers in the sample data");
+  assert.ok(await amber.count() > 0, "no amber markers in the sample data");
+  // The colour and shape now live on ::before — the element itself is the
+  // fixed-width reserved slot that keeps the number aligned.
+  const shape = (el) => el.evaluate((n) => {
+    const s = getComputedStyle(n, "::before");
+    return { radius: s.borderRadius, clip: s.clipPath, bg: s.backgroundColor,
+             w: s.width, slot: getComputedStyle(n).width };
+  });
+  const r = await shape(red), a = await shape(amber);
+  assert.notEqual(r.clip, a.clip, "red and amber must not be the same shape");
+  assert.equal(r.slot, a.slot, "both markers must occupy the same reserved slot");
+  assert.equal(r.slot, "16px", "slot is 16px, measured from the design PDF");
+  assert.match(r.bg, /255,\s*56,\s*60/, `red should be #FF383C, got ${r.bg}`);
+  assert.match(a.bg, /255,\s*204,\s*0/, `amber should be #FFCC00, got ${a.bg}`);
+});
+
+await check("the explanatory key is gone", async () => {
+  // Brian: "We don't need the key, honestly. I believe skiers will know."
+  const table = await page.locator(".table").textContent();
+  assert.ok(!/above .* or over/.test(table), "the old legend line is still rendering");
+});
+
 await check("resorts are ranked by snowfall, deepest first", async () => {
   const nums = await page.locator(".t-snow").allTextContents();
   const vals = nums.map((t) => parseFloat(t) || 0);
@@ -106,6 +134,78 @@ await check("detail sheet opens with the forecaster's prose", async () => {
   await page.locator(".sheet-close").click();
 });
 
+await check("the mode pill does not move between days and calendar", async () => {
+  // Brian: "when I switch to calendar view it jumps down. That's bad UX."
+  await page.getByRole("button", { name: /mountains/ }).click();
+  const where = () => page.evaluate(() => {
+    const go = document.querySelector(".go").getBoundingClientRect();
+    const pill = document.querySelector(".pill").getBoundingClientRect();
+    const ph = document.querySelector(".phone").getBoundingClientRect();
+    // Relative to the phone frame — the viewport may be wider than 402.
+    return { top: +go.top.toFixed(1), centre: +(pill.x + pill.width / 2 - ph.x).toFixed(1),
+             frame: +ph.width.toFixed(1) };
+  });
+  const days = await where();
+  await page.locator(".pill button").nth(1).click();
+  await page.waitForSelector(".cal");
+  const cal = await where();
+  assert.equal(cal.top, days.top, "the pill row moved between modes");
+  assert.equal(cal.centre, days.centre, "the pill is not centred in both modes");
+  assert.equal(cal.centre, cal.frame / 2, `pill centre ${cal.centre} in a ${cal.frame} frame`);
+
+  // Every month must be the same height too, or paging jumps the pill instead.
+  const h = async () => page.evaluate(() => +document.querySelector(".cal").getBoundingClientRect().height.toFixed(1));
+  const first = await h();
+  const dots = page.locator(".cal-dots button");
+  assert.equal(await dots.count(), 3, "expected three month dots");
+  for (let i = 0; i < 3; i++) {
+    await dots.nth(i).click();
+    assert.equal(await h(), first, `month dot ${i} is a different height`);
+  }
+  await page.locator(".pill button").first().click();
+  await page.waitForSelector(".wheel");
+});
+
+await check("range selection is circles joined by one unbroken band", async () => {
+  // Brian's Calendar selection PDF: darker circle on each end, lighter band
+  // between them, continued to the row edge where the range wraps a line.
+  await page.locator(".pill button").nth(1).click();
+  await page.waitForSelector(".cal");
+  const open = page.locator(".cal-d:not(.off)");
+  await open.first().click();
+  await open.last().click();
+
+  const shape = await page.evaluate(() => {
+    const px = (el, p) => getComputedStyle(el, p);
+    const a = document.querySelector(".cal-d.sel-a");
+    const b = document.querySelector(".cal-d.sel-b");
+    const mid = [...document.querySelectorAll(".cal-d.in")]
+      .find((e) => !e.classList.contains("sel-a") && !e.classList.contains("sel-b"));
+    const cell = a.getBoundingClientRect();
+    return {
+      ends: [px(a, "::after").borderRadius, px(b, "::after").borderRadius],
+      endBg: px(a, "::after").backgroundColor,
+      round: px(a, "::after").width === px(a, "::after").height,
+      bandBg: px(mid, "::before").backgroundColor,
+      // A middle cell's band must span the WHOLE cell, or the run has gaps.
+      bandFull: Math.abs(parseFloat(px(mid, "::before").width) - cell.width) < 0.6,
+      bandSquare: px(mid, "::before").borderRadius,
+    };
+  });
+  assert.deepEqual(shape.ends, ["50%", "50%"], "the range ends are not circles");
+  assert.ok(shape.round, "the endpoint is an ellipse, not a circle");
+  assert.match(shape.endBg, /194,\s*194,\s*194/, `endpoint should be #C2C2C2, got ${shape.endBg}`);
+  assert.match(shape.bandBg, /217,\s*217,\s*217/, `band should be #D9D9D9, got ${shape.bandBg}`);
+  assert.ok(shape.bandFull, "the band does not fill the cell — the run will have gaps");
+  assert.equal(shape.bandSquare, "0px", "the band segments must not be rounded");
+
+  // Picking a date collapses the results; put them back for the checks below.
+  await page.locator(".pill button").first().click();
+  await page.waitForSelector(".wheel");
+  await page.locator(".arrow").click();
+  await page.waitForSelector(".t-row");
+});
+
 await check("chart page renders", async () => {
   await page.locator(".dots button").nth(1).click();
   await page.waitForSelector(".chart-svg");
@@ -123,6 +223,34 @@ await check("trips screen renders empty state", async () => {
   await page.getByRole("button", { name: /trips/ }).click();
   await page.waitForSelector(".screen-h");
   assert.match(await page.locator(".trips").textContent(), /Nothing saved yet/);
+});
+
+await check("the star favourites and the calendar-plus saves", async () => {
+  await page.getByRole("button", { name: /mountains/ }).click();
+  // The chart check left the pager on page 1, so come back to the table.
+  await page.locator('.viewtoggle button[aria-label="Table"]').click();
+  await page.waitForSelector(".t-row", { timeout: 5000 });
+  await page.locator(".t-row").first().click();
+  await page.waitForSelector(".sheet");
+  const name = await page.locator(".sheet-head h2").textContent();
+
+  // Two different actions, so two different states — the star must not save
+  // a trip and the calendar-plus must not favourite.
+  assert.equal(await page.locator(".sheet-star.on").count(), 0, "star starts filled");
+  await page.locator(".sheet-star").click();
+  assert.equal(await page.locator(".sheet-star.on").count(), 1, "star did not light");
+  assert.equal(await page.locator(".sheet-add.on").count(), 0, "star saved a trip");
+
+  await page.locator(".sheet-add").click();
+  assert.equal(await page.locator(".sheet-add.on").count(), 1, "add did not light");
+  await page.locator(".sheet-close").click();
+
+  await page.getByRole("button", { name: /trips/ }).click();
+  await page.waitForSelector(".trip");
+  const saved = await page.locator(".trip-top").first().textContent();
+  assert.equal(saved, name, `trips shows ${saved}, expected ${name}`);
+  await page.getByRole("button", { name: /mountains/ }).click();
+  await page.waitForSelector(".t-row");
 });
 
 await check("no console or page errors throughout", () => {

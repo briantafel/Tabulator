@@ -1,17 +1,11 @@
 import Dot from "./Dot.jsx";
 import { flags } from "../lib/scoring.js";
 import { snowWithUnit, tempTxt, windTxt } from "../lib/units.js";
-import { WARM_LIMIT, COLD_LIMIT, WIND_LIMIT } from "../lib/constants.js";
-import { cToF, kmhToMph } from "../lib/units.js";
 
 /* Column labels follow the Figma: "-3 days" rather than "before", and the ↑
  * arrows carry the "this is a maximum" meaning that the old build had to
  * spell out in the key. */
 export default function Table({ data, metric, onOpen }) {
-  const warm = metric ? `${WARM_LIMIT}°` : `${Math.round(cToF(WARM_LIMIT))}°`;
-  const cold = metric ? `${COLD_LIMIT}°` : `${Math.round(cToF(COLD_LIMIT))}°`;
-  const gale = metric ? `${WIND_LIMIT} km/h` : `${Math.round(kmhToMph(WIND_LIMIT))} mph`;
-
   return (
     <div className="table">
       <div className="t-head">
@@ -36,24 +30,20 @@ export default function Table({ data, metric, onOpen }) {
               {r.before == null ? "—" : snowWithUnit(r.before, metric)}
             </span>
             <span className="t-num t-snow">{snowWithUnit(r.total, metric)}</span>
-            <span className="t-num">
+            {/* Marker sits in a fixed slot BEFORE the number, so the number's
+                position never shifts between a flagged and an unflagged row. */}
+            <span className="t-num t-flagged">
+              <Dot kind={f.temp} label={f.temp === "red" ? "Temperature: bad" : "Temperature: dicey"} />
               {tempTxt(r.hi, metric)}°
-              {f.warm && <Dot kind="red" label="Warm enough to fall as rain" />}
-              {f.cold && <Dot kind="amber" label="Brutally cold" />}
             </span>
-            <span className="t-num">
+            <span className="t-num t-flagged">
+              <Dot kind={f.wind} label={f.wind === "red" ? "Wind: bad" : "Wind: dicey"} />
               {windTxt(r.wind, metric)}
-              {f.wind && <Dot kind="red" label="Wind at lift-hold levels" />}
             </span>
           </button>
         );
       })}
 
-      <p className="t-key">
-        <Dot kind="red" /> above {warm} or over {gale} &nbsp;·&nbsp;
-        <Dot kind="amber" /> below {cold} &nbsp;·&nbsp; <b>-3 days</b> is the snow that
-        fell in the three days prior — the base you'd be landing on.
-      </p>
     </div>
   );
 }

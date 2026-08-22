@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { RESORT_META as RESORTS, isStale } from "../src/lib/forecast.js";
-import { score, before, flags, rainRisk } from "../src/lib/scoring.js";
+import { score, before, flags, rainRisk, tempSeverity, windSeverity } from "../src/lib/scoring.js";
 import { snowTxt, snowUnit, snowWithUnit, tempTxt, windTxt, cmToIn, cToF, kmhToMph } from "../src/lib/units.js";
-import { WARM_LIMIT, COLD_LIMIT, WIND_LIMIT, HORIZON_DAYS } from "../src/lib/constants.js";
+import { HORIZON_DAYS } from "../src/lib/constants.js";
 
 /* ---------------------------- resort list ---------------------------- */
 
@@ -31,11 +31,13 @@ test("metric mode does not render an inch mark", () => {
   // The bug carried over from the Open-Meteo build: snowTxt converted
   // correctly but every call site appended a literal `"`, so cm/°C mode
   // rendered centimetres with an inch mark.
+  // The design uses a straight double quote, not the typographic prime.
   assert.equal(snowUnit(true), "cm");
-  assert.equal(snowUnit(false), "″");
+  assert.equal(snowUnit(false), '"');
   assert.equal(snowWithUnit(25.4, true), "25cm");
-  assert.equal(snowWithUnit(25.4, false), "10″");
-  assert.ok(!snowWithUnit(25.4, true).includes("″"), "metric must never show an inch mark");
+  assert.equal(snowWithUnit(25.4, false), '10"');
+  assert.ok(!snowWithUnit(25.4, true).includes('"'), "metric must never show an inch mark");
+  assert.ok(!snowWithUnit(25.4, false).includes("\u2033"), "use a straight quote, not U+2033");
 });
 
 test("storage is metric and converts outward", () => {
@@ -55,17 +57,6 @@ test("nulls display as an em-dash rather than zero or NaN", () => {
   assert.equal(snowWithUnit(null, false), "—");
   assert.equal(tempTxt(null, false), "—");
   assert.equal(windTxt(null, false), "—");
-});
-
-test("thresholds are metric and match the imperial intent", () => {
-  // Stored metric because that is what the source serves, but these numbers
-  // were chosen in F and mph. Assert closeness, not exact rounding — the
-  // cold threshold lands a hair below zero and Math.round returns -0.
-  const near = (a, b, tol = 0.5) => assert.ok(Math.abs(a - b) < tol, `${a} vs ${b}`);
-  near(cToF(WARM_LIMIT), 34);
-  near(cToF(COLD_LIMIT), 0);
-  near(kmhToMph(WIND_LIMIT), 35);
-  assert.equal(HORIZON_DAYS, 6, "Snow-Forecast's free horizon");
 });
 
 /* ------------------------------ scoring ------------------------------ */
@@ -118,17 +109,58 @@ test("temp takes the window max, wind the max, freezing level the min", () => {
   assert.equal(s.freezeMin, 900);
 });
 
-test("flags fire on the metric thresholds", () => {
-  assert.equal(flags({ hi: 2, lo: -5, wind: 10 }).warm, true);    // above 1C
-  assert.equal(flags({ hi: 0, lo: -5, wind: 10 }).warm, false);
-  assert.equal(flags({ hi: 0, lo: -20, wind: 10 }).cold, true);   // below -18C
-  assert.equal(flags({ hi: 0, lo: -5, wind: 60 }).wind, true);    // above 56km/h
+// Thresholds are authored in °F/mph, so the tests state them that way too —
+// asserting in °C would hide an off-by-one in the conversion.
+const F = (f) => ((f - 32) * 5) / 9;
+const MPH = (m) => m * 1.60934;
+
+test("temperature severity, cold end", () => {
+  assert.equal(tempSeverity(F(20), F(-30)), "red",   "-30F is brutal");
+  assert.equal(tempSeverity(F(20), F(-16)), "red",   "-16F itself is red, not a gap");
+  assert.equal(tempSeverity(F(20), F(-15)), "amber", "-15F starts the dicey band");
+  assert.equal(tempSeverity(F(20), F(10)),  "amber", "10F ends the dicey band");
+  assert.equal(tempSeverity(F(20), F(11)),  null,    "11F is a fine cold morning");
 });
 
-test("absent data raises no warning", () => {
-  // A partial scrape must not dot every resort as dangerous.
-  const f = flags({ hi: null, lo: null, wind: null });
-  assert.deepEqual(f, { wind: false, warm: false, cold: false });
+test("temperature severity, warm end", () => {
+  assert.equal(tempSeverity(F(40), F(20)), "red",   "40F is raining");
+  assert.equal(tempSeverity(F(35), F(20)), "red",   "above 34F is red");
+  assert.equal(tempSeverity(F(34), F(20)), "amber", "34F is the top of dicey");
+  assert.equal(tempSeverity(F(31), F(20)), "amber", "31F starts dicey");
+  assert.equal(tempSeverity(F(30), F(20)), null,    "30F is good skiing");
+});
+
+test("the worse of the two temperature directions wins", () => {
+  // A window can be dicey-cold overnight and red-warm by afternoon.
+  assert.equal(tempSeverity(F(40), F(-15)), "red", "red beats amber");
+  assert.equal(tempSeverity(F(33), F(5)), "amber", "two ambers stay amber");
+});
+
+test("the horizon matches Snow-Forecast's free tier", () => {
+  // Six days is what the source publishes without a subscription. The days
+  // wheel and the radar grid both size themselves from this.
+  assert.equal(HORIZON_DAYS, 6);
+});
+
+test("wind severity is a ladder with no ceiling", () => {
+  assert.equal(windSeverity(MPH(10)), null);
+  assert.equal(windSeverity(MPH(18)), "amber", "18mph starts dicey");
+  assert.equal(windSeverity(MPH(30)), "amber");
+  assert.equal(windSeverity(MPH(31)), "red",   "31mph is a lift hold");
+  // Brian specified red as 31-45. Left as a range, 46mph would fall out the
+  // bottom and show no warning at all — the worst wind reading nothing.
+  assert.equal(windSeverity(MPH(60)), "red", "above 45 must stay red");
+});
+
+test("absent data raises no marker", () => {
+  assert.equal(tempSeverity(null, null), null);
+  assert.equal(windSeverity(null), null);
+  assert.deepEqual(flags({ hi: null, lo: null, wind: null }), { temp: null, wind: null });
+});
+
+test("flags reports one severity per column, not one per condition", () => {
+  const f = flags({ hi: F(36), lo: F(-20), wind: MPH(35) });
+  assert.deepEqual(f, { temp: "red", wind: "red" });
 });
 
 test("rain risk reads freezing level against the mid station", () => {

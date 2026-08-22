@@ -23,14 +23,20 @@ async function getJson(path, fallback) {
   }
 }
 
+/** A page can embed its data instead of fetching it — used to publish a
+ *  self-contained snapshot that runs with no network at all. Falls through to
+ *  the normal fetch when absent, so the deployed app is unaffected. */
+const embedded = (key) =>
+  typeof globalThis !== "undefined" ? globalThis[key] : undefined;
+
 /** history.json is genuinely optional: for the first three days after
  *  deployment it does not exist yet, and "-3 days" correctly reads as unknown
  *  rather than zero. Absent history must never look like no snow. */
 export async function loadForecast() {
-  const [forecast, history] = await Promise.all([
-    getJson("forecast.json"),
-    getJson("history.json", { days: {} }),
-  ]);
+  const preset = embedded("__TABULATOR_FORECAST__");
+  const [forecast, history] = preset
+    ? [preset, embedded("__TABULATOR_HISTORY__") ?? { days: {} }]
+    : await Promise.all([getJson("forecast.json"), getJson("history.json", { days: {} })]);
 
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 

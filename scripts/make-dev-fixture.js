@@ -30,13 +30,18 @@ const resorts = cfg.resorts.map((r, ri) => {
   });
   // Winter conditions, so the sample looks like the app in season. A summer
   // spread flags a warm dot on almost every resort and misrepresents the UI.
-  const tmax = Array.from({ length: 18 }, (_, i) => Math.round(-13 + seeded(ri * 7 + i) * 14));
-  const tmin = tmax.map((t) => t - 5);
+  // Each resort gets its own temperature character, with days varying only a
+  // few degrees around it. Sampling every resort across the whole range makes
+  // the max-of-18 land near the top every time, and then everything flags.
+  const baseTemp = -13 + seeded(ri * 5 + 2) * 17;
+  const tmax = Array.from({ length: 18 }, (_, i) =>
+    Math.round(baseTemp + seeded(ri * 7 + i) * 3));
+  const tmin = tmax.map((t) => t - 4);
   // Only some resorts should reach lift-hold winds. Taking the max of 18
   // samples from a wide range flags essentially everything.
   const gusty = ri % 4 === 0;
   const wind = Array.from({ length: 18 }, (_, i) =>
-    `${Math.round(seeded(ri * 13 + i) * (gusty ? 70 : 38))}${["N", "NW", "S", "SE"][i % 4]}`);
+    `${Math.round(seeded(ri * 13 + i) * (gusty ? 70 : 29))}${["N", "NW", "S", "SE"][i % 4]}`);
   const freeze = Array.from({ length: 18 }, (_, i) => Math.round(600 + seeded(ri * 3 + i) * 2400));
   const base = 1800 + Math.round(seeded(ri) * 1200);
 
