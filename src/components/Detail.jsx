@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { snowWithUnit, tempTxt, windTxt, elevTxt } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
@@ -19,12 +19,16 @@ const CAL_PLUS = [
   "M17.002 17.9995L19 17.9993V19.9998H17.002V22H15.0017V19.9998H13V17.9995H15.0017V15.9993H17.002V17.9995Z",
 ];
 
-export default function Detail({ r, metric, onClose, fav, onFav, saved, onSave }) {
+export default function Detail({ r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip }) {
+  const [adding, setAdding] = useState(false);
+  useEffect(() => setAdding(false), [r]);
+
   useEffect(() => {
-    const k = (e) => e.key === "Escape" && onClose();
+    // Escape backs out of the panel first, then closes the sheet.
+    const k = (e) => e.key === "Escape" && (adding ? setAdding(false) : onClose());
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
-  }, [onClose]);
+  }, [onClose, adding]);
 
   if (!r || !r.win?.length) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
@@ -83,13 +87,38 @@ export default function Detail({ r, metric, onClose, fav, onFav, saved, onSave }
           ))}
         </div>
 
+        {/* Covers everything above the action row — the Close button and the
+            calendar-plus stay reachable, which is what the design shows. */}
+        {adding && (
+          <div className="addtrip" role="dialog" aria-label="Add to trip">
+            <h2>Add to trip</h2>
+            {trips.map((t) => (
+              <button
+                key={t.id}
+                className="at-row"
+                onClick={() => { onAddToTrip(t.id); setAdding(false); }}
+              >
+                <span className="at-name">{t.name}</span>
+                <span className="at-when">{t.label}</span>
+              </button>
+            ))}
+            <button
+              className="at-row at-new"
+              onClick={() => { onNewTrip(); setAdding(false); }}
+            >
+              <span className="at-name">New trip</span>
+              <span className="at-plus" aria-hidden="true" />
+            </button>
+          </div>
+        )}
+
         <div className="sheet-actions">
           <button className="sheet-close" onClick={onClose}>Close</button>
           <button
-            className={`sheet-add${saved ? " on" : ""}`}
-            onClick={onSave}
-            aria-pressed={!!saved}
-            aria-label={saved ? "Saved to trips" : "Add to trips"}
+            className={`sheet-add${adding ? " on" : ""}`}
+            onClick={() => setAdding((v) => !v)}
+            aria-expanded={adding}
+            aria-label="Add to trip"
           >
             <svg viewBox="0 0 32 32" aria-hidden="true">
               {CAL_PLUS.map((d) => <path key={d.slice(0, 12)} d={d} />)}

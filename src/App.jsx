@@ -96,14 +96,31 @@ export default function Tabulator() {
     ? `${shortDate(dates[wa])}${wb > wa ? `–${shortDate(dates[wb])}` : ""}`
     : "";
 
-  /* A saved trip is one resort in one window, so the identity is both —
-     saving Snowbird and Alta for the same days must give two entries. */
-  const addTrip = (name, snow) =>
+  /* A trip is a NAMED container with its own date range and a list of resorts
+     in it — "VSC trip 2027 · Jan 21–Jan 24", per the Add-to-trip design. It is
+     not a bare saved window any more, which is what it was before.
+     { id, name, label, resorts: [{ name, total }] } */
+  const newTrip = (resort) =>
     setTrips((t) => {
-      const id = `${label}|${name}`;
-      return t.find((x) => x.id === id) ? t : [...t, { id, label, top: name, snow }];
+      /* Brian names his own trips — the design shows "VSC trip 2027". Nothing
+         in it says how he types that, so new trips get a neutral placeholder
+         and renaming still needs a UI. Deriving the name from the window
+         would just repeat the date line printed underneath it. */
+      const n = t.length + 1;
+      return [...t, { id: `trip-${n}`, name: `Trip ${n}`, label,
+                      resorts: resort ? [resort] : [] }];
     });
-  const saveWindow = () => addTrip(data[0].name, data[0].total);
+
+  const addToTrip = (id, resort) =>
+    setTrips((t) =>
+      t.map((x) =>
+        x.id !== id || x.resorts.some((r) => r.name === resort.name)
+          ? x
+          : { ...x, resorts: [...x.resorts, resort] }
+      )
+    );
+
+  const saveWindow = () => newTrip({ name: data[0].name, total: data[0].total });
 
   /* The star favourites a resort; the calendar-plus saves the window. Two
      different actions, which is why the sheet carries both icons.
@@ -269,8 +286,9 @@ export default function Tabulator() {
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}
-        saved={!!open && trips.some((t) => t.id === `${label}|${open.name}`)}
-        onSave={() => open && addTrip(open.name, open.total)}
+        trips={trips}
+        onAddToTrip={(id) => open && addToTrip(id, { name: open.name, total: open.total })}
+        onNewTrip={() => open && newTrip({ name: open.name, total: open.total })}
       />
     </div>
   );

@@ -225,30 +225,43 @@ await check("trips screen renders empty state", async () => {
   assert.match(await page.locator(".trips").textContent(), /Nothing saved yet/);
 });
 
-await check("the star favourites and the calendar-plus saves", async () => {
+await check("the star favourites; the calendar-plus opens the trip panel", async () => {
   await page.getByRole("button", { name: /mountains/ }).click();
-  // The chart check left the pager on page 1, so come back to the table.
   await page.locator('.viewtoggle button[aria-label="Table"]').click();
   await page.waitForSelector(".t-row", { timeout: 5000 });
   await page.locator(".t-row").first().click();
   await page.waitForSelector(".sheet");
   const name = await page.locator(".sheet-head h2").textContent();
 
-  // Two different actions, so two different states — the star must not save
-  // a trip and the calendar-plus must not favourite.
+  // Two different actions. The star must not save anything, and the
+  // calendar-plus must not favourite.
   assert.equal(await page.locator(".sheet-star.on").count(), 0, "star starts filled");
   await page.locator(".sheet-star").click();
   assert.equal(await page.locator(".sheet-star.on").count(), 1, "star did not light");
-  assert.equal(await page.locator(".sheet-add.on").count(), 0, "star saved a trip");
+  assert.equal(await page.locator(".addtrip").count(), 0, "the star opened the panel");
 
   await page.locator(".sheet-add").click();
-  assert.equal(await page.locator(".sheet-add.on").count(), 1, "add did not light");
+  await page.waitForSelector(".addtrip");
+  assert.equal(await page.locator(".sheet-add.on").count(), 1, "the add icon did not go dark");
+  assert.equal(await page.locator(".at-new").count(), 1, "no new-trip row");
+
+  // The panel must not cover the action row — Close stays reachable.
+  const clear = await page.evaluate(() => {
+    const p = document.querySelector(".addtrip").getBoundingClientRect();
+    const c = document.querySelector(".sheet-close").getBoundingClientRect();
+    return +(c.top - p.bottom).toFixed(1);
+  });
+  assert.ok(clear > 20, `panel bottom is only ${clear} above Close`);
+
+  await page.locator(".at-new").click();
+  assert.equal(await page.locator(".addtrip").count(), 0, "the panel stayed open");
   await page.locator(".sheet-close").click();
 
   await page.getByRole("button", { name: /trips/ }).click();
   await page.waitForSelector(".trip");
-  const saved = await page.locator(".trip-top").first().textContent();
-  assert.equal(saved, name, `trips shows ${saved}, expected ${name}`);
+  const listed = await page.locator(".trip-r").first().innerText();
+  assert.ok(listed.includes(name), `trips shows "${listed}", expected ${name} in it`);
+
   await page.getByRole("button", { name: /mountains/ }).click();
   await page.waitForSelector(".t-row");
 });

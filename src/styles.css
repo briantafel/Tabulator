@@ -267,12 +267,18 @@ body { background: #F2F2F2; }
 .rd-cell { height: 18px; border-radius: 2px; background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
 
 /* trips */
-.trip {
-  display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: baseline;
-  padding: 12px 0; border-bottom: 1px solid var(--line);
+/* A trip is a named container now, so it lists as a heading plus its resorts.
+   Brian has not designed this screen — plain and legible until he does. */
+.trip { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.trip-name {
+  display: block; font-size: 17px; font-weight: 700; letter-spacing: -.02em;
 }
-.trip-when { font-weight: 600; }
-.trip-top { color: #777; font-size: 13px; }
+.trip-when { display: block; margin-top: 2px; font-size: 12.5px; color: #8A8A8A; }
+.trip-empty { display: block; margin-top: 10px; font-size: 13px; color: #9A9A9A; }
+.trip-r {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 10px; font-size: 13px;
+}
 .trip-n { font-weight: 700; color: var(--red); }
 
 /* tabs */
@@ -287,6 +293,59 @@ body { background: #F2F2F2; }
 .tg svg { width: 28px; height: 28px; fill: currentColor; stroke: none; display: block; }
 .tl { font-size: 11px; }
 
+
+/* ------------------------------------------------------------------
+ * Add-to-trip panel, measured off Brian's two state exports.
+ * Covers the sheet from its top edge down to 100 above the card bottom,
+ * which lands it 27 clear of the Close button whatever the window length.
+ * Its rules are FULL BLEED, unlike the sheet's, which inset to 22/380.
+ * ------------------------------------------------------------------ */
+.addtrip {
+  position: absolute; left: 0; right: 0; top: 0; bottom: calc(100 * var(--u));
+  background: #D9D9D9;
+  border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
+  overflow: hidden;
+}
+.addtrip h2 {
+  margin: calc(29.8 * var(--u)) 0 calc(32.7 * var(--u)) calc(22 * var(--u));
+  font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em; color: #fff;
+}
+.at-row {
+  display: block; width: 100%; text-align: left;
+  padding: calc(5.6 * var(--u)) calc(24 * var(--u)) 0;
+  border-bottom: 1px solid var(--line);
+}
+.addtrip .at-row:first-of-type { border-top: 1px solid var(--line); }
+.at-row { height: calc(83 * var(--u)); box-sizing: border-box; }
+.at-name {
+  display: block; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em; color: var(--ink);
+}
+.at-when {
+  display: block; margin-top: calc(8.2 * var(--u));
+  font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
+  color: #8A8A8A;
+}
+/* The new-trip row is one line, so it is shorter, and it reads as a ghost —
+   #ECECEC on the #D9D9D9 panel, which is the export's own contrast. */
+.at-new {
+  height: calc(69 * var(--u)); position: relative;
+  padding-top: 0;
+}
+.at-new .at-name { color: var(--line); }
+.at-plus {
+  position: absolute; right: calc(35 * var(--u)); top: 50%;
+  width: calc(11.6 * var(--u)); height: calc(11.6 * var(--u));
+  transform: translateY(-50%);
+}
+.at-plus::before, .at-plus::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  background: var(--line);
+}
+.at-plus::before { width: calc(2.9 * var(--u)); }
+.at-plus::after { height: calc(2.9 * var(--u)); }
+
 /* ------------------------------------------------------------------
  * Detail sheet — measured off Brian's Resort Sheet export.
  * The export is a 402x448 artboard with the card top at y=28, so every
@@ -300,6 +359,7 @@ body { background: #F2F2F2; }
 }
 @keyframes fade { from { opacity: 0; } }
 .sheet {
+  position: relative;
   --u: min(1px, 100vw / 402);
   width: 100%; max-width: 402px; background: #fff;
   border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
@@ -390,11 +450,13 @@ body { background: #F2F2F2; }
   flex: 1; height: calc(47 * var(--u)); background: var(--fill);
   border-radius: 999px; font-size: calc(16 * var(--u)); font-weight: 600;
 }
+/* Quiet at rest, ink while the panel is open — both states are in the export;
+   the coral "saved" state was Claude's invention and is gone. */
 .sheet-add {
   flex: none; margin-left: calc(25 * var(--u)); padding: 0;
-  color: var(--ink); line-height: 0;
+  color: var(--fill); line-height: 0;
 }
-.sheet-add.on { color: var(--red); }
+.sheet-add.on { color: var(--ink); }
 .sheet-add svg {
   display: block; width: calc(32 * var(--u)); height: calc(32 * var(--u));
   fill: currentColor; stroke: none;
