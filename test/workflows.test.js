@@ -54,5 +54,16 @@ test("the scrape workflow can be triggered by hand", () => {
   assert.ok("workflow_dispatch" in triggers,
     "without workflow_dispatch there is no Run workflow button, and the only " +
     "way to test a scrape is to wait for the cron");
-  assert.ok("schedule" in triggers, "the whole point is that it runs unattended");
+  /* The schedule is deliberately commented out while the app runs on the
+     sample fixture (Brian, 2026-08-25: scraping pages nobody reads wastes
+     bandwidth and risks getting the IP flagged). The cron lines must survive
+     in the file so re-enabling is uncommenting, not rewriting from memory. */
+  const raw = readFileSync(DIR + "forecast.yml", "utf8");
+  const crons = raw.match(/^\s*#?\s*- cron: /gm) ?? [];
+  assert.equal(crons.length, 2, "the two cron lines must stay in the file");
+  if (!("schedule" in triggers)) {
+    assert.match(raw, /PAUSED/,
+      "a scrape with no schedule must say IN THE FILE that it is paused on " +
+      "purpose, or the next person reads it as a bug and 'fixes' it");
+  }
 });

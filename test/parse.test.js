@@ -100,3 +100,52 @@ test("a missing REQUIRED row throws loudly rather than returning empty data", ()
 test("units are declared, so the app never has to guess", () => {
   assert.deepEqual(parse().units, { snow: "cm", temp: "C", wind: "km/h", elevation: "m" });
 });
+
+/* --- The morning-scrape regression, 2026-08-25 ---------------------------
+ * The 06:15 UTC run catches most US resorts partway through their local
+ * night. Snow-Forecast leads the table with the tail of the previous day in
+ * a cell carrying no weekday label, so day zero came back
+ * `{ date: null, label: null }` for 19 of 23 resorts, twice a day. The app
+ * silently dropped that column, and — worse — recordDay() keys the "-3 days"
+ * archive off day zero's date, so half of every day's history was never
+ * written. That is the one loss a later scrape cannot repair. */
+test("a blank leading day header is recovered, not dropped", () => {
+  const out = resolveDates(
+    ["", "Tuesday25", "Wednesday26", "Thursday27", "Friday28", "Saturday29"],
+    new Date("2026-08-25T06:15:00Z"),
+  );
+  assert.deepEqual(out, [
+    "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29",
+  ]);
+});
+
+test("a header for yesterday resolves to yesterday, not to next month", () => {
+  // The cursor could only walk forward, so "24" on the 25th landed on the
+  // 24th of SEPTEMBER — a month-long jump presented as a six-day forecast.
+  const out = resolveDates(["Monday24", "Tuesday25"], new Date("2026-08-25T06:15:00Z"));
+  assert.deepEqual(out, ["2026-08-24", "2026-08-25"]);
+});
+
+test("a blank in the middle or at the end is filled from its neighbour", () => {
+  const out = resolveDates(
+    ["Tuesday25", "", "Thursday27", ""],
+    new Date("2026-08-25T06:15:00Z"),
+  );
+  assert.deepEqual(out, ["2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28"]);
+});
+
+test("a table of nothing but blanks stays null — no invented week", () => {
+  assert.deepEqual(resolveDates(["", "", ""], new Date("2026-08-25T06:15:00Z")),
+    [null, null, null]);
+});
+
+test("month and year rollovers still resolve", () => {
+  assert.deepEqual(
+    resolveDates(["Sunday30", "Monday31", "Tuesday1"], new Date("2026-08-31T06:15:00Z")),
+    ["2026-08-30", "2026-08-31", "2026-09-01"],
+  );
+  assert.deepEqual(
+    resolveDates(["Thursday31", "Friday1"], new Date("2026-12-31T06:15:00Z")),
+    ["2026-12-31", "2027-01-01"],
+  );
+});

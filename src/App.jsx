@@ -7,6 +7,7 @@ import Chart from "./components/Chart.jsx";
 import Radar from "./components/Radar.jsx";
 import Detail from "./components/Detail.jsx";
 import Trips from "./components/Trips.jsx";
+import TripEdit from "./components/TripEdit.jsx";
 
 import { loadForecast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
@@ -53,6 +54,9 @@ export default function Tabulator() {
   const [page, setPage] = useState(0); // 0 table, 1 chart
   const [open, setOpen] = useState(null);
   const [trips, setTrips] = useState([]);
+  /* { id } while the edit screen is up; the extra `leaving` flag drives the
+     slide back out, because the screen has to finish moving before it goes. */
+  const [editing, setEditing] = useState(null);
   const [favs, setFavs] = useState([]);
 
   const load = useCallback(async () => {
@@ -100,16 +104,29 @@ export default function Tabulator() {
      in it — "VSC trip 2027 · Jan 21–Jan 24", per the Add-to-trip design. It is
      not a bare saved window any more, which is what it was before.
      { id, name, label, resorts: [{ name, total }] } */
-  const newTrip = (resort) =>
+  const newTrip = (resort, named) =>
     setTrips((t) => {
       /* Brian names his own trips — the design shows "VSC trip 2027". Nothing
          in it says how he types that, so new trips get a neutral placeholder
          and renaming still needs a UI. Deriving the name from the window
          would just repeat the date line printed underneath it. */
       const n = t.length + 1;
-      return [...t, { id: `trip-${n}`, name: `Trip ${n}`, label,
+      return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
                       resorts: resort ? [resort] : [] }];
     });
+
+  const removeTrip = (id) => setTrips((t) => t.filter((x) => x.id !== id));
+
+  /* Editing writes back the dates the calendar chose, and relabels the row
+     from them — the label is a rendering of the range, not a separate fact. */
+  const setTripDates = (id, { start, end }) =>
+    setTrips((t) => t.map((x) => (x.id === id
+      ? { ...x, start, end,
+          label: start === end ? shortDate(start) : `${shortDate(start)}–${shortDate(end)}` }
+      : x)));
+
+  const renameTrip = (id, name) =>
+    setTrips((t) => t.map((x) => (x.id === id ? { ...x, name } : x)));
 
   const addToTrip = (id, resort) =>
     setTrips((t) =>
@@ -157,6 +174,7 @@ export default function Tabulator() {
               <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
             </div>
             <button className="link" onClick={load}>Reload forecast</button>
+            {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {feed?.generatedAt && (
               <span className="stamp">
                 scraped {new Date(feed.generatedAt).toLocaleString(undefined, {
@@ -178,9 +196,11 @@ export default function Tabulator() {
 
           {!feed && !err && <div className="loading">Reading the forecast…</div>}
 
-          {/* Silent staleness is what let the spreadsheet rot. Say it out loud. */}
+          {/* Silent staleness is what let the spreadsheet rot. Say it out loud.
+              The sample-data banner used to sit here too; Brian asked for it
+              gone, so it now reads as a line in Settings instead — quiet, but
+              still impossible for sample data to pass as a real forecast. */}
           {feed?.stale && <p className="banner">This forecast is over a day old — the scrape may be failing.</p>}
-          {feed?.synthetic && <p className="banner">Sample data, not a real forecast.</p>}
 
           {data && tab === "mountains" && (
             <>
@@ -265,16 +285,37 @@ export default function Tabulator() {
             <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} />
           )}
 
-          {feed && tab === "trips" && (
+          {feed && tab === "trips" && !editing && (
             <Trips
               trips={trips}
               favs={favs}
               data={data ?? []}
               metric={metric}
               onOpen={setOpen}
-              onNewTrip={() => newTrip(null)}
+              onNewTrip={(named) => newTrip(null, named)}
+              onEditTrip={(id) => setEditing({ id })}
+              onRemoveTrip={removeTrip}
             />
           )}
+
+          {feed && tab === "trips" && editing && (() => {
+            const t = trips.find((x) => x.id === editing.id);
+            if (!t) return null;
+            const back = () => {
+              setEditing({ ...editing, leaving: true });
+              setTimeout(() => setEditing(null), 260);
+            };
+            return (
+              <div className={editing.leaving ? "tripedit-out" : ""}>
+                <TripEdit
+                  trip={t}
+                  onRename={(name) => renameTrip(t.id, name)}
+                  onSave={(range) => { setTripDates(t.id, range); back(); }}
+                  onClose={back}
+                />
+              </div>
+            );
+          })()}
         </main>
 
         <nav className="tabs">
@@ -292,12 +333,13 @@ export default function Tabulator() {
       <Detail
         r={open}
         metric={metric}
+        reports={feed?.reports}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}
         trips={trips}
         onAddToTrip={(id) => open && addToTrip(id, { name: open.name, total: open.total })}
-        onNewTrip={() => open && newTrip({ name: open.name, total: open.total })}
+        onNewTrip={(named) => open && newTrip({ name: open.name, total: open.total }, named)}
       />
     </div>
   );

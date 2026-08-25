@@ -38,6 +38,12 @@ export async function loadForecast() {
     ? [preset, embedded("__TABULATOR_HISTORY__") ?? { days: {} }]
     : await Promise.all([getJson("forecast.json"), getJson("history.json", { days: {} })]);
 
+  /* Skier reports are genuinely optional — a resort with none, or a scrape
+     that has not run yet, must degrade to "no reports", never to an error. */
+  const reports =
+    embedded("__TABULATOR_REPORTS__") ??
+    (preset ? { resorts: {} } : await getJson("reports.json", { resorts: {} }));
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   return {
@@ -48,6 +54,7 @@ export async function loadForecast() {
     dates: forecast.resorts[0].days.map((d) => d.date),
     resorts: forecast.resorts,
     history: history?.days ?? {},
+    reports,
   };
 }
 

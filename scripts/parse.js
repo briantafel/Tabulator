@@ -46,11 +46,27 @@ export function parseNumber(raw) {
   return Number.isFinite(n) ? n : null;
 }
 
+const DAY_MS = 86400000;
+const shift = (iso, n) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * DAY_MS).toISOString().slice(0, 10);
+
 /** Day headers read "Thursday20" — a weekday and a day-of-month, with no
  *  month or year. Walk a cursor forward from `from` until the day-of-month
- *  matches, so the calendar does the disambiguating. */
+ *  matches, so the calendar does the disambiguating.
+ *
+ *  A header can be BLANK, and this is not a scraping error. The morning runs
+ *  (06:15 UTC) catch most US resorts partway through their local night, and
+ *  Snow-Forecast leads its table with the remainder of the previous day in a
+ *  cell that carries no weekday label. Before 2026-08-25 that produced
+ *  `date: null` on day zero for 19 of 23 resorts, twice a day, every day —
+ *  a whole column of real forecast data the app then had no key for. The
+ *  columns are consecutive days by construction, so a blank one is recovered
+ *  exactly from whichever neighbour did resolve. */
 export function resolveDates(headers, from) {
-  const cursor = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate()));
+  /* Start a day BEHIND now. The leading column is often the tail of the
+     previous local day, and a cursor that starts at today can only walk
+     forward — so a header reading "24" on the 25th resolved to the 24th of
+     NEXT month, a month-long jump presented as a forecast. */
+  const cursor = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate() - 1));
   const out = [];
   for (const h of headers) {
     const dom = parseNumber((h.match(/(\d+)\s*$/) || [])[1]);
@@ -60,6 +76,12 @@ export function resolveDates(headers, from) {
     out.push(cursor.toISOString().slice(0, 10));
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
+
+  // Back-fill from the right, then forward from the left. Two passes because
+  // the blank can be at either end, and a table of nothing but blanks must
+  // stay all-null rather than invent a week out of thin air.
+  for (let i = out.length - 2; i >= 0; i--) if (!out[i] && out[i + 1]) out[i] = shift(out[i + 1], -1);
+  for (let i = 1; i < out.length; i++) if (!out[i] && out[i - 1]) out[i] = shift(out[i - 1], 1);
   return out;
 }
 

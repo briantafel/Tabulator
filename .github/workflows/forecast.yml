@@ -1,11 +1,18 @@
 name: Fetch forecast
 
-# Twice daily. Snow-Forecast updates a few times a day; more often than this
-# is impolite and buys nothing for a trip-planning tool.
+# PAUSED 2026-08-25, at Brian's request: the app is running on the sample
+# fixture while the UI is being built, so a twice-daily scrape fetches pages
+# nobody reads. That is bandwidth spent for nothing and, worse, a steady
+# unattended request pattern is exactly what gets a scraper's IP flagged —
+# and Snow-Forecast is the one source this app cannot replace.
+#
+# Re-enable by uncommenting the two schedule lines. workflow_dispatch is left
+# on so a run can still be triggered by hand from the Actions tab whenever a
+# real dataset is wanted.
 on:
-  schedule:
-    - cron: "15 6 * * *"    # 06:15 UTC
-    - cron: "15 18 * * *"   # 18:15 UTC
+  # schedule:
+  #   - cron: "15 6 * * *"    # 06:15 UTC
+  #   - cron: "15 18 * * *"   # 18:15 UTC
   workflow_dispatch:         # so you can trigger it by hand from the Actions tab
 
 permissions:

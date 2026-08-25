@@ -6,6 +6,16 @@
  * ------------------------------------------------------------------ */
 
 html, body { margin: 0; padding: 0; }
+/* Home-screen app manners: no grey flash on tap, no rubber-band scroll past
+   the ends, and no long-press selection on what are effectively buttons. */
+html {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+.app button, .tabs, .t-row, .cal-d, .wheel-n {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none; user-select: none;
+}
 body { background: #F2F2F2; }
 
 .app {
@@ -14,6 +24,11 @@ body { background: #F2F2F2; }
   --fill: #DCDCDC;
   --line: #ECECEC;
   --red: #EF4A38;
+  /* The OTHER red. Severity markers, the Edit links, the delete panel — all
+     #FF383C, distinct from the --red accent by four points. Brian has seen it
+     in two separate exports, so it stays; a token at least keeps the three
+     reds countable (open question #6). */
+  --mark-red: #FF383C;
   --amber: #F0B429;
 
   background: #F2F2F2;
@@ -82,7 +97,11 @@ body { background: #F2F2F2; }
   scroll-snap-type: x mandatory;
   padding: 0 calc(50% - 88.5 * var(--u));
   scrollbar-width: none; margin: 0 -16px;
-  touch-action: pan-x; overscroll-behavior-x: contain;
+  /* pan-x ALONE forbids vertical gestures that start here rather than passing
+     them to the page — and this element is 200 tall, so Brian was left with a
+     sliver at the bottom of the screen that would scroll. Naming both axes
+     lets the wheel keep horizontal panning and the page keep vertical. */
+  touch-action: pan-x pan-y; overscroll-behavior-x: contain;
   height: calc(200 * var(--u)); align-items: center;
   /* No gradient: the neighbours are solid grey, clipped hard by the frame.
      The "screen mask" keeping the centre value pure black is the phone edge
@@ -214,7 +233,7 @@ body { background: #F2F2F2; }
 .t-name { text-align: left; display: flex; align-items: center; min-width: 0; }
 .t-num { white-space: nowrap; }
 .t-before { color: inherit; font-weight: 400; }
-.t-row.best .t-before { color: #FF383C; opacity: 1; }
+.t-row.best .t-before { color: var(--mark-red); opacity: 1; }
 
 .viewtoggle {
   display: inline-flex; align-items: center; gap: 0;
@@ -245,7 +264,7 @@ body { background: #F2F2F2; }
    was floating above the wind number in the detail sheet. Second time a loose
    modifier class has leaked; keep the element class in the selector. */
 .sev.sev-red::before, .sev.sev-amber::before { content: ""; display: block; height: 9px; }
-.sev.sev-red::before { width: 9px; background: #FF383C; border-radius: 50%; }
+.sev.sev-red::before { width: 9px; background: var(--mark-red); border-radius: 50%; }
 .sev.sev-amber::before { width: 10px; background: #FFCC00; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 
 .t-key { margin: 16px 0 0; font-size: 11.5px; line-height: 1.7; color: #8A8A8A; }
@@ -299,18 +318,31 @@ body { background: #F2F2F2; }
   margin: calc(7.9 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
   line-height: calc(12.5 * var(--u)); color: #8A8A8A;
 }
+/* Empty state: the "Next 6 days" line goes — there is no window to describe
+   until something is in the table — and the rule takes up its room. */
+.fav-empty {
+  margin: calc(15.8 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
+  line-height: calc(15 * var(--u)); color: #8A8A8A;
+}
 /* #FF383C — the marker red, not the leading-row red. Measured, not assumed. */
 .fav-edit {
   padding: 0; margin-top: calc(8 * var(--u));
-  font-size: calc(13 * var(--u)); font-weight: 500; color: #FF383C;
+  font-size: calc(13 * var(--u)); font-weight: 500; color: var(--mark-red);
 }
 
 /* The rule under the heading is inset, unlike the trip rules below it:
    x 15 to 373 in a 402 frame. */
-.trips .fav-rule {
+/* Shared by the Trips screen and the trip editor — same rule, same place. */
+.trips .fav-rule,
+.tripedit .fav-rule {
   height: 1px; background: var(--line);
   margin: calc(14.1 * var(--u)) calc(13 * var(--u)) 0 calc(-1 * var(--u));
 }
+/* Both headers that carry no subtitle take the larger gap. This has to sit
+   AFTER the shared rule above — same specificity, so source order decides. */
+.trips.empty .fav-rule,
+.tripedit .fav-rule { margin-top: calc(33.2 * var(--u)); }
+
 .trips .table { margin-top: calc(22.4 * var(--u)); }
 
 /* Two dots, 12 on a 24 pitch — larger than the calendar's 6. */
@@ -326,8 +358,19 @@ body { background: #F2F2F2; }
 
 /* Trip rows: full bleed, 82.5 pitch, rule on every edge. */
 .trip-list { margin: calc(29 * var(--u)) -16px 0; }
+/* With no favourites the block above is a heading, a rule and two lines of
+   copy, so the trip list closes up under it. Measured off Brian's
+   Tabulator-trips-main-no-faves export. */
+.trips.empty .trip-list { margin-top: calc(13.7 * var(--u)); }
+/* A flex column, NOT a block. The New trip row is a <button> and the named
+   rows are <div>s, and a button centres its content — which parked the ghost
+   text 38.6 below the row top instead of 18.2 while the plus, positioned from
+   the row top, stayed put. Brian caught it: "the New trip and + are
+   misaligned". Third time this trap has bitten; flex settles it for both. */
 .tp-row {
-  display: block; width: 100%; text-align: left; box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  align-items: stretch;
+  width: 100%; text-align: left; box-sizing: border-box;
   height: calc(82.5 * var(--u)); padding: calc(18.2 * var(--u)) 16px 0;
   border-top: 1px solid var(--line); position: relative;
 }
@@ -344,8 +387,11 @@ body { background: #F2F2F2; }
 /* On white the ghost is #DCDCDC; on the grey Add-to-trip panel it is #ECECEC.
    Same element, two contexts, two greys — both measured. */
 .tp-new .tp-name { color: var(--fill); }
+/* The plus sits in the text's x-height box: its top on the x-height line and
+   its foot on the baseline. That is why it reads as aligned with "New trip"
+   rather than floating beside it — 26.5 below the row top, measured. */
 .tp-plus {
-  position: absolute; right: calc(18 * var(--u)); top: calc(33.1 * var(--u));
+  position: absolute; right: calc(18 * var(--u)); top: calc(26.5 * var(--u));
   width: calc(11.6 * var(--u)); height: calc(11.6 * var(--u));
 }
 .tp-plus::before, .tp-plus::after {
@@ -353,6 +399,36 @@ body { background: #F2F2F2; }
 }
 .tp-plus::before { width: calc(2.9 * var(--u)); }
 .tp-plus::after { height: calc(2.9 * var(--u)); }
+
+/* Naming a new trip, on the Trips screen. Same three states as the resort
+   sheet's panel — ghost, empty ring, filled check — but on the app's white
+   instead of the #D9D9D9 panel, so the live text and the check are INK where
+   the sheet's are white. Brian: "exactly like it does in the resort sheet, but
+   in a light color".
+   The row keeps .tp-row's own padding, so the input lands on the same baseline
+   as the ghost it replaces and nothing shifts on the way in. */
+.tp-new.naming { position: relative; }
+.tp-field {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  font-family: inherit; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+  color: var(--ink); caret-color: var(--ink);
+}
+/* The app-wide coral focus ring is (0,2,0) and beats a plain `outline: none`.
+   A text input advertises focus with its own caret, so the ring is redundant
+   and boxes the row in coral. Same trap as .at-field. */
+.app .tp-field:focus, .app .tp-field:focus-visible { outline: none; }
+.tp-check {
+  /* 23.3 square, right edge on the row's own 16 content edge, centre 28.5
+     below the row top — measured off Tripscreenaddfunct1/3. */
+  position: absolute; right: 16px; top: calc(16.85 * var(--u));
+  padding: 0; line-height: 0; color: var(--ink);
+}
+.tp-check svg {
+  display: block; width: calc(23.3 * var(--u)); height: calc(23.3 * var(--u));
+  fill: currentColor; stroke: none;
+}
+.tp-check svg path { fill: currentColor; }
 
 /* tabs */
 .tabs {
@@ -373,12 +449,16 @@ body { background: #F2F2F2; }
  * which lands it 27 clear of the Close button whatever the window length.
  * Its rules are FULL BLEED, unlike the sheet's, which inset to 22/380.
  * ------------------------------------------------------------------ */
+/* Slides in from the left. Only this panel moves — the Close button and the
+   calendar-plus live outside it, in .sheet-actions, so they stay put. */
 .addtrip {
   position: absolute; left: 0; right: 0; top: 0; bottom: calc(100 * var(--u));
   background: #D9D9D9;
   border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
   overflow: hidden;
+  animation: at-in .28s cubic-bezier(.2,.8,.3,1) both;
 }
+@keyframes at-in { from { transform: translateX(-100%); } }
 .addtrip h2 {
   margin: calc(29.8 * var(--u)) 0 calc(32.7 * var(--u)) calc(22 * var(--u));
   font-size: calc(23.5 * var(--u)); font-weight: 700;
@@ -400,6 +480,38 @@ body { background: #F2F2F2; }
   font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
   color: #8A8A8A;
 }
+/* Naming a new trip: the label becomes an input in the same place, at the same
+   23.5/-.04em, but WHITE rather than the ghosted #ECECEC — it is live text now.
+   The check is a ring until there is something to save, then it fills. */
+/* The resting row is a <button>, and buttons centre their own content — the
+   naming row is a <div>, so it has to centre explicitly or the text jumps 12
+   up. The padding-bottom is the last 2.7 of the difference. */
+.at-new.naming {
+  display: flex; align-items: center;
+  padding-right: calc(42 * var(--u)); padding-bottom: calc(5.4 * var(--u));
+}
+.at-field {
+  flex: 1; min-width: 0; padding: 0; border: 0; background: none;
+  font-family: inherit; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+  color: #fff; caret-color: #fff;
+}
+/* The app-wide coral focus ring is (0,2,0) and beats a plain `outline: none`.
+   A text input advertises focus with its own caret, so the ring is redundant
+   here and boxes the row in coral. */
+.app .at-field:focus, .app .at-field:focus-visible { outline: none; }
+.at-check {
+  /* Positioned exactly like the + it replaces, so the row does not shift. */
+  position: absolute; right: calc(30 * var(--u)); top: 50%;
+  margin-top: calc(-2 * var(--u)); transform: translateY(-50%);
+  padding: 0; line-height: 0; color: #fff;
+}
+.at-check svg {
+  display: block; width: calc(23.3 * var(--u)); height: calc(23.3 * var(--u));
+  fill: currentColor; stroke: none;
+}
+.at-check svg path { fill: currentColor; }
+
 /* The new-trip row is one line, so it is shorter, and it reads as a ghost —
    #ECECEC on the #D9D9D9 panel, which is the export's own contrast. */
 .at-new {
@@ -437,25 +549,54 @@ body { background: #F2F2F2; }
   width: 100%; max-width: 402px; background: #fff;
   border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
   padding: 0 calc(22 * var(--u)) calc(26 * var(--u));
-  max-height: 86vh; overflow-y: auto;
-  animation: up .26s cubic-bezier(.2,.8,.3,1) both;
+  max-height: 86vh; overflow: hidden;
+  display: flex; flex-direction: column;
+  animation: up .34s cubic-bezier(.32,.72,0,1) both;
   box-shadow: 0 -4px 24px rgba(0,0,0,.12);
+  transition: height .28s cubic-bezier(.2,.8,.3,1);
 }
-@keyframes up { from { transform: translateY(26px); } }
+/* While a finger is on the handle the height follows it directly, so the
+   transition has to be out of the way or every move animates toward a target
+   that has already changed. */
+.sheet.dragging { transition: none; }
+/* Maximized: 745 of the 874-tall frame in Brian's export. The header and the
+   action row stay put and .sheet-body takes the slack, which is what makes
+   the reports reachable without moving Close off the screen. */
+.sheet.max { height: min(85.24vh, calc(745 * var(--u))); }
+/* Full height, not 26 — it should rise from off the bottom edge the way an
+   iOS sheet does, rather than nudging into place already visible. */
+@keyframes up { from { transform: translateY(100%); } }
 
-/* Handle: 36x4, 10 below the card edge. */
+/* Handle: 36x4, 10 below the card edge. It is a button because it does
+   something now — tap to toggle, or drag past 40. The hit area is the whole
+   width of the card and 24 tall; only the 36x4 pill is painted. */
 .sheet-grab {
-  width: calc(36 * var(--u)); height: calc(4 * var(--u));
-  border-radius: 999px; background: var(--fill);
-  margin: calc(10 * var(--u)) auto 0;
+  flex: none; display: block; width: 100%; height: calc(24 * var(--u));
+  padding: calc(10 * var(--u)) 0 0; background: none; touch-action: none;
+}
+.sheet-grab span {
+  display: block; width: calc(36 * var(--u)); height: calc(4 * var(--u));
+  border-radius: 999px; background: var(--fill); margin: 0 auto;
+  transition: background .18s;
+}
+.sheet-grab:hover span { background: #C9C9C9; }
+
+/* The scroller. At rest it is content-height and does not scroll at all;
+   the resting sheet is a measured design and must not sprout a scrollbar. */
+.sheet-body { flex: 1 1 auto; min-height: 0; }
+.sheet.max .sheet-body {
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  border-bottom: 1px solid var(--line);
 }
 
 /* Header: name/subtitle left, total then star right. The rule sits 89 down
    from the card top; the star's box right edge lands at 377.7, ~2.3 inside
    the 380 content edge the rules run to — that inset is in the export. */
 .sheet-head {
+  flex: none;
   display: flex; align-items: flex-start;
-  margin: calc(15.8 * var(--u)) 0 0;
+  margin: calc(5.8 * var(--u)) 0 0;
   padding: 0 calc(2.3 * var(--u)) calc(14.1 * var(--u)) 0;
   border-bottom: 1px solid var(--line);
 }
@@ -516,6 +657,7 @@ body { background: #F2F2F2; }
 
 /* Close is 298 wide, not full width — the calendar-plus sits beside it. */
 .sheet-actions {
+  flex: none;
   display: flex; align-items: center; margin-top: calc(22 * var(--u));
   padding-right: calc(3 * var(--u));
 }
@@ -554,6 +696,7 @@ body { background: #F2F2F2; }
 }
 
 .settings .stamp { color: #9A9A9A; font-size: 11.5px; }
+.settings .stamp.warn { color: #A3271A; }
 
 /* The forecaster's prose in the detail sheet. */
 .sheet-prose {
@@ -564,3 +707,153 @@ body { background: #F2F2F2; }
   margin: 10px 0 0; padding: 9px 12px; border-radius: 10px;
   background: #FDECEA; color: #A3271A; font-size: 12.5px; line-height: 1.5;
 }
+
+/* ------------------------------------------------------------------
+ * Skier reports — measured off Brian's two maximized-sheet exports.
+ *
+ * The cards in those exports are screenshots of OnTheSnow's own layout, so
+ * the RHYTHM below is measured from them but the TYPE is Tabulator's:
+ * 23.5 heading, 13.5/600 name, 12.5 grey meta, 13/#555 prose. Same sizes the
+ * rest of the sheet already uses — the section should read as part of the app,
+ * not as a pasted-in web page.
+ *
+ * Photos run the full 22..380 content width; the words are inset 12 further,
+ * which is the one piece of OnTheSnow's card that is worth keeping — it stops
+ * a wall of text from butting against a photo edge.
+ * ------------------------------------------------------------------ */
+.reports { margin-top: calc(23.8 * var(--u)); }
+.reports h3 {
+  margin: 0; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+}
+.rep { padding-bottom: calc(24.5 * var(--u)); border-bottom: 1px solid var(--line); }
+.rep:first-of-type { margin-top: calc(34.7 * var(--u)); }
+.rep + .rep { margin-top: calc(19.5 * var(--u)); }
+/* No rule under the last one: the scroller already draws its own bottom edge,
+   and two hairlines 20 apart reads as a mistake. */
+.rep:last-child { border-bottom: 0; padding-bottom: calc(6 * var(--u)); }
+
+/* width/height are on the element, so the row reserves its space before the
+   image decodes and the section does not jump as you scroll into it. */
+.rep-photo { display: block; width: 100%; height: auto; }
+
+.rep-meta {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: calc(12 * var(--u));
+  margin: calc(17.6 * var(--u)) calc(12 * var(--u)) 0;
+}
+/* No photo above it, so there is nothing for the 17.6 to clear. */
+.rep-meta:first-child { margin-top: 0; }
+/* No reporter name either — OnTheSnow does not give one to the scrape. The
+   date stays hard right, where the export puts it, so a named card and an
+   anonymous one keep the same grid; but the row is a single small line now,
+   so the text closes up under it instead of sitting a name's height away. */
+.rep-meta.anon { justify-content: flex-end; }
+.rep-meta.anon + .rep-text { margin-top: calc(10.5 * var(--u)); }
+.rep-who {
+  font-size: calc(13.5 * var(--u)); line-height: calc(13.5 * var(--u));
+  font-weight: 600;
+}
+.rep-when {
+  flex: none; font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
+  color: #8A8A8A;
+}
+.rep-text {
+  margin: calc(17.4 * var(--u)) calc(12 * var(--u)) 0;
+  font-size: calc(13 * var(--u)); line-height: calc(19 * var(--u)); color: #555;
+}
+.rep-none {
+  margin: calc(20 * var(--u)) 0 calc(6 * var(--u));
+  font-size: calc(13 * var(--u)); line-height: calc(19 * var(--u)); color: #8A8A8A;
+}
+
+/* ------------------------------------------------------------------
+ * Trip editing — measured off Tabulator-trips-edit-trip(-confirm).
+ *
+ * The header is the Favorites header's twin: same 23.5 title on the same
+ * baseline, same coral Edit at the same x, same rule at 188. Only the
+ * calendar below it is new, and it keeps Brian's full 39.5 pitch rather
+ * than the 37 the days screen had to compress to — this screen has the room.
+ * ------------------------------------------------------------------ */
+.tripedit { animation: te-in .28s cubic-bezier(.2,.8,.3,1) both; }
+/* In from the right, out to the right — Brian: "the screen should slide right
+   to left ... once the check mark is selected ... slide left to right". */
+@keyframes te-in  { from { transform: translateX(100%); } }
+.tripedit-out .tripedit { animation: te-out .26s cubic-bezier(.4,0,.6,1) both; }
+@keyframes te-out { to { transform: translateX(100%); } }
+
+.te-id { flex: 1; min-width: 0; }
+.te-field {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  font-family: inherit; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+  color: var(--ink); caret-color: var(--ink);
+}
+.app .te-field:focus, .app .te-field:focus-visible { outline: none; }
+
+/* Month row: arrows at the content edges, the month itself centred and coral.
+   15.5 below the rule, on a 25.5 row. */
+/* 11.7, not the 15.5 the ink sits at: the arrows are the tallest thing in the
+   row, so the month's own line box starts nearly 4 lower than the row does. */
+.te-month {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: calc(11.7 * var(--u));
+}
+.te-month em {
+  font-style: normal; color: var(--mark-red);
+  font-size: calc(18.5 * var(--u)); line-height: calc(18.5 * var(--u));
+  font-weight: 500; letter-spacing: -.01em;
+}
+.te-arrow {
+  padding: 0; font-size: calc(21 * var(--u)); line-height: 1; color: var(--ink);
+}
+
+/* 39.5 pitch, 36 circle and band, seven columns 8 inside the frame — which
+   with the screen's own 16 padding means pulling 8 back out either side. */
+.te-grid {
+  margin: calc(23.5 * var(--u)) -8px 0;
+  grid-auto-rows: calc(40 * var(--u));
+}
+.te-grid .cal-d.in::before { height: calc(36 * var(--u)); }
+.te-grid .cal-d.sel-a::after,
+.te-grid .cal-d.sel-b::after { width: calc(36 * var(--u)); height: calc(36 * var(--u)); }
+
+/* 44.5 across, centred, 52.75 below the grid. */
+.te-done { display: flex; justify-content: center; margin-top: calc(50.5 * var(--u)); }
+.te-check { padding: 0; line-height: 0; color: var(--ink); }
+.te-check svg {
+  display: block; width: calc(44.5 * var(--u)); height: calc(44.5 * var(--u));
+  fill: currentColor; stroke: none;
+}
+.te-check svg path { fill: currentColor; }
+/* Confirmed: the disc fills and the tick knocks out of it in white. */
+.te-check.on .te-tick { fill: #fff; }
+.te-check:disabled { color: var(--fill); }
+
+/* Trip rows gain the same coral Edit the Favorites block has. */
+.tp-edit {
+  position: absolute; right: 16px; top: calc(26.5 * var(--u));
+  padding: 0; color: var(--mark-red);
+  font-size: calc(13 * var(--u)); line-height: calc(13 * var(--u)); font-weight: 500;
+}
+
+/* Swipe to remove. The row slides left over a panel that was always there,
+   which is why the panel needs no animation of its own — 51 wide, the row's
+   full height, and the trash centred on the trip title rather than on the
+   row, so it lines up with the words whether or not there is a date line. */
+.tp-wrap { position: relative; overflow: hidden; }
+.tp-wrap .tp-row { position: relative; z-index: 1; background: #fff; }
+.tp-bin {
+  position: absolute; top: 0; bottom: 0; right: 0; width: calc(51 * var(--u));
+  display: flex; justify-content: center; align-items: flex-start;
+  padding-top: calc(17.5 * var(--u));
+  background: var(--mark-red); color: #fff; border: 0;
+}
+.tp-bin svg {
+  display: block; width: calc(18.75 * var(--u)); height: calc(21.9 * var(--u));
+  fill: currentColor; stroke: none;
+}
+.tp-bin svg path { fill: currentColor; }
+.tp-wrap.swiped .tp-row { transform: translateX(calc(-51 * var(--u))); }
+.tp-wrap .tp-row { transition: transform .22s cubic-bezier(.2,.8,.3,1); }
+.tp-wrap.dragging .tp-row { transition: none; }

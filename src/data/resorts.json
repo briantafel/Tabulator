@@ -5,9 +5,9 @@
     "method": "Each slug fetched and checked for HTTP 200 plus a .forecast-table__table in the response. Four supplied directly by Brian.",
     "source": "snow-forecast.com",
     "notes": [
-      "The per-resort key is a Snow-Forecast URL slug. Coordinates and elevations are no longer stored here — the scraper reads tier elevations off each page.",
+      "The per-resort key is a Snow-Forecast URL slug. Coordinates and elevations are no longer stored here \u2014 the scraper reads tier elevations off each page.",
       "Palisades is one entry backed by TWO slugs. Snow-Forecast still files the mountain under its former name Squaw-Valley and lists Alpine-Meadows separately; the real resort is the merged, lift-connected operation. Combined per the rule in `combine` below.",
-      "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one — verify by fetching."
+      "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching."
     ]
   },
   "tier": "mid",
@@ -16,28 +16,213 @@
     "why": "Where a resort has several slugs they are lift-connected faces of one mountain. If one side got 30cm and the other 10cm you ski the side that got it, so snow takes the max. Temp and wind also take the max because the warning thresholds are worst-case by design."
   },
   "resorts": [
-    { "id": "palisades",       "name": "Palisades",       "region": "California", "slugs": ["Squaw-Valley", "Alpine-Meadows"] },
-    { "id": "heavenly",        "name": "Heavenly",        "region": "California", "slugs": ["Heavenly-Ski"] },
-    { "id": "kirkwood",        "name": "Kirkwood",        "region": "California", "slugs": ["Kirkwood-Mountain"] },
-    { "id": "mammoth",         "name": "Mammoth",         "region": "California", "slugs": ["Mammoth-Mountain"] },
-    { "id": "telluride",       "name": "Telluride",       "region": "Colorado",   "slugs": ["Telluride"] },
-    { "id": "crested-butte",   "name": "Crested Butte",   "region": "Colorado",   "slugs": ["Crested-Butte-Mountain"] },
-    { "id": "aspen-highlands", "name": "Aspen Highlands", "region": "Colorado",   "slugs": ["Aspen-Highlands"] },
-    { "id": "steamboat",       "name": "Steamboat",       "region": "Colorado",   "slugs": ["Steamboat-Ski"] },
-    { "id": "snowbird",        "name": "Snowbird",        "region": "Utah",       "slugs": ["Snowbird"] },
-    { "id": "alta",            "name": "Alta",            "region": "Utah",       "slugs": ["Alta"] },
-    { "id": "jackson-hole",    "name": "Jackson Hole",    "region": "Wyoming",    "slugs": ["Jackson-Hole"] },
-    { "id": "grand-targhee",   "name": "Grand Targhee",   "region": "Wyoming",    "slugs": ["Grand-Targhee"] },
-    { "id": "sun-valley",      "name": "Sun Valley",      "region": "Idaho",      "slugs": ["Sun-Valley"] },
-    { "id": "big-sky",         "name": "Big Sky",         "region": "Montana",    "slugs": ["Big-Sky"] },
-    { "id": "taos",            "name": "Taos",            "region": "New Mexico", "slugs": ["Taos"] },
-    { "id": "revelstoke",      "name": "Revelstoke",      "region": "Canada",     "slugs": ["Revelstoke"] },
-    { "id": "whistler",        "name": "Whistler",        "region": "Canada",     "slugs": ["Whistler-Blackcomb"] },
-    { "id": "lake-louise",     "name": "Lake Louise",     "region": "Canada",     "slugs": ["Lake-Louise"] },
-    { "id": "kicking-horse",   "name": "Kicking Horse",   "region": "Canada",     "slugs": ["Kicking-Horse"] },
-    { "id": "whiteface",       "name": "Whiteface",       "region": "New York",   "slugs": ["Whiteface-Mountain"] },
-    { "id": "stowe",           "name": "Stowe",           "region": "Vermont",    "slugs": ["Stowe"] },
-    { "id": "killington",      "name": "Killington",      "region": "Vermont",    "slugs": ["Killington"] },
-    { "id": "jay-peak",        "name": "Jay Peak",        "region": "Vermont",    "slugs": ["Jay-Peak"] }
+    {
+      "id": "palisades",
+      "name": "Palisades",
+      "region": "California",
+      "slugs": [
+        "Squaw-Valley",
+        "Alpine-Meadows"
+      ],
+      "otsPath": "california/palisades-tahoe"
+    },
+    {
+      "id": "heavenly",
+      "name": "Heavenly",
+      "region": "California",
+      "slugs": [
+        "Heavenly-Ski"
+      ],
+      "otsPath": "california/heavenly-mountain-resort"
+    },
+    {
+      "id": "kirkwood",
+      "name": "Kirkwood",
+      "region": "California",
+      "slugs": [
+        "Kirkwood-Mountain"
+      ],
+      "otsPath": "california/kirkwood"
+    },
+    {
+      "id": "mammoth",
+      "name": "Mammoth",
+      "region": "California",
+      "slugs": [
+        "Mammoth-Mountain"
+      ],
+      "otsPath": "california/mammoth-mountain-ski-area"
+    },
+    {
+      "id": "telluride",
+      "name": "Telluride",
+      "region": "Colorado",
+      "slugs": [
+        "Telluride"
+      ],
+      "otsPath": "colorado/telluride"
+    },
+    {
+      "id": "crested-butte",
+      "name": "Crested Butte",
+      "region": "Colorado",
+      "slugs": [
+        "Crested-Butte-Mountain"
+      ],
+      "otsPath": "colorado/crested-butte-mountain-resort"
+    },
+    {
+      "id": "aspen-highlands",
+      "name": "Aspen Highlands",
+      "region": "Colorado",
+      "slugs": [
+        "Aspen-Highlands"
+      ],
+      "otsPath": "colorado/aspen-snowmass"
+    },
+    {
+      "id": "steamboat",
+      "name": "Steamboat",
+      "region": "Colorado",
+      "slugs": [
+        "Steamboat-Ski"
+      ],
+      "otsPath": "colorado/steamboat"
+    },
+    {
+      "id": "snowbird",
+      "name": "Snowbird",
+      "region": "Utah",
+      "slugs": [
+        "Snowbird"
+      ],
+      "otsPath": "utah/snowbird"
+    },
+    {
+      "id": "alta",
+      "name": "Alta",
+      "region": "Utah",
+      "slugs": [
+        "Alta"
+      ],
+      "otsPath": "utah/alta-ski-area"
+    },
+    {
+      "id": "jackson-hole",
+      "name": "Jackson Hole",
+      "region": "Wyoming",
+      "slugs": [
+        "Jackson-Hole"
+      ],
+      "otsPath": "wyoming/jackson-hole"
+    },
+    {
+      "id": "grand-targhee",
+      "name": "Grand Targhee",
+      "region": "Wyoming",
+      "slugs": [
+        "Grand-Targhee"
+      ],
+      "otsPath": "wyoming/grand-targhee-resort"
+    },
+    {
+      "id": "sun-valley",
+      "name": "Sun Valley",
+      "region": "Idaho",
+      "slugs": [
+        "Sun-Valley"
+      ],
+      "otsPath": "idaho/sun-valley"
+    },
+    {
+      "id": "big-sky",
+      "name": "Big Sky",
+      "region": "Montana",
+      "slugs": [
+        "Big-Sky"
+      ],
+      "otsPath": "montana/big-sky-resort"
+    },
+    {
+      "id": "taos",
+      "name": "Taos",
+      "region": "New Mexico",
+      "slugs": [
+        "Taos"
+      ],
+      "otsPath": "new-mexico/taos-ski-valley"
+    },
+    {
+      "id": "revelstoke",
+      "name": "Revelstoke",
+      "region": "Canada",
+      "slugs": [
+        "Revelstoke"
+      ],
+      "otsPath": "british-columbia/revelstoke-mountain"
+    },
+    {
+      "id": "whistler",
+      "name": "Whistler",
+      "region": "Canada",
+      "slugs": [
+        "Whistler-Blackcomb"
+      ],
+      "otsPath": "british-columbia/whistler-blackcomb"
+    },
+    {
+      "id": "lake-louise",
+      "name": "Lake Louise",
+      "region": "Canada",
+      "slugs": [
+        "Lake-Louise"
+      ],
+      "otsPath": "alberta/lake-louise"
+    },
+    {
+      "id": "kicking-horse",
+      "name": "Kicking Horse",
+      "region": "Canada",
+      "slugs": [
+        "Kicking-Horse"
+      ],
+      "otsPath": "british-columbia/kicking-horse"
+    },
+    {
+      "id": "whiteface",
+      "name": "Whiteface",
+      "region": "New York",
+      "slugs": [
+        "Whiteface-Mountain"
+      ],
+      "otsPath": "new-york/whiteface-mountain-resort"
+    },
+    {
+      "id": "stowe",
+      "name": "Stowe",
+      "region": "Vermont",
+      "slugs": [
+        "Stowe"
+      ],
+      "otsPath": "vermont/stowe-mountain-resort"
+    },
+    {
+      "id": "killington",
+      "name": "Killington",
+      "region": "Vermont",
+      "slugs": [
+        "Killington"
+      ],
+      "otsPath": "vermont/killington-resort"
+    },
+    {
+      "id": "jay-peak",
+      "name": "Jay Peak",
+      "region": "Vermont",
+      "slugs": [
+        "Jay-Peak"
+      ],
+      "otsPath": "vermont/jay-peak"
+    }
   ]
 }

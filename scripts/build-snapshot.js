@@ -9,6 +9,7 @@ const root = new URL("..", import.meta.url).pathname;
 const dataPath = process.argv[2] ?? `${root}public/forecast.json`;
 const histPath = process.argv[3] ?? `${root}public/history.json`;
 const out = process.argv[4] ?? `${root}snapshot.html`;
+const reportsPath = process.argv[5] ?? `${root}public/reports.json`;
 
 const assets = await readdir(`${root}dist/assets`);
 const js = await readFile(`${root}dist/assets/${assets.find((f) => f.endsWith(".js"))}`, "utf8");
@@ -41,6 +42,10 @@ if (ruleCount < 50) throw new Error(`only ${ruleCount} CSS blocks — the styles
 console.error(`css ok: ${ruleCount} blocks, ${(css.length / 1024) | 0}KB, fonts inlined`);
 const forecast = JSON.parse(await readFile(dataPath, "utf8"));
 const history = JSON.parse(await readFile(histPath, "utf8"));
+/* Optional: a snapshot with no reports file still runs, it just shows the
+   empty state. The photos are already data URIs inside this JSON, which is
+   why the file is large and why it needs no assets alongside it. */
+const reports = await readFile(reportsPath, "utf8").then(JSON.parse, () => ({ resorts: {} }));
 
 // </script> inside embedded JSON would close the tag early.
 const safe = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
@@ -53,6 +58,7 @@ await writeFile(out, `<title>Tabulator</title>
 <script>
 window.__TABULATOR_FORECAST__ = ${safe(forecast)};
 window.__TABULATOR_HISTORY__ = ${safe(history)};
+window.__TABULATOR_REPORTS__ = ${safe(reports)};
 </script>
 <script type="module">${js}</script>
 `);

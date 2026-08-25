@@ -2,11 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- viewport-fit=cover so the 402x874 design frame maps to the whole
+         screen when it runs from the home screen. The design already leaves
+         room for the status bar (content starts at 71.2) and the home
+         indicator (tab bar ends 26.7 above the bottom), so no safe-area
+         padding is added on top — that would double the margins. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
     <title>Tabulator</title>
     <!-- Inter is self-hosted via @fontsource; no Google Fonts dependency. -->
     <meta name="description" content="I can take these days off — where should I go?" />
+
+    <!-- Add to Home Screen. These are inert in a normal browser tab, so the
+         installed app and the web page are one build, not two. -->
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tabulator" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icons/icon-180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="%BASE_URL%icons/icon-192.png" />
   </head>
   <body>
     <div id="root"></div>

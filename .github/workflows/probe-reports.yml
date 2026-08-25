@@ -1,0 +1,47 @@
+name: Probe OnTheSnow
+
+# Manual only, and deliberately so. This is not a scrape — it fetches ONE page
+# and hands back the bytes, because the dev sandbox cannot reach onthesnow.com
+# and no parser can be written against a page nobody has seen.
+#
+# Run it from the Actions tab -> Probe OnTheSnow -> Run workflow. Then either
+# read the summary in the log, or download the artifact and send it over.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Reports page to fetch"
+        required: false
+        default: "https://www.onthesnow.com/utah/snowbird/ski-report-reviews"
+      canary:
+        description: "A phrase known to be on the page, to prove it is server-rendered"
+        required: false
+        default: "Nuff seen"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch and describe the page
+        env:
+          PROBE_CANARY: ${{ inputs.canary }}
+        run: node scripts/probe-onthesnow.js "${{ inputs.url }}" onthesnow-page.html
+
+      # always(): a 403 or a consent wall is exactly the body worth reading,
+      # and the fetch step exits non-zero on one.
+      - name: Upload the page
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: onthesnow-page
+          path: onthesnow-page.html
+          if-no-files-found: warn
