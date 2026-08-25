@@ -48,6 +48,25 @@ for (const file of files) {
   });
 }
 
+test("npm test does not rely on Node's own glob expansion", () => {
+  /* `node --test 'test/*.test.js'` only works on Node >= 21 — earlier versions
+     take the pattern as a literal filename and exit 1. CI was pinned to Node
+     20, so the Pages build failed on its test step while the same command
+     passed locally on 22. Leaving the glob UNQUOTED hands it to the shell,
+     which every version expands the same way. */
+  const pkg = JSON.parse(readFileSync(DIR + "../../package.json", "utf8"));
+  assert.doesNotMatch(pkg.scripts.test, /['"]test\/\*/,
+    "quote the test glob and it stops working on older Node");
+
+  // And the runners must not be older than what the code is developed against.
+  for (const f of ["pages.yml", "forecast.yml", "probe-reports.yml"]) {
+    const raw = readFileSync(DIR + f, "utf8");
+    for (const [, v] of raw.matchAll(/node-version:\s*"(\d+)"/g)) {
+      assert.ok(Number(v) >= 22, `${f} pins Node ${v}; the tests need >= 22`);
+    }
+  }
+});
+
 test("the scrape workflow can be triggered by hand", () => {
   const doc = parse(readFileSync(DIR + "forecast.yml", "utf8"));
   const triggers = doc.on ?? doc[true];

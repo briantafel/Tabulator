@@ -10,6 +10,13 @@ const dataPath = process.argv[2] ?? `${root}public/forecast.json`;
 const histPath = process.argv[3] ?? `${root}public/history.json`;
 const out = process.argv[4] ?? `${root}snapshot.html`;
 const reportsPath = process.argv[5] ?? `${root}public/reports.json`;
+/* Optional 6th argument: a map of report id -> { w, h, src(data URI) }.
+ * Report photos live on OnTheSnow's CDN, which is right for the deployed app
+ * — zero repo weight, and the browser fetches them lazily. It is wrong for a
+ * published snapshot, which must run with NO network at all, and wrong for an
+ * artifact, whose CSP refuses every external host outright. So the snapshot
+ * swaps the URLs for inlined bytes at build time and the repo keeps the URLs. */
+const photosPath = process.argv[6] ?? null;
 
 const assets = await readdir(`${root}dist/assets`);
 const js = await readFile(`${root}dist/assets/${assets.find((f) => f.endsWith(".js"))}`, "utf8");
@@ -46,6 +53,21 @@ const history = JSON.parse(await readFile(histPath, "utf8"));
    empty state. The photos are already data URIs inside this JSON, which is
    why the file is large and why it needs no assets alongside it. */
 const reports = await readFile(reportsPath, "utf8").then(JSON.parse, () => ({ resorts: {} }));
+if (photosPath) {
+  const photos = JSON.parse(await readFile(photosPath, "utf8"));
+  let swapped = 0, dropped = 0;
+  for (const [id, list] of Object.entries(reports.resorts ?? {})) {
+    reports.resorts[id] = list.filter((r) => {
+      if (!r.photo) return true;
+      const p = photos[r.id];
+      if (p) { r.photo = p; swapped++; return true; }
+      /* No local copy, and a remote URL cannot load here. Drop the photo
+         rather than ship a card that renders an empty frame. */
+      delete r.photo; dropped++; return true;
+    });
+  }
+  console.error(`photos: ${swapped} inlined, ${dropped} left without one`);
+}
 
 // </script> inside embedded JSON would close the tag early.
 const safe = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
