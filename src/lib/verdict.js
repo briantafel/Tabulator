@@ -4,7 +4,7 @@
  *
  *   Your best bet is looking like [resort name], with [snowfall inches] over
  *   [number of days]. Temps look [good, warm, cold etc], and winds are
- *   [calm, moderate, a little high]. Overall, this is the move. right now.
+ *   [calm, moderate, a little high]. Overall, this is the move right now.
  *
  * Returned as segments rather than a string so the view can colour the
  * computed clauses without parsing its own prose back apart. `hot` marks the
@@ -61,6 +61,6 @@ export function tripVerdict(rows, metric) {
     { t: `Temps look ${tempWord(days)}`, hot: true },
     { t: ", and " },
     { t: `winds are ${windWord(days)}`, hot: true },
-    { t: ". Overall, this is the move. right now." },
+    { t: ". Overall, this is the move right now." },
   ];
 }
