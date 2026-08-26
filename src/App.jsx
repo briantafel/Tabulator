@@ -337,6 +337,9 @@ export default function Tabulator() {
                   trip={t}
                   onRename={(name) => renameTrip(t.id, name)}
                   onSave={(range) => { setTripDates(t.id, range); back(); }}
+                  /* Straight out, no slide: the screen it would slide back to
+                     no longer has the row it came from. */
+                  onDelete={() => { removeTrip(t.id); setEditing(null); }}
                   onClose={back}
                 />
               </div>

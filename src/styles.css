@@ -775,11 +775,11 @@ body { background: #F2F2F2; }
  * calendar below it is new, and it keeps Brian's full 39.5 pitch rather
  * than the 37 the days screen had to compress to — this screen has the room.
  * ------------------------------------------------------------------ */
-.tripedit { animation: te-in .28s cubic-bezier(.2,.8,.3,1) both; }
+.te-slide { animation: te-in .28s cubic-bezier(.2,.8,.3,1) both; }
 /* In from the right, out to the right — Brian: "the screen should slide right
    to left ... once the check mark is selected ... slide left to right". */
 @keyframes te-in  { from { transform: translateX(100%); } }
-.tripedit-out .tripedit { animation: te-out .26s cubic-bezier(.4,0,.6,1) both; }
+.tripedit-out .te-slide { animation: te-out .26s cubic-bezier(.4,0,.6,1) both; }
 @keyframes te-out { to { transform: translateX(100%); } }
 
 .te-id { flex: 1; min-width: 0; }
@@ -903,3 +903,55 @@ body { background: #F2F2F2; }
 /* Adjacent margins collapse, so the extra room under the verdict rule has to
    come from the table's own margin rather than the rule's. */
 .tripdetail .td-rule-2 + .table { margin-top: calc(22 * var(--u)); }
+
+/* Deleting a trip. The trash is the same glyph as the swipe panel, 124 below
+   the check that saves — far enough that the two are not neighbours. */
+.te-danger { display: flex; justify-content: center; margin-top: calc(124 * var(--u)); }
+.te-trash { padding: 0; line-height: 0; color: var(--ink); }
+.te-trash.on { color: var(--mark-red); }
+.te-trash svg {
+  display: block; width: calc(18.75 * var(--u)); height: calc(21.9 * var(--u));
+  fill: currentColor; stroke: none;
+}
+.te-trash svg path { fill: currentColor; }
+
+/* ------------------------------------------------------------------
+ * A system alert, not a Tabulator one.
+ *
+ * Brian: "The modal window with the delete confirmation should be a default
+ * iOS window." So this is UIAlertController's geometry rather than his grey
+ * placeholder — 270 wide, 14 radius, translucent, hairline-divided buttons at
+ * 17pt, destructive in the system red. Sized in --u like everything else, so
+ * it keeps its proportion inside the phone frame.
+ * ------------------------------------------------------------------ */
+.ios-scrim {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.2);
+  animation: fade .2s both;
+}
+.ios-alert {
+  width: calc(270 * var(--u)); border-radius: calc(14 * var(--u));
+  background: rgba(250,250,250,.94);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  overflow: hidden; text-align: center;
+  animation: ios-pop .22s cubic-bezier(.2,.9,.3,1) both;
+}
+/* The system's own spring: it arrives slightly large and settles. */
+@keyframes ios-pop { from { opacity: 0; transform: scale(1.12); } }
+.ios-alert-title {
+  margin: 0; padding: calc(19 * var(--u)) calc(16 * var(--u)) calc(20 * var(--u));
+  font-size: calc(17 * var(--u)); line-height: calc(22 * var(--u));
+  font-weight: 600; color: #000; letter-spacing: -.01em;
+}
+.ios-alert-actions {
+  display: flex; border-top: 1px solid rgba(60,60,67,.29);
+}
+.ios-alert-btn {
+  flex: 1; height: calc(44 * var(--u)); padding: 0;
+  font-size: calc(17 * var(--u)); font-weight: 400; color: #007AFF;
+  background: none;
+}
+.ios-alert-btn + .ios-alert-btn { border-left: 1px solid rgba(60,60,67,.29); font-weight: 600; }
+.ios-alert-btn.danger { color: #FF3B30; }
+.app .ios-alert-btn:active { background: rgba(0,0,0,.06); }

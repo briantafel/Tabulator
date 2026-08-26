@@ -12,6 +12,14 @@ const FULL =
 const TICK =
   "M382.857 234.092L378.75 229.985L380.057 228.679L382.857 231.479L388.944 225.393L390.255 226.696L382.857 234.092Z";
 
+/* The same trash as the swipe panel, in Brian's coordinates. */
+const BIN = [
+  "M373.375 671.375H374.938V680.75H373.375V671.375Z",
+  "M378.062 671.375H379.625V680.75H378.062V671.375Z",
+  "M367.125 666.688V668.25H368.688V683.875C368.688 684.289 368.852 684.687 369.145 684.98C369.438 685.273 369.836 685.438 370.25 685.438H382.75C383.164 685.438 383.562 685.273 383.855 684.98C384.148 684.687 384.312 684.289 384.312 683.875V668.25H385.875V666.688H367.125ZM370.25 683.875V668.25H382.75V683.875H370.25Z",
+  "M379.625 663.562H373.375V665.125H379.625V663.562Z",
+];
+
 const monthName = (d) => d.toLocaleString("en", { month: "long" });
 const key = (d) => `${d.getFullYear()}-${d.getMonth()}`;
 
@@ -23,13 +31,14 @@ const key = (d) => `${d.getFullYear()}-${d.getMonth()}`;
  *  visual language is shared with that calendar (band between, circles on the
  *  ends) but the pitch is Brian's full 39.5 here, because this screen has the
  *  room the days screen did not. */
-export default function TripEdit({ trip, onSave, onRename, onClose }) {
+export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) {
   const start = trip.start ? fromIso(trip.start) : new Date();
   const [cursor, setCursor] = useState(new Date(start.getFullYear(), start.getMonth(), 1));
   const [a, setA] = useState(trip.start ?? null);
   const [b, setB] = useState(trip.end ?? trip.start ?? null);
   const [done, setDone] = useState(false);
   const [naming, setNaming] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [draft, setDraft] = useState(trip.name);
   const field = useRef(null);
 
@@ -38,12 +47,13 @@ export default function TripEdit({ trip, onSave, onRename, onClose }) {
   useEffect(() => {
     const k = (e) => {
       if (e.key !== "Escape") return;
+      if (confirming) return setConfirming(false);
       if (naming) return setNaming(false);
       onClose();
     };
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
-  }, [onClose, naming]);
+  }, [onClose, naming, confirming]);
 
   const pad = (cursor.getDay() + 6) % 7;                       // Monday-first
   const count = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
@@ -78,6 +88,11 @@ export default function TripEdit({ trip, onSave, onRename, onClose }) {
 
   return (
     <div className="tripedit">
+      {/* The slide lives on an inner wrapper, not on .tripedit itself. A
+          transformed ancestor becomes the containing block for position:fixed,
+          which cropped the alert's backdrop to this screen's box instead of
+          dimming the whole phone. */}
+      <div className="te-slide">
       <div className="fav-head">
         <div className="te-id">
           {naming ? (
@@ -144,6 +159,43 @@ export default function TripEdit({ trip, onSave, onRename, onClose }) {
           </svg>
         </button>
       </div>
+      {/* Deleting is deliberately the last thing on the screen and a long way
+          from the check that saves. */}
+      <div className="te-danger">
+        <button
+          className={`te-trash${confirming ? " on" : ""}`}
+          onClick={() => setConfirming(true)}
+          aria-label={`Delete ${trip.name}`}
+        >
+          <svg viewBox="367.125 663.562 18.75 21.876" aria-hidden="true">
+            {BIN.map((d) => <path key={d.slice(0, 14)} d={d} />)}
+          </svg>
+        </button>
+      </div>
+      </div>
+
+      {confirming && (
+        <div className="ios-scrim" onClick={() => setConfirming(false)}>
+          <div
+            className="ios-alert"
+            role="alertdialog"
+            aria-modal="true"
+            aria-label="Confirm delete"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="ios-alert-title">
+              Delete “{trip.name}” permanently?
+            </p>
+            <div className="ios-alert-actions">
+              {/* Destructive on the left because that is where Brian's export
+                  puts it. iOS itself would put the cancel there — worth a
+                  ruling, but not worth silently reordering his design. */}
+              <button className="ios-alert-btn danger" onClick={onDelete}>Yes</button>
+              <button className="ios-alert-btn" onClick={() => setConfirming(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

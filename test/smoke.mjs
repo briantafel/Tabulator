@@ -517,6 +517,26 @@ await check("a trip can be renamed, dated and removed", async () => {
   await days.nth(6).click();
   await days.nth(10).click();
   assert.ok(await page.locator(".te-grid .cal-d.in").count() >= 4, "no range selected");
+  // Deleting from inside the editor asks first, in a system alert.
+  await page.locator(".te-trash").click();
+  await page.waitForSelector(".ios-alert");
+  assert.match(await page.locator(".ios-alert-title").innerText(), /Delete .+ permanently\?/);
+  assert.equal(await page.locator(".ios-alert-btn").count(), 2, "expected two actions");
+  // The backdrop must dim the whole phone, not just this screen — a
+  // transformed ancestor would make it the containing block for position:fixed.
+  const dim = await page.evaluate(() => {
+    const r = document.querySelector(".ios-scrim").getBoundingClientRect();
+    return { w: Math.round(r.width), h: Math.round(r.height),
+             vw: window.innerWidth, vh: window.innerHeight };
+  });
+  assert.equal(dim.w, dim.vw, "the alert backdrop is not the full width");
+  assert.equal(dim.h, dim.vh, "the alert backdrop is not the full height");
+  // "No" leaves everything alone.
+  await page.locator(".ios-alert-btn").nth(1).click();
+  await page.waitForTimeout(250);
+  assert.equal(await page.locator(".ios-alert").count(), 0, "the alert stayed open");
+  assert.equal(await page.locator(".tripedit").count(), 1, "No closed the editor");
+
   await page.locator(".te-check").click();
   await page.waitForTimeout(600);
   assert.equal(await page.locator(".tripedit").count(), 0, "the editor did not close");
