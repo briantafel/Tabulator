@@ -40,11 +40,13 @@ export default function Trips({
   const [page, setPage] = useState(0);
   const [picking, setPicking] = useState(false);
   const [query, setQuery] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
   const [naming, setNaming] = useState(false);
   const [draft, setDraft] = useState("");
   const [swiped, setSwiped] = useState(null);   // id of the row showing its bin
   const field = useRef(null);
   const search = useRef(null);
+  const hold = useRef(null);
   const swipe = useRef(null);
 
   /* Swipe a row left to uncover the delete panel, the way iOS does. The panel
@@ -75,6 +77,24 @@ export default function Trips({
 
   useEffect(() => { if (naming) field.current?.focus(); }, [naming]);
   useEffect(() => { if (picking) search.current?.focus(); }, [picking]);
+  useEffect(() => () => clearTimeout(hold.current), []);
+
+  /* Leaving the picker. Brian: "I need a way out of that new Favorites edit
+     screen." The check is that way out — and it confirms the way the trip
+     editor's does, filling black with the tick knocked out and holding 260ms
+     before the screen changes, so the tap registers as a decision rather than
+     a disappearance. The Edit link still toggles too; starring is immediate,
+     so both are the same action and neither can lose work. */
+  const leave = () => {
+    setPicking(false);
+    setQuery("");
+    setConfirmed(false);
+  };
+  const confirm = () => {
+    setConfirmed(true);
+    clearTimeout(hold.current);
+    hold.current = setTimeout(leave, 260);
+  };
 
   const commit = () => {
     const name = draft.trim();
@@ -120,7 +140,7 @@ export default function Trips({
         <button
           className="fav-edit"
           aria-pressed={picking}
-          onClick={() => { setPicking((p) => !p); setQuery(""); }}
+          onClick={() => { if (picking) leave(); else setPicking(true); }}
         >Edit</button>
       </div>
 
@@ -178,6 +198,24 @@ export default function Trips({
               })}
             </div>
           )}
+
+          {/* Always present, results or not — the way out cannot depend on
+              having typed something. Centred, 44.5 across, resting 92 above
+              the tab bar; a list long enough to fill the screen pushes it
+              below the fold instead, where you scroll to it. */}
+          <div className="fs-done">
+            <button
+              className={`fs-check${confirmed ? " on" : ""}`}
+              onClick={confirm}
+              aria-label="Done adding favorites"
+            >
+              <svg viewBox="373 218 23.3 23.3" aria-hidden="true">
+                {confirmed
+                  ? <path d={CHECK_FULL} />
+                  : CHECK_RING.map((d) => <path key={d.slice(0, 12)} d={d} />)}
+              </svg>
+            </button>
+          </div>
         </>
       ) : (
         <>

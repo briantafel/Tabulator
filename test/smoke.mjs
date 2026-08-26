@@ -592,6 +592,15 @@ await check("Edit on the Trips screen opens the favourites picker", async () => 
   assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)), "results are not alphabetical");
 
   // The star is the control; tapping the row toggles it both ways.
+  // Edit toggles back out too — check that before using the check button.
+  await edit.click();
+  await page.waitForTimeout(250);
+  assert.equal(await page.locator(".fs-bar").count(), 0, "Edit did not close the picker");
+  await edit.click();
+  await page.waitForSelector(".fs-bar");
+  await page.locator(".fs-field").fill("ja");
+  await page.waitForTimeout(200);
+
   const lit = await page.locator(".fs-star.on").count();
   await page.locator(".fs-row").first().click();
   await page.waitForTimeout(150);
@@ -602,10 +611,19 @@ await check("Edit on the Trips screen opens the favourites picker", async () => 
   await page.locator(".fs-row").first().click();
   await page.waitForTimeout(150);
 
-  // Edit again closes the picker, and the pick is in the table.
+  // The check is the way out, and it is there whether or not anything matched.
+  assert.equal(await page.locator(".fs-check").count(), 1, "no way out of the picker");
+  const check = await page.locator(".fs-check").boundingBox();
+  const tabs = await page.locator(".tabs").boundingBox();
+  assert.ok(check.y + check.height < tabs.y, "the check overlaps the tab bar");
+  assert.ok(tabs.y - (check.y + check.height) < 140, "the check floated away from the tab bar");
+
+  // It confirms the way the trip editor's does: fills, holds, then leaves.
   const picked = names[0];
-  await edit.click();
-  await page.waitForTimeout(300);
+  await page.locator(".fs-check").click();
+  await page.waitForTimeout(80);
+  assert.equal(await page.locator(".fs-check.on").count(), 1, "the check did not fill");
+  await page.waitForTimeout(400);
   assert.equal(await page.locator(".fs-bar").count(), 0, "the picker stayed open");
   await page.waitForSelector(".trips .table");
   const favNames = await page.locator(".trips .t-row").allInnerTexts();
