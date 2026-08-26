@@ -8,6 +8,7 @@
 
 const F = (f) => ((f - 32) * 5) / 9;
 const MPH = (m) => m * 1.60934;
+const IN = (i) => i * 2.54;
 
 export const HORIZON_DAYS = 6;   // Snow-Forecast's free horizon
 export const HISTORY_DAYS = 3;   // the "-3 days" lookback
@@ -31,6 +32,36 @@ export const WIND_AMBER = MPH(18);    // ≥ 18 mph — dicey
 export const WIND_RED = MPH(31);      // ≥ 31 mph — lifts hold. Open-ended:
                                       // Brian wrote 31-45, but 46 must not
                                       // fall out the bottom into no warning.
+
+/* The trip verdict's own vocabulary — a second, finer set of thresholds, used
+ * only to choose words. The markers above answer "is this dicey", three
+ * values wide. That is too coarse to write with: -14°F and 8°F are both amber
+ * and only one of them is frigid. Authored in °F, mph and inches, Brian's
+ * units, and set from his own wording on 2026-08-26:
+ *
+ *   "much over 32º … pretty damn warm, or almost too warm to ski if pushing
+ *    40 … If it's very cold, some language like temps look frigid. A
+ *    combination of low temps and wind would read Temps look fairly
+ *    miserable … cold, warm, pleasant, calm, windy, storming, miserable,
+ *    unskiable etc."
+ *
+ * TOO_WARM is 38 because 40 itself would leave "pushing 40" nowhere to fire
+ * below it. WIND_HOWLING is 45 because he had already written the red band as
+ * "31-45"; that top number was in his head, it just had no word attached. */
+export const WARM_SPRING = F(40);     // "it's spring, baby!" — his words, his number
+export const TOO_WARM = F(38);        // "almost too warm to ski"
+export const PLEASANT_LO = F(20);     // cold enough to keep, warm enough to enjoy
+export const COLD_DEEP = F(0);        // "properly cold" — below the amber midpoint
+
+export const WIND_LIGHT = MPH(12);    // above calm, below noticeable
+export const WIND_HIGH = MPH(25);     // top half of the amber band
+export const WIND_HOWLING = MPH(45);  // above the top of his own red band
+
+/* Snow, judged as a RATE rather than a total: 18" is a storm cycle over three
+ * days and an ordinary week over six, and the sentence already tells you how
+ * many days it is counting. */
+export const DUMP_RATE = IN(4);       // ≥ 4"/day — powderpalooza territory
+export const THIN_TOTAL = IN(4);      // < 4" across the whole window
 
 export const MARKER = { red: "#FF383C", amber: "#FFCC00" };
 

@@ -1,44 +1,99 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { tripVerdict, tempWord, windWord } from "../src/lib/verdict.js";
-/* The thresholds are authored in °F and mph and stored metric, so the test
-   speaks the authored units too — a band expressed in °C here would be
+import { tripVerdict, tempWord, tempClause, windWord, closingWord } from "../src/lib/verdict.js";
+/* The thresholds are authored in °F, mph and inches and stored metric, so the
+   test speaks the authored units too — a band expressed in °C here would be
    unreadable against the numbers in constants.js. */
 const F = (f) => ((f - 32) * 5) / 9;
 const MPH = (m) => m * 1.60934;
+const IN = (i) => i * 2.54;
 
-const day = (o = {}) => ({ snow: 3, tempMax: F(20), tempMin: F(15), windMax: MPH(8), ...o });
+const day = (o = {}) => ({ snow: IN(1), tempMax: F(25), tempMin: F(15), windMax: MPH(8), ...o });
 const win = (n, o) => Array.from({ length: n }, () => day(o));
 const say = (v) => v.map((s) => s.t).join("");
 const hot = (v) => v.filter((s) => s.hot).map((s) => s.t);
+/* tempWord reads window extremes, so the tests hand it extremes directly. */
+const T = (hi, lo, wind = MPH(5)) => tempWord({ hi: F(hi), lo: F(lo), wind });
 
-test("a clean window reads good and calm", () => {
-  assert.equal(tempWord(win(4)), "good");
-  assert.equal(windWord(win(4)), "calm");
+test("the warm ladder runs from a bit warm up to spring", () => {
+  assert.equal(T(32, 25), "a bit warm");
+  assert.equal(T(36, 25), "pretty damn warm");
+  assert.equal(T(39, 25), "almost too warm to ski");
 });
 
-test("warm and cold are different trips, not both 'dicey'", () => {
-  assert.equal(tempWord(win(3, { tempMax: F(33) })), "warm");
-  assert.equal(tempWord(win(3, { tempMin: F(-20) })), "cold");
-  // One of each in the same window is worth admitting rather than picking one.
-  assert.equal(
-    tempWord([day({ tempMax: F(33) }), day({ tempMin: F(-20) })]),
-    "all over the place",
-  );
+test("over 40 is its own sentence, not a word in the frame", () => {
+  // Brian: "Anything over 40 should be something like 'it's spring, baby!'"
+  const C = (hi) => tempClause({ hi: F(hi), lo: F(25), wind: MPH(5) });
+  assert.deepEqual(C(44), { t: "It's spring, baby!", bang: true });
+  assert.equal(C(39).bang, false);
+  assert.equal(C(39).t, "Temps look almost too warm to ski");
+  // 40 itself is not over 40.
+  assert.equal(C(40).bang, false);
 });
 
-test("wind climbs through the same bands the markers use", () => {
-  assert.equal(windWord(win(2, { windMax: MPH(10) })), "calm");
-  assert.equal(windWord(win(2, { windMax: MPH(20) })), "moderate");
-  assert.equal(windWord(win(2, { windMax: MPH(40) })), "a little high");
-  // A single bad day in an otherwise calm window still counts.
-  assert.equal(windWord([day(), day({ windMax: MPH(40) })]), "a little high");
+test("the cold ladder runs from cold to frigid", () => {
+  assert.equal(T(20, 8), "cold");
+  assert.equal(T(20, -5), "properly cold");
+  assert.equal(T(20, -20), "frigid");
+});
+
+test("wind bends the cold half of the ladder, not the warm half", () => {
+  // Brian: "A combination of low temps and wind would read Temps look fairly
+  // miserable."
+  assert.equal(T(20, 5, MPH(22)), "fairly miserable");
+  assert.equal(T(20, -20, MPH(35)), "downright miserable");
+  // Frigid is still the headline when the wind is merely dicey.
+  assert.equal(T(20, -20, MPH(22)), "frigid");
+  // A warm windy day is still a warm day; the wind clause says the rest.
+  assert.equal(T(36, 25, MPH(35)), "pretty damn warm");
+});
+
+test("a clean window is pleasant when it is actually nice, good when it is just fine", () => {
+  assert.equal(T(25, 15), "pleasant");
+  assert.equal(T(14, 12), "good");
+});
+
+test("both ends misbehaving is admitted, not resolved", () => {
+  assert.equal(T(36, -20), "all over the place");
+});
+
+test("wind climbs a six-rung ladder", () => {
+  assert.equal(windWord(MPH(5)), "calm");
+  assert.equal(windWord(MPH(14)), "light");
+  assert.equal(windWord(MPH(20)), "moderate");
+  assert.equal(windWord(MPH(27)), "a little high");
+  assert.equal(windWord(MPH(35)), "howling");
+  assert.equal(windWord(MPH(50)), "absolutely howling");
+  assert.equal(windWord(null), "calm");
+});
+
+test("the closing line answers to the snow, not to nothing", () => {
+  const c = (o) => closingWord({ hi: F(25), lo: F(15), wind: MPH(5), days: 4, ...o });
+  // A real dump and nothing wrong with it.
+  assert.match(c({ total: IN(24) }), /this is the move right now\.$/);
+  // A dump you have to earn — Brian's own caveat.
+  assert.match(c({ total: IN(24), wind: MPH(35) }), /storming, but if you can hack it/);
+  assert.match(c({ total: IN(24), lo: F(-20) }), /^, but if you can hack it, it's gonna be a powderpalooza\.$/);
+  // The bug this fixes: a snowless trip used to be "the move right now".
+  assert.match(c({ total: IN(1) }), /not much falling right now\.$/);
+  assert.match(c({ total: IN(1), wind: MPH(35) }), /this one's a skip\.$/);
+  // Decent snow, rough conditions.
+  assert.match(c({ total: IN(10), wind: MPH(35) }), /a fight for a decent day\.$/);
+  // Cold plus a merely dicey wind reads "miserable" in the clause above, so
+  // the closing must not then call it the move.
+  assert.match(c({ total: IN(10), lo: F(5), wind: MPH(22) }), /a fight for a decent day\.$/);
+  // Spring outranks the snow lines — a foot at 42°F is not powder, and the
+  // closing must not argue with "It's spring, baby!".
+  assert.match(c({ total: IN(24), hi: F(45) }), /soft snow and sunshine\.$/);
+  assert.match(c({ total: IN(1), hi: F(45) }), /soft snow and sunshine\.$/);
+  // The honest unskiable case is rain, read off the freezing level.
+  assert.match(c({ total: IN(24), rain: true }), /that is rain, not snow — sit this one out\.$/);
 });
 
 test("the best bet is the deepest resort, not the first", () => {
   const rows = [
-    { name: "Snowbird", total: 10, win: win(4) },
-    { name: "Alta", total: 46, win: win(4) },
+    { name: "Snowbird", total: IN(4), win: win(4) },
+    { name: "Alta", total: IN(18), win: win(4) },
   ];
   const v = tripVerdict(rows, true);
   assert.match(say(v), /^Your best bet is looking like Alta, with /);
@@ -46,9 +101,31 @@ test("the best bet is the deepest resort, not the first", () => {
 });
 
 test("only the decided clauses are highlighted — the day count is prose", () => {
-  const v = tripVerdict([{ name: "Alta", total: 46, win: win(4) }], true);
-  assert.deepEqual(hot(v), ["Alta", "46cm", "Temps look good", "winds are calm"]);
+  const v = tripVerdict([{ name: "Alta", total: IN(18), win: win(4) }], true);
+  assert.deepEqual(hot(v), ["Alta", "46cm", "Temps look pleasant", "winds are calm"]);
   assert.ok(!hot(v).some((t) => /days/.test(t)), "the day count must stay in the prose");
+});
+
+test("the verdict reads as one sentence however the clauses land", () => {
+  const rows = [{ name: "Alta", total: IN(24), win: win(3, { tempMin: F(-20), windMax: MPH(35) }) }];
+  const s = say(tripVerdict(rows, false));
+  assert.match(s, /^Your best bet is looking like Alta, with 24" over 3 days\. /);
+  assert.match(s, /Temps look downright miserable, and winds are howling, so it's going to be storming, but if you can hack it, it's gonna be a powderpalooza\.$/);
+});
+
+test("an unscored row still gets a real reading, not a default one", () => {
+  // extremes() derives hi/lo/wind from the window, so a row that never went
+  // through score() cannot silently read "good and calm".
+  const v = tripVerdict([{ name: "Alta", total: IN(2), win: win(3, { tempMax: F(44) }) }], false);
+  assert.match(say(v), /days\. It's spring, baby! Winds are calm\. Overall, soft snow and sunshine\.$/);
+});
+
+test("rain is read off the freezing level, not guessed from temperature", () => {
+  const rows = [{
+    name: "Alta", total: IN(24), win: win(3),
+    freezeMin: 2600, elevation: { mid: 2400 },
+  }];
+  assert.match(say(tripVerdict(rows, false)), /that is rain, not snow — sit this one out\.$/);
 });
 
 test("nothing to have an opinion about returns null", () => {

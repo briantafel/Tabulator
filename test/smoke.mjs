@@ -550,7 +550,9 @@ await check("a trip can be renamed, dated and removed", async () => {
   // The verdict sentence, with the computed clauses inked and the prose quiet.
   const verdict = await page.locator(".td-verdict").innerText();
   assert.match(verdict, /^Your best bet is looking like /);
-  assert.match(verdict, /Temps look .+, and winds are /);
+  // Two shapes: the usual "Temps look X, and winds are Y", or the spring case,
+  // which ends the sentence and starts a new one for the wind.
+  assert.match(verdict, /(Temps look .+, and winds are |It's spring, baby! Winds are )/);
   const inked = await page.locator(".td-verdict b").allTextContents();
   assert.equal(inked.length, 4, `expected 4 highlighted clauses, got ${inked.length}`);
   assert.ok(!inked.some((t) => /days/.test(t)), "the day count should stay in the prose");
