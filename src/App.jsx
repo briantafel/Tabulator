@@ -145,7 +145,8 @@ export default function Tabulator() {
 
   /* The star favourites a resort; the calendar-plus saves the window. Two
      different actions, which is why the sheet carries both icons.
-     Nothing consumes `favs` yet — see RESUME-HERE, it needs Brian's intent. */
+     Favourites drive the Trips screen's top table, and the Edit link there
+     opens a picker that calls this same toggle. */
   const toggleFav = (name) =>
     setFavs((f) => (f.includes(name) ? f.filter((x) => x !== name) : [...f, name]));
 
@@ -300,6 +301,7 @@ export default function Tabulator() {
               onEditTrip={(id) => setEditing({ id })}
               onRemoveTrip={removeTrip}
               onOpenTrip={(id) => setViewing({ id })}
+              onToggleFav={toggleFav}
             />
           )}
 

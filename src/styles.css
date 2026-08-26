@@ -418,6 +418,81 @@ body { background: #F2F2F2; }
    A text input advertises focus with its own caret, so the ring is redundant
    and boxes the row in coral. Same trap as .at-field. */
 .app .tp-field:focus, .app .tp-field:focus-visible { outline: none; }
+
+/* ------------------------------------------------------------------
+ * Adding favourites — measured off Tabulator-favorites-build-search
+ * and -results+add in a 403 frame.
+ *
+ * The search row is a trip row wearing different clothes: 82 tall under
+ * the Favorites rule at 188, its text 21 below that rule, its icon inset
+ * 17 from the right. What changes is the rule beneath it — full bleed at
+ * 271, where the Favorites rule above stays inset — and the fact that the
+ * trip list and the empty copy are gone while you are searching.
+ * ------------------------------------------------------------------ */
+/* No table to describe a window over while the picker is open. */
+.trips.picking .fav-rule { margin-top: calc(33.2 * var(--u)); }
+
+.fs-bar {
+  position: relative; box-sizing: border-box;
+  height: calc(82 * var(--u)); margin: 0 -16px;
+  padding: calc(18.2 * var(--u)) calc(48 * var(--u)) 0 16px;
+}
+/* Same face and baseline as a trip name, so the ghost placeholder sits
+   exactly where a resort name would.
+   The explicit height is load-bearing. An <input> left at height:auto gets a
+   content box the size of the font's own line box (29 here), NOT the
+   line-height you asked for, and then centres the text in it — which parked
+   the placeholder 3 below the measured baseline. Pinning the height to the
+   line-height puts it back. */
+.fs-field {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  font-family: inherit; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); height: calc(23.5 * var(--u));
+  letter-spacing: -.04em;
+  color: var(--ink); caret-color: var(--ink);
+}
+.fs-field::placeholder { color: var(--fill); opacity: 1; }
+/* Same trap as .tp-field and .at-field: the app-wide coral ring is (0,2,0)
+   and would beat a bare `outline: none`. */
+.app .fs-field:focus, .app .fs-field:focus-visible { outline: none; }
+
+/* Brian's magnifier in his own coordinates — ink x 365.4..385.75, so the
+   viewBox carries the offset and the box just gets placed. Ghost until you
+   type, ink once you have, the same two states as the naming check. */
+.fs-glass {
+  position: absolute; right: calc(17 * var(--u)); top: calc(17.4 * var(--u));
+  width: calc(20.323 * var(--u)); height: calc(20.323 * var(--u));
+}
+.fs-glass svg { display: block; width: 100%; height: 100%; fill: var(--fill); }
+.fs-glass.on svg { fill: var(--ink); }
+
+/* Full bleed, unlike the inset rule above the bar. */
+.fs-rule { height: 1px; background: var(--line); margin: 0 -16px; }
+.fs-list { margin: 0 -16px; }
+
+/* The mountains table's own column header, reused verbatim: 9px regular,
+   black, on the body's 16 inset. Baseline 26 below the rule. */
+.fs-head {
+  padding: 0 16px; font-size: calc(9 * var(--u)); font-weight: 400;
+  line-height: calc(10.9 * var(--u)); color: #000;
+  margin: calc(17.3 * var(--u)) 0 calc(15.8 * var(--u));
+}
+
+/* Rows are .tp-row geometry with the border on the other edge: the first
+   result has no rule above it, every result has one below. */
+.fs-row {
+  height: calc(82 * var(--u));
+  border-top: 0; border-bottom: 1px solid var(--line);
+}
+/* Both names are ghosted in the export, favourited or not — the star alone
+   carries the state. */
+.fs-name { color: var(--fill); }
+.fs-star {
+  position: absolute; right: calc(17 * var(--u)); top: calc(25.5 * var(--u));
+  width: calc(19.583 * var(--u)); height: calc(18.601 * var(--u));
+}
+.fs-star svg { display: block; width: 100%; height: 100%; fill: var(--fill); }
+.fs-star.on svg { fill: var(--ink); }
 .tp-check {
   /* 23.3 square, right edge on the row's own 16 content edge, centre 28.5
      below the row top — measured off Tripscreenaddfunct1/3. */

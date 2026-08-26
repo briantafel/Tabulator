@@ -573,6 +573,45 @@ await check("a trip can be renamed, dated and removed", async () => {
   assert.equal(await page.locator(".tp-wrap").count(), nTrips - 1, "the trip was not removed");
 });
 
+await check("Edit on the Trips screen opens the favourites picker", async () => {
+  await page.getByRole("button", { name: /trips/ }).click();
+  await page.waitForSelector(".trips");
+  const edit = page.getByRole("button", { name: "Edit", exact: true }).first();
+  await edit.click();
+  await page.waitForSelector(".fs-bar");
+
+  // While picking, the screen is the search bar and nothing else.
+  assert.equal(await page.locator(".trip-list").count(), 0, "the trip list stayed up");
+  assert.equal(await page.locator(".fav-empty").count(), 0, "the empty copy stayed up");
+  assert.equal(await page.locator(".fs-row").count(), 0, "an empty query listed resorts");
+
+  await page.locator(".fs-field").fill("ja");
+  await page.waitForTimeout(200);
+  const names = await page.locator(".fs-name").allInnerTexts();
+  assert.ok(names.length > 0, "nothing matched 'ja'");
+  assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)), "results are not alphabetical");
+
+  // The star is the control; tapping the row toggles it both ways.
+  const lit = await page.locator(".fs-star.on").count();
+  await page.locator(".fs-row").first().click();
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator(".fs-star.on").count(), lit + 1, "the star did not light");
+  await page.locator(".fs-row").first().click();
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator(".fs-star.on").count(), lit, "the star did not clear");
+  await page.locator(".fs-row").first().click();
+  await page.waitForTimeout(150);
+
+  // Edit again closes the picker, and the pick is in the table.
+  const picked = names[0];
+  await edit.click();
+  await page.waitForTimeout(300);
+  assert.equal(await page.locator(".fs-bar").count(), 0, "the picker stayed open");
+  await page.waitForSelector(".trips .table");
+  const favNames = await page.locator(".trips .t-row").allInnerTexts();
+  assert.ok(favNames.some((t) => t.includes(picked)), `${picked} is not in the favourites table`);
+});
+
 await check("no console or page errors throughout", () => {
   assert.deepEqual(errors, []);
 });
