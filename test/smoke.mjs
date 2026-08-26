@@ -523,6 +523,23 @@ await check("a trip can be renamed, dated and removed", async () => {
   assert.ok((await page.locator(".tp-when").first().innerText()).length > 0,
     "the trip kept no date label");
 
+  // Tapping the row opens the trip itself.
+  await page.locator(".tp-row").first().click();
+  await page.waitForSelector(".tripdetail");
+  assert.match(await page.locator(".td-head h2").innerText(), /\S/, "the trip has no title");
+  // The verdict sentence, with the computed clauses inked and the prose quiet.
+  const verdict = await page.locator(".td-verdict").innerText();
+  assert.match(verdict, /^Your best bet is looking like /);
+  assert.match(verdict, /Temps look .+, and winds are /);
+  const inked = await page.locator(".td-verdict b").allTextContents();
+  assert.equal(inked.length, 4, `expected 4 highlighted clauses, got ${inked.length}`);
+  assert.ok(!inked.some((t) => /days/.test(t)), "the day count should stay in the prose");
+  // The trips tab is the way back — the design gives the screen no back control.
+  await page.getByRole("button", { name: /trips/ }).click();
+  await page.waitForTimeout(400);
+  assert.equal(await page.locator(".tripdetail").count(), 0, "the trip screen did not close");
+  await page.waitForSelector(".trip-list");
+
   // Swipe left to uncover the bin, then remove.
   const row = await page.locator(".tp-wrap").first().boundingBox();
   await page.mouse.move(row.x + 300, row.y + 30);

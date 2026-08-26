@@ -8,6 +8,7 @@ import Radar from "./components/Radar.jsx";
 import Detail from "./components/Detail.jsx";
 import Trips from "./components/Trips.jsx";
 import TripEdit from "./components/TripEdit.jsx";
+import TripDetail from "./components/TripDetail.jsx";
 
 import { loadForecast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
@@ -57,6 +58,9 @@ export default function Tabulator() {
   /* { id } while the edit screen is up; the extra `leaving` flag drives the
      slide back out, because the screen has to finish moving before it goes. */
   const [editing, setEditing] = useState(null);
+  /* { id } while a single trip is open. Same leaving-flag trick as the editor
+     so the screen finishes sliding out before it unmounts. */
+  const [viewing, setViewing] = useState(null);
   const [favs, setFavs] = useState([]);
 
   const load = useCallback(async () => {
@@ -285,7 +289,7 @@ export default function Tabulator() {
             <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} />
           )}
 
-          {feed && tab === "trips" && !editing && (
+          {feed && tab === "trips" && !editing && !viewing && (
             <Trips
               trips={trips}
               favs={favs}
@@ -295,8 +299,30 @@ export default function Tabulator() {
               onNewTrip={(named) => newTrip(null, named)}
               onEditTrip={(id) => setEditing({ id })}
               onRemoveTrip={removeTrip}
+              onOpenTrip={(id) => setViewing({ id })}
             />
           )}
+
+          {feed && tab === "trips" && viewing && !editing && (() => {
+            const t = trips.find((x) => x.id === viewing.id);
+            if (!t) return null;
+            const back = () => {
+              setViewing({ ...viewing, leaving: true });
+              setTimeout(() => setViewing(null), 260);
+            };
+            return (
+              <div className={viewing.leaving ? "tripdetail-out" : ""}>
+                <TripDetail
+                  trip={t}
+                  data={data ?? []}
+                  favs={favs}
+                  metric={metric}
+                  onOpen={setOpen}
+                  onClose={back}
+                />
+              </div>
+            );
+          })()}
 
           {feed && tab === "trips" && editing && (() => {
             const t = trips.find((x) => x.id === editing.id);
@@ -320,7 +346,14 @@ export default function Tabulator() {
 
         <nav className="tabs">
           {TABS.map((k) => (
-            <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>
+            <button
+              key={k}
+              className={tab === k ? "on" : ""}
+              /* The trips tab is also the way back out of a trip: the design
+                 gives those screens no back control, and leaving them open
+                 under the tab would make the tab a no-op. */
+              onClick={() => { setTab(k); setViewing(null); setEditing(null); }}
+            >
               <span className="tg">
                 <svg viewBox="0 0 32 32" aria-hidden="true"><path d={ICON[k]} /></svg>
               </span>

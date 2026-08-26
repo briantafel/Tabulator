@@ -27,7 +27,7 @@ const CHECK_FULL =
  *  two-dot pager beneath. Then the trips themselves, in full-bleed rows that
  *  match the Add-to-trip panel, ending in a ghosted New trip row. */
 export default function Trips({
-  trips, favs, data, metric, onOpen, onNewTrip, onEditTrip, onRemoveTrip,
+  trips, favs, data, metric, onOpen, onNewTrip, onEditTrip, onRemoveTrip, onOpenTrip,
 }) {
   const [page, setPage] = useState(0);
   const [naming, setNaming] = useState(false);
@@ -136,11 +136,23 @@ export default function Trips({
                 {BIN.map((d) => <path key={d.slice(0, 14)} d={d} />)}
               </svg>
             </button>
-            <div className="tp-row">
+            {/* The row itself opens the trip. A swipe must not count as a
+                tap, or uncovering the bin would navigate away from the list
+                you are trying to delete from. */}
+            <div
+              className="tp-row"
+              role="button"
+              tabIndex={0}
+              onClick={() => { if (!swiped) onOpenTrip(t.id); }}
+              onKeyDown={(e) => { if (e.key === "Enter") onOpenTrip(t.id); }}
+            >
               <span className="tp-name">{t.name}</span>
               <span className="tp-when">{t.label}</span>
               {/* Every named trip gets one, matching the Favorites link. */}
-              <button className="tp-edit" onClick={() => onEditTrip(t.id)}>Edit</button>
+              <button
+                className="tp-edit"
+                onClick={(e) => { e.stopPropagation(); onEditTrip(t.id); }}
+              >Edit</button>
             </div>
           </div>
         ))}

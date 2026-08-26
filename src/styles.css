@@ -857,3 +857,49 @@ body { background: #F2F2F2; }
 .tp-wrap.swiped .tp-row { transform: translateX(calc(-51 * var(--u))); }
 .tp-wrap .tp-row { transition: transform .22s cubic-bezier(.2,.8,.3,1); }
 .tp-wrap.dragging .tp-row { transition: none; }
+
+/* ------------------------------------------------------------------
+ * A single trip — measured off Tabulator-trips-click-in.
+ *
+ * The screen is the app header (which already draws its own rule), the trip's
+ * name and window, a FULL-BLEED rule, then the ordinary results table. No Edit
+ * link here: editing is reached from the row in the list, not from inside.
+ * ------------------------------------------------------------------ */
+.tripdetail { animation: te-in .28s cubic-bezier(.2,.8,.3,1) both; }
+.tripdetail-out .tripdetail { animation: te-out .26s cubic-bezier(.4,0,.6,1) both; }
+
+.td-toprule {
+  height: 1px; background: var(--line);
+  margin: calc(11.8 * var(--u)) -16px 0;
+}
+.td-head { margin-top: calc(18.3 * var(--u)); }
+.td-head h2 {
+  margin: 0; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+}
+.td-head p {
+  margin: calc(6 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
+  line-height: calc(12.5 * var(--u)); color: #8A8A8A;
+}
+/* Full bleed, unlike the inset rule under the Favorites heading — this one
+   runs the whole width the way the header's own rule above it does. */
+.td-rule {
+  height: 1px; background: var(--line);
+  margin: calc(20.7 * var(--u)) -16px 0;
+}
+.tripdetail .table { margin-top: calc(17 * var(--u)); }
+
+/* The verdict sentence. 23.5/700 — the same size and weight as every other
+   title in the app — set on a 28 line and coloured the other way round from
+   usual: the prose is the quiet one at --fill, and only the clauses the data
+   decided are inked, in the marker red. */
+.td-verdict {
+  margin: calc(17.5 * var(--u)) 0 0;
+  font-size: calc(23.5 * var(--u)); line-height: calc(28 * var(--u));
+  font-weight: 700; letter-spacing: -.04em; color: var(--fill);
+}
+.td-verdict b { font-weight: 700; color: var(--mark-red); }
+.td-rule-2 { margin-top: calc(17.5 * var(--u)); }
+/* Adjacent margins collapse, so the extra room under the verdict rule has to
+   come from the table's own margin rather than the rule's. */
+.tripdetail .td-rule-2 + .table { margin-top: calc(22 * var(--u)); }
