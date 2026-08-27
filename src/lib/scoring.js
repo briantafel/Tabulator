@@ -1,3 +1,4 @@
+import { rank } from "./rank.js";
 import {
   HISTORY_DAYS,
   COLD_RED, COLD_AMBER_LO, COLD_AMBER_HI,
@@ -37,7 +38,7 @@ export function score(resort, a, b, history) {
   const freeze = nums(win.map((d) => d.freezeMin));
 
   let cum = 0;
-  return {
+  const out = {
     ...resort,
     win,
     cumulative: win.map((d) => (cum += d.snow ?? 0)),
@@ -48,6 +49,9 @@ export function score(resort, a, b, history) {
     wind: windMax.length ? Math.max(...windMax) : null,
     freezeMin: freeze.length ? Math.min(...freeze) : null,
   };
+  /* Attached here rather than at the sort, so the table, the verdict and
+     anything added later cannot disagree about which resort is best. */
+  return { ...out, rank: rank(out) };
 }
 
 /** Severity of the temperature reading, worst-first.

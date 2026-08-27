@@ -12,6 +12,7 @@ import TripDetail from "./components/TripDetail.jsx";
 
 import { loadForecast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
+import { byRank } from "./lib/rank.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
 
@@ -88,7 +89,7 @@ export default function Tabulator() {
       feed
         ? feed.resorts
             .map((r) => score(r, wa, wb, feed.history))
-            .sort((x, y) => y.total - x.total)
+            .sort(byRank)
         : null,
     [feed, wa, wb]
   );

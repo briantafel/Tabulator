@@ -29,6 +29,7 @@
 
 import { tempSeverity, windSeverity, rainRisk } from "./scoring.js";
 import { snowWithUnit } from "./units.js";
+import { rank, byRank } from "./rank.js";
 import {
   COLD_RED, COLD_DEEP, COLD_AMBER_HI,
   WARM_AMBER_LO, WARM_RED, TOO_WARM, WARM_SPRING, PLEASANT_LO,
@@ -198,7 +199,12 @@ export function tripVerdict(rows, metric) {
   const usable = rows.filter((r) => r?.win?.length);
   if (!usable.length) return null;
 
-  const best = usable.reduce((a, b) => ((b.total ?? 0) > (a.total ?? 0) ? b : a));
+  /* "Best bet" means the same thing here as the order of the table below it —
+     the balanced rank, not the deepest number. Brian asked for the two to
+     agree, and a sentence that recommends the second row would read as a bug.
+     Ranked here rather than trusted, for the same reason extremes() exists. */
+  const ranked = usable.map((r) => (r.rank != null ? r : { ...r, ...extremes(r.win), rank: rank({ ...r, ...extremes(r.win) }) }));
+  const best = ranked.reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
   const days = best.win.length;
   const { hi, lo, wind } = extremes(best.win);
   const temp = tempClause({ hi, lo, wind });
