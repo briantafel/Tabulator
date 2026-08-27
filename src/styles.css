@@ -679,7 +679,16 @@ body { background: #F2F2F2; }
 
 /* The scroller. At rest it is content-height and does not scroll at all;
    the resting sheet is a measured design and must not sprout a scrollbar. */
-.sheet-body { flex: 1 1 auto; min-height: 0; }
+/* The scroller spans the FULL sheet width and re-applies the 22 padding
+   itself, rather than sitting inside the sheet's. `overflow-y: auto` clips
+   horizontally as well, so anything breaking out of the padding — the
+   weather strip, which Brian's export runs edge to edge — was being cut off
+   at 22 and 380 with no scrollbar to explain it. Every other child keeps
+   exactly the inset it had. */
+.sheet-body {
+  flex: 1 1 auto; min-height: 0;
+  margin: 0 calc(-22 * var(--u)); padding: 0 calc(22 * var(--u));
+}
 .sheet.max .sheet-body {
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
@@ -1008,6 +1017,59 @@ body { background: #F2F2F2; }
    break. 45.5 rather than 51 because the 23.5/28 line box puts the cap top
    5.5 below its own edge. */
 .rs-summary { margin-top: calc(45.5 * var(--u)); }
+
+/* ------------------------------------------------------------------
+ * Weather — the NWS strip, measured off
+ * Resort Sheet-max-with-summary-and-forecast.
+ *
+ * The one full-bleed block in the sheet. Six columns across the whole 402
+ * rather than inside the 22 padding, which is why the icons in Brian's
+ * export run nearly edge to edge — measured centres 36 and 367.5 on a 66.3
+ * pitch, and 6 x 66.3 is 398 of the 402.
+ * ------------------------------------------------------------------ */
+.wx {
+  margin: calc(45.5 * var(--u)) calc(-22 * var(--u)) 0;
+  padding: calc(16.8 * var(--u)) calc(22 * var(--u)) calc(26 * var(--u));
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.wx h3 {
+  margin: 0; font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+}
+/* Break back out of the padding the section just applied, so the columns get
+   the full width while the heading stays on the sheet's own text edge. */
+.wx-row {
+  display: flex; margin: calc(34 * var(--u)) calc(-22 * var(--u)) 0;
+}
+.wx-day {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.wx-icon svg {
+  display: block; width: calc(40 * var(--u)); height: calc(40 * var(--u));
+  fill: var(--ink);
+}
+.wx-name {
+  margin-top: calc(13 * var(--u)); font-size: calc(13.5 * var(--u));
+  line-height: calc(13.5 * var(--u)); color: #9A9A9A;
+}
+/* Two lines by design — NWS writes prose, and "Snow showers" does not fit a
+   67-wide column on one. The height is fixed at both lines so a one-word day
+   does not lift its temperatures above its neighbours'. */
+.wx-cond {
+  margin-top: calc(12 * var(--u)); height: calc(22 * var(--u));
+  padding: 0 calc(3 * var(--u));
+  font-size: calc(12.5 * var(--u)); line-height: calc(11 * var(--u));
+  color: var(--ink);
+}
+.wx-lo, .wx-hi {
+  font-size: calc(13.5 * var(--u)); line-height: calc(15 * var(--u));
+  font-weight: 400;
+}
+/* Cold blue over warm red — both measured out of the export, and the red is
+   the marker red the rest of the app already uses. */
+.wx-lo { margin-top: calc(9 * var(--u)); color: #7166F6; }
+.wx-hi { color: var(--mark-red); }
 /* Adjacent margins collapse, so the extra room under the verdict rule has to
    come from the table's own margin rather than the rule's. */
 .tripdetail .td-rule-2 + .table { margin-top: calc(22 * var(--u)); }

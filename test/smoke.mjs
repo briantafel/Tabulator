@@ -204,6 +204,21 @@ await check("the grabber maximizes the sheet and the reports scroll", async () =
   assert.equal(await page.locator(".rs-summary b").count(), 3,
     "expected three highlighted clauses in the resort summary");
 
+  // The NWS strip. Six columns running the full 402 — it is the one block in
+  // the sheet that breaks out of the 22 padding, and the scroller used to
+  // clip it back to 358 with no scrollbar to explain where it went.
+  await page.waitForSelector(".wx-row");
+  const cols = await page.locator(".wx-day").count();
+  assert.ok(cols >= 3 && cols <= 6, `expected 3-6 forecast columns, got ${cols}`);
+  const row = await page.locator(".wx-row").boundingBox();
+  const sheetBox = await page.locator(".sheet").boundingBox();
+  assert.ok(Math.abs(row.width - sheetBox.width) < 2,
+    `the weather strip is ${row.width} inside a ${sheetBox.width} sheet — it is being clipped again`);
+  // Every column has an icon with real path data in it.
+  assert.equal(await page.locator(".wx-icon svg path").count() >= cols, true, "a column has no icon");
+  assert.equal(await page.locator(".wx-lo").count(), cols);
+  assert.equal(await page.locator(".wx-hi").count(), cols);
+
   // The action row must stay pinned — the whole point of scrolling the middle.
   const closeBefore = await page.locator(".sheet-close").boundingBox();
   const scrolled = await page.evaluate(() => {

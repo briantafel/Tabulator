@@ -53,6 +53,10 @@ const history = JSON.parse(await readFile(histPath, "utf8"));
    empty state. The photos are already data URIs inside this JSON, which is
    why the file is large and why it needs no assets alongside it. */
 const reports = await readFile(reportsPath, "utf8").then(JSON.parse, () => ({ resorts: {} }));
+/* Optional like the reports: a build with no weather.json is a valid build,
+   and every resort simply renders without the strip. */
+const weatherPath = process.argv[7] ?? `${root}public/weather.json`;
+const weather = await readFile(weatherPath, "utf8").then(JSON.parse, () => ({ resorts: {} }));
 if (photosPath) {
   const photos = JSON.parse(await readFile(photosPath, "utf8"));
   let swapped = 0, dropped = 0;
@@ -81,6 +85,7 @@ await writeFile(out, `<title>Tabulator</title>
 window.__TABULATOR_FORECAST__ = ${safe(forecast)};
 window.__TABULATOR_HISTORY__ = ${safe(history)};
 window.__TABULATOR_REPORTS__ = ${safe(reports)};
+window.__TABULATOR_WEATHER__ = ${safe(weather)};
 </script>
 <script type="module">${js}</script>
 `);

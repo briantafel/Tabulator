@@ -376,6 +376,7 @@ export default function Tabulator() {
         r={open}
         metric={metric}
         reports={feed?.reports}
+        weather={feed?.weather}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

@@ -3,6 +3,7 @@ import { snowWithUnit, tempTxt, windTxt, elevTxt } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
+import { toDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import Dot from "./Dot.jsx";
 
@@ -31,7 +32,7 @@ const CAL_PLUS = [
 ];
 
 export default function Detail({
-  r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, reports,
+  r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, reports, weather,
 }) {
   const [adding, setAdding] = useState(false);
   const [naming, setNaming] = useState(false);
@@ -66,6 +67,10 @@ export default function Detail({
   if (!r || !r.win?.length) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
   const verdict = resortVerdict(r, metric);
+  /* NWS covers the United States only, so most resorts have nothing here
+     yet and the section simply does not render — a strip of six dashes
+     would be worse than no strip. */
+  const wx = toDays(weather?.resorts?.[r.id]?.periods ?? []);
   const said = reportsFor(reports, r.id);
 
   /* Drag the handle. The sheet follows the finger the whole way — an iOS
@@ -236,6 +241,39 @@ export default function Detail({
                 ? <b key={i}>{seg.t}</b>
                 : <span key={i}>{seg.t}</span>))}
             </p>
+          )}
+
+          {/* The National Weather Service's own read on the mountain, beside
+              Snow-Forecast's. Two sources disagreeing is information: NWS
+              writes the sky ("Heavy snow", "Mostly cloudy") where
+              Snow-Forecast writes the amount, and a week that reads sunny
+              here and deep in the bars above is worth a second look.
+
+              Full bleed, unlike everything else in the sheet — six columns
+              across the whole 402, which is why the icons run nearly edge to
+              edge in Brian's export. */}
+          {max && wx.length > 0 && (
+            <section className="wx" aria-label="Weather forecast">
+              <h3>Weather</h3>
+              <div className="wx-row">
+                {wx.map((d) => (
+                  <div className="wx-day" key={d.date} title={d.short}>
+                    <span className="wx-icon" aria-hidden="true">
+                      <svg viewBox="0 0 32 32">
+                        {iconPaths(d.icon).map((p) => <path key={p.slice(0, 12)} d={p} />)}
+                      </svg>
+                    </span>
+                    <span className="wx-name">{weekdayShort(d.date)}</span>
+                    <span className="wx-cond">{shortLabel(d.short)}</span>
+                    {/* Low above high, cold above warm — Brian's export, and
+                        it reads as a range you scan down rather than as two
+                        unrelated numbers. */}
+                    <span className="wx-lo">{d.lo == null ? "—" : `${d.lo}°`}</span>
+                    <span className="wx-hi">{d.hi == null ? "—" : `${d.hi}°`}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
           )}
 
           {max && (

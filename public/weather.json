@@ -1,0 +1,66 @@
+{
+ "generatedAt": "2026-08-27T20:20:00.000Z",
+ "source": "api.weather.gov",
+ "note": "US National Weather Service. Coordinates are the resort, not the nearest town.",
+ "resorts": {
+  "snowbird": {
+   "point": [
+    40.582,
+    -111.6562
+   ],
+   "station": "Snowbird UT",
+   "elevationFt": 9298,
+   "periods": [
+    {
+     "name": "Tonight",
+     "isDaytime": false,
+     "temperature": 55,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-08-27T18:00:00-06:00"
+    },
+    {
+     "name": "Wednesday",
+     "isDaytime": true,
+     "temperature": 78,
+     "shortForecast": "Scattered Showers",
+     "startTime": "2026-08-28T06:00:00-06:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 56,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-08-28T18:00:00-06:00"
+    },
+    {
+     "name": "Thursday",
+     "isDaytime": true,
+     "temperature": 80,
+     "shortForecast": "Sunny then Isolated T-storms",
+     "startTime": "2026-08-29T06:00:00-06:00"
+    },
+    {
+     "name": "Thursday Night",
+     "isDaytime": false,
+     "temperature": 56,
+     "shortForecast": "Scattered Showers",
+     "startTime": "2026-08-29T18:00:00-06:00"
+    },
+    {
+     "name": "Friday",
+     "isDaytime": true,
+     "temperature": 78,
+     "shortForecast": "Partly Sunny then Isolated T-storms",
+     "startTime": "2026-08-30T06:00:00-06:00"
+    },
+    {
+     "name": "Friday Night",
+     "isDaytime": false,
+     "temperature": 52,
+     "shortForecast": "Slight Chance T-storms then Showers",
+     "startTime": "2026-08-30T18:00:00-06:00"
+    }
+   ]
+  }
+ }
+}

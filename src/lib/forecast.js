@@ -44,6 +44,13 @@ export async function loadForecast() {
     embedded("__TABULATOR_REPORTS__") ??
     (preset ? { resorts: {} } : await getJson("reports.json", { resorts: {} }));
 
+  /* Same contract as reports: optional everywhere. NWS is US-only, so most
+     resorts will never have an entry here, and the sheet must render exactly
+     as before for those rather than showing an empty strip. */
+  const weather =
+    embedded("__TABULATOR_WEATHER__") ??
+    (preset ? { resorts: {} } : await getJson("weather.json", { resorts: {} }));
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   return {
@@ -55,6 +62,7 @@ export async function loadForecast() {
     resorts: forecast.resorts,
     history: history?.days ?? {},
     reports,
+    weather,
   };
 }
 
