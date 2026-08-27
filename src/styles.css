@@ -1031,7 +1031,22 @@ body { background: #F2F2F2; }
    measure 22. It is a deliberate difference in his export, so it is a
    deliberate difference here. */
 .rs-summary {
-  margin: calc(44 * var(--u)) 0 0 calc(-7 * var(--u));
+  /* 11.5, not the 44 measured off the export.
+     Brian: "The spacing below this paragraph is perfect. the spacing above
+     should match it. The grey lines above this and below this paragraph
+     should be equidistant from the text."
+
+     The export does put the first cap line 49.5 below the rule, but that rule
+     closes the SNOWFALL BARS — it is the bar list's own bottom border, and
+     the space under it belongs to that section as much as to this one. Read
+     as "space around this paragraph" instead, 49.5 above against 17 below is
+     visibly lopsided, which is what he is looking at.
+
+     So: 17 from the rule to the cap line, matching the 17 from the descender
+     to the rule below. 11.5 because the 23.5/28 line box puts the cap top 5.5
+     below its own edge, and the ink is what has to be equidistant, not the
+     box. */
+  margin: calc(11.5 * var(--u)) 0 0 calc(-7 * var(--u));
 }
 
 /* ------------------------------------------------------------------
