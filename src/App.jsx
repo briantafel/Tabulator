@@ -181,6 +181,15 @@ export default function Tabulator() {
             </div>
             <button className="link" onClick={load}>Reload forecast</button>
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
+            {/* Was a pink banner over the results; Brian asked for it here
+                instead, reading like the sample-data line. Quieter, but the
+                one thing it must not become is silent — a stale forecast that
+                says nothing is how the spreadsheet rotted. */}
+            {feed?.stale && (
+              <span className="stamp warn">
+                This forecast is over a day old — the scrape may be failing.
+              </span>
+            )}
             {feed?.generatedAt && (
               <span className="stamp">
                 scraped {new Date(feed.generatedAt).toLocaleString(undefined, {
@@ -201,12 +210,6 @@ export default function Tabulator() {
           )}
 
           {!feed && !err && <div className="loading">Reading the forecast…</div>}
-
-          {/* Silent staleness is what let the spreadsheet rot. Say it out loud.
-              The sample-data banner used to sit here too; Brian asked for it
-              gone, so it now reads as a line in Settings instead — quiet, but
-              still impossible for sample data to pass as a real forecast. */}
-          {feed?.stale && <p className="banner">This forecast is over a day old — the scrape may be failing.</p>}
 
           {data && tab === "mountains" && (
             <>

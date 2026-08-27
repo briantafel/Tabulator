@@ -73,17 +73,20 @@ await check("app boots and loads the forecast", async () => {
 });
 
 await check("sample data is labelled as such", async () => {
-  // Brian asked for the banner gone, so the label lives in Settings now — but
-  // it still has to exist. Synthetic data must never pass as a real forecast.
-  // The stale banner is a different thing and stays — assert only that no
-  // banner is the sample-data one.
-  const banners = await page.locator(".banner").allTextContents();
-  assert.ok(!banners.some((b) => /Sample data/.test(b)),
-    `the sample banner is back: ${banners.join(" | ")}`);
+  // Both warnings live in Settings now — Brian asked for the pink banner gone
+  // and then for the staleness line to join it. Quiet is fine; silent is not.
+  // Synthetic data must never pass as a real forecast.
+  assert.equal(await page.locator(".banner").count(), 0, "a banner is back over the results");
   await page.locator(".gear").click();
   await page.waitForSelector(".settings");
-  assert.match(await page.locator(".settings").textContent(), /Sample data/,
-    "nothing anywhere says this is sample data");
+  const settings = await page.locator(".settings").textContent();
+  assert.match(settings, /Sample data/, "nothing anywhere says this is sample data");
+  // The staleness line renders in the same place and the same style. It only
+  // appears on a stale feed, so this checks the wiring rather than the text.
+  const stale = await page.evaluate(() => window.__TABULATOR_FORECAST__?.stale ?? null);
+  if (stale) {
+    assert.match(settings, /over a day old/, "a stale forecast said nothing about it");
+  }
   await page.locator(".gear").click();
 });
 
