@@ -219,6 +219,30 @@ await check("the grabber maximizes the sheet and the reports scroll", async () =
   assert.equal(await page.locator(".wx-lo").count(), cols);
   assert.equal(await page.locator(".wx-hi").count(), cols);
 
+  /* The measured rhythm, checked against what rendered rather than against
+     the stylesheet. Brian caught the first pass on exactly this — "the
+     margins and bottom rule should be specific to the text, not a box size"
+     — so the gaps between the boxes are the assertion. Every number is an
+     ink measurement off his export at 4x. */
+  const wxBox = async (sel) => page.locator(sel).first().boundingBox();
+  const [sumBox, wx, head, icon, name, cond, lo, hi] = await Promise.all(
+    [".rs-summary", ".wx", ".wx h3", ".wx-icon", ".wx-name", ".wx-cond", ".wx-lo", ".wx-hi"].map(wxBox));
+  const near = (got, want, what) =>
+    assert.ok(Math.abs(got - want) < 1.5, `${what}: ${got.toFixed(2)}, expected ~${want}`);
+  near(head.y - (wx.y + 1), 17, "rule to the Weather heading");
+  near(icon.y - (head.y + head.height), 35.5, "heading to icons");
+  near(name.y - (icon.y + icon.height), 19.4, "icons to day names");
+  near(cond.y - (name.y + name.height), 14.7, "day names to conditions");
+  near(lo.y - (cond.y + cond.height), 13, "conditions to the low");
+  near(hi.y - (lo.y + lo.height), 0, "the two temperatures stack");
+  near((wx.y + wx.height - 1) - (hi.y + hi.height), 22, "the high to the closing rule");
+  near(wx.y - (sumBox.y + sumBox.height), 17, "the summary to the weather rule");
+  // Both new sections are inset 15, not the sheet's 22 — a deliberate
+  // difference in his export from the title, the bars and Skier reports.
+  const sheet = await wxBox(".sheet");
+  near(sumBox.x - sheet.x, 15, "summary inset");
+  near(head.x - sheet.x, 15, "Weather heading inset");
+
   // The action row must stay pinned — the whole point of scrolling the middle.
   const closeBefore = await page.locator(".sheet-close").boundingBox();
   const scrolled = await page.evaluate(() => {
