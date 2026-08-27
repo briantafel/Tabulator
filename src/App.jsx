@@ -190,6 +190,10 @@ export default function Tabulator() {
                 This forecast is over a day old — the scrape may be failing.
               </span>
             )}
+            {/* Which build you are actually running. Brian could not tell
+                whether iOS had picked up a deploy or was still serving a
+                cached shell; now the answer is on the screen. */}
+            <span className="stamp">build {import.meta.env.VITE_BUILD}</span>
             {feed?.generatedAt && (
               <span className="stamp">
                 scraped {new Date(feed.generatedAt).toLocaleString(undefined, {
