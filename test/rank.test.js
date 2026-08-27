@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rank, rankParts, byRank, tempScore, windScore, vetoOf } from "../src/lib/rank.js";
+import { rank, rankParts, byRank, bestOf, tempScore, windScore, vetoOf } from "../src/lib/rank.js";
 /* Authored units, as everywhere else: °F, mph, inches. */
 const F = (f) => ((f - 32) * 5) / 9;
 const MPH = (m) => m * 1.60934;
@@ -122,4 +122,27 @@ test("vetoed resorts sink below every open one, deepest first among themselves",
     mk("Bigger gale", IN(50), { wind: MPH(60) }),
   ].map((x) => ({ ...x, rank: rank(x) }));
   assert.deepEqual(rows.sort(byRank).map((x) => x.name), ["Fine", "Bigger gale", "Gale"]);
+});
+
+test("the coral row and the sentence name the same resort — by construction", () => {
+  // Brian: "the resort in red is occasionally not the recommended resort using
+  // the weighted variables logic we developed." The table was marking the
+  // DEEPEST row, which stopped being the pick when the balance landed.
+  const rows = [
+    { name: "Deep but dicey", total: IN(40), before: IN(2), hi: F(38), lo: F(20), wind: MPH(35) },
+    { name: "The pick", total: IN(30), before: IN(10), hi: F(25), lo: F(15), wind: MPH(6) },
+  ].map((r) => ({ ...r, rank: rank(r) }));
+  const deepest = rows.reduce((a, b) => ((b.total ?? 0) > (a.total ?? 0) ? b : a));
+  assert.equal(deepest.name, "Deep but dicey", "the fixture must actually exercise the bug");
+  assert.equal(bestOf(rows).name, "The pick");
+});
+
+test("bestOf skips deal breakers, and copes with nothing at all", () => {
+  const mk = (name, o) => ({ name, total: IN(20), before: IN(6), hi: F(25), lo: F(15), wind: MPH(5), ...o });
+  assert.equal(bestOf([mk("Gale", { total: IN(50), wind: MPH(55) }), mk("Fine")]).name, "Fine");
+  // Everything vetoed: name the deepest rather than nothing, so the screen
+  // still says something and the closing explains why it is a non-starter.
+  assert.equal(bestOf([mk("A", { total: IN(20), wind: MPH(55) }), mk("B", { total: IN(40), wind: MPH(55) })]).name, "B");
+  assert.equal(bestOf([]), null);
+  assert.equal(bestOf(null), null);
 });

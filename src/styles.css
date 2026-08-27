@@ -989,13 +989,25 @@ body { background: #F2F2F2; }
    title in the app — set on a 28 line and coloured the other way round from
    usual: the prose is the quiet one at --fill, and only the clauses the data
    decided are inked, in the marker red. */
-.td-verdict {
+/* The resort sheet's own summary is the same sentence in a different place,
+   so it shares the type rather than restating it — Brian: "a slightly
+   modified version of the recommendation summary from the trips screen".
+   Only its spacing is its own. */
+.td-verdict, .rs-summary {
   margin: calc(17.5 * var(--u)) 0 0;
   font-size: calc(23.5 * var(--u)); line-height: calc(28 * var(--u));
   font-weight: 700; letter-spacing: -.04em; color: var(--fill);
 }
-.td-verdict b { font-weight: 700; color: var(--mark-red); }
+.td-verdict b, .rs-summary b { font-weight: 700; color: var(--mark-red); }
 .td-rule-2 { margin-top: calc(17.5 * var(--u)); }
+
+/* Measured off Resort Sheet-max-with-summary-and-forecast: the summary's cap
+   line sits 51 below the rule that closes the snowfall bars.
+   No border of its own — the bar list already draws that rule, and adding a
+   second one 26 further down read as a mistake rather than as a section
+   break. 45.5 rather than 51 because the 23.5/28 line box puts the cap top
+   5.5 below its own edge. */
+.rs-summary { margin-top: calc(45.5 * var(--u)); }
 /* Adjacent margins collapse, so the extra room under the verdict rule has to
    come from the table's own margin rather than the rule's. */
 .tripdetail .td-rule-2 + .table { margin-top: calc(22 * var(--u)); }

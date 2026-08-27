@@ -29,7 +29,7 @@
 
 import { tempSeverity, windSeverity, rainRisk } from "./scoring.js";
 import { snowWithUnit } from "./units.js";
-import { rank, byRank, vetoOf } from "./rank.js";
+import { rank, bestOf, vetoOf } from "./rank.js";
 import {
   COLD_RED, COLD_DEEP, COLD_AMBER_HI,
   WARM_AMBER_LO, WARM_RED, TOO_WARM, WARM_SPRING, PLEASANT_LO,
@@ -217,12 +217,10 @@ export function tripVerdict(rows, metric) {
      agree, and a sentence that recommends the second row would read as a bug.
      Ranked here rather than trusted, for the same reason extremes() exists. */
   const ranked = usable.map((r) => (r.rank != null ? r : { ...r, ...extremes(r.win), rank: rank({ ...r, ...extremes(r.win) }) }));
-  /* A vetoed resort must never be the recommendation. If every option is
-     vetoed there is nothing to prefer, so the deepest of them is named and
-     the closing says why it is a non-starter — better than an empty screen
-     or a silent pick. */
-  const open = ranked.filter((r) => !vetoOf(r));
-  const best = (open.length ? open : ranked).reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
+  /* bestOf() is shared with the results table, so the coral row and this
+     sentence name the same resort by construction rather than by two files
+     agreeing to. They did not, once. */
+  const best = bestOf(ranked);
   const days = best.win.length;
   const { hi, lo, wind } = extremes(best.win);
   const temp = tempClause({ hi, lo, wind });
@@ -239,4 +237,61 @@ export function tripVerdict(rows, metric) {
     { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
     { t: closingWord({ total: best.total ?? 0, days, hi, lo, wind, rain: rainRisk(best) }) },
   ];
+}
+
+/** The same sentence, scoped to ONE resort — the summary Brian added under
+ *  the snowfall bars in the maximized sheet.
+ *
+ *      Looking like [snowfall] of snow over [n days]. Temps look [x], and
+ *      winds are [y]. [[wind, temps] could be a concern.]
+ *
+ *  Three differences from the trip verdict, all of them because you are
+ *  already looking at the resort:
+ *
+ *  - No name. "Your best bet is looking like Alta" makes no sense on Alta's
+ *    own sheet, so it opens "Looking like" and there are three highlighted
+ *    clauses rather than four.
+ *  - No "Overall" line. Nothing is being recommended over anything.
+ *  - A concern clause instead, and only when there is one. His mock wraps the
+ *    whole thing in a second pair of brackets — [[wind, temps] could be a
+ *    concern.] — which is him writing "optional" twice: the subject varies AND
+ *    the sentence may not appear at all.
+ */
+export function resortVerdict(r, metric) {
+  if (!r?.win?.length) return null;
+  const days = r.win.length;
+  const { hi, lo, wind } = extremes(r.win);
+  const temp = tempClause({ hi, lo, wind });
+
+  const out = [
+    { t: "Looking like " },
+    { t: snowWithUnit(r.total, metric), hot: true },
+    { t: ` of snow over ${days} days. ` },
+    { t: temp.t, hot: true },
+    { t: temp.bang ? " " : ", and " },
+    { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
+    { t: "." },
+  ];
+  const concern = concernClause({ hi, lo, wind });
+  if (concern) out.push({ t: ` ${concern}` });
+  return out;
+}
+
+/** Which of the two is worth naming, and how loudly.
+ *
+ *  Amber deliberately says nothing: the clause above has already called the
+ *  temps "a bit warm" or the winds "moderate", and a screen that flags every
+ *  ordinary winter day teaches you to stop reading it. Red earns a mention,
+ *  and one of Brian's deal breakers earns the stronger word. */
+export function concernClause({ hi, lo, wind }) {
+  const veto = vetoOf({ hi, lo, wind });
+  if (veto === "wind") return "Wind is a deal breaker.";
+  if (veto) return "Temps are a deal breaker.";
+
+  const badWind = windSeverity(wind) === "red";
+  const badTemp = tempSeverity(hi, lo) === "red";
+  if (badWind && badTemp) return "Wind and temps could be a concern.";
+  if (badWind) return "Wind could be a concern.";
+  if (badTemp) return "Temps could be a concern.";
+  return null;
 }

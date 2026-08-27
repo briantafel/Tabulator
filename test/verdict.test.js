@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { tripVerdict, tempWord, tempClause, windWord, closingWord } from "../src/lib/verdict.js";
+import { tripVerdict, resortVerdict, concernClause, tempWord, tempClause, windWord, closingWord } from "../src/lib/verdict.js";
 /* The thresholds are authored in °F, mph and inches and stored metric, so the
    test speaks the authored units too — a band expressed in °C here would be
    unreadable against the numbers in constants.js. */
@@ -158,4 +158,32 @@ test("when everything is a deal breaker, say so rather than pick silently", () =
   const s = say(tripVerdict(rows, false));
   assert.match(s, /^Your best bet is looking like Bigger gale, /);
   assert.match(s, /non-starter — nothing will be running\.$/);
+});
+
+test("the resort summary drops the name and the Overall line", () => {
+  // Brian: "a slightly modified version of the recommendation summary from the
+  // trips screen". You are already on the resort's sheet, so naming it back at
+  // you makes no sense and nothing is being recommended over anything.
+  const v = resortVerdict({ total: IN(9), win: win(4) }, false);
+  const s = v.map((x) => x.t).join("");
+  assert.match(s, /^Looking like 9\.0" of snow over 4 days\. Temps look pleasant, and winds are calm\.$/);
+  assert.equal(v.filter((x) => x.hot).length, 3, "three highlighted clauses, not the trip page's four");
+  assert.ok(!/Overall/.test(s));
+  assert.equal(resortVerdict({ total: 0 }, false), null);
+});
+
+test("the concern clause appears only when there is a concern", () => {
+  const c = (o) => concernClause({ hi: F(25), lo: F(15), wind: MPH(5), ...o });
+  assert.equal(c({}), null);
+  // Amber says nothing: the clause above already called it "a bit warm" or
+  // "moderate", and flagging every ordinary winter day teaches you to stop
+  // reading the line.
+  assert.equal(c({ hi: F(32), wind: MPH(20) }), null);
+  assert.equal(c({ wind: MPH(35) }), "Wind could be a concern.");
+  assert.equal(c({ hi: F(36) }), "Temps could be a concern.");
+  assert.equal(c({ hi: F(36), wind: MPH(35) }), "Wind and temps could be a concern.");
+  // A deal breaker earns the stronger word.
+  assert.equal(c({ wind: MPH(50) }), "Wind is a deal breaker.");
+  assert.equal(c({ hi: F(45) }), "Temps are a deal breaker.");
+  assert.equal(c({ lo: F(-20) }), "Temps are a deal breaker.");
 });

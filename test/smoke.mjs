@@ -194,6 +194,16 @@ await check("the grabber maximizes the sheet and the reports scroll", async () =
   assert.ok(tall.height > rest.height + 100, `sheet did not grow: ${rest.height} -> ${tall.height}`);
   assert.ok(await page.locator(".reports h3").count() > 0, "no skier reports section");
 
+  // The summary Brian added under the bars — tall sheet only, same three
+  // highlighted clauses the trip page uses minus the resort's own name.
+  await page.waitForSelector(".rs-summary");
+  const sum = await page.locator(".rs-summary").innerText();
+  assert.match(sum, /^Looking like .+ of snow over \d+ days\. /);
+  assert.match(sum, /(Temps look .+, and winds are |It's spring, baby! Winds are )/);
+  assert.ok(!/Overall/.test(sum), "the resort summary should not carry the trip page's closing line");
+  assert.equal(await page.locator(".rs-summary b").count(), 3,
+    "expected three highlighted clauses in the resort summary");
+
   // The action row must stay pinned — the whole point of scrolling the middle.
   const closeBefore = await page.locator(".sheet-close").boundingBox();
   const scrolled = await page.evaluate(() => {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { snowWithUnit, tempTxt, windTxt, elevTxt } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
+import { resortVerdict } from "../lib/verdict.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import Dot from "./Dot.jsx";
 
@@ -64,6 +65,7 @@ export default function Detail({
 
   if (!r || !r.win?.length) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
+  const verdict = resortVerdict(r, metric);
   const said = reportsFor(reports, r.id);
 
   /* Drag the handle. The sheet follows the finger the whole way — an iOS
@@ -217,8 +219,25 @@ export default function Detail({
             ))}
           </div>
 
-          {/* Only in the tall sheet. The resting height is a measured design,
-              not a leftover, so reports are what the extra room is FOR. */}
+          {/* Only in the tall sheet, like the reports below it — the resting
+              height is a measured design and the extra room is what these
+              sections are FOR.
+
+              The same sentence as the trip page, scoped to this one resort:
+              no name (you are on its sheet), no "Overall" line (nothing is
+              being recommended over anything), and a concern clause only when
+              there is a concern. Same type as .td-verdict, deliberately —
+              Brian called it "a slightly modified version of the recommendation
+              summary from the trips screen", so it should read as the same
+              sentence in a different place, not as a second voice. */}
+          {max && verdict && (
+            <p className="rs-summary">
+              {verdict.map((seg, i) => (seg.hot
+                ? <b key={i}>{seg.t}</b>
+                : <span key={i}>{seg.t}</span>))}
+            </p>
+          )}
+
           {max && (
             <section className="reports" aria-label="Skier reports">
               <h3>Skier reports</h3>

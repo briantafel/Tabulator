@@ -95,3 +95,27 @@ export function rank(r) {
  *  something stable and meaningful rather than to array order. It also gives
  *  the vetoed block, all sitting at zero, a sensible internal order. */
 export const byRank = (x, y) => (y.rank - x.rank) || ((y.total ?? 0) - (x.total ?? 0));
+
+/** The one place that decides which resort is "the pick".
+ *
+ *  Brian, 2026-08-27: "the resort in red is occasionally not the recommended
+ *  resort using the weighted variables logic we developed."
+ *
+ *  It was picking the DEEPEST row. That was right when depth was the ranking;
+ *  since the balance landed they are different rows, and the table was
+ *  colouring one resort while the sentence recommended another.
+ *
+ *  Fixing the comparator alone would have left two copies of the same
+ *  judgement in two files, free to drift apart again the next time one of
+ *  them changes. So there is now exactly one: the table and the verdict both
+ *  call this. Returns null for an empty list.
+ *
+ *  A vetoed resort is never the pick unless everything is vetoed, in which
+ *  case the deepest of them is named — the same rule the verdict already
+ *  used, now shared rather than duplicated. */
+export function bestOf(rows) {
+  const usable = (rows ?? []).filter(Boolean);
+  if (!usable.length) return null;
+  const open = usable.filter((r) => !vetoOf(r));
+  return (open.length ? open : usable).reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
+}

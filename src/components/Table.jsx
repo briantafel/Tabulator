@@ -1,5 +1,6 @@
 import Dot from "./Dot.jsx";
 import { flags } from "../lib/scoring.js";
+import { bestOf } from "../lib/rank.js";
 import { snowWithUnit, tempTxt, windTxt } from "../lib/units.js";
 
 /* Column labels follow the Figma: "-3 days" rather than "before", and the ↑
@@ -11,11 +12,17 @@ const STAR10 =
   "M4.75537 0L5.87794 3.45492H9.51065L6.57173 5.59017L7.6943 9.04508L4.75537 6.90983L1.81644 9.04508L2.93901 5.59017L8.86917e-05 3.45492H3.6328L4.75537 0Z";
 
 export default function Table({ data, metric, onOpen, favs = [] }) {
-  /* Coral marks the deepest total, wherever it sits. On the mountains screen
-     that is row 0 because the list is sorted; on the favourites list it is
-     whichever row happens to have it, which is what the design draws. */
-  let best = -1, deepest = -Infinity;
-  data.forEach((r, i) => { if ((r.total ?? 0) > deepest) { deepest = r.total ?? 0; best = i; } });
+  /* Coral marks the PICK, wherever it sits. On the mountains screen that is
+     row 0 because the list is sorted by the same rule; on the favourites list
+     it is whichever row happens to hold it, which is what the design draws.
+
+     It used to mark the deepest total. That was right while depth was the
+     ranking, and became wrong the moment the balance landed — Brian: "the
+     resort in red is occasionally not the recommended resort using the
+     weighted variables logic we developed." bestOf() is the single decision
+     the verdict uses too, so the colour and the sentence cannot disagree. */
+  const pick = bestOf(data);
+  const best = pick ? data.indexOf(pick) : -1;
 
   return (
     <div className="table">
