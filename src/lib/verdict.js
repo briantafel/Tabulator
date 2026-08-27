@@ -29,7 +29,7 @@
 
 import { tempSeverity, windSeverity, rainRisk } from "./scoring.js";
 import { snowWithUnit } from "./units.js";
-import { rank, byRank } from "./rank.js";
+import { rank, byRank, vetoOf } from "./rank.js";
 import {
   COLD_RED, COLD_DEEP, COLD_AMBER_HI,
   WARM_AMBER_LO, WARM_RED, TOO_WARM, WARM_SPRING, PLEASANT_LO,
@@ -138,9 +138,27 @@ export function windWord(wind) {
  *  Snow is judged as a rate, not a total. 18" is a storm cycle over three days
  *  and an ordinary week over six, and the sentence has already told you which
  *  it is. */
+/** What a deal breaker reads as. Not "this is a non-starter" three times —
+ *  the reason is the useful part, and each one is a different kind of no. */
+const VETO_LINE = {
+  wind: ". Overall, that is a non-starter — nothing will be running.",
+  cold: ". Overall, that is a non-starter — too cold to be out in.",
+  // Cheerful up top, honest down here: spring skiing is a fine day out, it is
+  // just not the trip this app is for.
+  warm: ". Overall, that is spring, not skiing — give it a miss.",
+};
+
 export function closingWord({ total, days, hi, lo, wind, rain = false }) {
+  // Brian's deal breakers outrank everything, including the snow lines. That
+  // is the whole point of a veto: no amount of powder argues with it.
+  const veto = vetoOf({ hi, lo, wind });
+  if (veto) return VETO_LINE[veto];
+  /* There used to be a "soft snow and sunshine" line here for anything over
+     40°F. VETO_WARM is that same 40, so the veto above always got there
+     first and the line was unreachable. Its job moved into VETO_LINE.warm,
+     which keeps the register and adds the verdict. */
+
   const gale = wind != null && wind >= WIND_RED;
-  const spring = hi != null && hi > WARM_SPRING;
   // Cold plus wind reads "miserable" up in the clause above, so the closing
   // cannot then call it the move — 20mph at 5°F is not a red marker but it is
   // not a good day either, and the two halves of the sentence have to agree.
@@ -154,11 +172,6 @@ export function closingWord({ total, days, hi, lo, wind, rain = false }) {
   // publishes a freezing level, so rain can be read rather than guessed at.
   // Whatever is falling, if it lands as water there is nothing to ski.
   if (rain) return ". Overall, that is rain, not snow — sit this one out.";
-
-  // Spring outranks the snow lines. A foot at 42°F is not powder, and after
-  // "It's spring, baby!" a closing that calls it a fight is arguing with the
-  // sentence it just finished.
-  if (spring) return ". Overall, soft snow and sunshine.";
 
   // Two cases continue the sentence instead of starting a new one — they are
   // caveats on the conditions just described, not summaries of them.
@@ -204,7 +217,12 @@ export function tripVerdict(rows, metric) {
      agree, and a sentence that recommends the second row would read as a bug.
      Ranked here rather than trusted, for the same reason extremes() exists. */
   const ranked = usable.map((r) => (r.rank != null ? r : { ...r, ...extremes(r.win), rank: rank({ ...r, ...extremes(r.win) }) }));
-  const best = ranked.reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
+  /* A vetoed resort must never be the recommendation. If every option is
+     vetoed there is nothing to prefer, so the deepest of them is named and
+     the closing says why it is a non-starter — better than an empty screen
+     or a silent pick. */
+  const open = ranked.filter((r) => !vetoOf(r));
+  const best = (open.length ? open : ranked).reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
   const days = best.win.length;
   const { hi, lo, wind } = extremes(best.win);
   const temp = tempClause({ hi, lo, wind });

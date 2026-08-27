@@ -71,9 +71,12 @@ test("the closing line answers to the snow, not to nothing", () => {
   const c = (o) => closingWord({ hi: F(25), lo: F(15), wind: MPH(5), days: 4, ...o });
   // A real dump and nothing wrong with it.
   assert.match(c({ total: IN(24) }), /this is the move right now\.$/);
-  // A dump you have to earn — Brian's own caveat.
+  // A dump you have to earn — Brian's own caveat. Both stay the right side of
+  // the deal breakers: 35mph is howling but not a veto, and 0°F with a 22mph
+  // wind is "fairly miserable" without tripping the -10°F line.
   assert.match(c({ total: IN(24), wind: MPH(35) }), /storming, but if you can hack it/);
-  assert.match(c({ total: IN(24), lo: F(-20) }), /^, but if you can hack it, it's gonna be a powderpalooza\.$/);
+  assert.match(c({ total: IN(24), lo: F(0), hi: F(10), wind: MPH(22) }),
+    /^, but if you can hack it, it's gonna be a powderpalooza\.$/);
   // The bug this fixes: a snowless trip used to be "the move right now".
   assert.match(c({ total: IN(1) }), /not much falling right now\.$/);
   assert.match(c({ total: IN(1), wind: MPH(35) }), /this one's a skip\.$/);
@@ -82,10 +85,11 @@ test("the closing line answers to the snow, not to nothing", () => {
   // Cold plus a merely dicey wind reads "miserable" in the clause above, so
   // the closing must not then call it the move.
   assert.match(c({ total: IN(10), lo: F(5), wind: MPH(22) }), /a fight for a decent day\.$/);
-  // Spring outranks the snow lines — a foot at 42°F is not powder, and the
-  // closing must not argue with "It's spring, baby!".
-  assert.match(c({ total: IN(24), hi: F(45) }), /soft snow and sunshine\.$/);
-  assert.match(c({ total: IN(1), hi: F(45) }), /soft snow and sunshine\.$/);
+  // The deal breakers outrank every snow line — no amount of powder argues.
+  assert.match(c({ total: IN(24), wind: MPH(50) }), /non-starter — nothing will be running\.$/);
+  assert.match(c({ total: IN(24), lo: F(-20) }), /non-starter — too cold to be out in\.$/);
+  assert.match(c({ total: IN(24), hi: F(45) }), /spring, not skiing — give it a miss\.$/);
+  assert.match(c({ total: IN(1), hi: F(45) }), /spring, not skiing — give it a miss\.$/);
   // The honest unskiable case is rain, read off the freezing level.
   assert.match(c({ total: IN(24), rain: true }), /that is rain, not snow — sit this one out\.$/);
 });
@@ -107,17 +111,17 @@ test("only the decided clauses are highlighted — the day count is prose", () =
 });
 
 test("the verdict reads as one sentence however the clauses land", () => {
-  const rows = [{ name: "Alta", total: IN(24), win: win(3, { tempMin: F(-20), windMax: MPH(35) }) }];
+  const rows = [{ name: "Alta", total: IN(24), win: win(3, { tempMin: F(-8), tempMax: F(5), windMax: MPH(35) }) }];
   const s = say(tripVerdict(rows, false));
   assert.match(s, /^Your best bet is looking like Alta, with 24" over 3 days\. /);
-  assert.match(s, /Temps look downright miserable, and winds are howling, so it's going to be storming, but if you can hack it, it's gonna be a powderpalooza\.$/);
+  assert.match(s, /Temps look fairly miserable, and winds are howling, so it's going to be storming, but if you can hack it, it's gonna be a powderpalooza\.$/);
 });
 
 test("an unscored row still gets a real reading, not a default one", () => {
   // extremes() derives hi/lo/wind from the window, so a row that never went
   // through score() cannot silently read "good and calm".
   const v = tripVerdict([{ name: "Alta", total: IN(2), win: win(3, { tempMax: F(44) }) }], false);
-  assert.match(say(v), /days\. It's spring, baby! Winds are calm\. Overall, soft snow and sunshine\.$/);
+  assert.match(say(v), /days\. It's spring, baby! Winds are calm\. Overall, that is spring, not skiing — give it a miss\.$/);
 });
 
 test("rain is read off the freezing level, not guessed from temperature", () => {
@@ -131,4 +135,27 @@ test("rain is read off the freezing level, not guessed from temperature", () => 
 test("nothing to have an opinion about returns null", () => {
   assert.equal(tripVerdict([], true), null);
   assert.equal(tripVerdict([{ name: "x", total: 0 }], true), null);
+});
+
+test("a deal breaker is never the recommendation", () => {
+  // Brian: "winds over 45 mph would be a deal breaker entirely. Temps below
+  // -10º F and over 40º would also be a deal breaker."
+  const rows = [
+    { name: "Gale", total: IN(40), win: win(4, { windMax: MPH(55) }) },
+    { name: "Deepfreeze", total: IN(36), win: win(4, { tempMin: F(-20) }) },
+    { name: "Slush", total: IN(34), win: win(4, { tempMax: F(46) }) },
+    { name: "Fine", total: IN(9), win: win(4) },
+  ];
+  // Every vetoed resort is deeper than the one that wins, which is the point.
+  assert.match(say(tripVerdict(rows, false)), /^Your best bet is looking like Fine, /);
+});
+
+test("when everything is a deal breaker, say so rather than pick silently", () => {
+  const rows = [
+    { name: "Gale", total: IN(20), win: win(4, { windMax: MPH(55) }) },
+    { name: "Bigger gale", total: IN(40), win: win(4, { windMax: MPH(60) }) },
+  ];
+  const s = say(tripVerdict(rows, false));
+  assert.match(s, /^Your best bet is looking like Bigger gale, /);
+  assert.match(s, /non-starter — nothing will be running\.$/);
 });

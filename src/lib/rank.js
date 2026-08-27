@@ -23,9 +23,27 @@
 
 import {
   RANK_SNOW, RANK_BASE, RANK_TEMP, RANK_WIND, SNOW_FULL_RATE, BASE_FULL,
+  VETO_WIND, VETO_COLD, VETO_WARM,
   COLD_RED, COLD_AMBER_HI, WARM_AMBER_LO, WARM_SPRING,
   WIND_AMBER, WIND_HOWLING,
 } from "./constants.js";
+
+/** The deal breakers, which sit outside the weighting entirely.
+ *
+ *  Brian: "winds over 45 mph would be a deal breaker entirely. Temps below
+ *  -10º F and over 40º would also be a deal breaker."
+ *
+ *  A weight can always be outvoted by enough snow. That is the outcome he is
+ *  ruling out, so these cannot be weights — no quantity of powder makes a
+ *  mountain with its lifts on wind hold worth the flight. Returns the reason
+ *  rather than a boolean, so the sentence can say which one it was instead of
+ *  leaving a resort mysteriously last. */
+export function vetoOf(r) {
+  if (r.wind != null && r.wind > VETO_WIND) return "wind";
+  if (r.lo != null && r.lo < VETO_COLD) return "cold";
+  if (r.hi != null && r.hi > VETO_WARM) return "warm";
+  return null;
+}
 
 /** 0 at `lo`, 1 at `hi`, clamped — the one shape every term is built from. */
 const ramp = (v, lo, hi) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
@@ -59,8 +77,14 @@ export function rankParts(r) {
   return parts;
 }
 
-/** 0–100. Re-normalised over the terms we actually have. */
+/** 0–100, or a flat 0 for anything vetoed.
+ *
+ *  Zero rather than a low score on purpose: a vetoed resort has to sit below
+ *  every un-vetoed one no matter how deep it is, and scoring it on a curve
+ *  would let a big enough number climb back over the line. rankParts() still
+ *  reports the breakdown, so the reason it is at the bottom stays visible. */
 export function rank(r) {
+  if (vetoOf(r)) return 0;
   const parts = Object.values(rankParts(r));
   const got = parts.reduce((s, p) => s + p.got, 0);
   const max = parts.reduce((s, p) => s + p.max, 0);
@@ -68,5 +92,6 @@ export function rank(r) {
 }
 
 /** Deepest is still the tie-break: two identical scores should fall back to
- *  something stable and meaningful rather than to array order. */
+ *  something stable and meaningful rather than to array order. It also gives
+ *  the vetoed block, all sitting at zero, a sensible internal order. */
 export const byRank = (x, y) => (y.rank - x.rank) || ((y.total ?? 0) - (x.total ?? 0));

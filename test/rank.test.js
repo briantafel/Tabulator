@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rank, rankParts, byRank, tempScore, windScore } from "../src/lib/rank.js";
+import { rank, rankParts, byRank, tempScore, windScore, vetoOf } from "../src/lib/rank.js";
 /* Authored units, as everywhere else: °F, mph, inches. */
 const F = (f) => ((f - 32) * 5) / 9;
 const MPH = (m) => m * 1.60934;
@@ -85,4 +85,41 @@ test("ties fall back to depth, not to array order", () => {
   const b = { rank: 50, total: IN(9) };
   assert.ok(byRank(a, b) > 0, "the deeper of two equal scores sorts first");
   assert.deepEqual([a, b].sort(byRank), [b, a]);
+});
+
+test("a deal breaker is a veto, not a weight", () => {
+  // Brian, 2026-08-27. A weight can be outvoted by enough snow; that is the
+  // outcome he is ruling out, so these have to sit outside the weighting.
+  const huge = { total: IN(60), before: IN(12), hi: F(25), lo: F(15), wind: MPH(5) };
+  assert.equal(rank(huge), 100);
+  assert.equal(rank({ ...huge, wind: MPH(46) }), 0, "46mph must veto");
+  assert.equal(rank({ ...huge, lo: F(-11) }), 0, "-11°F must veto");
+  assert.equal(rank({ ...huge, hi: F(41) }), 0, "41°F must veto");
+});
+
+test("the last acceptable reading is not vetoed — he said over and below", () => {
+  const ok = { total: IN(20), before: IN(6), hi: F(25), lo: F(15), wind: MPH(5) };
+  assert.equal(vetoOf({ ...ok, wind: MPH(45) }), null);
+  assert.equal(vetoOf({ ...ok, lo: F(-10) }), null);
+  assert.equal(vetoOf({ ...ok, hi: F(40) }), null);
+  assert.equal(vetoOf({ ...ok, wind: MPH(45.1) }), "wind");
+});
+
+test("a veto names its reason, so nothing is mysteriously last", () => {
+  assert.equal(vetoOf({ wind: MPH(50), lo: F(15), hi: F(25) }), "wind");
+  assert.equal(vetoOf({ wind: MPH(5), lo: F(-20), hi: F(25) }), "cold");
+  assert.equal(vetoOf({ wind: MPH(5), lo: F(15), hi: F(45) }), "warm");
+  assert.equal(vetoOf({ wind: MPH(5), lo: F(15), hi: F(25) }), null);
+  // Missing data cannot veto — a partial scrape must not disqualify a resort.
+  assert.equal(vetoOf({ wind: null, lo: null, hi: null }), null);
+});
+
+test("vetoed resorts sink below every open one, deepest first among themselves", () => {
+  const mk = (name, total, o) => ({ name, total, ...{ before: IN(6), hi: F(25), lo: F(15), wind: MPH(5) }, ...o });
+  const rows = [
+    mk("Gale", IN(40), { wind: MPH(55) }),
+    mk("Fine", IN(9)),
+    mk("Bigger gale", IN(50), { wind: MPH(60) }),
+  ].map((x) => ({ ...x, rank: rank(x) }));
+  assert.deepEqual(rows.sort(byRank).map((x) => x.name), ["Fine", "Bigger gale", "Gale"]);
 });

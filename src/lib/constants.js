@@ -79,6 +79,27 @@ export const THIN_TOTAL = IN(4);      // < 4" across the whole window
  * Each term saturates: past its FULL value more is not better. 40" and 60" are
  * both simply a lot of snow, and a model that kept rewarding the difference
  * would let one freak number outvote everything else. */
+/* Deal breakers. Brian, 2026-08-27: "winds over 45 mph would be a deal
+ * breaker entirely. Temps below -10º F and over 40º would also be a deal
+ * breaker."
+ *
+ * These are vetoes, not weights. A weight can always be outvoted by enough
+ * snow, and that is exactly the outcome he is ruling out — no amount of
+ * powder makes a mountain with the lifts on wind hold worth flying to. A
+ * vetoed resort scores zero and sorts to the bottom whatever else is true
+ * of it.
+ *
+ * Strict comparisons, because he said "over" and "below": 45mph and -10°F
+ * are the last acceptable readings, not the first rejected ones.
+ *
+ * VETO_WARM is the same 40 as WARM_SPRING, deliberately. The sentence still
+ * says "It's spring, baby!" — spring skiing is a fine day out, it is just
+ * not what this app is for, so the words stay cheerful and the ranking
+ * declines to recommend it. */
+export const VETO_WIND = MPH(45);
+export const VETO_COLD = F(-10);
+export const VETO_WARM = F(40);
+
 export const RANK_SNOW = 70;          // forecast snow over the window
 export const RANK_BASE = 12;          // the -3 days archive — something to ski on
 export const RANK_TEMP = 12;

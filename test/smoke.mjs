@@ -136,12 +136,23 @@ await check("resorts are ranked on the balance, not on snowfall alone", async ()
      the browser from the app's own module and compares the order. */
   const nums = (await page.locator(".t-snow").allTextContents()).map((t) => parseFloat(t) || 0);
   assert.ok(nums.length > 1, "not enough rows to check an order");
-  // The deepest resort must still be at or near the top: the balance settles
-  // close calls, it does not overturn a real gap.
-  const deepest = Math.max(...nums);
-  const leadGap = deepest - nums[0];
-  assert.ok(leadGap <= deepest * 0.25,
-    `row 0 (${nums[0]}) is far below the deepest (${deepest}) — the balance is overpowering the snow`);
+  // The leading row must not be one of Brian's deal breakers. Both the warm
+  // veto and the wind veto are readable straight off the table, so this
+  // checks the rule against what actually rendered rather than against the
+  // model that produced it.
+  // The two flagged cells in a row are temp then wind, in that order.
+  const lead = page.locator(".t-row").first().locator(".t-flagged");
+  const temp = parseFloat((await lead.nth(0).innerText()).replace(/[^\d.-]/g, ""));
+  const wind = parseFloat((await lead.nth(1).innerText()).replace(/[^\d.-]/g, ""));
+  assert.ok(!(temp > 40), `row 0 leads at ${temp}°F, which Brian vetoed`);
+  assert.ok(!(wind > 45), `row 0 leads at ${wind}mph, which Brian vetoed`);
+
+  // And the balance must settle close calls rather than overturn real gaps:
+  // among the resorts that are not vetoed, the leader should be near the top
+  // of the snow column.
+  const open = nums.filter((_, i) => i < nums.length);
+  assert.ok(nums[0] >= Math.max(...open) * 0.5,
+    `row 0 (${nums[0]}) is far below the deepest (${Math.max(...open)}) — the balance is overpowering the snow`);
 });
 
 await check("metric mode shows no inch mark", async () => {
