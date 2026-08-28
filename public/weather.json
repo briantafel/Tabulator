@@ -1,64 +1,2052 @@
 {
- "generatedAt": "2026-08-27T20:20:00.000Z",
- "source": "api.weather.gov",
- "note": "US National Weather Service. Coordinates are the resort, not the nearest town.",
+ "generatedAt": "2026-08-26T00:02:21.192Z",
+ "synthetic": true,
+ "note": "Derived from the sample forecast so the strip agrees with the bars. NOT a real NWS forecast.",
  "resorts": {
-  "snowbird": {
-   "point": [
-    40.582,
-    -111.6562
-   ],
-   "station": "Snowbird UT",
-   "elevationFt": 9298,
+  "palisades": {
+   "synthetic": true,
    "periods": [
     {
-     "name": "Tonight",
-     "isDaytime": false,
-     "temperature": 55,
-     "shortForecast": "Partly Cloudy",
-     "startTime": "2026-08-27T18:00:00-06:00"
-    },
-    {
-     "name": "Wednesday",
+     "name": "2026-08-26",
      "isDaytime": true,
-     "temperature": 78,
-     "shortForecast": "Scattered Showers",
-     "startTime": "2026-08-28T06:00:00-06:00"
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Blizzard Conditions"
     },
     {
-     "name": "Wednesday Night",
+     "name": "2026-08-26 night",
      "isDaytime": false,
-     "temperature": 56,
-     "shortForecast": "Partly Cloudy",
-     "startTime": "2026-08-28T18:00:00-06:00"
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Blizzard Conditions"
     },
     {
-     "name": "Thursday",
+     "name": "2026-08-27",
      "isDaytime": true,
-     "temperature": 80,
-     "shortForecast": "Sunny then Isolated T-storms",
-     "startTime": "2026-08-29T06:00:00-06:00"
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Blizzard Conditions"
     },
     {
-     "name": "Thursday Night",
+     "name": "2026-08-27 night",
      "isDaytime": false,
-     "temperature": 56,
-     "shortForecast": "Scattered Showers",
-     "startTime": "2026-08-29T18:00:00-06:00"
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Blizzard Conditions"
     },
     {
-     "name": "Friday",
+     "name": "2026-08-28",
      "isDaytime": true,
-     "temperature": 78,
-     "shortForecast": "Partly Sunny then Isolated T-storms",
-     "startTime": "2026-08-30T06:00:00-06:00"
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Blizzard Conditions"
     },
     {
-     "name": "Friday Night",
+     "name": "2026-08-28 night",
      "isDaytime": false,
-     "temperature": 52,
-     "shortForecast": "Slight Chance T-storms then Showers",
-     "startTime": "2026-08-30T18:00:00-06:00"
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Blizzard Conditions"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 43,
+     "shortForecast": "Blizzard Conditions"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Blizzard Conditions"
+    }
+   ]
+  },
+  "heavenly": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 41,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "kirkwood": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "mammoth": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "telluride": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "crested-butte": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "aspen-highlands": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "steamboat": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "snowbird": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Windy"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Windy"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "alta": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 32,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Heavy Snow"
+    }
+   ]
+  },
+  "jackson-hole": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "grand-targhee": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 34,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Mostly Cloudy"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Mostly Cloudy"
+    }
+   ]
+  },
+  "sun-valley": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Blizzard Conditions"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Blizzard Conditions"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Blizzard Conditions"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Blizzard Conditions"
+    }
+   ]
+  },
+  "big-sky": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "taos": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Mostly Cloudy"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Mostly Cloudy"
+    }
+   ]
+  },
+  "revelstoke": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 18,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 7,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 9,
+     "shortForecast": "Heavy Snow"
+    }
+   ]
+  },
+  "whistler": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "lake-louise": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 30,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    }
+   ]
+  },
+  "kicking-horse": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 25,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 23,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Heavy Snow"
+    }
+   ]
+  },
+  "whiteface": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 7,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 7,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 7,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "stowe": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 19,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 21,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 10,
+     "shortForecast": "Light Snow"
+    }
+   ]
+  },
+  "killington": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 37,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 36,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 27,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 39,
+     "shortForecast": "Heavy Snow"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 28,
+     "shortForecast": "Heavy Snow"
+    }
+   ]
+  },
+  "jay-peak": {
+   "synthetic": true,
+   "periods": [
+    {
+     "name": "2026-08-26",
+     "isDaytime": true,
+     "startTime": "2026-08-26T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-26 night",
+     "isDaytime": false,
+     "startTime": "2026-08-26T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27",
+     "isDaytime": true,
+     "startTime": "2026-08-27T06:00:00-07:00",
+     "temperature": 12,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-27 night",
+     "isDaytime": false,
+     "startTime": "2026-08-27T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-28",
+     "isDaytime": true,
+     "startTime": "2026-08-28T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-28 night",
+     "isDaytime": false,
+     "startTime": "2026-08-28T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29",
+     "isDaytime": true,
+     "startTime": "2026-08-29T06:00:00-07:00",
+     "temperature": 16,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-29 night",
+     "isDaytime": false,
+     "startTime": "2026-08-29T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-30",
+     "isDaytime": true,
+     "startTime": "2026-08-30T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-30 night",
+     "isDaytime": false,
+     "startTime": "2026-08-30T18:00:00-07:00",
+     "temperature": 5,
+     "shortForecast": "Light Snow"
+    },
+    {
+     "name": "2026-08-31",
+     "isDaytime": true,
+     "startTime": "2026-08-31T06:00:00-07:00",
+     "temperature": 14,
+     "shortForecast": "Snow Showers"
+    },
+    {
+     "name": "2026-08-31 night",
+     "isDaytime": false,
+     "startTime": "2026-08-31T18:00:00-07:00",
+     "temperature": 3,
+     "shortForecast": "Snow Showers"
     }
    ]
   }

@@ -75,3 +75,30 @@ test("a trailing day with no night still renders, and the limit holds", () => {
   assert.deepEqual(toDays([]), []);
   assert.deepEqual(toDays(null), []);
 });
+
+test("sample weather only ever sits beside sample snow", async () => {
+  /* The live site and the demo artifact are built from the same public/
+     JSON now. They drifted once — the artifact had a derived winter strip for
+     all 23 resorts while the site had one real summer NWS response and 22
+     blanks — and it read as a broken deploy rather than as different data.
+
+     The invariant that stops it recurring is not "these files match" but the
+     honest one underneath: derived weather must never be shown next to real
+     snow. A synthetic strip beside a real forecast would be a fabrication;
+     beside a sample forecast it is just more of the same sample, and Settings
+     already says so. */
+  const { readFile } = await import("node:fs/promises");
+  const read = async (p) => JSON.parse(await readFile(new URL(p, import.meta.url), "utf8"));
+  const forecast = await read("../public/forecast.json");
+  const weather = await read("../public/weather.json");
+
+  if (weather.synthetic) {
+    assert.ok(forecast.synthetic,
+      "public/weather.json is derived sample data but public/forecast.json is real — "
+      + "that combination presents invented conditions beside a real forecast");
+    // And it covers everything, so no resort is conspicuously blank.
+    for (const r of forecast.resorts) {
+      assert.ok(weather.resorts[r.id]?.periods?.length, `${r.id} has no weather`);
+    }
+  }
+});
