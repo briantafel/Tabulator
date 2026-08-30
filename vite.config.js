@@ -13,6 +13,18 @@ const BUILD = (process.env.GITHUB_SHA || "").slice(0, 7) ||
    afterwards. Without this every deploy would reuse one cache name and the
    worker would never notice it had been replaced — the exact bug it exists
    to fix, one level down. */
+/* Where this build will actually live. og:image and og:url have to be
+   absolute — a scraper fetching the page has no base to resolve a relative
+   path against, and gets no preview rather than a broken one, which is the
+   kind of failure nobody notices for months. Overridable so a move does not
+   need a code change. */
+const SITE_URL = process.env.SITE_URL || "https://briantafel.github.io/Tabulator/";
+
+const stampSiteUrl = () => ({
+  name: "stamp-site-url",
+  transformIndexHtml: (html) => html.replaceAll("%SITE_URL%", SITE_URL),
+});
+
 const stampServiceWorker = () => ({
   name: "stamp-service-worker",
   apply: "build",
@@ -31,7 +43,7 @@ const stampServiceWorker = () => ({
 // base path. Local dev and any root-hosted deploy keep "/".
 export default defineConfig({
   base: process.env.BASE_PATH || "/",
-  plugins: [react(), stampServiceWorker()],
+  plugins: [react(), stampSiteUrl(), stampServiceWorker()],
   define: { "import.meta.env.VITE_BUILD": JSON.stringify(BUILD) },
   server: { port: 5173 },
 });
