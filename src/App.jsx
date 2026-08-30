@@ -12,6 +12,10 @@ import TripDetail from "./components/TripDetail.jsx";
 
 import { loadForecast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
+/* Aliased: `load` is already this file's forecast loader, and an
+   unaliased import silently resolved to that instead — the storage
+   read never ran and Reload forecast was one typo from breaking. */
+import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { byRank } from "./lib/rank.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
@@ -43,7 +47,7 @@ export default function Tabulator() {
   const [feed, setFeed] = useState(null);
   const [err, setErr] = useState(null);
 
-  const [metric, setMetric] = useState(false);
+  const [metric, setMetric] = useState(() => loadSaved("metric", false));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -55,14 +59,14 @@ export default function Tabulator() {
   const [shown, setShown] = useState(false);
   const [page, setPage] = useState(0); // 0 table, 1 chart
   const [open, setOpen] = useState(null);
-  const [trips, setTrips] = useState([]);
+  const [trips, setTrips] = useState(() => loadSaved("trips", []));
   /* { id } while the edit screen is up; the extra `leaving` flag drives the
      slide back out, because the screen has to finish moving before it goes. */
   const [editing, setEditing] = useState(null);
   /* { id } while a single trip is open. Same leaving-flag trick as the editor
      so the screen finishes sliding out before it unmounts. */
   const [viewing, setViewing] = useState(null);
-  const [favs, setFavs] = useState([]);
+  const [favs, setFavs] = useState(() => loadSaved("favs", []));
 
   const load = useCallback(async () => {
     setErr(null);
@@ -83,6 +87,13 @@ export default function Tabulator() {
   const last = Math.max(0, dates.length - 1);
   const [wa, wb] =
     mode === "days" ? [0, Math.min(days - 1, last)] : [Math.min(a, last), Math.min(b, last)];
+
+  /* The three things worth remembering. Written on change rather than on
+     unload: iOS kills a backgrounded home-screen app without firing
+     beforeunload, so anything saved at exit is not saved at all. */
+  useEffect(() => { saveLocal("trips", trips); }, [trips]);
+  useEffect(() => { saveLocal("favs", favs); }, [favs]);
+  useEffect(() => { saveLocal("metric", metric); }, [metric]);
 
   const data = useMemo(
     () =>
