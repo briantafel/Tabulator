@@ -127,7 +127,13 @@ export default function Tabulator() {
          and renaming still needs a UI. Deriving the name from the window
          would just repeat the date line printed underneath it. */
       const n = t.length + 1;
+      /* The window the trip was saved FROM, not just a label rendering it.
+         Without these the trip page had nothing of its own to score against
+         and fell back to whatever the mountains screen was showing, so a
+         four-day trip reported six days of snow. The label is a rendering of
+         the range; these are the range. */
       return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
+                      start: dates?.[wa], end: dates?.[wb],
                       resorts: resort ? [resort] : [] }];
     });
 
@@ -339,11 +345,39 @@ export default function Tabulator() {
               setViewing({ ...viewing, leaving: true });
               setTimeout(() => setViewing(null), 260);
             };
+            /* Score against the TRIP'S OWN window, not whatever the mountains
+               screen is currently showing. `data` above is scored on wa..wb,
+               so a four-day trip opened while the search was set to six days
+               reported six days of snow and recommended a resort on numbers
+               the trip never covered. Brian caught it: "The suggestion talks
+               about 6 days when the trip is actually shorter."
+
+               A trip can sit outside the forecast horizon entirely — the trip
+               calendar is deliberately not horizon-bound, because you plan a
+               February week in August — so the overlap is what gets scored,
+               and no overlap means there is nothing to say yet. */
+            /* Three cases, and they are genuinely different:
+               - dates stored and inside the horizon -> score exactly them
+               - dates stored but outside it -> beyond the forecast, say so
+               - no dates at all -> a trip saved before trips carried their
+                 window. Fall back to the app's DEFAULT four days rather than
+                 the current search, so at least the page means the same thing
+                 every time it is opened. */
+            const dated = t.start != null && t.end != null;
+            const ta = dated ? dates.indexOf(t.start) : 0;
+            const tb = dated ? dates.indexOf(t.end) : Math.min(3, dates.length - 1);
+            const beyond = dated && (ta === -1 || tb === -1);
+            const tripData = beyond || !feed
+              ? []
+              : feed.resorts
+                .map((x) => score(x, Math.max(0, ta), Math.max(0, tb), feed.history))
+                .sort(byRank);
             return (
               <div className={viewing.leaving ? "tripdetail-out" : ""}>
                 <TripDetail
                   trip={t}
-                  data={data ?? []}
+                  data={tripData}
+                  beyond={beyond}
                   favs={favs}
                   metric={metric}
                   onOpen={setOpen}

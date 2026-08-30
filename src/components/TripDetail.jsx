@@ -11,7 +11,7 @@ import { tripVerdict } from "../lib/verdict.js";
  *  whatever they were when the resort was added. A resort that has since
  *  fallen out of the feed simply does not appear; showing a stale row would be
  *  worse than showing one fewer. */
-export default function TripDetail({ trip, data, favs, metric, onOpen, onClose }) {
+export default function TripDetail({ trip, data, beyond, favs, metric, onOpen, onClose }) {
   useEffect(() => {
     const k = (e) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", k);
@@ -40,6 +40,17 @@ export default function TripDetail({ trip, data, favs, metric, onOpen, onClose }
       {/* The call, in words. Grey prose, coral where the numbers decided
           something — his design highlights the resort, the total, and the two
           verdicts, and deliberately leaves the day count in the prose. */}
+      {/* A trip past the six-day horizon has no forecast to read yet. Saying
+          so is the only honest option: the alternative was showing whatever
+          window the mountains screen happened to be on, which is the bug this
+          replaces. */}
+      {beyond && (
+        <>
+          <p className="td-verdict"><span>These dates are beyond the six-day forecast. Check back closer to the trip.</span></p>
+          <div className="td-rule td-rule-2" />
+        </>
+      )}
+
       {verdict && (
         <>
           <p className="td-verdict">
