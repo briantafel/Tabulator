@@ -26,24 +26,33 @@ const CHECK_RING = [
 const CHECK_FULL =
   "M384.5 218C382.226 218 380.002 218.674 378.111 219.938C376.22 221.202 374.746 222.998 373.875 225.099C373.005 227.2 372.777 229.513 373.221 231.744C373.665 233.974 374.76 236.023 376.368 237.632C377.977 239.24 380.026 240.335 382.256 240.779C384.487 241.223 386.8 240.995 388.901 240.125C391.002 239.254 392.798 237.78 394.062 235.889C395.326 233.998 396 231.774 396 229.5C396 226.45 394.788 223.525 392.632 221.368C390.475 219.212 387.55 218 384.5 218ZM382.857 234.092L378.75 229.985L380.057 228.679L382.857 231.479L388.944 225.393L390.255 226.696L382.857 234.092Z";
 
-const CAL_PLUS = [
-  "M26.0032 4.00073H22.0027V2.00049H20.0024V4.00073H12.0015V2.00049H10.0012V4.00073H6.00073C4.9006 4.00073 4.00049 4.90084 4.00049 6.00097V26.0033C4.00049 27.1035 4.9006 28.0036 6.00073 28.0036H26.0032C27.1033 28.0036 28.0034 27.1035 28.0034 26.0033V6.00097C28.0034 4.90084 27.1033 4.00073 26.0032 4.00073ZM26.0032 26.0033H6.00073V12.0017H26.0032V26.0033ZM26.0032 10.0014H6.00073V6.00097H10.0012V8.00121H12.0015V6.00097H20.0024V8.00121H22.0027V6.00097H26.0032V10.0014Z",
-  "M17.002 17.9995L19 17.9993V19.9998H17.002V22H15.0017V19.9998H13V17.9995H15.0017V15.9993H17.002V17.9995Z",
-];
-/* The same calendar, with an X instead of a plus, for a resort already in a
-   trip. Brian's resort-sheet-remove-from-trip export draws the X at 7.66
-   across centred on (361, 50) where his plus is 8.83 across on the same
-   centre; the app's plus is 6 across on (16, 19). So the X arrives under the
-   one transform that maps his glyph box onto the app's — written as a
-   transform rather than as retyped coordinates, because retyping 24 numbers
-   is 24 chances to be wrong about a shape I cannot check by eye. */
-const CAL_X_GLYPH =
-  "M362.416 50.0007L364.829 52.4134L363.414 53.8279L361.001 51.4151L358.587 53.8295L357.173 52.4151L359.587 50.0007L357.172 47.5853L358.586 46.1709L361.001 48.5863L363.416 46.1727L364.83 47.5871L362.416 50.0007Z";
-const CAL_X_TRANSFORM = "translate(-229.372,-14.985) scale(0.679656)";
+/* The trip calendar, verbatim from Brian's resort-sheet-add-to-trip and
+   -remove-from-trip exports, in his own coordinates — the frame is 24x26 at
+   349,33, so the viewBox carries the offset and nothing is rescaled or
+   retyped.
 
-/* The filled circle X in the Remove-from-trip rows. */
-const RT_X = "M12.25 0C5.48 0 0 5.48 0 12.25S5.48 24.5 12.25 24.5 24.5 19.02 24.5 12.25 19.02 0 12.25 0Z";
-const RT_TICK = "M17.06 15.64L15.64 17.06L12.25 13.67L8.86 17.06L7.44 15.64L10.83 12.25L7.44 8.86L8.86 7.44L12.25 10.83L15.64 7.44L17.06 8.86L13.67 12.25L17.06 15.64Z";
+   BOTH PATHS TAKE ONE FILL. His add icon is black throughout and his remove
+   icon is #EF4A38 throughout — frame included. An earlier pass reddened only
+   the glyph and left the frame dark, which is not what he drew. The svg
+   inherits currentColor so the button's colour flips the whole thing.
+
+   The two glyphs are different sizes on the same centre (361, 50): the plus
+   is 8.83 across, the X 7.66. That is deliberate in his drawing — an X reads
+   larger than a plus at the same measure — so they are kept as drawn. */
+const CAL_FRAME =
+  "M371.003 35.0002H367.003V33H365.002V35.0002H357.001V33H355.001V35.0002H351.001C349.901 35.0002 349 35.9003 349 37.0005V57.0028C349 58.103 349.901 59.0031 351.001 59.0031H371.003C372.103 59.0031 373.003 58.103 373.003 57.0028V37.0005C373.003 35.9003 372.103 35.0002 371.003 35.0002ZM371.003 57.0028H351.001V43.0012H371.003V57.0028ZM371.003 41.0009H351.001V37.0005H355.001V39.0007H357.001V37.0005H365.002V39.0007H367.003V37.0005H371.003V41.0009Z";
+const CAL_PLUS =
+  "M362.002 48.999L365.414 48.9987V50.9992H362.002V54.4137H360.002V50.9992H356.586V48.999H360.002L360.003 45.585H362.003L362.002 48.999Z";
+const CAL_X =
+  "M362.416 50.0007L364.829 52.4134L363.414 53.8279L361.001 51.4151L358.587 53.8295L357.173 52.4151L359.587 50.0007L357.172 47.5853L358.586 46.1709L361.001 48.5863L363.416 46.1727L364.83 47.5871L362.416 50.0007Z";
+
+/* The filled X on a Remove-from-trip row, verbatim from his
+   resort-sheet-removefromtrip export: ONE path, 23.88 across, the X knocked
+   out of the disc by fill-rule rather than drawn over it — the same
+   construction as the trip editor's filled check. Its own coordinates again,
+   so the viewBox carries the offset. */
+const RT_X =
+  "M393.456 138.515C391.187 136.3 388.142 135.06 384.971 135.06C381.8 135.06 378.755 136.3 376.485 138.515C374.271 140.784 373.031 143.829 373.031 147C373.031 150.171 374.271 153.216 376.485 155.485C378.755 157.7 381.8 158.94 384.971 158.94C388.142 158.94 391.187 157.7 393.456 155.485C395.671 153.216 396.911 150.171 396.911 147C396.911 143.829 395.671 140.784 393.456 138.515ZM389.213 152.455L384.971 148.212L380.728 152.455L379.516 151.243L383.759 147L379.516 142.757L380.728 141.545L384.971 145.788L389.213 141.545L390.426 142.757L386.183 147L390.426 151.243L389.213 152.455Z";
 
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
@@ -361,9 +370,8 @@ export default function Detail({
                   }}
                   aria-label={`Remove ${r.name} from ${t.name}`}
                 >
-                  <svg viewBox="0 0 24.5 24.5" aria-hidden="true">
+                  <svg viewBox="373.03 135.06 23.88 23.88" aria-hidden="true">
                     <path d={RT_X} />
-                    <path className="rt-tick" d={RT_TICK} />
                   </svg>
                 </button>
               </div>
@@ -430,11 +438,9 @@ export default function Detail({
             aria-expanded={adding || removing}
             aria-label={booked ? "Remove from trip" : "Add to trip"}
           >
-            <svg viewBox="0 0 32 32" aria-hidden="true">
-              <path d={CAL_PLUS[0]} />
-              {booked
-                ? <path className="cal-x" d={CAL_X_GLYPH} transform={CAL_X_TRANSFORM} />
-                : <path d={CAL_PLUS[1]} />}
+            <svg viewBox="349 33 24 26" aria-hidden="true">
+              <path d={CAL_FRAME} />
+              <path d={booked ? CAL_X : CAL_PLUS} />
             </svg>
           </button>
         </div>

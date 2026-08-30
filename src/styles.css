@@ -578,18 +578,14 @@ body { background: #F2F2F2; }
    it is the same list read the other way round — with a filled circle X at
    the right of each row. Tapping it drops the resort from that trip and the
    row goes with it. */
+/* 23.88 across, its right edge on 397 of the 402 — measured off his export,
+   which puts it 29 in from the frame rather than on the row's own 24. */
 .rt-x {
-  position: absolute; right: calc(24 * var(--u)); top: calc(23.5 * var(--u));
-  width: calc(24.5 * var(--u)); height: calc(24.5 * var(--u));
+  position: absolute; right: calc(29 * var(--u)); top: calc(23.5 * var(--u));
+  width: calc(23.88 * var(--u)); height: calc(23.88 * var(--u));
   padding: 0; line-height: 0;
 }
 .rt-x svg { display: block; width: 100%; height: 100%; fill: var(--ink); }
-/* The X knocks out of the disc in white rather than being drawn on top —
-   same construction as the trip editor's filled check. */
-.rt-x .rt-tick { fill: #fff; }
-/* The calendar's glyph is the only thing that changes between the two states,
-   so it carries the colour rather than the whole button. */
-.sheet-add .cal-x { fill: var(--mark-red); }
 .at-row { position: relative; }
 
 .at-when {
@@ -793,13 +789,17 @@ body { background: #F2F2F2; }
 }
 /* Quiet at rest, ink while the panel is open — both states are in the export;
    the coral "saved" state was Claude's invention and is gone. */
+/* Black by default, red once the resort is in a trip. The colour is on the
+   BUTTON, not on one path inside it: Brian's two exports fill the whole icon
+   — frame and glyph together — black in one and #EF4A38 in the other. */
 .sheet-add {
   flex: none; margin-left: calc(25 * var(--u)); padding: 0;
-  color: var(--fill); line-height: 0;
+  color: #000; line-height: 0;
 }
-.sheet-add.on { color: var(--ink); }
+.sheet-add.booked { color: var(--mark-red); }
+/* 24 x 26 in his drawing, not the 32 square the Carbon calendar used. */
 .sheet-add svg {
-  display: block; width: calc(32 * var(--u)); height: calc(32 * var(--u));
+  display: block; width: calc(24 * var(--u)); height: calc(26 * var(--u));
   fill: currentColor; stroke: none;
 }
 .sheet-add svg path { fill: currentColor; }
