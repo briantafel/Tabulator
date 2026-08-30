@@ -71,6 +71,32 @@ export default function Detail({
      Everything else the scrim sees began inside the sheet. */
   const fromScrim = useRef(false);
   useEffect(() => { setAdding(false); setNaming(false); setDraft(""); setMax(false); }, [r]);
+
+  /* Brian: "the grabber on the resort sheet is fussy. When trying to use it,
+     the page underneath scrolls sometimes."
+     touch-action on the handle stops the browser claiming the gesture, but it
+     cannot stop the page from having scrolled already — the results list
+     behind the scrim is a perfectly ordinary scrolling document, and on iOS a
+     drag that starts anywhere over it moves it. Locking the body for as long
+     as the sheet is open is the only thing that actually holds.
+     The scroll position is restored on close: setting overflow hidden makes
+     the document jump to the top otherwise, and reopening a sheet should not
+     lose your place in the table. */
+  useEffect(() => {
+    const y = window.scrollY;
+    const { overflow, position, top, width } = document.body.style;
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${y}px`;
+    document.body.style.width = "100%";
+    return () => {
+      document.body.style.overflow = overflow;
+      document.body.style.position = position;
+      document.body.style.top = top;
+      document.body.style.width = width;
+      window.scrollTo(0, y);
+    };
+  }, []);
   useEffect(() => { if (naming) field.current?.focus(); }, [naming]);
   /* Restoring while scrolled would leave the resting sheet showing day four
      and no way back — the scroller is gone at that height. */
@@ -136,20 +162,77 @@ export default function Detail({
     d.h2 = h;
   };
 
+  /* Move to a height, visibly.
+   *
+   * Brian: "the grabber should result in a smooth motion maximization of the
+   * resort sheet, not a sudden expansion. Same with dragging it down."
+   *
+   * The transition was already declared and did nothing, because at rest the
+   * sheet has NO height — it is a content-sized flex column — and CSS cannot
+   * transition to or from `auto`. Every toggle was a jump from an implicit
+   * height to a computed one, which the browser renders as a cut.
+   *
+   * So both ends are made concrete before anything moves: measure where it
+   * is, apply the class and measure where it is going, snap back to the
+   * start, force a reflow so the browser actually registers that start, then
+   * set the target. The inline height is handed back after the transition so
+   * the sheet can still respond to content and to rotation.
+   *
+   * The class is toggled directly rather than waiting for setMax, because the
+   * measurement has to happen in this frame — a React re-render is a frame
+   * too late and would measure the height we are trying to animate away
+   * from. setMax still runs, and re-renders to the same class. */
+  const settle = (next) => {
+    const el = sheet.current;
+    if (!el) return setMax(next);
+
+    const from = el.getBoundingClientRect().height;
+    el.style.height = "";
+    el.classList.toggle("max", next);
+    const to = el.getBoundingClientRect().height;
+
+    if (Math.abs(to - from) > 1) {
+      /* Reading `to` above forced a layout, so the browser now considers the
+         target to BE the current height. Snapping back to `from` therefore
+         starts a transition away from it, and setting `to` a line later just
+         retargets that transition to where it already was — net zero, no
+         movement. That is exactly why expanding jumped while collapsing
+         happened to animate.
+         So the start is committed with transitions switched off, and only
+         then are they handed back. */
+      el.style.transition = "none";
+      el.style.height = `${from}px`;
+      void el.offsetHeight;                           // commit the start
+      el.style.transition = "";
+      el.style.height = `${to}px`;
+      const done = (ev) => {
+        if (ev.propertyName !== "height") return;
+        el.style.height = "";
+        el.style.transition = "";
+        el.removeEventListener("transitionend", done);
+      };
+      el.addEventListener("transitionend", done);
+    } else {
+      el.style.height = "";
+    }
+    setMax(next);
+  };
+
   const up = (e) => {
     const d = drag.current, el = sheet.current;
     drag.current = null;
     if (!d || !el) return;
+    // Out of dragging FIRST: that class kills the transition, and settle()
+    // depends on it.
     el.classList.remove("dragging");
-    el.style.height = "";                             // hand back to the class
     const dy = d.y - e.clientY;
-    if (!d.moved) return setMax((v) => !v);           // a tap toggles
-    if (dy > GRAB) return setMax(true);
-    if (dy < -GRAB) return setMax(false);
+    if (!d.moved) return settle(!max);                // a tap toggles
+    if (dy > GRAB) return settle(true);
+    if (dy < -GRAB) return settle(false);
     // Released mid-flight without travelling far: settle to whichever end the
     // sheet is actually nearer, so it never rests at a height it cannot hold.
     const frame = window.innerHeight;
-    setMax((d.h2 ?? d.h) > frame * ((REST + TALL) / 2));
+    settle((d.h2 ?? d.h) > frame * ((REST + TALL) / 2));
   };
 
   /* Brian: "the grabber on the resort sheet should never close the resort
