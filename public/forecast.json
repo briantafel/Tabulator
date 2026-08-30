@@ -31,7 +31,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 23.5,
+     "snow": 11.61,
      "periods": [
       {
        "name": "am",
@@ -70,7 +70,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 27.1,
+     "snow": 13.39,
      "periods": [
       {
        "name": "am",
@@ -109,7 +109,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 32.1,
+     "snow": 15.86,
      "periods": [
       {
        "name": "am",
@@ -148,7 +148,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 15,
+     "snow": 7.41,
      "periods": [
       {
        "name": "am",
@@ -296,7 +296,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 4.4,
+     "snow": 17.78,
      "periods": [
       {
        "name": "am",
@@ -326,16 +326,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 4,
-     "tempMin": -2,
-     "windMax": 25,
+     "tempMax": 3.33,
+     "tempMin": -1.11,
+     "windMax": 19.31,
      "freezeMin": 1080,
      "freezeMax": 2940
     },
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 4.1,
+     "snow": 17.78,
      "periods": [
       {
        "name": "am",
@@ -365,16 +365,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 4,
-     "tempMin": -2,
-     "windMax": 28,
+     "tempMax": 3.33,
+     "tempMin": -1.11,
+     "windMax": 19.31,
      "freezeMin": 1998,
      "freezeMax": 2678
     },
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 11.3,
+     "snow": 17.78,
      "periods": [
       {
        "name": "am",
@@ -404,16 +404,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 4,
-     "tempMin": -2,
-     "windMax": 22,
+     "tempMax": 3.33,
+     "tempMin": -1.11,
+     "windMax": 19.31,
      "freezeMin": 835,
      "freezeMax": 2493
     },
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 7.8,
+     "snow": 17.78,
      "periods": [
       {
        "name": "am",
@@ -443,9 +443,9 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 5,
-     "tempMin": -2,
-     "windMax": 23,
+     "tempMax": 3.33,
+     "tempMin": -1.11,
+     "windMax": 19.31,
      "freezeMin": 777,
      "freezeMax": 2209
     },
@@ -826,7 +826,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 17.8,
+     "snow": 10.59,
      "periods": [
       {
        "name": "am",
@@ -865,7 +865,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 14.8,
+     "snow": 8.81,
      "periods": [
       {
        "name": "am",
@@ -904,7 +904,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 21.4,
+     "snow": 12.73,
      "periods": [
       {
        "name": "am",
@@ -943,7 +943,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 27.1,
+     "snow": 16.13,
      "periods": [
       {
        "name": "am",
@@ -1091,7 +1091,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 7.5,
+     "snow": 16.51,
      "periods": [
       {
        "name": "am",
@@ -1121,16 +1121,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": -3,
-     "tempMin": -9,
-     "windMax": 19,
+     "tempMax": -3.89,
+     "tempMin": -11.11,
+     "windMax": 16.09,
      "freezeMin": 777,
      "freezeMax": 2209
     },
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 4.7,
+     "snow": 16.51,
      "periods": [
       {
        "name": "am",
@@ -1160,16 +1160,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": -3,
-     "tempMin": -8,
-     "windMax": 45,
+     "tempMax": -3.89,
+     "tempMin": -11.11,
+     "windMax": 16.09,
      "freezeMin": 660,
      "freezeMax": 2920
     },
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 13.7,
+     "snow": 16.51,
      "periods": [
       {
        "name": "am",
@@ -1199,16 +1199,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": -2,
-     "tempMin": -8,
-     "windMax": 63,
+     "tempMax": -3.89,
+     "tempMin": -11.11,
+     "windMax": 16.09,
      "freezeMin": 906,
      "freezeMax": 2453
     },
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 7.9,
+     "snow": 16.51,
      "periods": [
       {
        "name": "am",
@@ -1238,9 +1238,9 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": -2,
-     "tempMin": -7,
-     "windMax": 58,
+     "tempMax": -3.89,
+     "tempMin": -11.11,
+     "windMax": 16.09,
      "freezeMin": 1769,
      "freezeMax": 2510
     },
@@ -1621,7 +1621,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 25.4,
+     "snow": 17.44,
      "periods": [
       {
        "name": "am",
@@ -1660,7 +1660,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 16.4,
+     "snow": 11.26,
      "periods": [
       {
        "name": "am",
@@ -1699,7 +1699,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 16.6,
+     "snow": 11.4,
      "periods": [
       {
        "name": "am",
@@ -1738,7 +1738,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 11.9,
+     "snow": 8.17,
      "periods": [
       {
        "name": "am",
@@ -2416,7 +2416,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 31.1,
+     "snow": 25.4,
      "periods": [
       {
        "name": "am",
@@ -2446,16 +2446,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -4,
-     "windMax": 28,
+     "tempMax": -15,
+     "tempMin": -27.78,
+     "windMax": 61.15,
      "freezeMin": 739,
      "freezeMax": 2422
     },
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 23.4,
+     "snow": 25.4,
      "periods": [
       {
        "name": "am",
@@ -2485,16 +2485,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -3,
-     "windMax": 4,
+     "tempMax": -15,
+     "tempMin": -27.78,
+     "windMax": 61.15,
      "freezeMin": 1240,
      "freezeMax": 2241
     },
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 30.2,
+     "snow": 25.4,
      "periods": [
       {
        "name": "am",
@@ -2524,16 +2524,16 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -4,
-     "windMax": 28,
+     "tempMax": -15,
+     "tempMin": -27.78,
+     "windMax": 61.15,
      "freezeMin": 885,
      "freezeMax": 2584
     },
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 30.9,
+     "snow": 25.4,
      "periods": [
       {
        "name": "am",
@@ -2563,9 +2563,9 @@
        "phrase": "mod. rain"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -4,
-     "windMax": 26,
+     "tempMax": -15,
+     "tempMin": -27.78,
+     "windMax": 61.15,
      "freezeMin": 1108,
      "freezeMax": 2246
     },
@@ -3211,7 +3211,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 22.4,
+     "snow": 14.11,
      "periods": [
       {
        "name": "am",
@@ -3250,7 +3250,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 25.8,
+     "snow": 16.25,
      "periods": [
       {
        "name": "am",
@@ -3289,7 +3289,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 17.4,
+     "snow": 10.96,
      "periods": [
       {
        "name": "am",
@@ -3328,7 +3328,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 11,
+     "snow": 6.93,
      "periods": [
       {
        "name": "am",
@@ -4006,7 +4006,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 31,
+     "snow": 15.07,
      "periods": [
       {
        "name": "am",
@@ -4045,7 +4045,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 17.7,
+     "snow": 8.6,
      "periods": [
       {
        "name": "am",
@@ -4084,7 +4084,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 18.8,
+     "snow": 9.14,
      "periods": [
       {
        "name": "am",
@@ -4123,7 +4123,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 31.8,
+     "snow": 15.45,
      "periods": [
       {
        "name": "am",
@@ -4801,7 +4801,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 3.9,
+     "snow": 3.23,
      "periods": [
       {
        "name": "am",
@@ -4840,7 +4840,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 15.6,
+     "snow": 12.91,
      "periods": [
       {
        "name": "am",
@@ -4879,7 +4879,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 15.4,
+     "snow": 12.75,
      "periods": [
       {
        "name": "am",
@@ -4918,7 +4918,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 23.4,
+     "snow": 19.37,
      "periods": [
       {
        "name": "am",
@@ -5596,7 +5596,7 @@
     {
      "date": "2026-08-26",
      "label": "Wednesday26",
-     "snow": 19.5,
+     "snow": 14.87,
      "periods": [
       {
        "name": "am",
@@ -5635,7 +5635,7 @@
     {
      "date": "2026-08-27",
      "label": "Thursday27",
-     "snow": 13.4,
+     "snow": 10.22,
      "periods": [
       {
        "name": "am",
@@ -5674,7 +5674,7 @@
     {
      "date": "2026-08-28",
      "label": "Friday28",
-     "snow": 13.7,
+     "snow": 10.44,
      "periods": [
       {
        "name": "am",
@@ -5713,7 +5713,7 @@
     {
      "date": "2026-08-29",
      "label": "Saturday29",
-     "snow": 16.7,
+     "snow": 12.73,
      "periods": [
       {
        "name": "am",
