@@ -144,6 +144,14 @@ export default function Tabulator() {
 
   const saveWindow = () => newTrip({ name: data[0].name, total: data[0].total });
 
+  /* The mirror of addToTrip. Removing the last resort leaves an empty trip
+     rather than deleting it — a trip is a named container with its own dates,
+     and dropping it because its last resort went would throw away the part
+     the user actually typed. */
+  const removeFromTrip = (id, name) =>
+    setTrips((all) => all.map((x) =>
+      (x.id === id ? { ...x, resorts: x.resorts.filter((r) => r.name !== name) } : x)));
+
   /* The star favourites a resort; the calendar-plus saves the window. Two
      different actions, which is why the sheet carries both icons.
      Favourites drive the Trips screen's top table, and the Edit link there
@@ -387,6 +395,7 @@ export default function Tabulator() {
         trips={trips}
         onAddToTrip={(id) => open && addToTrip(id, { name: open.name, total: open.total })}
         onNewTrip={(named) => open && newTrip({ name: open.name, total: open.total }, named)}
+        onRemoveFromTrip={removeFromTrip}
       />
     </div>
   );

@@ -24,11 +24,14 @@ body { background: #F2F2F2; }
   --fill: #DCDCDC;
   --line: #ECECEC;
   --red: #EF4A38;
-  /* The OTHER red. Severity markers, the Edit links, the delete panel — all
-     #FF383C, distinct from the --red accent by four points. Brian has seen it
-     in two separate exports, so it stays; a token at least keeps the three
-     reds countable (open question #6). */
-  --mark-red: #FF383C;
+  /* One red. There used to be two, four points apart: --red for accents and
+     --mark-red for the severity dots and the leading row. Brian, 2026-08-30:
+     "I want to make a universal change to the red in this app everywhere. It
+     should be EF4A38." His own add/remove-trip exports already draw the X in
+     it. Both tokens are kept so nothing has to be renamed, and they now hold
+     the same value — if they ever diverge again it should be a decision, not
+     a drift. */
+  --mark-red: #EF4A38;
   --amber: #F0B429;
 
   background: #F2F2F2;
@@ -324,7 +327,7 @@ body { background: #F2F2F2; }
   margin: calc(15.8 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
   line-height: calc(15 * var(--u)); color: #8A8A8A;
 }
-/* #FF383C — the marker red, not the leading-row red. Measured, not assumed. */
+/* var(--mark-red) — one red now, see the token block at the top. */
 .fav-edit {
   padding: 0; margin-top: calc(8 * var(--u));
   font-size: calc(13 * var(--u)); font-weight: 500; color: var(--mark-red);
@@ -571,6 +574,24 @@ body { background: #F2F2F2; }
   display: block; font-size: calc(23.5 * var(--u)); font-weight: 700;
   line-height: calc(23.5 * var(--u)); letter-spacing: -.04em; color: var(--ink);
 }
+/* Removing a resort from a trip. Same panel and same rows as Add to trip —
+   it is the same list read the other way round — with a filled circle X at
+   the right of each row. Tapping it drops the resort from that trip and the
+   row goes with it. */
+.rt-x {
+  position: absolute; right: calc(24 * var(--u)); top: calc(23.5 * var(--u));
+  width: calc(24.5 * var(--u)); height: calc(24.5 * var(--u));
+  padding: 0; line-height: 0;
+}
+.rt-x svg { display: block; width: 100%; height: 100%; fill: var(--ink); }
+/* The X knocks out of the disc in white rather than being drawn on top —
+   same construction as the trip editor's filled check. */
+.rt-x .rt-tick { fill: #fff; }
+/* The calendar's glyph is the only thing that changes between the two states,
+   so it carries the colour rather than the whole button. */
+.sheet-add .cal-x { fill: var(--mark-red); }
+.at-row { position: relative; }
+
 .at-when {
   display: block; margin-top: calc(8.2 * var(--u));
   font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
@@ -1046,20 +1067,24 @@ body { background: #F2F2F2; }
      to the rule below. 11.5 because the 23.5/28 line box puts the cap top 5.5
      below its own edge, and the ink is what has to be equidistant, not the
      box. */
-  margin: calc(11.5 * var(--u)) 0 0 calc(-7 * var(--u));
+  margin: calc(11.5 * var(--u)) 0 0;
 }
 
 /* ------------------------------------------------------------------
  * Weather — the NWS strip.
  *
- * The one full-bleed block in the sheet: six columns across the whole 402
- * rather than inside the padding. Measured icon centres run 34.9 to 390.4
- * on a 66.3 pitch, which is 397.8 of the 402 — edge to edge within two
- * pixels, and that is why the icons in his export nearly touch the sides.
+ * No longer full bleed. In Resort Sheet-max-grid the six centres measure
+ * 42.0, 105.0, 168.8, 231.9, 294.9 and 358.0 — a pitch of 63.3, so the row
+ * spans 380 of the 402 and is inset 11 each side, not 0 and not 22.
+ *
+ * 11 is half the content margin, and it is 11 because the ICON INK has to
+ * land on 22, not the column box. An icon is 35 of its 63.3 column, so a row
+ * starting at 22 would push the first icon's ink to 36. Starting at 11 puts
+ * it at 24.5, which is what he drew.
  * ------------------------------------------------------------------ */
 .wx {
   margin: calc(17 * var(--u)) calc(-22 * var(--u)) 0;
-  padding: calc(17 * var(--u)) calc(15 * var(--u)) calc(22 * var(--u));
+  padding: calc(17 * var(--u)) calc(22 * var(--u)) calc(22 * var(--u));
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
 .wx h3 {
@@ -1069,7 +1094,7 @@ body { background: #F2F2F2; }
 /* Break back out of the 15 the section just applied, so the columns get the
    full width while the heading keeps its own inset. */
 .wx-row {
-  display: flex; margin: calc(35.5 * var(--u)) calc(-15 * var(--u)) 0;
+  display: flex; margin: calc(35.5 * var(--u)) calc(-11 * var(--u)) 0;
 }
 .wx-day {
   flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;

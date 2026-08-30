@@ -30,11 +30,27 @@ const CAL_PLUS = [
   "M26.0032 4.00073H22.0027V2.00049H20.0024V4.00073H12.0015V2.00049H10.0012V4.00073H6.00073C4.9006 4.00073 4.00049 4.90084 4.00049 6.00097V26.0033C4.00049 27.1035 4.9006 28.0036 6.00073 28.0036H26.0032C27.1033 28.0036 28.0034 27.1035 28.0034 26.0033V6.00097C28.0034 4.90084 27.1033 4.00073 26.0032 4.00073ZM26.0032 26.0033H6.00073V12.0017H26.0032V26.0033ZM26.0032 10.0014H6.00073V6.00097H10.0012V8.00121H12.0015V6.00097H20.0024V8.00121H22.0027V6.00097H26.0032V10.0014Z",
   "M17.002 17.9995L19 17.9993V19.9998H17.002V22H15.0017V19.9998H13V17.9995H15.0017V15.9993H17.002V17.9995Z",
 ];
+/* The same calendar, with an X instead of a plus, for a resort already in a
+   trip. Brian's resort-sheet-remove-from-trip export draws the X at 7.66
+   across centred on (361, 50) where his plus is 8.83 across on the same
+   centre; the app's plus is 6 across on (16, 19). So the X arrives under the
+   one transform that maps his glyph box onto the app's — written as a
+   transform rather than as retyped coordinates, because retyping 24 numbers
+   is 24 chances to be wrong about a shape I cannot check by eye. */
+const CAL_X_GLYPH =
+  "M362.416 50.0007L364.829 52.4134L363.414 53.8279L361.001 51.4151L358.587 53.8295L357.173 52.4151L359.587 50.0007L357.172 47.5853L358.586 46.1709L361.001 48.5863L363.416 46.1727L364.83 47.5871L362.416 50.0007Z";
+const CAL_X_TRANSFORM = "translate(-229.372,-14.985) scale(0.679656)";
+
+/* The filled circle X in the Remove-from-trip rows. */
+const RT_X = "M12.25 0C5.48 0 0 5.48 0 12.25S5.48 24.5 12.25 24.5 24.5 19.02 24.5 12.25 19.02 0 12.25 0Z";
+const RT_TICK = "M17.06 15.64L15.64 17.06L12.25 13.67L8.86 17.06L7.44 15.64L10.83 12.25L7.44 8.86L8.86 7.44L12.25 10.83L15.64 7.44L17.06 8.86L13.67 12.25L17.06 15.64Z";
 
 export default function Detail({
-  r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, reports, weather,
+  r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
+  reports, weather,
 }) {
   const [adding, setAdding] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [naming, setNaming] = useState(false);
   const [draft, setDraft] = useState("");
   const [max, setMax] = useState(false);
@@ -71,6 +87,11 @@ export default function Detail({
      yet and the section simply does not render — a strip of six dashes
      would be worse than no strip. */
   const wx = toDays(weather?.resorts?.[r.id]?.periods ?? []);
+
+  /* Which trips already carry this resort. The calendar button reads off
+     this: a plus while it is in none, a red X once it is in one. */
+  const inTrips = (trips ?? []).filter((t) => t.resorts?.some((x) => x.name === r.name));
+  const booked = inTrips.length > 0;
   const said = reportsFor(reports, r.id);
 
   /* Drag the handle. The sheet follows the finger the whole way — an iOS
@@ -319,6 +340,37 @@ export default function Detail({
           )}
         </div>
 
+        {/* The mirror of Add to trip: the same panel, the same rows, read the
+            other way round. Only the trips this resort is actually in appear,
+            so there is nothing here to get wrong — tapping the X removes it
+            from that trip and the row goes with it. Emptying the list closes
+            the panel, because a panel headed "Remove from trip" with nothing
+            in it is a dead end. */}
+        {removing && (
+          <div className="addtrip" role="dialog" aria-label="Remove from trip">
+            <h2>Remove from trip</h2>
+            {inTrips.map((t) => (
+              <div className="at-row" key={t.id}>
+                <span className="at-name">{t.name}</span>
+                <span className="at-when">{t.label}</span>
+                <button
+                  className="rt-x"
+                  onClick={() => {
+                    onRemoveFromTrip(t.id, r.name);
+                    if (inTrips.length === 1) setRemoving(false);
+                  }}
+                  aria-label={`Remove ${r.name} from ${t.name}`}
+                >
+                  <svg viewBox="0 0 24.5 24.5" aria-hidden="true">
+                    <path d={RT_X} />
+                    <path className="rt-tick" d={RT_TICK} />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Covers everything above the action row — the Close button and the
             calendar-plus stay reachable, which is what the design shows. */}
         {adding && (
@@ -373,13 +425,16 @@ export default function Detail({
         <div className="sheet-actions">
           <button className="sheet-close" onClick={onClose}>Close</button>
           <button
-            className={`sheet-add${adding ? " on" : ""}`}
-            onClick={() => setAdding((v) => !v)}
-            aria-expanded={adding}
-            aria-label="Add to trip"
+            className={`sheet-add${(adding || removing) ? " on" : ""}${booked ? " booked" : ""}`}
+            onClick={() => (booked ? setRemoving((v) => !v) : setAdding((v) => !v))}
+            aria-expanded={adding || removing}
+            aria-label={booked ? "Remove from trip" : "Add to trip"}
           >
             <svg viewBox="0 0 32 32" aria-hidden="true">
-              {CAL_PLUS.map((d) => <path key={d.slice(0, 12)} d={d} />)}
+              <path d={CAL_PLUS[0]} />
+              {booked
+                ? <path className="cal-x" d={CAL_X_GLYPH} transform={CAL_X_TRANSFORM} />
+                : <path d={CAL_PLUS[1]} />}
             </svg>
           </button>
         </div>

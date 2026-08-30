@@ -113,7 +113,7 @@ export const RANK_WIND = 6;
 export const SNOW_FULL_RATE = IN(8);  // 8"/day earns all 70 — as good as it gets
 export const BASE_FULL = IN(12);      // 12" in the three days before earns all 12
 
-export const MARKER = { red: "#FF383C", amber: "#FFCC00" };
+export const MARKER = { red: "#EF4A38", amber: "#FFCC00" };
 
 /* Chart series. Per the Figma: four resort curves in blue/teal/pink/orange.
  * Coral is NOT a series colour there — it is reserved for wind. */
