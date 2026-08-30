@@ -30,8 +30,13 @@ const CAST = {
   // The pick. Not the most snow, not the least — the only one with nothing
   // wrong with it, and the best base underneath.
   telluride:        { rate: 6.5, hi: 25, lo: 12, wind: 10 },
-  // More snow than the pick, and a deal breaker twice over.
-  alta:             { rate: 10,  hi:  5, lo: -18, wind: 38 },
+  // The most snow on the board by a distance, and it still loses. Deliberately
+  // just INSIDE both deal breakers — -9F against a -10 veto, 42mph against 45
+  // — because a vetoed resort sorts dead last and the whole demonstration
+  // ends up ten rows below the fold where nobody sees it. Brian: "Move Alta's
+  // numbers." Now it sits second, right under the pick, visibly beaten on the
+  // balance rather than disqualified out of sight.
+  alta:             { rate: 10,  hi:  5, lo: -9, wind: 42 },
   // EXACTLY the pick's snowfall, decided entirely on temperature.
   heavenly:         { rate: 6.5, hi: 38, lo: 30, wind: 12 },
 };
