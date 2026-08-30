@@ -119,3 +119,18 @@ export function bestOf(rows) {
   const open = usable.filter((r) => !vetoOf(r));
   return (open.length ? open : usable).reduce((a, b) => (byRank(a, b) <= 0 ? a : b));
 }
+
+/** Order for the results table: deepest first.
+ *
+ *  Brian, 2026-08-30: "Let's reorder the results list by snowfall. It's okay
+ *  if the red recommended resort isn't on the top."
+ *
+ *  Sorting by rank made the snow column read out of order, which looked like
+ *  a bug every time — it cost a round trip to explain more than once. The
+ *  recommendation has never needed to be first to be legible: it is the coral
+ *  row, and bestOf() still decides it, so a deep resort sitting above the
+ *  pick now reads as the argument rather than as a mistake.
+ *
+ *  Rank is the tie-break, which is where it earns its keep: Telluride and
+ *  Heavenly both take 26 inches, and the better trip comes first. */
+export const bySnow = (x, y) => ((y.total ?? 0) - (x.total ?? 0)) || byRank(x, y);

@@ -16,7 +16,7 @@ import { score } from "./lib/scoring.js";
    unaliased import silently resolved to that instead — the storage
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
-import { byRank } from "./lib/rank.js";
+import { bySnow } from "./lib/rank.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
 
@@ -100,7 +100,7 @@ export default function Tabulator() {
       feed
         ? feed.resorts
             .map((r) => score(r, wa, wb, feed.history))
-            .sort(byRank)
+            .sort(bySnow)
         : null,
     [feed, wa, wb]
   );
@@ -371,7 +371,7 @@ export default function Tabulator() {
               ? []
               : feed.resorts
                 .map((x) => score(x, Math.max(0, ta), Math.max(0, tb), feed.history))
-                .sort(byRank);
+                .sort(bySnow);
             return (
               <div className={viewing.leaving ? "tripdetail-out" : ""}>
                 <TripDetail
