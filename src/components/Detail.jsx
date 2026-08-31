@@ -70,6 +70,10 @@ export default function Detail({
   /* True only while a press that STARTED on the backdrop is still in flight.
      Everything else the scrim sees began inside the sheet. */
   const fromScrim = useRef(false);
+  /* Whether the sheet is actually on screen. Declared up here because the
+     body-scroll lock below is an effect and cannot sit after the early
+     return that uses the same test. */
+  const shown = !!r && !!r.win?.length;
   useEffect(() => { setAdding(false); setNaming(false); setDraft(""); setMax(false); }, [r]);
 
   /* Brian: "the grabber on the resort sheet is fussy. When trying to use it,
@@ -81,8 +85,15 @@ export default function Detail({
      as the sheet is open is the only thing that actually holds.
      The scroll position is restored on close: setting overflow hidden makes
      the document jump to the top otherwise, and reopening a sheet should not
-     lose your place in the table. */
+     lose your place in the table.
+
+     GATED ON `shown`. This component is mounted for the whole life of the
+     app and returns null when there is no resort to show, so an effect with
+     an empty dependency list locks the body once, at startup, and never
+     lets go — which is exactly what happened: nothing scrolled anywhere,
+     sheet or no sheet. The lock has to come and go with the sheet. */
   useEffect(() => {
+    if (!shown) return undefined;
     const y = window.scrollY;
     const { overflow, position, top, width } = document.body.style;
     document.body.style.overflow = "hidden";
@@ -96,7 +107,7 @@ export default function Detail({
       document.body.style.width = width;
       window.scrollTo(0, y);
     };
-  }, []);
+  }, [shown]);
   useEffect(() => { if (naming) field.current?.focus(); }, [naming]);
   /* Restoring while scrolled would leave the resting sheet showing day four
      and no way back — the scroller is gone at that height. */
@@ -115,7 +126,7 @@ export default function Detail({
     return () => window.removeEventListener("keydown", k);
   }, [onClose, adding, naming, max]);
 
-  if (!r || !r.win?.length) return null;
+  if (!shown) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
   const verdict = resortVerdict(r, metric);
   /* NWS covers the United States only, so most resorts have nothing here
