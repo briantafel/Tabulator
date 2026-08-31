@@ -71,12 +71,34 @@ body { background: #F2F2F2; }
   position: relative;
 }
 
-/* header */
-.bar { display: flex; justify-content: space-between; align-items: center;
-  padding: calc(71.2 * var(--u)) 14px 0; }
-.mark { font-size: 21px; font-weight: 700; letter-spacing: -.02em; }
-.gear { display: flex; width: 28px; height: 28px; flex: none; padding: 0; }
-.gear svg { width: 28px; height: 28px; flex: none; fill: currentColor; stroke: none; display: block; }
+/* header
+
+   Brian's Tabulator-trips-results-new-header export, measured at 4x:
+   wordmark ink 15.71 across, cap top 20.25, baseline 35; gear box
+   translate(361.043, 12.001) at its natural 32, so 361..393 across and
+   12..44 down; white to y=111 with nothing in it below the wordmark.
+
+   PINNED, and that empty white below the wordmark is what it is for. The
+   band holds its place while the results list, the trip pages and the
+   favourites table scroll underneath, so the settings gear stays reachable
+   sixty rows into a table. No hairline: the rule at 111 in the export
+   belongs to the trips list under it, not to the header.
+
+   The height is 111 with 11.8125 pulled back off the bottom. `.body` has
+   started at 99.1875 since the first screen was measured and everything
+   inside it is drawn from that edge, so the band is painted to 111 and the
+   flow is put back where it was. Move that number and every screen in the
+   app shifts. */
+.bar { display: flex; justify-content: space-between; align-items: flex-start;
+  position: sticky; top: 0; z-index: 20; background: #fff;
+  height: calc(111 * var(--u)); margin-bottom: calc(-11.8125 * var(--u));
+  padding: calc(12 * var(--u)) calc(9 * var(--u)) 0 calc(15 * var(--u)); }
+/* A 32 line box rather than centring: it puts the wordmark's cap on the
+   gear's centre line without an extra wrapper to centre inside. */
+.mark { font-size: 21px; font-weight: 700; letter-spacing: -.02em;
+  line-height: calc(32 * var(--u)); }
+.gear { display: flex; width: calc(32 * var(--u)); height: calc(32 * var(--u)); flex: none; padding: 0; }
+.gear svg { width: 100%; height: 100%; flex: none; fill: currentColor; stroke: none; display: block; }
 
 .settings {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
