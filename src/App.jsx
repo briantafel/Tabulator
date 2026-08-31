@@ -159,8 +159,6 @@ export default function Tabulator() {
       )
     );
 
-  const saveWindow = () => newTrip({ name: data[0].name, total: data[0].total });
-
   /* The mirror of addToTrip. Removing the last resort leaves an empty trip
      rather than deleting it — a trip is a named container with its own dates,
      and dropping it because its last resort went would throw away the part
@@ -305,15 +303,6 @@ export default function Tabulator() {
                       ? <Table data={data} metric={metric} onOpen={setOpen} favs={favs} />
                       : <Chart data={data} metric={metric} />}
                   </div>
-
-                  <div className="dots">
-                    {[0, 1].map((i) => (
-                      <button key={i} className={page === i ? "on" : ""} onClick={() => setPage(i)}
-                              aria-label={i === 0 ? "Table" : "Chart"} />
-                    ))}
-                  </div>
-
-                  <button className="save" onClick={saveWindow}>Save this window</button>
                 </>
               )}
             </>

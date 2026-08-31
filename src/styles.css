@@ -305,10 +305,6 @@ body { background: #F2F2F2; }
 .ck { display: inline-flex; align-items: center; gap: 6px; }
 .ck i { width: 14px; height: 2.5px; border-radius: 2px; }
 
-.dots { display: flex; justify-content: center; gap: 8px; padding: 22px 0 6px; }
-.dots button { width: 8px; height: 8px; border-radius: 50%; background: var(--fill); }
-.dots button.on { background: var(--ink); }
-.save { display: block; margin: 0 auto; font-size: 13px; font-weight: 600; color: var(--red); }
 
 /* radar */
 .screen-h { font-size: 24px; font-weight: 700; letter-spacing: -.03em; margin: 10px 0 4px; }
