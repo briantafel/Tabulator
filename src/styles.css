@@ -219,17 +219,47 @@ body { background: #F2F2F2; }
   transform: translate(-50%, -50%); border-radius: 50%; background: #C2C2C2;
 }
 /* Today, always — "let's always have today's date appear with a red circle
-   behind it. The red should be our universal red in this app." Same circle as
-   an endpoint's, in --red, and it must come AFTER that rule: the two match at
-   identical specificity, so on a day that is also an end of the range source
-   order is the only thing deciding which colour lands. The digit is coloured
-   on the `i` rather than the button so it also beats `.off`, which a day past
-   the end of the horizon carries. */
+   behind it. The red should be our universal red in this app." It must come
+   AFTER the endpoint rule: the two match at identical specificity, so on a
+   day that is also an end of the range source order is the only thing
+   deciding which colour lands. The digit is coloured on the `i` rather than
+   the button so it also beats `.off`, which a day past the end of the horizon
+   carries.
+
+   SMALLER than an endpoint's circle, on purpose. Brian: "If the current day
+   already has a dot on it, selecting it will produce no noticeable action. I
+   suggest making the red circle slightly smaller than the end date selection
+   circle, and showing the beginning of the selection range bubble to be
+   visible around the red dot." Measured off his second comp, which tightened
+   the first: the red is 487 across a 547 band, so 29.4 of the 33 — a 1.8 ring
+   of grey all round. The tighter figure is also the one that works: his first
+   drawing came to 25.6, and a two-digit day is 24.2 wide, so on 22 days of
+   the month the digits ran out past the circle's edge. At 29.4 the widest of
+   them, 30, clears it by 1.3. */
 .cal-d.today::after {
-  left: 50%; width: calc(33 * var(--u)); height: calc(33 * var(--u));
+  left: 50%; width: calc(29.4 * var(--u)); height: calc(29.4 * var(--u));
   transform: translate(-50%, -50%); border-radius: 50%; background: var(--red);
 }
 .cal-d.today i { color: #fff; }
+
+/* That ring is the band's own end, so the band has to grow the rounded cap
+   the endpoint circle used to draw for it — and in the BAND's light grey, not
+   the endpoint's darker one, which is what his comp shows. */
+.cal-d.today.in.sel-a::before {
+  left: calc(50% - 16.5 * var(--u));
+  border-radius: calc(16.5 * var(--u)) 0 0 calc(16.5 * var(--u));
+}
+.cal-d.today.in.sel-b::before {
+  right: calc(50% - 16.5 * var(--u));
+  border-radius: 0 calc(16.5 * var(--u)) calc(16.5 * var(--u)) 0;
+}
+/* A single day, which for everyone else suppresses the band entirely and
+   leaves the circle to speak. Today needs it back: the ring is the only thing
+   that changes when you tap a day that is already marked. */
+.cal-d.today.in.sel-a.sel-b::before {
+  content: ""; left: calc(50% - 16.5 * var(--u)); right: calc(50% - 16.5 * var(--u));
+  border-radius: 50%;
+}
 
 
 /* go row */
