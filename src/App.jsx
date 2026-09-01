@@ -43,6 +43,11 @@ const ICON = {
 };
 const TABS = ["trips", "mountains", "radar"];
 
+/* The calendar pages one month either side of the forecast's own month —
+   the same three the dots offered. */
+const MONTH_MIN = -1;
+const MONTH_MAX = 1;
+
 export default function Tabulator() {
   const [feed, setFeed] = useState(null);
   const [err, setErr] = useState(null);
@@ -52,6 +57,10 @@ export default function Tabulator() {
 
   const [tab, setTab] = useState("mountains");
   const [mode, setMode] = useState("days"); // days | calendar
+  /* Which month the calendar is showing, relative to the one the forecast
+     starts in. The three dots offered exactly three, so the arrows do too and
+     ghost themselves at the ends — no capability lost, none invented. */
+  const [mOff, setMOff] = useState(0);
   const [days, setDays] = useState(4);
   const [a, setA] = useState(0);
   const [b, setB] = useState(3);
@@ -81,6 +90,9 @@ export default function Tabulator() {
   useEffect(() => { load(); }, [load]);
 
   const dates = feed?.dates ?? [];
+  /* The month on screen, which is what the question line names. */
+  const calAnchor = dates.length ? fromIso(dates[0]) : new Date();
+  const shownMonth = new Date(calAnchor.getFullYear(), calAnchor.getMonth() + mOff, 1);
 
   // Days mode runs from the first forecast day; calendar mode sets the window
   // explicitly. Both clamp to the horizon.
@@ -241,10 +253,28 @@ export default function Tabulator() {
           {data && tab === "mountains" && (
             <>
               {/* Three verbs, per the workflow PDFs: "in" for days, "on" for a
-                  single date, "from" for a range. Month name in the accent. */}
+                  single date, "from" for a range. Month name in the accent.
+
+                  Month paging sits on this line now. Brian's comp puts a text
+                  < and > at the layout margins either side of the sentence,
+                  in the same face and size as it, and the three dots under the
+                  grid are gone. The month named here is therefore the month
+                  ON SCREEN rather than the month of the selected date — with
+                  arrows beside it, a label that did not follow them would be
+                  the wrong label. */}
               <p className="ask">
-                Find me snow {mode === "days" ? "in" : wb > wa ? "from" : "on"}{" "}
-                {mode === "calendar" && dates[wa] && <em>{monthName(fromIso(dates[wa]))}</em>}
+                {mode === "calendar" && (
+                  <button className="mo" onClick={() => setMOff(mOff - 1)}
+                          disabled={mOff <= MONTH_MIN} aria-label="Previous month">&lt;</button>
+                )}
+                <span>
+                  Find me snow {mode === "days" ? "in" : wb > wa ? "from" : "on"}{" "}
+                  {mode === "calendar" && <em>{monthName(shownMonth)}</em>}
+                </span>
+                {mode === "calendar" && (
+                  <button className="mo" onClick={() => setMOff(mOff + 1)}
+                          disabled={mOff >= MONTH_MAX} aria-label="Next month">&gt;</button>
+                )}
               </p>
 
               {/* Fixed-height slot. The wheel and the calendar are different
@@ -254,7 +284,8 @@ export default function Tabulator() {
                 {mode === "days" ? (
                   <DaysWheel value={days} onChange={(n) => { setDays(n); setShown(false); }} />
                 ) : (
-                  <MonthGrid dates={dates} a={wa} b={wb} onPick={(i) => { pick(i); setShown(false); }} />
+                  <MonthGrid dates={dates} a={wa} b={wb} offset={mOff}
+                             onPick={(i) => { pick(i); setShown(false); }} />
                 )}
               </div>
 

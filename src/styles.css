@@ -125,9 +125,20 @@ body { background: #F2F2F2; }
 .msg { padding: 26px 0; display: grid; gap: 7px; justify-items: start; font-size: 14px; }
 .msg span { color: #777; font-size: 13px; }
 
-.ask { text-align: center; font-size: 20px; font-weight: 400; letter-spacing: -.02em;
+.ask { display: flex; align-items: baseline; justify-content: space-between;
+  text-align: center; font-size: 20px; font-weight: 400; letter-spacing: -.02em;
   margin: calc(31.8 * var(--u)) 0 calc(35 * var(--u)); }
+.ask > span { flex: 1; }
 .ask em { font-style: normal; color: var(--red); }
+/* Month paging. Brian: "text greater than and less than symbols in the same
+   font as the text ... justified to the layout margins at the left and right
+   while obeying the layout padding margins." `.body` already holds the 16, so
+   the flex row puts them exactly on it. The padding is what makes them worth
+   tapping and the equal negative margin takes it back off the layout, so the
+   hit area grows outward and the glyph stays on the margin. */
+.mo { flex: none; padding: calc(6 * var(--u)) calc(10 * var(--u));
+  margin: calc(-6 * var(--u)) calc(-10 * var(--u)); }
+.mo:disabled { color: var(--ghost); cursor: default; }
 
 /* days wheel — the signature interaction */
 .wheel {
@@ -165,12 +176,16 @@ body { background: #F2F2F2; }
    the calendar grows upward into the space under the question line instead of
    pushing everything down. */
 .slot { height: calc(200 * var(--u)); position: relative; }
-.cal { position: absolute; left: 0; right: 0; bottom: 0; }
+/* The 17.9 is the dot row that used to sit under the grid — 6 of dot on an
+   11.9 top padding. `.cal` is anchored to the bottom of the fixed slot, so
+   deleting the dots would have dropped the whole grid by exactly that much.
+   The padding holds the calendar where Brian has always had it. */
+.cal { position: absolute; left: 0; right: 0; bottom: 0;
+  padding-bottom: calc(17.9 * var(--u)); }
 
 /* Six rows at a 37pt pitch. Brian's PDF draws 40, but his mock is a five-row
-   February; six rows plus the dot row is 18 more than the budget between the
-   question line and the pill, so the pitch absorbs it. Dropping his ← → nav
-   for the dots he actually designed is what bought the other 27. */
+   February, and six rows at 40 do not fit between the question line and the
+   pill, so the pitch absorbs the difference. */
 .cal-grid {
   display: grid; grid-template-columns: repeat(7, 1fr);
   grid-auto-rows: calc(37 * var(--u)); gap: 0;
@@ -203,17 +218,19 @@ body { background: #F2F2F2; }
   left: 50%; width: calc(33 * var(--u)); height: calc(33 * var(--u));
   transform: translate(-50%, -50%); border-radius: 50%; background: #C2C2C2;
 }
+/* Today, always — "let's always have today's date appear with a red circle
+   behind it. The red should be our universal red in this app." Same circle as
+   an endpoint's, in --red, and it must come AFTER that rule: the two match at
+   identical specificity, so on a day that is also an end of the range source
+   order is the only thing deciding which colour lands. The digit is coloured
+   on the `i` rather than the button so it also beats `.off`, which a day past
+   the end of the horizon carries. */
+.cal-d.today::after {
+  left: 50%; width: calc(33 * var(--u)); height: calc(33 * var(--u));
+  transform: translate(-50%, -50%); border-radius: 50%; background: var(--red);
+}
+.cal-d.today i { color: #fff; }
 
-/* Month paging: three dots, 6pt on a 12pt pitch, per the PDF. */
-.cal-dots {
-  display: flex; justify-content: center; gap: calc(6 * var(--u));
-  padding-top: calc(11.9 * var(--u));
-}
-.cal-dots button {
-  width: calc(6 * var(--u)); height: calc(6 * var(--u)); flex: none; padding: 0;
-  border-radius: 50%; background: #DBDBDB;
-}
-.cal-dots button.on { background: var(--ink); }
 
 /* go row */
 /* Three columns with equal outer tracks, so the PILL is centred on the screen

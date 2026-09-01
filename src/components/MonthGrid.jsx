@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { iso, fromIso } from "../lib/dates.js";
 
 /** Month grid, no weekday headers — tap a start date, tap an end date.
@@ -8,16 +7,24 @@ import { iso, fromIso } from "../lib/dates.js";
  *
  *  Selection follows Brian's Calendar selection PDF: the two ends of the range
  *  are darker circles, and a lighter band runs between them, unbroken across
- *  cells and continued to the row edges where the range wraps a line. Month
- *  paging is the three dots below the grid, not arrows — the arrows cost a
- *  27pt row the grid needs to keep its 37pt pitch. */
-export default function MonthGrid({ dates, a, b, onPick }) {
+ *  cells and continued to the row edges where the range wraps a line.
+ *
+ *  Month paging is NOT here any more. The three dots under the grid are gone
+ *  and the < > that replaced them live on the question line above, so the
+ *  month being shown is decided by the caller and arrives as `offset`. */
+export default function MonthGrid({ dates, a, b, offset = 0, onPick }) {
   const anchor = fromIso(dates[0]);
-  const [offset, setOffset] = useState(0);
   const cursor = new Date(anchor.getFullYear(), anchor.getMonth() + offset, 1);
 
   const pad = (cursor.getDay() + 6) % 7; // Monday-first
   const count = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
+
+  /* Today, keyed the same way the cells are — built at midday LOCAL and only
+     then turned into a string. iso() runs through toISOString(), which is UTC,
+     so keying off `new Date()` directly would call it tomorrow all evening on
+     this side of the Atlantic. */
+  const now = new Date();
+  const todayKey = iso(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12));
 
   /* Always 42 cells — six rows, whatever the month. A five-row February and a
      six-row March would otherwise be different heights, and the whole point of
@@ -27,8 +34,6 @@ export default function MonthGrid({ dates, a, b, onPick }) {
       ? null
       : iso(new Date(cursor.getFullYear(), cursor.getMonth(), i - pad + 1, 12))
   );
-
-  const MONTHS = [-1, 0, 1];
 
   return (
     <div className="cal">
@@ -45,6 +50,10 @@ export default function MonthGrid({ dates, a, b, onPick }) {
             inRange ? "in" : "",
             avail && idx === a ? "sel-a" : "",
             avail && idx === b ? "sel-b" : "",
+            /* Brian: "let's always have today's date appear with a red circle
+               behind it." Always — selected or not, inside the horizon or
+               past the end of it. */
+            d === todayKey ? "today" : "",
           ].filter(Boolean).join(" ");
           return (
             <button key={d} className={cls} disabled={!avail} onClick={() => onPick(idx)}>
@@ -52,19 +61,6 @@ export default function MonthGrid({ dates, a, b, onPick }) {
             </button>
           );
         })}
-      </div>
-
-      <div className="cal-dots" role="group" aria-label="Month">
-        {MONTHS.map((m) => (
-          <button
-            key={m}
-            className={m === offset ? "on" : ""}
-            onClick={() => setOffset(m)}
-            aria-current={m === offset}
-            aria-label={new Date(anchor.getFullYear(), anchor.getMonth() + m, 1)
-              .toLocaleString("en", { month: "long", year: "numeric" })}
-          />
-        ))}
       </div>
     </div>
   );
