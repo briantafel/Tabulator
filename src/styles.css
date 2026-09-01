@@ -832,7 +832,7 @@ body { background: #F2F2F2; }
 /* Day rows. Pitch 50: a 41-tall block with the rule on its bottom edge, then
    a 9 gap. The content centres 15.3 from the block top, not in the middle of
    it, so the padding is deliberately lopsided. */
-.sd-list { margin-top: calc(14.5 * var(--u)); }
+.sd-list { margin-top: calc(16.9 * var(--u)); }
 .sd {
   display: grid; align-items: center;
   grid-template-columns:
@@ -858,6 +858,22 @@ body { background: #F2F2F2; }
    The number stays grey: the marker carries the severity, same as the table. */
 .sd-f { display: flex; align-items: center; justify-content: flex-end; gap: calc(4.5 * var(--u)); }
 .sd-f .sev { width: 10px; }
+
+/* Column heads, borrowed wholesale from the results table: 9pt, regular,
+   black, the same five columns and the same words. It sits in the `.sd` grid
+   so the labels cannot drift off the numbers they name — the bar column is
+   deliberately blank, being the same figure as the one beside it, drawn.
+
+   AFTER `.sd`, not before. It overrides four of that rule's declarations at
+   exactly the same specificity, so placed above it the row silently kept its
+   41 height, its rule and its 9 of margin, and only the type changed. */
+.sd-head {
+  height: auto; padding-bottom: calc(17.1 * var(--u)); margin-bottom: 0;
+  border-bottom: 0; color: #000; font-weight: 400;
+  font-size: calc(9 * var(--u)); line-height: calc(11 * var(--u));
+}
+.sd-head span { text-align: right; }
+.sd-head span:first-child { text-align: left; }
 
 /* Close is 298 wide, not full width — the calendar-plus sits beside it. */
 .sheet-actions {
@@ -901,11 +917,6 @@ body { background: #F2F2F2; }
 .settings .stamp { color: #9A9A9A; font-size: 11.5px; }
 .settings .stamp.warn { color: #A3271A; }
 
-/* The forecaster's prose in the detail sheet. */
-.sheet-prose {
-  margin: calc(17.5 * var(--u)) 0 0; font-size: calc(13 * var(--u));
-  line-height: calc(13 * var(--u)); color: #555;
-}
 .sheet-warn {
   margin: 10px 0 0; padding: 9px 12px; border-radius: 10px;
   background: #FDECEA; color: #A3271A; font-size: 12.5px; line-height: 1.5;

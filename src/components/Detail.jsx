@@ -7,12 +7,6 @@ import { toDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import Dot from "./Dot.jsx";
 
-/** Snow-Forecast runs its label straight into the sentence —
- *  "Next 3 days weather summary:Heavy rain (total 24.0mm)…" — so drop the
- *  label and restore the space. */
-const tidySummary = (t) =>
-  String(t).replace(/^[^:]*summary:\s*/i, "").replace(/([a-z]):(?=[A-Z])/g, "$1: ").trim();
-
 /* Brian's exports. Filled paths; the clipPath wrapper Figma emits is dropped
    and the fills become currentColor so the button state drives the colour. */
 const STAR =
@@ -318,9 +312,11 @@ export default function Detail({
             At rest it is exactly as tall as its content; maximized it is the
             scroller, which is the only reason the reports fit at all. */}
         <div className="sheet-body" ref={body}>
-          {/* The forecaster's prose — the thing a raw model output never gives
-              you, and the reason for moving off Open-Meteo. */}
-          {r.summary?.next3 && <p className="sheet-prose">{tidySummary(r.summary.next3)}</p>}
+          {/* The forecaster's prose used to open this panel. Brian, sending the
+              labelled comp: "you'll notice I removed the text summary of the
+              conditions and replaced it with labels. That's intentional." The
+              column heads say what the four numbers are, which the sentence
+              never did, and they cost a fifth of its height. */}
 
           {rainRisk(r) && (
             <p className="sheet-warn">
@@ -329,6 +325,17 @@ export default function Detail({
           )}
 
           <div className="sd-list">
+            {/* Same labels, same 9pt, same order as the results table's head —
+                Brian: "The labels follow the design of the table view of
+                resort results." The bar column is unlabelled: it is the same
+                number as the one beside it, drawn. */}
+            <div className="sd sd-head" aria-hidden="true">
+              <span>Day</span>
+              <span />
+              <span>snow</span>
+              <span>&uarr; temp</span>
+              <span>&uarr; wind</span>
+            </div>
             {r.win.map((d) => (
               <div className="sd" key={d.date}>
                 <span className="sd-day">{weekdayShort(d.date)}</span>
