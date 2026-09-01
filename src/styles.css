@@ -176,12 +176,12 @@ body { background: #F2F2F2; }
    the calendar grows upward into the space under the question line instead of
    pushing everything down. */
 .slot { height: calc(200 * var(--u)); position: relative; }
-/* The 17.9 is the dot row that used to sit under the grid — 6 of dot on an
-   11.9 top padding. `.cal` is anchored to the bottom of the fixed slot, so
-   deleting the dots would have dropped the whole grid by exactly that much.
-   The padding holds the calendar where Brian has always had it. */
-.cal { position: absolute; left: 0; right: 0; bottom: 0;
-  padding-bottom: calc(17.9 * var(--u)); }
+/* Anchored to the bottom of the fixed slot, so losing the dot row under it
+   drops the whole grid by the 17.9 that row occupied — 6 of dot on an 11.9
+   top padding. That is exactly what Brian asked for once the dots were gone:
+   "we can now move the calendar down a bit to clear the Find me snow text."
+   The grid used to end within 5 of the question line's box. */
+.cal { position: absolute; left: 0; right: 0; bottom: 0; }
 
 /* Six rows at a 37pt pitch. Brian's PDF draws 40, but his mock is a five-row
    February, and six rows at 40 do not fit between the question line and the
@@ -890,9 +890,12 @@ body { background: #F2F2F2; }
  * rest of the sheet already uses — the section should read as part of the app,
  * not as a pasted-in web page.
  *
- * Photos run the full 22..380 content width; the words are inset 12 further,
- * which is the one piece of OnTheSnow's card that is worth keeping — it stops
- * a wall of text from butting against a photo edge.
+ * Photos AND words both run the full 22..380 content width. The words used to
+ * be inset a further 12, borrowed from OnTheSnow's own card; Brian: "the text
+ * for the skier reports is inset beyond the layout grid margins. Let's align
+ * that to the left of the photos and rest of the grid in that sheet." So the
+ * name sits on the sheet's left margin, the date on its right, and the prose
+ * has the extra 24 of measure.
  * ------------------------------------------------------------------ */
 .reports { margin-top: calc(23.8 * var(--u)); }
 .reports h3 {
@@ -913,7 +916,7 @@ body { background: #F2F2F2; }
 .rep-meta {
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: calc(12 * var(--u));
-  margin: calc(17.6 * var(--u)) calc(12 * var(--u)) 0;
+  margin: calc(17.6 * var(--u)) 0 0;
 }
 /* No photo above it, so there is nothing for the 17.6 to clear. */
 .rep-meta:first-child { margin-top: 0; }
@@ -932,7 +935,7 @@ body { background: #F2F2F2; }
   color: #8A8A8A;
 }
 .rep-text {
-  margin: calc(17.4 * var(--u)) calc(12 * var(--u)) 0;
+  margin: calc(17.4 * var(--u)) 0 0;
   font-size: calc(13 * var(--u)); line-height: calc(19 * var(--u)); color: #555;
 }
 .rep-none {

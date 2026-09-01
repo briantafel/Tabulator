@@ -252,8 +252,10 @@ export default function Tabulator() {
 
           {data && tab === "mountains" && (
             <>
-              {/* Three verbs, per the workflow PDFs: "in" for days, "on" for a
-                  single date, "from" for a range. Month name in the accent.
+              {/* "in" before a count of days; nothing at all before a month.
+                  The workflow PDFs had three verbs — "on" for a single date,
+                  "from" for a range — and Brian's new comp drops both: "Find
+                  me snow February", not "from February". Month in the accent.
 
                   Month paging sits on this line now. Brian's comp puts a text
                   < and > at the layout margins either side of the sentence,
@@ -268,7 +270,7 @@ export default function Tabulator() {
                           disabled={mOff <= MONTH_MIN} aria-label="Previous month">&lt;</button>
                 )}
                 <span>
-                  Find me snow {mode === "days" ? "in" : wb > wa ? "from" : "on"}{" "}
+                  Find me snow{mode === "days" ? " in" : ""}{" "}
                   {mode === "calendar" && <em>{monthName(shownMonth)}</em>}
                 </span>
                 {mode === "calendar" && (
