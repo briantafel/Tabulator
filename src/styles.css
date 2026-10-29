@@ -814,6 +814,14 @@ body { background: #F2F2F2; }
   margin: calc(8.1 * var(--u)) 0 0; font-size: calc(12.5 * var(--u));
   line-height: calc(12.5 * var(--u)); color: #8A8A8A;
 }
+/* Base, top depth, last snowfall — Brian's withBase export. Same 12.5 grey
+   as the subtitle, values at 600. The header rule drops to make room. */
+.sheet-head p.sheet-pack {
+  display: flex; flex-wrap: wrap; gap: 0 calc(17.5 * var(--u));
+  margin-top: calc(17.8 * var(--u));
+  margin-bottom: calc(.7 * var(--u));
+}
+.sheet-pack b { font-weight: 600; }
 .sheet-total {
   font-size: calc(30 * var(--u)); font-weight: 700; color: var(--red);
   line-height: calc(28 * var(--u)); letter-spacing: -.03em;

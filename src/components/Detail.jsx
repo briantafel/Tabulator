@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { snowWithUnit, tempTxt, windTxt, elevTxt } from "../lib/units.js";
+import { snowWithUnit, tempTxt, windTxt, elevTxt, cmToIn, snowUnit } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
 import { toDays, sfDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
+import { snowpack } from "../lib/depths.js";
 import Dot from "./Dot.jsx";
 
 /* Brian's exports. Filled paths; the clipPath wrapper Figma emits is dropped
@@ -128,6 +129,11 @@ export default function Detail({
      would be worse than no strip. */
   /* Settings picks the row's source. Snow-Forecast covers every resort;
      NWS covers the US ones, and a Canadian sheet on NWS simply has no row. */
+  const pack = snowpack(r);
+  /* Depths are whole numbers in the design — 5", 15" — not the forecast's
+     one decimal place. */
+  const depth = (cm) => `${Math.round(metric ? cm : cmToIn(cm))}${snowUnit(metric)}`;
+
   const wx = wxSource === "sf"
     ? sfDays(r.days)
     : toDays(weather?.resorts?.[r.id]?.periods ?? []);
@@ -300,6 +306,16 @@ export default function Detail({
               {r.region} · {shortDate(r.win[0].date)}–{shortDate(r.win[r.win.length - 1].date)}
               {r.elevation?.mid != null && <> · mid {elevTxt(r.elevation.mid, metric)}</>}
             </p>
+            {/* Brian's Resort Sheet-max-withBase export: what is already on
+                the ground, under the subtitle. A value we do not have is left
+                out rather than shown as a dash or a zero. */}
+            {(pack.base != null || pack.top != null || pack.last) && (
+              <p className="sheet-pack">
+                {pack.base != null && <span>Base: <b>{depth(pack.base)}</b></span>}
+                {pack.top != null && <span>Top depth: <b>{depth(pack.top)}</b></span>}
+                {pack.last && <span>Last: <b>{shortDate(pack.last)}</b></span>}
+              </p>
+            )}
           </div>
           <span className="sheet-total">{snowWithUnit(r.total, metric)}</span>
           <button
