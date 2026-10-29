@@ -64,7 +64,8 @@ test("the ranges and the closing place are tappable, nothing else is", () => {
   assert.deepEqual(links, ["Sierra", "Wasatch", "Rockies", "Tahoe", "Kirkwood"]);
   const kirk = segs.find((s) => s.t === "Kirkwood").link;
   assert.deepEqual(membersOf(kirk), ["kirkwood"]);
-  assert.deepEqual(membersOf({ kind: "range", key: "the Wasatch" }), ["snowbird", "alta"]);
+  assert.deepEqual(membersOf({ kind: "range", key: "the Wasatch" }).sort(),
+    ["alta", "brighton", "powder-mountain", "snowbasin", "snowbird", "solitude"]);
 });
 
 test("a state or a part of the Rockies opens just those resorts", () => {
@@ -86,4 +87,9 @@ test("the Cascades name a state when Oregon and Washington both count", () => {
   const s = say(outlook(feed({ "mt-baker": [0, 30, 20, 0, 0, 0], "mt-bachelor": [0, 25, 30, 0, 0, 0], crystal: [0, 5, 5, 0, 0, 0] }), { now: NOW }));
   assert.match(s, /through \[the Cascades\]/);
   assert.match(s, /best bet for snow is \[the Cascades\], with \[(Washington|Oregon)\]/);
+});
+
+test("Tahoe names the resort even though Mt. Rose is in Nevada", () => {
+  const s = say(outlook(feed({ "mt-rose": [0, 25, 20, 0, 0, 0], northstar: [0, 20, 15, 0, 0, 0] }), { now: NOW }));
+  assert.match(s, /best bet for snow is \[Tahoe\], with \[Mt\. Rose\]/);
 });

@@ -30,6 +30,19 @@ export const RANGES = {
   heavenly: { range: "the Sierra", sub: "Tahoe", state: "California" },
   kirkwood: { range: "the Sierra", sub: "Tahoe", state: "California" },
   mammoth: { range: "the Sierra", sub: "the Eastern Sierra", state: "California" },
+  "sugar-bowl": { range: "the Sierra", sub: "Tahoe", state: "California" },
+  northstar: { range: "the Sierra", sub: "Tahoe", state: "California" },
+  "mt-rose": { range: "the Sierra", sub: "Tahoe", state: "Nevada" },
+  "sierra-at-tahoe": { range: "the Sierra", sub: "Tahoe", state: "California" },
+  homewood: { range: "the Sierra", sub: "Tahoe", state: "California" },
+  brighton: { range: "the Wasatch", state: "Utah" },
+  solitude: { range: "the Wasatch", state: "Utah" },
+  snowbasin: { range: "the Wasatch", state: "Utah" },
+  "powder-mountain": { range: "the Wasatch", state: "Utah" },
+  vail: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
+  breckenridge: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
+  "arapahoe-basin": { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
+  "wolf-creek": { range: "the Rockies", sub: "the southern Rockies", state: "Colorado" },
   "mt-baker": { range: "the Cascades", state: "Washington" },
   crystal: { range: "the Cascades", state: "Washington" },
   "stevens-pass": { range: "the Cascades", state: "Washington" },
@@ -143,11 +156,13 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
     .sort((a, b) => strength(b[1].map((r) => r.total)) - strength(a[1].map((r) => r.total)))[0];
 
   // Then one step closer: the state, or the resort when the unit is one state
-  // — "the Sierra, with California" says the same place twice.
+  // — "the Sierra, with California" says the same place twice. Tahoe always
+  // names the resort: Mt. Rose puts it across a state line, but "Tahoe, with
+  // Nevada" is not how anyone talks about a lake you can drive around.
   const states = new Map();
   for (const r of bestRows) states.set(r.state, Math.max(states.get(r.state) ?? 0, r.total));
   const topResort = bestRows.reduce((a, b) => (b.total > a.total ? b : a));
-  const closer = states.size > 1
+  const closer = states.size > 1 && bestName !== "Tahoe"
     ? { t: [...states.entries()].sort((a, b) => b[1] - a[1])[0][0], link: { kind: "state" } }
     : { t: topResort.name, link: { kind: "resort", id: topResort.id } };
   closer.link.key = closer.t;

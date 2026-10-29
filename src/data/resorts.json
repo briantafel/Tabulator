@@ -9,7 +9,8 @@
       "Palisades is one entry backed by TWO slugs. Snow-Forecast still files the mountain under its former name Squaw-Valley and lists Alpine-Meadows separately; the real resort is the merged, lift-connected operation. Combined per the rule in `combine` below.",
       "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching.",
       "`nws` is a point ON THE MOUNTAIN (mid-slope, not the base town) for api.weather.gov, US resorts only. NWS answers for the ~2.5km grid cell around it; scripts/fetch-weather.js rejects any point whose grid sits below the resort's base elevation, which is what a town forecast looks like. Added 2026-10-28.",
-      "The four Cascades resorts (Mt. Baker, Crystal Mountain, Stevens Pass, Mt. Bachelor) were added 2026-10-29 from search results, not fetched: the sandbox cannot reach any of the three sources. Verified by scripts/check-new-resorts.sh on Brian's Mac before the first scrape that includes them. Crystal's OnTheSnow path is crystal-mountain-wa \u2014 plain crystal-mountain is the Michigan resort."
+      "The four Cascades resorts (Mt. Baker, Crystal Mountain, Stevens Pass, Mt. Bachelor) were added 2026-10-29 from search results, not fetched: the sandbox cannot reach any of the three sources. Verified by scripts/check-new-resorts.sh on Brian's Mac before the first scrape that includes them. Crystal's OnTheSnow path is crystal-mountain-wa \u2014 plain crystal-mountain is the Michigan resort.",
+      "Thirteen more added 2026-10-29 at Brian's pick \u2014 Tahoe (Sugar Bowl, Northstar, Mt. Rose, Sierra-at-Tahoe, Homewood), the Wasatch (Brighton, Solitude, Snowbasin, Powder Mountain) and Colorado (Vail, Breckenridge, Arapahoe Basin, Wolf Creek). Addresses from search results, checked by check-new-resorts.sh on his Mac before the first scrape. Snowbasin's Snow-Forecast slug is Snow-Basin; Wolf Creek's is Wolf-Creek-Ski-Area (Wolf-Creek-Utah is a different hill)."
     ]
   },
   "tier": "mid",
@@ -56,6 +57,71 @@
       "nws": [
         38.678,
         -120.075
+      ]
+    },
+    {
+      "id": "sugar-bowl",
+      "name": "Sugar Bowl",
+      "region": "California",
+      "slugs": [
+        "Sugar-Bowl"
+      ],
+      "otsPath": "california/sugar-bowl-resort",
+      "nws": [
+        39.297,
+        -120.355
+      ]
+    },
+    {
+      "id": "northstar",
+      "name": "Northstar",
+      "region": "California",
+      "slugs": [
+        "Northstar-at-Tahoe"
+      ],
+      "otsPath": "california/northstar-california",
+      "nws": [
+        39.266,
+        -120.128
+      ]
+    },
+    {
+      "id": "mt-rose",
+      "name": "Mt. Rose",
+      "region": "Nevada",
+      "slugs": [
+        "Mt-Rose-Ski-Tahoe"
+      ],
+      "otsPath": "nevada/mt-rose-ski-tahoe",
+      "nws": [
+        39.32,
+        -119.888
+      ]
+    },
+    {
+      "id": "sierra-at-tahoe",
+      "name": "Sierra-at-Tahoe",
+      "region": "California",
+      "slugs": [
+        "Sierra-at-Tahoe"
+      ],
+      "otsPath": "california/sierra-at-tahoe",
+      "nws": [
+        38.796,
+        -120.085
+      ]
+    },
+    {
+      "id": "homewood",
+      "name": "Homewood",
+      "region": "California",
+      "slugs": [
+        "Homewood-Mountain-Resort"
+      ],
+      "otsPath": "california/homewood-mountain-resort",
+      "nws": [
+        39.08,
+        -120.17
       ]
     },
     {
@@ -176,6 +242,45 @@
       ]
     },
     {
+      "id": "vail",
+      "name": "Vail",
+      "region": "Colorado",
+      "slugs": [
+        "Vail"
+      ],
+      "otsPath": "colorado/vail",
+      "nws": [
+        39.615,
+        -106.37
+      ]
+    },
+    {
+      "id": "breckenridge",
+      "name": "Breckenridge",
+      "region": "Colorado",
+      "slugs": [
+        "Breckenridge"
+      ],
+      "otsPath": "colorado/breckenridge",
+      "nws": [
+        39.475,
+        -106.08
+      ]
+    },
+    {
+      "id": "arapahoe-basin",
+      "name": "Arapahoe Basin",
+      "region": "Colorado",
+      "slugs": [
+        "Arapahoe-Basin"
+      ],
+      "otsPath": "colorado/arapahoe-basin-ski-area",
+      "nws": [
+        39.63,
+        -105.875
+      ]
+    },
+    {
       "id": "snowbird",
       "name": "Snowbird",
       "region": "Utah",
@@ -199,6 +304,58 @@
       "nws": [
         40.58,
         -111.63
+      ]
+    },
+    {
+      "id": "brighton",
+      "name": "Brighton",
+      "region": "Utah",
+      "slugs": [
+        "Brighton-Resort"
+      ],
+      "otsPath": "utah/brighton-resort",
+      "nws": [
+        40.592,
+        -111.585
+      ]
+    },
+    {
+      "id": "solitude",
+      "name": "Solitude",
+      "region": "Utah",
+      "slugs": [
+        "Solitude"
+      ],
+      "otsPath": "utah/solitude-mountain-resort",
+      "nws": [
+        40.612,
+        -111.598
+      ]
+    },
+    {
+      "id": "snowbasin",
+      "name": "Snowbasin",
+      "region": "Utah",
+      "slugs": [
+        "Snow-Basin"
+      ],
+      "otsPath": "utah/snowbasin",
+      "nws": [
+        41.205,
+        -111.87
+      ]
+    },
+    {
+      "id": "powder-mountain",
+      "name": "Powder Mountain",
+      "region": "Utah",
+      "slugs": [
+        "Powder-Mountain"
+      ],
+      "otsPath": "utah/powder-mountain",
+      "nws": [
+        41.375,
+        -111.775
       ]
     },
     {
@@ -264,6 +421,19 @@
       "nws": [
         36.585,
         -105.45
+      ]
+    },
+    {
+      "id": "wolf-creek",
+      "name": "Wolf Creek",
+      "region": "Colorado",
+      "slugs": [
+        "Wolf-Creek-Ski-Area"
+      ],
+      "otsPath": "colorado/wolf-creek-ski-area",
+      "nws": [
+        37.475,
+        -106.8
       ]
     },
     {
