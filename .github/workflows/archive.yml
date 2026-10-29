@@ -1,0 +1,173 @@
+name: Archive forecasts
+
+# Started 2026-10-29. Twice a day, 30 minutes after the app's own scrape, it
+# collects every forecast and observation the archive tracks — Snow-Forecast
+# at all three tiers, the Open-Meteo ensembles and SNOTEL — and uploads the
+# raw bytes plus Parquet rows to the private R2 bucket. Nothing is committed.
+# See archive/README.md and archive/dictionary.yaml.
+#
+# Needs four repository secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
+# R2_SECRET_ACCESS_KEY, R2_BUCKET.
+#
+# Run it by hand from the Actions tab. Tick "backfill" once to also load
+# every real forecast.json already in git history into the archive.
+on:
+  schedule:
+    - cron: "45 6 * * *"    # 06:45 UTC
+    - cron: "45 18 * * *"   # 18:45 UTC
+  workflow_dispatch:
+    inputs:
+      backfill:
+        description: "Also archive the forecast.json history from git (one-time)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write    # to open an issue when a run fails
+
+concurrency:
+  group: archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.backfill && '0' || '1' }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DuckDB
+        run: pip install duckdb==2.0.0
+
+      # Fail before fetching anything if the bucket is not configured, so a
+      # missing secret reads as that and not as a broken scrape.
+      - name: Check the bucket secrets are set
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          missing=""
+          for v in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_BUCKET; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing — add them under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      # Every source runs even if another fails, and whatever succeeded is
+      # uploaded. The last step turns the run red if anything fell short.
+      - name: Collect
+        id: collect
+        continue-on-error: true
+        run: node scripts/archive/collect.js out
+
+      - name: Backfill from git history
+        if: inputs.backfill
+        run: node scripts/archive/backfill-git.js out/backfill-rows
+
+      - name: Package raw files and Parquet
+        run: |
+          test -f out/manifest.json || { echo "::error::collect.js wrote no manifest"; exit 1; }
+          RUN_ID=$(jq -r .runId out/manifest.json)
+          DATE=${RUN_ID:0:10}
+          MONTH=${RUN_ID:0:7}
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          mkdir -p up/runs
+          python3 scripts/archive/to_parquet.py out/rows up/archive "$RUN_ID" "$MONTH"
+          for dir in out/raw/*/; do
+            src=$(basename "$dir")
+            mkdir -p "up/raw/source=$src/date=$DATE"
+            tar -cf "up/raw/source=$src/date=$DATE/$RUN_ID.tar" -C "$dir" .
+          done
+          if [ -d out/backfill-rows ]; then
+            for m in out/backfill-rows/*/; do
+              python3 scripts/archive/to_parquet.py "$m" up/archive backfill-git "$(basename "$m")"
+            done
+          fi
+          cp out/manifest.json "up/runs/$RUN_ID.json"
+          cp archive/dictionary.yaml up/dictionary.yaml
+          du -sh up/*
+
+      - name: Upload to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          # R2 does not accept the checksum headers newer AWS CLIs send by default.
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          aws --version
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp up "s3://$R2_BUCKET/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
+          # Prove it landed rather than trusting the copy's exit code.
+          aws s3 ls "s3://$R2_BUCKET/runs/$RUN_ID.json" --endpoint-url "$ENDPOINT"
+
+      - name: Fail the run if any source fell short
+        if: steps.collect.outcome == 'failure'
+        run: |
+          jq -r '.sources | to_entries[] | "\(.key): ok=\(.value.ok) rows=\(.value.rows) \(.value.error // "")"' out/manifest.json
+          echo "::error::One or more archive sources failed — see the Collect step. What succeeded was still uploaded."
+          exit 1
+
+      - name: Open an issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = [
+              context.serverUrl,
+              context.repo.owner,
+              context.repo.repo,
+              "actions/runs",
+              context.runId,
+            ].join("/");
+            const body = [
+              "Run: " + runUrl,
+              "",
+              "A gap in the archive cannot be refilled later, so this is worth a look.",
+              "The Collect step lists which source failed; the manifest in the bucket",
+              "under runs/ has the details. A failed upload means the secrets or the",
+              "bucket, not the sources.",
+            ].join("\n");
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "archive-failure",
+            });
+            if (existing.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: "Forecast archive run failed",
+                body,
+                labels: ["archive-failure"],
+              });
+            }

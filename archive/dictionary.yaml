@@ -1,0 +1,109 @@
+# The forecast archive's data dictionary.
+#
+# The one place a column, source or variable's meaning is written down.
+# Copied to the bucket root on every run, so the archive describes itself.
+# Started 2026-10-29. See archive/README.md for layout and how to query it.
+
+conventions:
+  storage: Metric units and UTC timestamps. Inches, °F and local time exist only in views and the app.
+  missing: An absent value is no row at all, never a zero.
+  append_only: Nothing is edited. A corrected parse is new rows with a newer parser_version.
+  duplicates: >
+    Observation windows overlap between runs on purpose, so the same reading can
+    appear more than once. Views keep the newest fetched_at per
+    (source, station_id, valid_start, variable).
+  lead_time: Not stored. Computed in views as valid_start minus issued_at, or minus fetched_at where issued_at is null.
+
+columns:
+  source: Which source produced the row. One of the keys under `sources`.
+  kind: forecast | observation | mapping (a resort-to-station candidate, see snotel).
+  resort_id: Tabulator's own resort ID from src/data/resorts.json. Null on station observations.
+  tier: top | mid | bot for Snow-Forecast; mid for the ensembles (requested at Snow-Forecast's mid elevation); null otherwise.
+  elevation_m: Height the value is for, in metres, as the source states it.
+  lat: Latitude of the point the source answered for.
+  lon: Longitude of the point the source answered for.
+  station_id: The source's own key for the location. Snow-Forecast URL slug (two joined with + where the app combined them), or a SNOTEL station triplet.
+  issued_at: When the source says the forecast was issued. Null where the source does not say.
+  fetched_at: When the archive fetched it. GitHub often runs scheduled jobs late, so this can trail the schedule by hours.
+  valid_start: Start of the period the value describes (UTC). For an instant reading, valid_start = valid_end.
+  valid_end: End of that period (UTC).
+  period_label: The source's own label for the period, verbatim (am, pm, night, hourly, daily).
+  variable: What was measured or forecast. Defined under `variables`.
+  value: Numeric value, in `unit`.
+  value_text: Text value — phrases, prose summaries, directions, resort-reported figures kept verbatim.
+  unit: Unit of `value`. Always metric.
+  model: Weather model, for multi-model sources.
+  member: Ensemble member. 0 is the control run.
+  run_id: Ties a row to its run and its raw files ("2026-10-29T0645Z-<GitHub run id>", or "git-<sha>" for the backfill).
+  parser_version: Which code produced the row.
+
+sources:
+  snow-forecast:
+    name: Snow-Forecast.com 6-day forecast
+    kind: forecast (the spine) plus resort-reported observations
+    url: https://www.snow-forecast.com/resorts/{slug}/6day/{top|mid|bot}
+    cadence: twice daily
+    since: 2026-10-29 at all three tiers; mid tier back to 2026-08-21 via the git backfill
+    raw: every page, gzipped HTML
+    notes:
+      - >
+        Periods are labelled AM / PM / night in the resort's local time without
+        stated hours. valid_start/valid_end ASSUME AM 06–12, PM 12–18, night
+        18–06. period_label is verbatim, so windows can be recomputed.
+      - >
+        Backfill rows tagged parser_version git-json-pre-2026-10-28 came from a
+        parser that could put every value one period off its time label.
+        Treat them as approximate.
+      - The backfill holds only mid tier, only runs whose forecast changed, and nothing from 2026-08-25 to 2026-10-28 (scrape paused).
+  open-meteo-ensemble:
+    name: Open-Meteo Ensemble API
+    kind: forecast
+    url: https://ensemble-api.open-meteo.com/v1/ensemble
+    models:
+      ecmwf_ifs025: ECMWF IFS ensemble, 0.25°, 51 members
+      gfs025: NOAA GFS ensemble, 0.25°, 31 members
+    cadence: twice daily, out to 16 days
+    since: 2026-10-29
+    raw: every response, hourly, gzipped JSON
+    notes:
+      - Rows are 6-hour blocks starting 00/06/12/18 UTC, built from the hourly raw. A block is written only when all six hours are present.
+      - Requested at the resort's Snow-Forecast mid-tier elevation, so temperatures are downscaled to the same height as the spine.
+      - Free tier is for non-commercial use. A commercial Tabulator would need a paid Open-Meteo plan.
+  snotel:
+    name: NRCS SNOTEL via the AWDB REST API
+    kind: observation (ground truth for US resorts) and mapping
+    url: https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1
+    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily
+    since: 2026-10-29
+    raw: station list and every data response, gzipped JSON
+    notes:
+      - >
+        Stations are not at the resorts. Every run records up to three active
+        stations within 30 km of each US resort (kind mapping, variable
+        candidate_distance). Which one stands in for a resort is decided in the views.
+      - AWDB reports English units in station-local standard time; rows are converted to metric and UTC.
+      - No Canadian coverage. Revelstoke, Whistler, Lake Louise and Kicking Horse need another source.
+
+variables:
+  snow: { unit: cm, meaning: New snowfall over the valid period. Snow-Forecast prints an em-dash for none; stored as 0. }
+  rain: { unit: mm, meaning: Rain over the valid period (Snow-Forecast). }
+  precip: { unit: mm, meaning: Total precipitation, liquid equivalent, over the valid period (ensembles). }
+  temp_max: { unit: C, meaning: Maximum air temperature over the period. }
+  temp_min: { unit: C, meaning: Minimum air temperature over the period. }
+  wind_chill: { unit: C, meaning: Snow-Forecast's wind-chill temperature. }
+  humidity: { unit: "%", meaning: Relative humidity (Snow-Forecast). }
+  freezing_level: { unit: m, meaning: Height of the 0 °C level above sea level, as Snow-Forecast gives it per period. }
+  freezing_level_min: { unit: m, meaning: Lowest freezing level in the 6-hour block (ensembles). }
+  wind_speed: { unit: km/h, meaning: Wind speed for the period (Snow-Forecast). }
+  wind_speed_max: { unit: km/h, meaning: Highest hourly 10 m wind speed in the block (ensembles). }
+  wind_dir: { unit: null, meaning: Wind direction as a compass point, text. }
+  phrase: { unit: null, meaning: Snow-Forecast's short forecast phrase for the period, verbatim. }
+  summary_next3: { unit: null, meaning: Snow-Forecast's prose forecast for the next three days, verbatim. }
+  summary_days4_6: { unit: null, meaning: Snow-Forecast's prose forecast for days 4–6, verbatim. }
+  "reported_*": { unit: null, meaning: Snow-Forecast's resort-reported figures (top/bottom depth, fresh snow, last snowfall), verbatim text. }
+  "history_*": { unit: null, meaning: Snow-Forecast's powder-day counts, verbatim text. }
+  snow_depth: { unit: cm, meaning: Snow depth on the ground at a SNOTEL station. }
+  swe: { unit: mm, meaning: Snow water equivalent at a SNOTEL station — the water in the snowpack. }
+  temp: { unit: C, meaning: Observed air temperature at a SNOTEL station. }
+  precip_accum: { unit: mm, meaning: Precipitation accumulated since the water year began (1 October), SNOTEL. }
+  candidate_distance: { unit: km, meaning: Distance from a resort's mountain point to a nearby SNOTEL station (kind mapping). value_text is the station name. }

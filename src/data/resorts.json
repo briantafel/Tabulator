@@ -10,7 +10,8 @@
       "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching.",
       "`nws` is a point ON THE MOUNTAIN (mid-slope, not the base town) for api.weather.gov, US resorts only. NWS answers for the ~2.5km grid cell around it; scripts/fetch-weather.js rejects any point whose grid sits below the resort's base elevation, which is what a town forecast looks like. Added 2026-10-28.",
       "The four Cascades resorts (Mt. Baker, Crystal Mountain, Stevens Pass, Mt. Bachelor) were added 2026-10-29 from search results, not fetched: the sandbox cannot reach any of the three sources. Verified by scripts/check-new-resorts.sh on Brian's Mac before the first scrape that includes them. Crystal's OnTheSnow path is crystal-mountain-wa \u2014 plain crystal-mountain is the Michigan resort.",
-      "Thirteen more added 2026-10-29 at Brian's pick \u2014 Tahoe (Sugar Bowl, Northstar, Mt. Rose, Sierra-at-Tahoe, Homewood), the Wasatch (Brighton, Solitude, Snowbasin, Powder Mountain) and Colorado (Vail, Breckenridge, Arapahoe Basin, Wolf Creek). Addresses from search results, checked by check-new-resorts.sh on his Mac before the first scrape. Snowbasin's Snow-Forecast slug is Snow-Basin; Wolf Creek's is Wolf-Creek-Ski-Area (Wolf-Creek-Utah is a different hill)."
+      "Thirteen more added 2026-10-29 at Brian's pick \u2014 Tahoe (Sugar Bowl, Northstar, Mt. Rose, Sierra-at-Tahoe, Homewood), the Wasatch (Brighton, Solitude, Snowbasin, Powder Mountain) and Colorado (Vail, Breckenridge, Arapahoe Basin, Wolf Creek). Addresses from search results, checked by check-new-resorts.sh on his Mac before the first scrape. Snowbasin's Snow-Forecast slug is Snow-Basin; Wolf Creek's is Wolf-Creek-Ski-Area (Wolf-Creek-Utah is a different hill).",
+      "`tz` (every resort) and `latlon` (the four Canadian resorts, which have no `nws` point) were added 2026-10-29 for the forecast archive: tz turns Snow-Forecast's local AM/PM/night periods into UTC, latlon is where the Open-Meteo ensembles are requested. The Canadian points are approximate mid-mountain coordinates from memory, not fetched; Open-Meteo is also given the Snow-Forecast mid elevation, so a few hundred metres of error in position matters little."
     ]
   },
   "tier": "mid",
@@ -23,6 +24,7 @@
       "id": "palisades",
       "name": "Palisades",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Squaw-Valley",
         "Alpine-Meadows"
@@ -37,6 +39,7 @@
       "id": "heavenly",
       "name": "Heavenly",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Heavenly-Ski"
       ],
@@ -50,6 +53,7 @@
       "id": "kirkwood",
       "name": "Kirkwood",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Kirkwood-Mountain"
       ],
@@ -63,6 +67,7 @@
       "id": "sugar-bowl",
       "name": "Sugar Bowl",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Sugar-Bowl"
       ],
@@ -76,6 +81,7 @@
       "id": "northstar",
       "name": "Northstar",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Northstar-at-Tahoe"
       ],
@@ -89,6 +95,7 @@
       "id": "mt-rose",
       "name": "Mt. Rose",
       "region": "Nevada",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Mt-Rose-Ski-Tahoe"
       ],
@@ -102,6 +109,7 @@
       "id": "sierra-at-tahoe",
       "name": "Sierra-at-Tahoe",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Sierra-at-Tahoe"
       ],
@@ -115,6 +123,7 @@
       "id": "homewood",
       "name": "Homewood",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Homewood-Mountain-Resort"
       ],
@@ -128,6 +137,7 @@
       "id": "mammoth",
       "name": "Mammoth",
       "region": "California",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Mammoth-Mountain"
       ],
@@ -141,6 +151,7 @@
       "id": "mt-baker",
       "name": "Mt. Baker",
       "region": "Washington",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Mount-Baker"
       ],
@@ -154,6 +165,7 @@
       "id": "crystal",
       "name": "Crystal Mountain",
       "region": "Washington",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Crystal-Mountain"
       ],
@@ -167,6 +179,7 @@
       "id": "stevens-pass",
       "name": "Stevens Pass",
       "region": "Washington",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Stevens-Pass"
       ],
@@ -180,6 +193,7 @@
       "id": "mt-bachelor",
       "name": "Mt. Bachelor",
       "region": "Oregon",
+      "tz": "America/Los_Angeles",
       "slugs": [
         "Mt-Bachelor"
       ],
@@ -193,6 +207,7 @@
       "id": "telluride",
       "name": "Telluride",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Telluride"
       ],
@@ -206,6 +221,7 @@
       "id": "crested-butte",
       "name": "Crested Butte",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Crested-Butte-Mountain"
       ],
@@ -219,6 +235,7 @@
       "id": "aspen-highlands",
       "name": "Aspen Highlands",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Aspen-Highlands"
       ],
@@ -232,6 +249,7 @@
       "id": "steamboat",
       "name": "Steamboat",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Steamboat-Ski"
       ],
@@ -245,6 +263,7 @@
       "id": "vail",
       "name": "Vail",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Vail"
       ],
@@ -258,6 +277,7 @@
       "id": "breckenridge",
       "name": "Breckenridge",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Breckenridge"
       ],
@@ -271,6 +291,7 @@
       "id": "arapahoe-basin",
       "name": "Arapahoe Basin",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Arapahoe-Basin"
       ],
@@ -284,6 +305,7 @@
       "id": "snowbird",
       "name": "Snowbird",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Snowbird"
       ],
@@ -297,6 +319,7 @@
       "id": "alta",
       "name": "Alta",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Alta"
       ],
@@ -310,6 +333,7 @@
       "id": "brighton",
       "name": "Brighton",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Brighton-Resort"
       ],
@@ -323,6 +347,7 @@
       "id": "solitude",
       "name": "Solitude",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Solitude"
       ],
@@ -336,6 +361,7 @@
       "id": "snowbasin",
       "name": "Snowbasin",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Snow-Basin"
       ],
@@ -349,6 +375,7 @@
       "id": "powder-mountain",
       "name": "Powder Mountain",
       "region": "Utah",
+      "tz": "America/Denver",
       "slugs": [
         "Powder-Mountain"
       ],
@@ -362,6 +389,7 @@
       "id": "jackson-hole",
       "name": "Jackson Hole",
       "region": "Wyoming",
+      "tz": "America/Denver",
       "slugs": [
         "Jackson-Hole"
       ],
@@ -375,6 +403,7 @@
       "id": "grand-targhee",
       "name": "Grand Targhee",
       "region": "Wyoming",
+      "tz": "America/Denver",
       "slugs": [
         "Grand-Targhee"
       ],
@@ -388,6 +417,7 @@
       "id": "sun-valley",
       "name": "Sun Valley",
       "region": "Idaho",
+      "tz": "America/Boise",
       "slugs": [
         "Sun-Valley"
       ],
@@ -401,6 +431,7 @@
       "id": "big-sky",
       "name": "Big Sky",
       "region": "Montana",
+      "tz": "America/Denver",
       "slugs": [
         "Big-Sky"
       ],
@@ -414,6 +445,7 @@
       "id": "taos",
       "name": "Taos",
       "region": "New Mexico",
+      "tz": "America/Denver",
       "slugs": [
         "Taos"
       ],
@@ -427,6 +459,7 @@
       "id": "wolf-creek",
       "name": "Wolf Creek",
       "region": "Colorado",
+      "tz": "America/Denver",
       "slugs": [
         "Wolf-Creek-Ski-Area"
       ],
@@ -440,42 +473,63 @@
       "id": "revelstoke",
       "name": "Revelstoke",
       "region": "Canada",
+      "tz": "America/Vancouver",
       "slugs": [
         "Revelstoke"
       ],
-      "otsPath": "british-columbia/revelstoke-mountain"
+      "otsPath": "british-columbia/revelstoke-mountain",
+      "latlon": [
+        51,
+        -118.16
+      ]
     },
     {
       "id": "whistler",
       "name": "Whistler",
       "region": "Canada",
+      "tz": "America/Vancouver",
       "slugs": [
         "Whistler-Blackcomb"
       ],
-      "otsPath": "british-columbia/whistler-blackcomb"
+      "otsPath": "british-columbia/whistler-blackcomb",
+      "latlon": [
+        50.093,
+        -122.95
+      ]
     },
     {
       "id": "lake-louise",
       "name": "Lake Louise",
       "region": "Canada",
+      "tz": "America/Edmonton",
       "slugs": [
         "Lake-Louise"
       ],
-      "otsPath": "alberta/lake-louise"
+      "otsPath": "alberta/lake-louise",
+      "latlon": [
+        51.44,
+        -116.15
+      ]
     },
     {
       "id": "kicking-horse",
       "name": "Kicking Horse",
       "region": "Canada",
+      "tz": "America/Edmonton",
       "slugs": [
         "Kicking-Horse"
       ],
-      "otsPath": "british-columbia/kicking-horse"
+      "otsPath": "british-columbia/kicking-horse",
+      "latlon": [
+        51.29,
+        -117.06
+      ]
     },
     {
       "id": "whiteface",
       "name": "Whiteface",
       "region": "New York",
+      "tz": "America/New_York",
       "slugs": [
         "Whiteface-Mountain"
       ],
@@ -489,6 +543,7 @@
       "id": "stowe",
       "name": "Stowe",
       "region": "Vermont",
+      "tz": "America/New_York",
       "slugs": [
         "Stowe"
       ],
@@ -502,6 +557,7 @@
       "id": "killington",
       "name": "Killington",
       "region": "Vermont",
+      "tz": "America/New_York",
       "slugs": [
         "Killington"
       ],
@@ -515,6 +571,7 @@
       "id": "jay-peak",
       "name": "Jay Peak",
       "region": "Vermont",
+      "tz": "America/New_York",
       "slugs": [
         "Jay-Peak"
       ],

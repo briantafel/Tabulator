@@ -7,3 +7,5 @@ dist-ssr
 .env.*
 !.env.example
 test/screenshot.png
+out/
+up/
