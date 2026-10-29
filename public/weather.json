@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-29T12:47:13.247Z",
+ "generatedAt": "2026-10-29T13:01:27.835Z",
  "source": "api.weather.gov",
  "note": "US National Weather Service, for a point on each mountain. Canadian resorts have no NWS coverage.",
  "resorts": {
@@ -12,21 +12,14 @@
    "near": "Sunnyside-Tahoe City, CA",
    "periods": [
     {
-     "name": "Overnight",
-     "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T05:00:00-07:00"
-    },
-    {
-     "name": "Thursday",
+     "name": "Today",
      "isDaytime": true,
      "temperature": 48,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T06:00:00-07:00"
     },
     {
-     "name": "Thursday Night",
+     "name": "Tonight",
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Slight Chance Light Snow",
@@ -108,6 +101,13 @@
      "temperature": 47,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 34,
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
   },
@@ -120,21 +120,14 @@
    "near": "South Lake Tahoe, CA",
    "periods": [
     {
-     "name": "Overnight",
-     "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T05:00:00-07:00"
-    },
-    {
-     "name": "Thursday",
+     "name": "Today",
      "isDaytime": true,
      "temperature": 46,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T06:00:00-07:00"
     },
     {
-     "name": "Thursday Night",
+     "name": "Tonight",
      "isDaytime": false,
      "temperature": 31,
      "shortForecast": "Slight Chance Light Snow",
@@ -216,6 +209,13 @@
      "temperature": 44,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 29,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
   },
@@ -228,21 +228,14 @@
    "near": "Kirkwood, CA",
    "periods": [
     {
-     "name": "Overnight",
-     "isDaytime": false,
-     "temperature": 35,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T05:00:00-07:00"
-    },
-    {
-     "name": "Thursday",
+     "name": "Today",
      "isDaytime": true,
      "temperature": 47,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T06:00:00-07:00"
     },
     {
-     "name": "Thursday Night",
+     "name": "Tonight",
      "isDaytime": false,
      "temperature": 33,
      "shortForecast": "Chance Snow Showers then Chance Light Snow",
@@ -324,6 +317,13 @@
      "temperature": 47,
      "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-11-04T06:00:00-08:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 33,
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
   },
@@ -336,21 +336,14 @@
    "near": "Mammoth Lakes, CA",
    "periods": [
     {
-     "name": "Overnight",
-     "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Cloudy",
-     "startTime": "2026-10-29T05:00:00-07:00"
-    },
-    {
-     "name": "Thursday",
+     "name": "Today",
      "isDaytime": true,
      "temperature": 39,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-29T06:00:00-07:00"
     },
     {
-     "name": "Thursday Night",
+     "name": "Tonight",
      "isDaytime": false,
      "temperature": 27,
      "shortForecast": "Chance Light Snow",
@@ -432,6 +425,13 @@
      "temperature": 39,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 26,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
   },
@@ -447,8 +447,8 @@
      "name": "Today",
      "isDaytime": true,
      "temperature": 50,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -556,7 +556,7 @@
      "isDaytime": true,
      "temperature": 48,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -664,7 +664,7 @@
      "isDaytime": true,
      "temperature": 55,
      "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -772,7 +772,7 @@
      "isDaytime": true,
      "temperature": 50,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -880,7 +880,7 @@
      "isDaytime": true,
      "temperature": 51,
      "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -988,7 +988,7 @@
      "isDaytime": true,
      "temperature": 45,
      "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1096,7 +1096,7 @@
      "isDaytime": true,
      "temperature": 45,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1204,7 +1204,7 @@
      "isDaytime": true,
      "temperature": 43,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1312,7 +1312,7 @@
      "isDaytime": true,
      "temperature": 43,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1420,7 +1420,7 @@
      "isDaytime": true,
      "temperature": 41,
      "shortForecast": "Patchy Fog then Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1528,7 +1528,7 @@
      "isDaytime": true,
      "temperature": 45,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T06:00:00-06:00"
+     "startTime": "2026-10-29T07:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1636,7 +1636,7 @@
      "isDaytime": true,
      "temperature": 56,
      "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-04:00"
+     "startTime": "2026-10-29T07:00:00-04:00"
     },
     {
      "name": "Tonight",
@@ -1744,7 +1744,7 @@
      "isDaytime": true,
      "temperature": 58,
      "shortForecast": "Sunny",
-     "startTime": "2026-10-29T08:00:00-04:00"
+     "startTime": "2026-10-29T09:00:00-04:00"
     },
     {
      "name": "Tonight",
@@ -1852,7 +1852,7 @@
      "isDaytime": true,
      "temperature": 53,
      "shortForecast": "Sunny",
-     "startTime": "2026-10-29T08:00:00-04:00"
+     "startTime": "2026-10-29T07:00:00-04:00"
     },
     {
      "name": "Tonight",
@@ -1960,7 +1960,7 @@
      "isDaytime": true,
      "temperature": 60,
      "shortForecast": "Sunny",
-     "startTime": "2026-10-29T08:00:00-04:00"
+     "startTime": "2026-10-29T07:00:00-04:00"
     },
     {
      "name": "Tonight",
