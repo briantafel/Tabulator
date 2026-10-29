@@ -10,12 +10,12 @@
  * and the published snapshot has to run with no network at all. */
 
 /** Reports older than this are not "conditions", they are history. */
-export const REPORT_DAYS = 5;
+export const REPORT_DAYS = 7;
 
 const ms = (d) => new Date(`${String(d).slice(0, 10)}T12:00:00Z`).getTime();
 
 /* OnTheSnow prints "4 months ago", not a date. That is all the page gives, so
-   it is what the scrape can carry — and it is enough for a five-day window,
+   it is what the scrape can carry — and it is enough for a seven-day window,
    because every unit above "day" is already outside it. Deliberately coarse:
    this decides whether a report is shown, never what it says. */
 const UNIT = {

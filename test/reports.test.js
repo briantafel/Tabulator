@@ -5,7 +5,7 @@ import { reportsFor, reportDate, ageMs, REPORT_DAYS } from "../src/lib/reports.j
 
 const feed = (resorts, synthetic = false) => ({ synthetic, resorts });
 
-test("a real feed keeps only the last five days", () => {
+test("a real feed keeps only the last seven days", () => {
   const now = new Date("2026-04-26T00:00:00Z");
   const out = reportsFor(
     feed({ snowbird: [{ at: "2026-04-24" }, { at: "2026-04-14" }, { at: "2026-04-21" }] }),
@@ -71,7 +71,7 @@ test("the date falls back to the age rather than inventing a day", () => {
 test("real data is only unfiltered when it says why", () => {
   const now = new Date("2026-08-25T00:00:00Z");
   const old = { resorts: { x: [{ id: "a", at: "2026-04-24" }] } };
-  assert.equal(reportsFor(old, "x", now).length, 0, "an April report is not in a five-day window");
+  assert.equal(reportsFor(old, "x", now).length, 0, "an April report is not in a seven-day window");
   assert.equal(reportsFor({ ...old, demo: true }, "x", now).length, 1, "demo must bypass the window");
   assert.equal(reportsFor({ ...old, synthetic: true }, "x", now).length, 1, "synthetic must too");
 });
@@ -81,7 +81,7 @@ test("the shipped fixture is well formed and declares what it is", async () => {
   // Either it is invented (synthetic) or it is real but out of season (demo).
   // Silence would mean a section that empties itself without explanation.
   assert.ok(j.synthetic || j.demo,
-    "the fixture must say why its reports survive the five-day window");
+    "the fixture must say why its reports survive the seven-day window");
   assert.ok(j.note, "and it must say in words where the data came from");
   const ids = Object.keys(j.resorts);
   assert.ok(ids.length >= 20, `only ${ids.length} resorts have reports`);
@@ -95,7 +95,7 @@ test("the shipped fixture is well formed and declares what it is", async () => {
     assert.ok(r.text, "every report needs its text");
     // author and photo are optional: OnTheSnow does not expose either to the
     // scrape. A position in time is NOT optional — without one a report cannot
-    // be windowed, and a five-day section that silently shows April is a lie.
+    // be windowed, and a seven-day section that silently shows April is a lie.
     assert.ok(r.at || ageMs(r.age) != null, `report ${r.id} has no date and no parseable age`);
     if (r.photo) {
       // Inlined (from Brian's export) or an OnTheSnow CDN URL — both are real

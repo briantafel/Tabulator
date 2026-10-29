@@ -41,7 +41,7 @@ const clean = (s) => (typeof s === "string" ? s.trim() : "");
  *  Anything without a body is dropped: a photo with no words is not a
  *  report, and the card has nothing to say. Anything without a usable date
  *  is dropped too — it could not be windowed, and an undateable report in
- *  a "last 5 days" section is a lie. */
+ *  a "last 7 days" section is a lie. */
 export function parseReportsPage(html, { resortId } = {}) {
   const data = nextData(html);
   const rr = data?.props?.pageProps?.resortReports;
