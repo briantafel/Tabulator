@@ -19,15 +19,21 @@ import { cmToIn } from "./units.js";
 
 /* Ranges, as Brian drew the lines: the Wasatch apart from the Rockies, the
    Canadian Rockies apart from both, and the coast — Whistler — on its own.
-   Only the Rockies split further, because only they span enough states for
-   "the northern Rockies" to mean something different from "the Rockies".
+   The Rockies split into northern, central and southern; the Sierra into
+   Tahoe and the Eastern Sierra (Mammoth) — a different trip, a different
+   airport, and often a different storm. Splits only ever name the best bet;
+   the "moving through" list stays at range level.
    Revelstoke and Kicking Horse sit in the Columbia Mountains, strictly, but
    skiers file them with Lake Louise and so does he. */
 export const RANGES = {
-  palisades: { range: "the Sierra", state: "California" },
-  heavenly: { range: "the Sierra", state: "California" },
-  kirkwood: { range: "the Sierra", state: "California" },
-  mammoth: { range: "the Sierra", state: "California" },
+  palisades: { range: "the Sierra", sub: "Tahoe", state: "California" },
+  heavenly: { range: "the Sierra", sub: "Tahoe", state: "California" },
+  kirkwood: { range: "the Sierra", sub: "Tahoe", state: "California" },
+  mammoth: { range: "the Sierra", sub: "the Eastern Sierra", state: "California" },
+  "mt-baker": { range: "the Cascades", state: "Washington" },
+  crystal: { range: "the Cascades", state: "Washington" },
+  "stevens-pass": { range: "the Cascades", state: "Washington" },
+  "mt-bachelor": { range: "the Cascades", state: "Oregon" },
   whistler: { range: "the Coast Mountains", state: "British Columbia" },
   snowbird: { range: "the Wasatch", state: "Utah" },
   alta: { range: "the Wasatch", state: "Utah" },
@@ -156,10 +162,9 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
   /* Brian, 2026-10-29: each range is tappable, and so is the place the
      sentence closes on. "the" stays outside the link — he bracketed
      "the [Sierra]" — but inside the red, which runs across the whole list. */
-  const place = (label, link) => [
-    { t: "the ", hot: true },
-    { t: label.replace(/^the /, ""), hot: true, link },
-  ];
+  const place = (label, link) => (label.startsWith("the ")
+    ? [{ t: "the ", hot: true }, { t: label.slice(4), hot: true, link }]
+    : [{ t: label, hot: true, link }]); // "Tahoe" takes no article
   const kindOf = (name) => (units.has(name) && rows.some((r) => r.sub === name) ? "sub" : "range");
   const through = [];
   crossing.forEach((g, i) => {

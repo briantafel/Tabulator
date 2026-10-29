@@ -93,7 +93,9 @@ await check("sample data is labelled as such", async () => {
 await check("results render for every resort", async () => {
   await page.locator(".arrow").click();
   await page.waitForSelector(".t-row");
-  assert.equal(await page.locator(".t-row").count(), 23);
+  // As many rows as the scrape has resorts — 23 until the Cascades land, 27 after.
+  const shipped = JSON.parse(await readFile(new URL("../public/forecast.json", import.meta.url), "utf8")).resorts.length;
+  assert.equal(await page.locator(".t-row").count(), shipped);
 });
 
 await check("table headers follow the Figma", async () => {

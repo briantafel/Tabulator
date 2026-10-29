@@ -8,7 +8,8 @@
       "The per-resort key is a Snow-Forecast URL slug. Coordinates and elevations are no longer stored here \u2014 the scraper reads tier elevations off each page.",
       "Palisades is one entry backed by TWO slugs. Snow-Forecast still files the mountain under its former name Squaw-Valley and lists Alpine-Meadows separately; the real resort is the merged, lift-connected operation. Combined per the rule in `combine` below.",
       "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching.",
-      "`nws` is a point ON THE MOUNTAIN (mid-slope, not the base town) for api.weather.gov, US resorts only. NWS answers for the ~2.5km grid cell around it; scripts/fetch-weather.js rejects any point whose grid sits below the resort's base elevation, which is what a town forecast looks like. Added 2026-10-28."
+      "`nws` is a point ON THE MOUNTAIN (mid-slope, not the base town) for api.weather.gov, US resorts only. NWS answers for the ~2.5km grid cell around it; scripts/fetch-weather.js rejects any point whose grid sits below the resort's base elevation, which is what a town forecast looks like. Added 2026-10-28.",
+      "The four Cascades resorts (Mt. Baker, Crystal Mountain, Stevens Pass, Mt. Bachelor) were added 2026-10-29 from search results, not fetched: the sandbox cannot reach any of the three sources. Verified by scripts/check-new-resorts.sh on Brian's Mac before the first scrape that includes them. Crystal's OnTheSnow path is crystal-mountain-wa \u2014 plain crystal-mountain is the Michigan resort."
     ]
   },
   "tier": "mid",
@@ -68,6 +69,58 @@
       "nws": [
         37.638,
         -119.04
+      ]
+    },
+    {
+      "id": "mt-baker",
+      "name": "Mt. Baker",
+      "region": "Washington",
+      "slugs": [
+        "Mount-Baker"
+      ],
+      "otsPath": "washington/mt-baker",
+      "nws": [
+        48.857,
+        -121.672
+      ]
+    },
+    {
+      "id": "crystal",
+      "name": "Crystal Mountain",
+      "region": "Washington",
+      "slugs": [
+        "Crystal-Mountain"
+      ],
+      "otsPath": "washington/crystal-mountain-wa",
+      "nws": [
+        46.932,
+        -121.49
+      ]
+    },
+    {
+      "id": "stevens-pass",
+      "name": "Stevens Pass",
+      "region": "Washington",
+      "slugs": [
+        "Stevens-Pass"
+      ],
+      "otsPath": "washington/stevens-pass-resort",
+      "nws": [
+        47.738,
+        -121.09
+      ]
+    },
+    {
+      "id": "mt-bachelor",
+      "name": "Mt. Bachelor",
+      "region": "Oregon",
+      "slugs": [
+        "Mt-Bachelor"
+      ],
+      "otsPath": "oregon/mt-bachelor",
+      "nws": [
+        43.985,
+        -121.68
       ]
     },
     {

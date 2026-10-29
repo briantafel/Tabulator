@@ -36,7 +36,7 @@ test("Brian's own example comes out as he wrote it", () => {
 
 test("a one-state range names the resort, not the state again", () => {
   const s = say(outlook(feed({ kirkwood: [0, 20, 20, 0, 0, 0], palisades: [0, 10, 5, 0, 0, 0] }), { now: NOW }));
-  assert.match(s, /best bet for snow is \[the Sierra\], with \[Kirkwood\]/);
+  assert.match(s, /best bet for snow is \[Tahoe\], with \[Kirkwood\]/);
 });
 
 test("the storm's ranges are listed in the order it reaches them", () => {
@@ -61,7 +61,7 @@ test("the ranges and the closing place are tappable, nothing else is", () => {
     alta: [0, 0, 10, 0, 0, 0], "big-sky": [0, 0, 0, 12, 0, 0],
   }), { now: NOW });
   const links = segs.filter((s) => s.link).map((s) => s.t);
-  assert.deepEqual(links, ["Sierra", "Wasatch", "Rockies", "Sierra", "Kirkwood"]);
+  assert.deepEqual(links, ["Sierra", "Wasatch", "Rockies", "Tahoe", "Kirkwood"]);
   const kirk = segs.find((s) => s.t === "Kirkwood").link;
   assert.deepEqual(membersOf(kirk), ["kirkwood"]);
   assert.deepEqual(membersOf({ kind: "range", key: "the Wasatch" }), ["snowbird", "alta"]);
@@ -74,4 +74,16 @@ test("a state or a part of the Rockies opens just those resorts", () => {
   assert.deepEqual(membersOf(best).sort(), ["big-sky", "grand-targhee", "jackson-hole", "sun-valley"]);
   const state = segs.find((s) => s.t === "Montana").link;
   assert.deepEqual(membersOf(state), ["big-sky"]);
+});
+
+test("Tahoe and the Eastern Sierra are the Sierra's best-bet parts", () => {
+  const s = say(outlook(feed({ kirkwood: [0, 20, 20, 0, 0, 0], heavenly: [0, 15, 10, 0, 0, 0], mammoth: [0, 5, 0, 0, 0, 0] }), { now: NOW }));
+  assert.match(s, /through \[the Sierra\]/, "the moving-through list stays at range level");
+  assert.match(s, /best bet for snow is \[Tahoe\], with \[Kirkwood\]/, "no article before Tahoe");
+});
+
+test("the Cascades name a state when Oregon and Washington both count", () => {
+  const s = say(outlook(feed({ "mt-baker": [0, 30, 20, 0, 0, 0], "mt-bachelor": [0, 25, 30, 0, 0, 0], crystal: [0, 5, 5, 0, 0, 0] }), { now: NOW }));
+  assert.match(s, /through \[the Cascades\]/);
+  assert.match(s, /best bet for snow is \[the Cascades\], with \[(Washington|Oregon)\]/);
 });

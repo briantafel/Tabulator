@@ -9,13 +9,13 @@ import { HORIZON_DAYS } from "../src/lib/constants.js";
 /* ---------------------------- resort list ---------------------------- */
 
 test("resort list is intact and well-formed", () => {
-  assert.equal(RESORTS.length, 23);
+  assert.equal(RESORTS.length, 27);
   for (const r of RESORTS) {
     assert.ok(r.id && r.name && r.region, `${r.name} missing a field`);
     assert.ok(Array.isArray(r.slugs) && r.slugs.length, `${r.name} has no Snow-Forecast slug`);
     for (const s of r.slugs) assert.match(s, /^[A-Za-z][A-Za-z0-9-]*$/, `${r.name}: bad slug "${s}"`);
   }
-  assert.equal(new Set(RESORTS.map((r) => r.id)).size, 23, "duplicate resort id");
+  assert.equal(new Set(RESORTS.map((r) => r.id)).size, 27, "duplicate resort id");
   const slugs = RESORTS.flatMap((r) => r.slugs);
   assert.equal(new Set(slugs).size, slugs.length, "a slug is used by two resorts");
 });
