@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import { fromIso } from "../lib/dates.js";
-import { snowWithUnit } from "../lib/units.js";
+import { snowWithUnit, cellSnowTxt, CELL_KO_FROM } from "../lib/units.js";
 
 /** Where and when snow lands across the whole network.
  *
@@ -31,39 +31,39 @@ export default function Radar({ resorts, dates, metric, onJump }) {
         Next {dates.length} days. Darker means deeper. Tap a column to start a trip there.
       </p>
 
-      <div className="rd-scroll">
-        <div
-          className="rd-grid"
-          /* The name column takes the slack, so the day columns sit against
-             the right margin like every other right-hand edge in the app. */
-          style={{ gridTemplateColumns: `minmax(92px, 1fr) repeat(${dates.length}, 28px)` }}
-        >
-          <span />
-          {dates.map((d, i) => (
-            <button key={d} className="rd-col" onClick={() => onJump(i)}>
-              {fromIso(d).getDate()}
-            </button>
-          ))}
+      {/* Brian's revised radar (Figma 2142:535): a 164 name column, the six
+          days sharing what is left, and each day's amount printed in its
+          cell — black on the lighter reds, white on the darkest. */}
+      <div
+        className="rd-grid"
+        style={{ gridTemplateColumns: `164px repeat(${dates.length}, minmax(0, 1fr))` }}
+      >
+        <span />
+        {dates.map((d, i) => (
+          <button key={d} className="rd-col" onClick={() => onJump(i)}>
+            {fromIso(d).getDate()}
+          </button>
+        ))}
 
-          {rows.map((r) => (
-            <Fragment key={r.id}>
-              <span className="rd-name">{r.name}</span>
-              {r.days.map((d) => (
+        {rows.map((r) => (
+          <Fragment key={r.id}>
+            <span className="rd-name">{r.name}</span>
+            {r.days.map((d) => {
+              const amount = cellSnowTxt(d.snow, metric);
+              const alpha = amount ? 0.12 + ((d.snow ?? 0) / max) * 0.88 : 0;
+              return (
                 <span
                   key={d.date}
-                  className="rd-cell"
-                  style={{
-                    background:
-                      (d.snow ?? 0) < 0.05
-                        ? "transparent"
-                        : `rgba(239,74,56,${0.12 + ((d.snow ?? 0) / max) * 0.88})`,
-                  }}
+                  className={`rd-cell${alpha >= CELL_KO_FROM ? " ko" : ""}`}
+                  style={{ background: amount ? `rgba(239,74,56,${alpha})` : "transparent" }}
                   title={`${r.name} · ${snowWithUnit(d.snow, metric)}`}
-                />
-              ))}
-            </Fragment>
-          ))}
-        </div>
+                >
+                  {amount}
+                </span>
+              );
+            })}
+          </Fragment>
+        ))}
       </div>
     </div>
   );
