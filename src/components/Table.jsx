@@ -21,6 +21,10 @@ export default function Table({ data, metric, onOpen, favs = [] }) {
      resort in red is occasionally not the recommended resort using the
      weighted variables logic we developed." bestOf() is the single decision
      the verdict uses too, so the colour and the sentence cannot disagree. */
+  /* The star slot only exists while some row needs it. Brian, 2026-10-29:
+     with no favourites in the list, names sit on the layout margin. Once one
+     row has a star every row keeps the slot, so names still line up. */
+  const anyFav = data.some((r) => favs.includes(r.name));
   const pick = bestOf(data);
   const best = pick ? data.indexOf(pick) : -1;
 
@@ -46,13 +50,15 @@ export default function Table({ data, metric, onOpen, favs = [] }) {
                 the severity markers follow, so a resort's name does not jump
                 sideways the moment you favourite it. */}
             <span className="t-name">
-              <span className="t-star">
-                {favs.includes(r.name) && (
-                  <svg viewBox="0 0 10 10" role="img" aria-label="Favourite">
-                    <path d={STAR10} />
-                  </svg>
-                )}
-              </span>
+              {anyFav && (
+                <span className="t-star">
+                  {favs.includes(r.name) && (
+                    <svg viewBox="0 0 10 10" role="img" aria-label="Favourite">
+                      <path d={STAR10} />
+                    </svg>
+                  )}
+                </span>
+              )}
               {r.name}
             </span>
             {/* null means the archive doesn't reach back that far — not zero snow */}
