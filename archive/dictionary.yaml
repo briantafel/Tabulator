@@ -97,21 +97,24 @@ sources:
       - Each value has its own window (validTime), from one hour to several days. Rows keep those windows as given.
       - US resorts only. station_id is the grid cell, office/x,y.
   onthesnow:
-    name: OnTheSnow resort snow report and skier reports
-    kind: observation
-    url: https://www.onthesnow.com/{otsPath}/skireport and /ski-report-reviews
-    cadence: twice daily
-    since: 2026-10-29 (second archive patch)
-    raw: both pages for every resort, gzipped HTML
+    name: OnTheSnow resort snow report, skier reports and monthly history
+    kind: observation (and its own daily snow forecast, kind forecast)
+    url: https://www.onthesnow.com/{otsPath}/skireport, /ski-report-reviews, /historical-snowfall
+    cadence: twice daily (snow report, skier reports); one-time (monthly history, run_id backfill-ots-history)
+    since: 2026-10-29. Snow report parsed into rows from parser_version ots-2; earlier captures that day are raw only.
+    raw: every page, gzipped HTML
     notes:
       - >
-        The snow report page (resort-reported daily snowfall, base depth in
-        season, OnTheSnow's own 5-day snow forecast) is archived RAW ONLY
-        for now. Its parser is written once a winter page has been seen,
-        and then runs over every page saved since this date.
-      - Skier reports are parsed into rows (text, photo URL). Reporter names are not archived. station_id is OnTheSnow's report id.
-      - Covers all 40 resorts, including the four Canadian ones.
-
+        reported_daily_snow is the resort's own figure for each calendar day
+        (resort-local), from the report's rolling 8-day list. Every capture is
+        kept, so each day appears in up to eight captures. The verification
+        table uses the figure as reported the FOLLOWING day — after the resort
+        has settled it — and a later capture only if that one is missing.
+      - issued_at on snow-report rows is the report's own last-modified time.
+      - OnTheSnow's daily snow forecast is kept as source onthesnow, kind forecast, variable snow.
+      - The monthly history has no daily figures. It is a scale check, not a daily truth.
+      - Skier reports are parsed into rows (text, photo URL). Reporter names are not archived.
+      - Covers all 40 resorts, including the four Canadian ones. Resort figures are self-reported and unaudited.
   open-meteo-previous-runs:
     name: Open-Meteo Previous Runs API (one-time backfill)
     kind: forecast
@@ -168,3 +171,17 @@ variables:
   skier_report: { unit: null, meaning: A first-hand OnTheSnow skier report, verbatim text. valid_start is when it was posted. }
   skier_report_photo: { unit: null, meaning: The photo URL on that report. }
   wind_arrow_deg: { unit: deg, meaning: Rotation of Snow-Forecast's hindcast wind arrow, as drawn. Whether it points from or toward the wind is not yet confirmed — treat as a direction, not a bearing. }
+  reported_daily_snow: { unit: cm, meaning: Resort-reported new snowfall for one resort-local calendar day (OnTheSnow). One row per day per capture; see the onthesnow notes for which capture counts. }
+  reported_base_depth: { unit: cm, meaning: Resort-reported base depth, as of the report (OnTheSnow). }
+  reported_mid_depth: { unit: cm, meaning: Resort-reported mid-mountain depth, as of the report (OnTheSnow). }
+  reported_summit_depth: { unit: cm, meaning: Resort-reported summit depth, as of the report (OnTheSnow). }
+  reported_last24: { unit: cm, meaning: Resort-reported new snow in the last 24 hours, as of the report. }
+  reported_last48: { unit: cm, meaning: Resort-reported new snow in the last 48 hours. }
+  reported_last72: { unit: cm, meaning: Resort-reported new snow in the last 72 hours. }
+  report_status: { unit: null, meaning: The resort report's status text, verbatim. }
+  reported_month_snow: { unit: cm, meaning: Resort-reported total snowfall for the month (OnTheSnow history). }
+  reported_month_snow_days: { unit: days, meaning: Days with snowfall in the month (OnTheSnow history). }
+  reported_month_biggest_snowfall: { unit: cm, meaning: Largest single snowfall in the month (OnTheSnow history). }
+  reported_month_base_depth: { unit: cm, meaning: Average base depth for the month (OnTheSnow history). }
+  reported_month_summit_depth: { unit: cm, meaning: Average summit depth for the month (OnTheSnow history). }
+  reported_month_max_base_depth: { unit: cm, meaning: Maximum base depth in the month (OnTheSnow history). }

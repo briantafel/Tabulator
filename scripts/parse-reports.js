@@ -65,7 +65,7 @@ export function flightRows(html) {
 
 /** Follow "$<id>" references back into real values. "$$…" is the stream's
  *  escape for a string that genuinely starts with "$". */
-function resolve(rows, v, depth = 0) {
+export function resolve(rows, v, depth = 0) {
   if (depth > 40) return v;
   if (typeof v === "string") {
     if (v.startsWith("$$")) return v.slice(1);

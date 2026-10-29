@@ -16,6 +16,8 @@ name: Archive forecasts
 #                     previous runs) and SNOTEL daily history — over an hour
 #   import_hindcast   Snow-Forecast hindcast files uploaded by hand to the
 #                     bucket's imports/ folder (subscriber data; never in git)
+#   backfill_ots_history  OnTheSnow resort-reported monthly snowfall back to
+#                     2012-13 — a few minutes
 on:
   schedule:
     - cron: "45 6 * * *"    # 06:45 UTC
@@ -32,6 +34,10 @@ on:
         default: false
       import_hindcast:
         description: "Also import Snow-Forecast hindcast files from the bucket's imports/ folder"
+        type: boolean
+        default: false
+      backfill_ots_history:
+        description: "Also backfill OnTheSnow monthly snowfall history (one-time, a few minutes)"
         type: boolean
         default: false
 
@@ -101,6 +107,12 @@ jobs:
         continue-on-error: true
         run: node scripts/archive/backfill-models.js out/backfill-models
 
+      - name: Backfill OnTheSnow monthly history
+        id: ots_history
+        if: inputs.backfill_ots_history
+        continue-on-error: true
+        run: node scripts/archive/backfill-ots-history.js out/backfill-ots-history
+
       - name: Fetch and parse hindcast imports
         id: hindcast
         if: inputs.import_hindcast
@@ -134,7 +146,7 @@ jobs:
             tar -cf "up/raw/source=$src/date=$DATE/$RUN_ID.tar" -C "$dir" .
           done
           # One-time extras: each folder holds <yyyy-mm>/ subfolders of rows.
-          for pair in backfill-rows:backfill-git backfill-models:backfill-models hindcast-rows:hindcast-import; do
+          for pair in backfill-rows:backfill-git backfill-models:backfill-models backfill-ots-history:backfill-ots-history hindcast-rows:hindcast-import; do
             dir="out/${pair%%:*}"; name="${pair##*:}"
             # Each hindcast import gets its own file name, so a later import
             # (more winters, more tiers) adds to the archive instead of replacing.
@@ -145,13 +157,14 @@ jobs:
               python3 scripts/archive/to_parquet.py "$m" up/archive "$name" "$(basename "$m")"
             done
           done
-          if [ -d out/backfill-models/raw ]; then
-            for dir in out/backfill-models/raw/*/; do
+          for job in backfill-models backfill-ots-history; do
+            [ -d "out/$job/raw" ] || continue
+            for dir in "out/$job/raw"/*/; do
               src=$(basename "$dir")
               mkdir -p "up/raw/source=$src/date=$DATE"
-              tar -cf "up/raw/source=$src/date=$DATE/backfill-models.tar" -C "$dir" .
+              tar -cf "up/raw/source=$src/date=$DATE/$job.tar" -C "$dir" .
             done
-          fi
+          done
           cp out/manifest.json "up/runs/$RUN_ID.json"
           cp archive/dictionary.yaml up/dictionary.yaml
           du -sh up/*
@@ -183,8 +196,9 @@ jobs:
           fi
 
       - name: Fail the run if any source or one-time job fell short
-        if: steps.collect.outcome == 'failure' || steps.backfill_models.outcome == 'failure' || steps.hindcast.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.backfill_models.outcome == 'failure' || steps.hindcast.outcome == 'failure' || steps.ots_history.outcome == 'failure'
         run: |
+          [ "${{ steps.ots_history.outcome }}" = "failure" ] && echo "::error::The OnTheSnow history backfill failed — see its step." 
           [ "${{ steps.backfill_models.outcome }}" = "failure" ] && echo "::error::The model/SNOTEL backfill failed — see its step. Whatever it collected was still uploaded."
           [ "${{ steps.hindcast.outcome }}" = "failure" ] && echo "::error::The hindcast import failed — see its step. The files stay in imports/ to retry."
           [ "${{ steps.collect.outcome }}" = "failure" ] || exit 1
