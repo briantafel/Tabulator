@@ -306,16 +306,6 @@ export default function Detail({
               {r.region} · {shortDate(r.win[0].date)}–{shortDate(r.win[r.win.length - 1].date)}
               {r.elevation?.mid != null && <> · mid {elevTxt(r.elevation.mid, metric)}</>}
             </p>
-            {/* Brian's Resort Sheet-max-withBase export: what is already on
-                the ground, under the subtitle. A value we do not have is left
-                out rather than shown as a dash or a zero. */}
-            {(pack.base != null || pack.top != null || pack.last) && (
-              <p className="sheet-pack">
-                {pack.base != null && <span>Base: <b>{depth(pack.base)}</b></span>}
-                {pack.top != null && <span>Top depth: <b>{depth(pack.top)}</b></span>}
-                {pack.last && <span>Last: <b>{shortDate(pack.last)}</b></span>}
-              </p>
-            )}
           </div>
           <span className="sheet-total">{snowWithUnit(r.total, metric)}</span>
           <button
@@ -337,6 +327,18 @@ export default function Detail({
               conditions and replaced it with labels. That's intentional." The
               column heads say what the four numbers are, which the sentence
               never did, and they cost a fifth of its height. */}
+
+          {/* Brian's Resort Sheet-max-baseTop export: what is already on the
+              ground, in its own band between the header rule and the day
+              rows. A value we do not have is left out rather than shown as a
+              dash or a zero; with none at all the band is not drawn. */}
+          {(pack.base != null || pack.top != null || pack.last) && (
+            <p className="sheet-pack">
+              {pack.base != null && <span>Base: <b>{depth(pack.base)}</b></span>}
+              {pack.top != null && <span>Top depth: <b>{depth(pack.top)}</b></span>}
+              {pack.last && <span>Last: <b>{shortDate(pack.last)}</b></span>}
+            </p>
+          )}
 
           {rainRisk(r) && (
             <p className="sheet-warn">
