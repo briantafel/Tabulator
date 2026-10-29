@@ -40,7 +40,10 @@ export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {}
       return { status: res.status, text };
     } catch (e) { lastErr = e; }
   }
-  throw new Error(`${url}: ${lastErr.message}`);
+  // Node's fetch reports every network fault as "fetch failed"; the real
+  // reason (reset, timeout, DNS) is on .cause. Say it.
+  const cause = lastErr.cause?.code || lastErr.cause?.message;
+  throw new Error(`${url}: ${lastErr.message}${cause ? ` (${cause})` : ""}`);
 }
 
 /** A sink for one source's rows: gzipped NDJSON, every row carrying every

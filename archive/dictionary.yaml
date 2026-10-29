@@ -68,6 +68,7 @@ sources:
     notes:
       - Rows are 6-hour blocks starting 00/06/12/18 UTC, built from the hourly raw. A block is written only when all six hours are present.
       - Requested at the resort's Snow-Forecast mid-tier elevation, so temperatures are downscaled to the same height as the spine.
+      - A model that does not offer a variable (the ECMWF ensemble has no freezing level) simply has no rows for it; each run's manifest lists what was unavailable.
       - Free tier is for non-commercial use. A commercial Tabulator would need a paid Open-Meteo plan.
   snotel:
     name: NRCS SNOTEL via the AWDB REST API

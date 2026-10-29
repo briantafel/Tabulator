@@ -23,7 +23,7 @@ export const MODELS = ["ecmwf_ifs025", "gfs025"];
 const HOURLY = ["snowfall", "precipitation", "temperature_2m", "freezing_level_height", "wind_speed_10m"];
 const UNITS = { snowfall: "cm", precipitation: "mm", temperature_2m: "°C", freezing_level_height: "m", wind_speed_10m: "km/h" };
 const BLOCK_H = 6;
-const DELAY_MS = 400;
+const DELAY_MS = 2000;   // responses are large; 0.4s apart dropped connections (2026-10-29)
 const MIN_OK_RATIO = 0.8;
 
 /** Hourly series → 6-hour blocks. `time` is ISO in UTC without a zone.
@@ -66,15 +66,20 @@ export function toBlocks(time, series) {
 export function responseToRows(json, { resort, model, elevation, fetchedAt, runId }) {
   const h = json.hourly;
   if (!h?.time?.length) throw new Error("no hourly.time in response");
+  /* A model that does not offer a variable answers with the unit string
+     "undefined" (2026-10-29: the ECMWF ensemble has no freezing level). That
+     variable is skipped — missing is no row — rather than failing the rest. */
+  const unavailable = new Set();
   for (const [v, u] of Object.entries(UNITS)) {
     const got = json.hourly_units?.[v];
+    if (got === "undefined") { unavailable.add(v); continue; }
     if (got && got !== u) throw new Error(`${v} came back in ${got}, expected ${u}`);
   }
 
   const members = new Map(); // member number → { variable: series }
   for (const [key, series] of Object.entries(h)) {
     const m = key.match(/^([a-z0-9_]+?)(?:_member(\d+))?$/);
-    if (!m || !HOURLY.includes(m[1])) continue;
+    if (!m || !HOURLY.includes(m[1]) || unavailable.has(m[1])) continue;
     const n = m[2] ? Number(m[2]) : 0;
     if (!members.has(n)) members.set(n, {});
     members.get(n)[m[1]] = series;
@@ -96,12 +101,13 @@ export function responseToRows(json, { resort, model, elevation, fetchedAt, runI
       }
     }
   }
-  return { rows, members: members.size };
+  return { rows, members: members.size, unavailable: [...unavailable] };
 }
 
 export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, runId, log }) {
   let ok = 0, tried = 0;
   const failures = [];
+  const unavailable = {}; // model → variables it does not offer
   for (const resort of resorts) {
     const c = coordsOf(resort);
     if (!c) { failures.push(`${resort.id}: no coordinates`); continue; }
@@ -114,11 +120,12 @@ export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, ru
       });
       if (elevation) q.set("elevation", String(elevation));
       try {
-        const { status, text } = await fetchText(`${URL_BASE}?${q}`);
+        const { status, text } = await fetchText(`${URL_BASE}?${q}`, { retries: 3, delayMs: 5000 });
         if (status !== 200) throw new Error(`HTTP ${status}`);
         await saveRaw(`${rawDir}/${resort.id}-${model}.json.gz`, text);
-        const { rows } = responseToRows(JSON.parse(text), { resort, model, elevation, fetchedAt, runId });
-        rows.forEach((r) => sink.write(r));
+        const out = responseToRows(JSON.parse(text), { resort, model, elevation, fetchedAt, runId });
+        out.rows.forEach((r) => sink.write(r));
+        if (out.unavailable.length) unavailable[model] = out.unavailable;
         ok++;
       } catch (e) {
         failures.push(`${resort.id}/${model}: ${e.message}`);
@@ -128,5 +135,6 @@ export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, ru
     }
   }
   log(`open-meteo-ensemble: ${ok}/${tried} requests`);
-  return { ok: tried > 0 && ok / tried >= MIN_OK_RATIO, requests: ok, tried, failures };
+  for (const [m, vars] of Object.entries(unavailable)) log(`  · ${m} does not offer: ${vars.join(", ")}`);
+  return { ok: tried > 0 && ok / tried >= MIN_OK_RATIO, requests: ok, tried, failures, unavailable };
 }
