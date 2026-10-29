@@ -1,6 +1,7 @@
 import { Fragment, useMemo } from "react";
 import { fromIso } from "../lib/dates.js";
 import { snowWithUnit, cellSnowTxt, CELL_KO_FROM } from "../lib/units.js";
+import { outlook } from "../lib/outlook.js";
 
 /** Where and when snow lands across the whole network.
  *
@@ -23,6 +24,9 @@ export default function Radar({ resorts, dates, metric, onJump }) {
   );
 
   const max = Math.max(0.5, ...rows.flatMap((r) => r.days.map((d) => d.snow ?? 0)));
+  /* Read over every resort, not just the twelve on the grid: a storm in the
+     Northeast still belongs in the paragraph. */
+  const said = useMemo(() => outlook(resorts, { metric }), [resorts, metric]);
 
   return (
     <div className="radar">
@@ -65,6 +69,12 @@ export default function Radar({ resorts, dates, metric, onJump }) {
           </Fragment>
         ))}
       </div>
+
+      {/* The forecaster's paragraph — Brian's Figma 2142:872. Grey prose, red
+          where the numbers speak, like the resort sheet's summary. */}
+      <p className="rd-outlook">
+        {said.map((seg, i) => (seg.hot ? <b key={i}>{seg.t}</b> : <span key={i}>{seg.t}</span>))}
+      </p>
     </div>
   );
 }

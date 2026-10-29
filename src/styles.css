@@ -313,10 +313,10 @@ body { background: #F2F2F2; }
   width: 100%; height: 31px; padding: 0;   /* measured row pitch, no rules */
   font-weight: 400; letter-spacing: -.01em;
 }
-/* #FB2C36, not the marker red. It reads as Tailwind's default, but it is drawn
-   this way in BOTH the resort-table PDF and the Trips screen, so it ships as
-   drawn — see open-questions #6. */
-.t-row.best { color: #FB2C36; }
+/* The one red. Was #FB2C36 as drawn in the resort-table PDF and the Trips
+   screen (open-questions #6); Brian, 2026-10-29: "make sure the red is the
+   same one used everywhere." */
+.t-row.best { color: var(--mark-red); }
 
 /* Favourite marker in the results row. Brian's own 10x10 export, sitting after
    the name so the name's left edge stays on the column grid. Placement is a
@@ -395,6 +395,16 @@ body { background: #F2F2F2; }
   font-size: 8px; line-height: 13px; color: #000; font-variant-numeric: tabular-nums;
 }
 .rd-cell.ko { color: #FFF; }
+/* Brian's Figma 2142:872: a full-width #DCDCDC rule 28 under the last row,
+   the paragraph's box 17 under that, 362 wide. 23 bold at -3%, grey with the
+   computed clauses in the one red. */
+.rd-outlook {
+  margin: 28px -16px 0; padding: 17px 40px 0 16px;
+  border-top: 1px solid var(--fill);
+  font-size: 23px; font-weight: 700; letter-spacing: -.03em; line-height: 1.21;
+  color: var(--fill);
+}
+.rd-outlook b { font-weight: 700; color: var(--mark-red); }
 
 /* trips */
 /* ------------------------------------------------------------------
