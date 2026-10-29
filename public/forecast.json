@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-29T03:00:07.793Z",
+ "generatedAt": "2026-10-29T12:44:46.678Z",
  "source": "snow-forecast.com",
  "tier": "mid",
  "combineRule": "max",
@@ -29,38 +29,29 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 8,
-       "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 3300,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 5,
-       "wind": 10,
+       "wind": 5,
        "windDir": "SW",
-       "freezingLevel": 3450,
+       "freezingLevel": 3500,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 8,
+     "tempMax": 5,
      "tempMin": 4,
      "windMax": 10,
-     "freezeMin": 3300,
-     "freezeMax": 3450
+     "freezeMin": 3500,
+     "freezeMax": 3500
     },
     {
      "date": "2026-10-29",
      "label": "Thursday29",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
@@ -75,143 +66,143 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 7,
-       "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 2900,
+       "wind": 25,
+       "windDir": "S",
+       "freezingLevel": 2950,
        "phrase": "cloudy"
       },
       {
        "name": "night",
-       "snow": 0,
+       "snow": 1,
        "tempMax": 2,
-       "wind": 20,
+       "wind": 25,
        "windDir": "SSW",
-       "freezingLevel": 2400,
-       "phrase": "cloudy"
+       "freezingLevel": 2300,
+       "phrase": "light snow"
       }
      ],
      "tempMax": 7,
      "tempMin": 0,
      "windMax": 25,
-     "freezeMin": 2400,
+     "freezeMin": 2300,
      "freezeMax": 3200
     },
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 3,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 2,
-       "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 2600,
-       "phrase": "some clouds"
-      },
-      {
-       "name": "pm",
-       "snow": 1,
-       "tempMax": 2,
-       "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 2500,
-       "phrase": "light snow"
-      },
-      {
-       "name": "night",
-       "snow": 2,
        "tempMax": 1,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2250,
-       "phrase": "light snow"
-      }
-     ],
-     "tempMax": 2,
-     "tempMin": 0,
-     "windMax": 20,
-     "freezeMin": 2250,
-     "freezeMax": 2600
-    },
-    {
-     "date": "2026-10-31",
-     "label": "Saturday31",
-     "snow": 14,
-     "periods": [
-      {
-       "name": "am",
-       "snow": 4,
-       "tempMax": 1,
-       "wind": 25,
+       "wind": 20,
        "windDir": "SSW",
        "freezingLevel": 2400,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 7,
-       "tempMax": 0,
-       "wind": 20,
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 15,
        "windDir": "SW",
-       "freezingLevel": 2250,
-       "phrase": "mod. snow"
+       "freezingLevel": 2450,
+       "phrase": "snow shwrs"
       },
       {
        "name": "night",
-       "snow": 3,
+       "snow": 0,
        "tempMax": 0,
-       "wind": 25,
-       "windDir": "SW",
-       "freezingLevel": 2150,
-       "phrase": "light snow"
+       "wind": 20,
+       "windDir": "SSW",
+       "freezingLevel": 2100,
+       "phrase": "snow shwrs"
       }
      ],
      "tempMax": 1,
      "tempMin": -1,
-     "windMax": 30,
-     "freezeMin": 2150,
+     "windMax": 20,
+     "freezeMin": 2100,
      "freezeMax": 2450
+    },
+    {
+     "date": "2026-10-31",
+     "label": "Saturday31",
+     "snow": 18,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 2,
+       "tempMax": 0,
+       "wind": 25,
+       "windDir": "S",
+       "freezingLevel": 2350,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
+       "snow": 6,
+       "tempMax": 0,
+       "wind": 25,
+       "windDir": "SW",
+       "freezingLevel": 2150,
+       "phrase": "mod. snow"
+      },
+      {
+       "name": "night",
+       "snow": 9,
+       "tempMax": -2,
+       "wind": 25,
+       "windDir": "WSW",
+       "freezingLevel": 2000,
+       "phrase": "mod. snow"
+      }
+     ],
+     "tempMax": 0,
+     "tempMin": -3,
+     "windMax": 25,
+     "freezeMin": 2000,
+     "freezeMax": 2350
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 0,
+     "snow": 4,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 2,
-       "wind": 10,
-       "windDir": "NNE",
-       "freezingLevel": 2900,
-       "phrase": "some clouds"
+       "snow": 3,
+       "tempMax": -3,
+       "wind": 0,
+       "windDir": "W",
+       "freezingLevel": 1900,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 6,
+       "tempMax": -1,
        "wind": 10,
        "windDir": "NE",
-       "freezingLevel": 3750,
-       "phrase": "clear"
+       "freezingLevel": 2200,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 4,
-       "wind": 5,
-       "windDir": "NW",
-       "freezingLevel": 1550,
+       "tempMax": 1,
+       "wind": 20,
+       "windDir": "NE",
+       "freezingLevel": 1100,
        "phrase": "clear"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 1,
      "tempMin": -3,
-     "windMax": 10,
-     "freezeMin": 2900,
-     "freezeMax": 4150
+     "windMax": 20,
+     "freezeMin": 1200,
+     "freezeMax": 2200
     },
     {
      "date": "2026-11-02",
@@ -221,41 +212,41 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 7,
        "wind": 5,
-       "windDir": "E",
-       "freezingLevel": 4300,
+       "windDir": "NNE",
+       "freezingLevel": 4200,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 10,
+       "tempMax": 8,
        "wind": 5,
-       "windDir": "SSE",
+       "windDir": "W",
        "freezingLevel": 4350,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 7,
-       "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 4450,
+       "wind": 10,
+       "windDir": "WSW",
+       "freezingLevel": 4250,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 10,
-     "tempMin": 5,
-     "windMax": 5,
-     "freezeMin": 4300,
-     "freezeMax": 4450
+     "tempMax": 8,
+     "tempMin": 3,
+     "windMax": 10,
+     "freezeMin": 4200,
+     "freezeMax": 4350
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Drizzle on Fri afternoon turning to light snow on Sat morning. Freeze-thaw conditions (max 8°C on Wed afternoon, min 0°C on Thu night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:A moderate fall of snow, heaviest on Sat afternoon. Freeze-thaw conditions (max 10°C on Mon afternoon, min -3°C on Sun morning). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A light covering of new snow, mostly falling on Sat afternoon. Freeze-thaw conditions (max 7°C on Thu morning, min -1°C on Fri night). Winds increasing (calm on Wed night, fresh winds from the SW by Sat afternoon).",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sat night. Freeze-thaw conditions (max 10°C on Tue morning, min -3°C on Sat night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -286,18 +277,9 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 6,
-       "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 3400,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
@@ -308,10 +290,10 @@
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 5,
      "tempMin": 5,
      "windMax": 10,
-     "freezeMin": 3400,
+     "freezeMin": 3500,
      "freezeMax": 3500
     },
     {
@@ -332,143 +314,143 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 6,
-       "wind": 20,
+       "wind": 25,
        "windDir": "SSW",
-       "freezingLevel": 3000,
+       "freezingLevel": 2950,
        "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 1,
-       "wind": 20,
-       "windDir": "SW",
-       "freezingLevel": 2500,
-       "phrase": "light snow"
-      }
-     ],
-     "tempMax": 6,
-     "tempMin": 0,
-     "windMax": 20,
-     "freezeMin": 2500,
-     "freezeMax": 3300
-    },
-    {
-     "date": "2026-10-30",
-     "label": "Friday30",
-     "snow": 2,
-     "periods": [
-      {
-       "name": "am",
-       "snow": 0,
-       "tempMax": 1,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2700,
-       "phrase": "some clouds"
-      },
-      {
-       "name": "pm",
-       "snow": 0,
        "tempMax": 2,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2600,
-       "phrase": "light snow"
-      },
-      {
-       "name": "night",
-       "snow": 2,
-       "tempMax": 0,
-       "wind": 15,
+       "wind": 25,
        "windDir": "SSW",
        "freezingLevel": 2450,
        "phrase": "light snow"
       }
      ],
-     "tempMax": 2,
+     "tempMax": 6,
      "tempMin": -1,
-     "windMax": 15,
+     "windMax": 25,
      "freezeMin": 2450,
-     "freezeMax": 2700
+     "freezeMax": 3300
     },
     {
-     "date": "2026-10-31",
-     "label": "Saturday31",
-     "snow": 4,
+     "date": "2026-10-30",
+     "label": "Friday30",
+     "snow": 1,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
+       "snow": 0,
        "tempMax": 0,
-       "wind": 25,
-       "windDir": "SSW",
+       "wind": 15,
+       "windDir": "SW",
+       "freezingLevel": 2550,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 10,
+       "windDir": "SW",
        "freezingLevel": 2600,
        "phrase": "light snow"
       },
       {
-       "name": "pm",
+       "name": "night",
        "snow": 1,
        "tempMax": 0,
-       "wind": 25,
+       "wind": 15,
        "windDir": "SW",
-       "freezingLevel": 2500,
+       "freezingLevel": 2450,
+       "phrase": "light snow"
+      }
+     ],
+     "tempMax": 1,
+     "tempMin": -1,
+     "windMax": 15,
+     "freezeMin": 2450,
+     "freezeMax": 2600
+    },
+    {
+     "date": "2026-10-31",
+     "label": "Saturday31",
+     "snow": 16,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 2,
+       "tempMax": -1,
+       "wind": 20,
+       "windDir": "SSW",
+       "freezingLevel": 2450,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
+       "snow": 4,
+       "tempMax": 0,
+       "wind": 20,
+       "windDir": "SW",
+       "freezingLevel": 2350,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 2,
-       "tempMax": -1,
-       "wind": 25,
+       "snow": 10,
+       "tempMax": -2,
+       "wind": 20,
        "windDir": "SW",
-       "freezingLevel": 2350,
-       "phrase": "snow shwrs"
+       "freezingLevel": 2100,
+       "phrase": "heavy snow"
       }
      ],
      "tempMax": 0,
-     "tempMin": -2,
-     "windMax": 25,
-     "freezeMin": 2350,
-     "freezeMax": 2600
+     "tempMin": -4,
+     "windMax": 20,
+     "freezeMin": 2100,
+     "freezeMax": 2450
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 0,
+     "snow": 3,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 2,
+       "snow": 3,
+       "tempMax": -4,
        "wind": 5,
-       "windDir": "N",
-       "freezingLevel": 2800,
-       "phrase": "clear"
+       "windDir": "WSW",
+       "freezingLevel": 2050,
+       "phrase": "snow shwrs"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 5,
+       "tempMax": -2,
        "wind": 10,
        "windDir": "NNE",
-       "freezingLevel": 3550,
-       "phrase": "clear"
+       "freezingLevel": 2250,
+       "phrase": "snow shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 6,
-       "wind": 5,
-       "windDir": "WNW",
-       "freezingLevel": 4150,
+       "tempMax": 2,
+       "wind": 15,
+       "windDir": "NE",
+       "freezingLevel": 2850,
        "phrase": "clear"
       }
      ],
-     "tempMax": 6,
-     "tempMin": -1,
-     "windMax": 10,
-     "freezeMin": 2800,
-     "freezeMax": 4150
+     "tempMax": 2,
+     "tempMin": -4,
+     "windMax": 15,
+     "freezeMin": 2050,
+     "freezeMax": 2850
     },
     {
      "date": "2026-11-02",
@@ -478,41 +460,41 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
-       "wind": 5,
-       "windDir": "ENE",
-       "freezingLevel": 4300,
+       "tempMax": 7,
+       "wind": 0,
+       "windDir": "NNW",
+       "freezingLevel": 4150,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 10,
+       "tempMax": 9,
        "wind": 5,
-       "windDir": "SE",
+       "windDir": "W",
        "freezingLevel": 4350,
-       "phrase": "cloudy"
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 9,
-       "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 4500,
-       "phrase": "some clouds"
+       "tempMax": 8,
+       "wind": 15,
+       "windDir": "WSW",
+       "freezingLevel": 4350,
+       "phrase": "clear"
       }
      ],
-     "tempMax": 10,
-     "tempMin": 6,
-     "windMax": 5,
-     "freezeMin": 4300,
-     "freezeMax": 4500
+     "tempMax": 9,
+     "tempMin": 4,
+     "windMax": 15,
+     "freezeMin": 4150,
+     "freezeMax": 4350
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 6°C on Wed afternoon, min -1°C on Fri night). Winds increasing (calm on Wed night, fresh winds from the SSW by Thu night).",
-    "days46": "Days 4-6 weather summary:A dusting of new snow. Freeze-thaw conditions (max 10°C on Mon afternoon, min -2°C on Sat night). Winds decreasing (fresh winds from the SW on Sat night, calm by Mon afternoon)."
+    "next3": "Next 4 days weather summary:A light covering of new snow, mostly falling on Sat afternoon. Freeze-thaw conditions (max 6°C on Thu afternoon, min -1°C on Thu night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sat night. Freeze-thaw conditions (max 10°C on Tue afternoon, min -4°C on Sat night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -543,32 +525,23 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
       {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 6,
-       "wind": 5,
-       "windDir": "SW",
-       "freezingLevel": 3400,
-       "phrase": "clear"
-      },
-      {
        "name": "night",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 5,
        "wind": 10,
        "windDir": "SSW",
        "freezingLevel": 3500,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 5,
      "tempMin": 4,
      "windMax": 10,
-     "freezeMin": 3400,
+     "freezeMin": 3500,
      "freezeMax": 3500
     },
     {
@@ -597,17 +570,17 @@
       {
        "name": "night",
        "snow": 1,
-       "tempMax": -1,
-       "wind": 20,
-       "windDir": "SW",
-       "freezingLevel": 2450,
+       "tempMax": 0,
+       "wind": 35,
+       "windDir": "SSW",
+       "freezingLevel": 2350,
        "phrase": "light snow"
       }
      ],
      "tempMax": 4,
      "tempMin": -2,
-     "windMax": 25,
-     "freezeMin": 2450,
+     "windMax": 35,
+     "freezeMin": 2350,
      "freezeMax": 3200
     },
     {
@@ -617,115 +590,115 @@
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 0,
-       "wind": 15,
+       "snow": 1,
+       "tempMax": -1,
+       "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 2650,
-       "phrase": "cloudy"
+       "freezingLevel": 2500,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 2,
+       "snow": 0,
        "tempMax": 0,
-       "wind": 15,
-       "windDir": "SSW",
-       "freezingLevel": 2600,
+       "wind": 10,
+       "windDir": "SW",
+       "freezingLevel": 2500,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 2,
+       "snow": 3,
        "tempMax": -1,
        "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 2450,
+       "freezingLevel": 2350,
        "phrase": "light snow"
       }
      ],
      "tempMax": 0,
-     "tempMin": -1,
+     "tempMin": -2,
      "windMax": 20,
-     "freezeMin": 2450,
-     "freezeMax": 2650
+     "freezeMin": 2350,
+     "freezeMax": 2500
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 10,
+     "snow": 32,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": -1,
-       "wind": 30,
-       "windDir": "SSW",
-       "freezingLevel": 2550,
-       "phrase": "light snow"
-      },
-      {
-       "name": "pm",
        "snow": 3,
-       "tempMax": -1,
+       "tempMax": -2,
        "wind": 30,
-       "windDir": "SW",
+       "windDir": "S",
        "freezingLevel": 2450,
        "phrase": "light snow"
       },
       {
-       "name": "night",
-       "snow": 6,
+       "name": "pm",
+       "snow": 9,
        "tempMax": -1,
        "wind": 25,
        "windDir": "SW",
        "freezingLevel": 2350,
        "phrase": "mod. snow"
+      },
+      {
+       "name": "night",
+       "snow": 20,
+       "tempMax": -3,
+       "wind": 30,
+       "windDir": "SW",
+       "freezingLevel": 2100,
+       "phrase": "heavy snow"
       }
      ],
      "tempMax": -1,
-     "tempMin": -3,
+     "tempMin": -4,
      "windMax": 30,
-     "freezeMin": 2350,
-     "freezeMax": 2550
+     "freezeMin": 2100,
+     "freezeMax": 2450
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 0,
+     "snow": 6,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 2,
+       "snow": 6,
+       "tempMax": -5,
        "wind": 5,
-       "windDir": "NNE",
-       "freezingLevel": 2950,
-       "phrase": "clear"
+       "windDir": "WSW",
+       "freezingLevel": 2000,
+       "phrase": "mod. snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 6,
+       "tempMax": -3,
        "wind": 10,
        "windDir": "NE",
-       "freezingLevel": 3750,
-       "phrase": "clear"
+       "freezingLevel": 2250,
+       "phrase": "snow shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 6,
-       "wind": 5,
-       "windDir": "NW",
-       "freezingLevel": 4150,
+       "tempMax": 4,
+       "wind": 15,
+       "windDir": "NE",
+       "freezingLevel": 1300,
        "phrase": "clear"
       }
      ],
-     "tempMax": 6,
-     "tempMin": -1,
-     "windMax": 10,
-     "freezeMin": 2950,
-     "freezeMax": 4150
+     "tempMax": 4,
+     "tempMin": -5,
+     "windMax": 15,
+     "freezeMin": 1300,
+     "freezeMax": 2250
     },
     {
      "date": "2026-11-02",
@@ -735,41 +708,41 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 10,
+       "tempMax": 8,
        "wind": 5,
-       "windDir": "ENE",
+       "windDir": "N",
        "freezingLevel": 4300,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 11,
+       "tempMax": 8,
        "wind": 5,
-       "windDir": "SE",
+       "windDir": "W",
        "freezingLevel": 4400,
        "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 9,
-       "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 4500,
+       "tempMax": 8,
+       "wind": 10,
+       "windDir": "WSW",
+       "freezingLevel": 4350,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 11,
-     "tempMin": 7,
-     "windMax": 5,
+     "tempMax": 8,
+     "tempMin": 5,
+     "windMax": 10,
      "freezeMin": 4300,
-     "freezeMax": 4500
+     "freezeMax": 4400
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A light covering of new snow, mostly falling on Fri afternoon. Freeze-thaw conditions (max 6°C on Wed afternoon, min -2°C on Thu night). Winds increasing (calm on Wed afternoon, fresh winds from the SSW by Thu night).",
-    "days46": "Days 4-6 weather summary:A light covering of new snow, mostly falling on Sat night. Freeze-thaw conditions (max 11°C on Mon afternoon, min -3°C on Sat night). Winds decreasing (fresh winds from the SW on Sat night, calm by Mon afternoon)."
+    "next3": "Next 4 days weather summary:A moderate fall of snow, heaviest on Sat afternoon. Freeze-thaw conditions (max 5°C on Wed night, min -2°C on Thu night). Winds increasing (calm on Wed night, fresh winds from the SSW by Thu night).",
+    "days46": "Days 5-7 weather summary:A heavy fall of snow, heaviest during Sat night. Freeze-thaw conditions (max 8°C on Mon morning, min -5°C on Sun morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -800,189 +773,180 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
       {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 6,
-       "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 3700,
-       "phrase": "some clouds"
-      },
-      {
        "name": "night",
        "snow": 0,
-       "tempMax": 5,
+       "tempMax": 4,
        "wind": 5,
        "windDir": "SSW",
-       "freezingLevel": 3500,
+       "freezingLevel": 3450,
        "phrase": "cloudy"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 4,
      "tempMin": 3,
      "windMax": 5,
-     "freezeMin": 3500,
-     "freezeMax": 3700
+     "freezeMin": 3450,
+     "freezeMax": 3450
     },
     {
      "date": "2026-10-29",
      "label": "Thursday29",
-     "snow": 1,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
        "snow": 0,
        "tempMax": 4,
        "wind": 10,
-       "windDir": "SSW",
+       "windDir": "SW",
        "freezingLevel": 3450,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
-       "wind": 15,
+       "tempMax": 4,
+       "wind": 10,
        "windDir": "SW",
        "freezingLevel": 3200,
        "phrase": "some clouds"
       },
       {
        "name": "night",
-       "snow": 1,
+       "snow": 0,
        "tempMax": 1,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 2700,
+       "freezingLevel": 2550,
        "phrase": "snow shwrs"
       }
      ],
      "tempMax": 4,
-     "tempMin": -3,
+     "tempMin": -2,
      "windMax": 15,
-     "freezeMin": 2700,
+     "freezeMin": 2550,
      "freezeMax": 3450
     },
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 2,
-     "periods": [
-      {
-       "name": "am",
-       "snow": 1,
-       "tempMax": -1,
-       "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 2800,
-       "phrase": "light snow"
-      },
-      {
-       "name": "pm",
-       "snow": 1,
-       "tempMax": -1,
-       "wind": 10,
-       "windDir": "SW",
-       "freezingLevel": 2750,
-       "phrase": "light snow"
-      },
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": -1,
-       "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 2650,
-       "phrase": "snow shwrs"
-      }
-     ],
-     "tempMax": -1,
-     "tempMin": -2,
-     "windMax": 10,
-     "freezeMin": 2650,
-     "freezeMax": 2800
-    },
-    {
-     "date": "2026-10-31",
-     "label": "Saturday31",
      "snow": 1,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -1,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2800,
-       "phrase": "some clouds"
-      },
-      {
-       "name": "pm",
-       "snow": 0,
        "tempMax": 0,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2750,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 2850,
        "phrase": "snow shwrs"
       },
       {
-       "name": "night",
+       "name": "pm",
        "snow": 1,
+       "tempMax": 0,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 2750,
+       "phrase": "light snow"
+      },
+      {
+       "name": "night",
+       "snow": 0,
        "tempMax": -1,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2600,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 2550,
        "phrase": "snow shwrs"
       }
      ],
      "tempMax": 0,
      "tempMin": -2,
-     "windMax": 15,
-     "freezeMin": 2600,
+     "windMax": 10,
+     "freezeMin": 2550,
+     "freezeMax": 2850
+    },
+    {
+     "date": "2026-10-31",
+     "label": "Saturday31",
+     "snow": 14,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": -1,
+       "wind": 15,
+       "windDir": "SSW",
+       "freezingLevel": 2800,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "pm",
+       "snow": 1,
+       "tempMax": 0,
+       "wind": 20,
+       "windDir": "SSW",
+       "freezingLevel": 2650,
+       "phrase": "light snow"
+      },
+      {
+       "name": "night",
+       "snow": 13,
+       "tempMax": -2,
+       "wind": 10,
+       "windDir": "SW",
+       "freezingLevel": 2300,
+       "phrase": "heavy snow"
+      }
+     ],
+     "tempMax": 0,
+     "tempMin": -4,
+     "windMax": 20,
+     "freezeMin": 2300,
      "freezeMax": 2800
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 0,
+     "snow": 2,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 2,
-       "wind": 0,
-       "windDir": "S",
-       "freezingLevel": 3150,
-       "phrase": "clear"
+       "snow": 2,
+       "tempMax": -5,
+       "wind": 15,
+       "windDir": "SW",
+       "freezingLevel": 2250,
+       "phrase": "snow shwrs"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 5,
-       "wind": 5,
+       "tempMax": -3,
+       "wind": 10,
        "windDir": "NNE",
-       "freezingLevel": 3650,
-       "phrase": "clear"
+       "freezingLevel": 2450,
+       "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 8,
-       "wind": 0,
-       "windDir": "W",
-       "freezingLevel": 4150,
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "NNE",
+       "freezingLevel": 3200,
        "phrase": "clear"
       }
      ],
-     "tempMax": 8,
-     "tempMin": -1,
-     "windMax": 5,
-     "freezeMin": 3150,
-     "freezeMax": 4150
+     "tempMax": 3,
+     "tempMin": -5,
+     "windMax": 15,
+     "freezeMin": 2250,
+     "freezeMax": 3200
     },
     {
      "date": "2026-11-02",
@@ -992,41 +956,41 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 10,
+       "tempMax": 9,
        "wind": 5,
-       "windDir": "NE",
-       "freezingLevel": 4350,
+       "windDir": "NNW",
+       "freezingLevel": 4300,
        "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 11,
-       "wind": 5,
-       "windDir": "ENE",
-       "freezingLevel": 4350,
+       "tempMax": 9,
+       "wind": 0,
+       "windDir": "WNW",
+       "freezingLevel": 4400,
        "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 10,
        "wind": 5,
-       "windDir": "ESE",
-       "freezingLevel": 4500,
-       "phrase": "clear"
+       "windDir": "SW",
+       "freezingLevel": 4600,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 11,
-     "tempMin": 9,
+     "tempMax": 10,
+     "tempMin": 6,
      "windMax": 5,
-     "freezeMin": 4350,
-     "freezeMax": 4500
+     "freezeMin": 4300,
+     "freezeMax": 4600
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 6°C on Wed afternoon, min -3°C on Thu night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:A dusting of new snow. Freeze-thaw conditions (max 11°C on Mon afternoon, min -2°C on Sat night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 4°C on Wed night, min -2°C on Thu night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sat night. Freeze-thaw conditions (max 10°C on Mon night, min -5°C on Sun morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -1057,33 +1021,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 6,
-       "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 4050,
-       "phrase": "some clouds"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 0,
        "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3250,
+       "freezingLevel": 3150,
        "phrase": "clear"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 0,
      "tempMin": 0,
-     "windMax": 15,
-     "freezeMin": 3250,
-     "freezeMax": 4050
+     "windMax": 10,
+     "freezeMin": 3150,
+     "freezeMax": 3150
     },
     {
      "date": "2026-10-29",
@@ -1093,7 +1048,7 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 5,
+       "tempMax": 6,
        "wind": 10,
        "windDir": "S",
        "freezingLevel": 3600,
@@ -1114,28 +1069,28 @@
        "tempMax": 1,
        "wind": 10,
        "windDir": "SSE",
-       "freezingLevel": 3450,
+       "freezingLevel": 3400,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 6,
      "tempMin": 1,
      "windMax": 10,
-     "freezeMin": 3450,
+     "freezeMin": 3400,
      "freezeMax": 4050
     },
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 1,
+     "snow": 4,
      "periods": [
       {
        "name": "am",
        "snow": 0,
        "tempMax": 6,
        "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 3650,
+       "windDir": "SSE",
+       "freezingLevel": 3600,
        "phrase": "clear"
       },
       {
@@ -1144,37 +1099,37 @@
        "tempMax": 7,
        "wind": 10,
        "windDir": "SSW",
-       "freezingLevel": 4050,
+       "freezingLevel": 4100,
        "phrase": "some clouds"
       },
       {
        "name": "night",
-       "snow": 1,
-       "tempMax": 1,
+       "snow": 4,
+       "tempMax": 2,
        "wind": 10,
        "windDir": "SSE",
        "freezingLevel": 3500,
-       "phrase": "snow shwrs"
+       "phrase": "light snow"
       }
      ],
      "tempMax": 7,
-     "tempMin": 0,
+     "tempMin": -1,
      "windMax": 10,
      "freezeMin": 3500,
-     "freezeMax": 4050
+     "freezeMax": 4100
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 2,
+     "snow": 3,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
+       "snow": 2,
        "tempMax": 1,
        "wind": 5,
        "windDir": "SW",
-       "freezingLevel": 3250,
+       "freezingLevel": 3150,
        "phrase": "light snow"
       },
       {
@@ -1182,8 +1137,8 @@
        "snow": 1,
        "tempMax": 2,
        "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 3550,
+       "windDir": "SW",
+       "freezingLevel": 3500,
        "phrase": "light snow"
       },
       {
@@ -1192,98 +1147,98 @@
        "tempMax": 0,
        "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3200,
-       "phrase": "light snow"
+       "freezingLevel": 2850,
+       "phrase": "snow shwrs"
       }
      ],
      "tempMax": 2,
-     "tempMin": 0,
+     "tempMin": -2,
      "windMax": 10,
-     "freezeMin": 3200,
-     "freezeMax": 3550
+     "freezeMin": 2850,
+     "freezeMax": 3500
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 14,
+     "snow": 15,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": 2,
+       "snow": 2,
+       "tempMax": 1,
        "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3400,
+       "freezingLevel": 3350,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 3,
+       "snow": 4,
        "tempMax": 1,
-       "wind": 10,
+       "wind": 15,
        "windDir": "SSW",
        "freezingLevel": 3400,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 10,
-       "tempMax": -1,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 3100,
+       "snow": 9,
+       "tempMax": 0,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 3200,
        "phrase": "mod. snow"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -8,
+     "tempMax": 1,
+     "tempMin": -1,
      "windMax": 15,
-     "freezeMin": 3100,
+     "freezeMin": 3200,
      "freezeMax": 3400
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 3,
+     "snow": 11,
      "periods": [
       {
        "name": "am",
-       "snow": 2,
-       "tempMax": -6,
-       "wind": 15,
-       "windDir": "NNW",
-       "freezingLevel": 2000,
+       "snow": 4,
+       "tempMax": -2,
+       "wind": 5,
+       "windDir": "WNW",
+       "freezingLevel": 3000,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 1,
-       "tempMax": -5,
-       "wind": 15,
+       "snow": 6,
+       "tempMax": -3,
+       "wind": 10,
        "windDir": "N",
-       "freezingLevel": 2500,
-       "phrase": "light snow"
+       "freezingLevel": 2750,
+       "phrase": "mod. snow"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": -8,
+       "snow": 1,
+       "tempMax": -5,
        "wind": 10,
-       "windDir": "NE",
-       "freezingLevel": 1700,
-       "phrase": "snow shwrs"
+       "windDir": "N",
+       "freezingLevel": 2350,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": -5,
-     "tempMin": -8,
-     "windMax": 15,
-     "freezeMin": 1700,
-     "freezeMax": 2500
+     "tempMax": -2,
+     "tempMin": -7,
+     "windMax": 10,
+     "freezeMin": 2350,
+     "freezeMax": 3000
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 7°C on Fri afternoon, min 0°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:A moderate fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 2°C on Sat afternoon, min -8°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A light covering of new snow, mostly falling on Fri night. Freeze-thaw conditions (max 7°C on Fri afternoon, min -1°C on Fri night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A heavy fall of snow, heaviest during Mon afternoon. Freeze-thaw conditions (max 1°C on Sun morning, min -7°C on Mon night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -1314,33 +1269,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
       {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 6,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 3900,
-       "phrase": "some clouds"
-      },
-      {
        "name": "night",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 2,
        "wind": 5,
        "windDir": "SSE",
-       "freezingLevel": 3300,
+       "freezingLevel": 3250,
        "phrase": "clear"
       }
      ],
-     "tempMax": 6,
-     "tempMin": 1,
-     "windMax": 15,
-     "freezeMin": 3300,
-     "freezeMax": 3900
+     "tempMax": 2,
+     "tempMin": 0,
+     "windMax": 5,
+     "freezeMin": 3250,
+     "freezeMax": 3250
     },
     {
      "date": "2026-10-29",
@@ -1353,17 +1299,17 @@
        "tempMax": 5,
        "wind": 5,
        "windDir": "SE",
-       "freezingLevel": 3350,
+       "freezingLevel": 3300,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 6,
+       "tempMax": 7,
        "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3950,
-       "phrase": "cloudy"
+       "freezingLevel": 4000,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
@@ -1371,15 +1317,15 @@
        "tempMax": 4,
        "wind": 5,
        "windDir": "SE",
-       "freezingLevel": 3500,
+       "freezingLevel": 3550,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 7,
      "tempMin": 1,
      "windMax": 10,
-     "freezeMin": 3350,
-     "freezeMax": 3950
+     "freezeMin": 3300,
+     "freezeMax": 4000
     },
     {
      "date": "2026-10-30",
@@ -1399,10 +1345,10 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 8,
-       "wind": 10,
-       "windDir": "SW",
+       "wind": 5,
+       "windDir": "SSW",
        "freezingLevel": 4100,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "night",
@@ -1410,54 +1356,54 @@
        "tempMax": 4,
        "wind": 5,
        "windDir": "SE",
-       "freezingLevel": 3550,
+       "freezingLevel": 3600,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 8,
-     "tempMin": 2,
-     "windMax": 10,
+     "tempMin": 1,
+     "windMax": 5,
      "freezeMin": 3450,
      "freezeMax": 4100
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 0,
+     "snow": 2,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": 1,
-       "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 3350,
+       "snow": 2,
+       "tempMax": 0,
+       "wind": 0,
+       "windDir": "WSW",
+       "freezingLevel": 3050,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 2,
        "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 3550,
+       "windDir": "WNW",
+       "freezingLevel": 3500,
        "phrase": "rain shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 1,
+       "tempMax": 0,
        "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 3200,
+       "windDir": "SSE",
+       "freezingLevel": 3050,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 3,
-     "tempMin": 0,
+     "tempMax": 2,
+     "tempMin": -1,
      "windMax": 5,
-     "freezeMin": 3200,
-     "freezeMax": 3550
+     "freezeMin": 3050,
+     "freezeMax": 3500
     },
     {
      "date": "2026-11-01",
@@ -1470,77 +1416,77 @@
        "tempMax": 2,
        "wind": 5,
        "windDir": "SSE",
-       "freezingLevel": 3250,
+       "freezingLevel": 3150,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
-       "snow": 1,
-       "tempMax": 2,
-       "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 3600,
+       "snow": 2,
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "S",
+       "freezingLevel": 3700,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 8,
+       "snow": 7,
        "tempMax": 0,
-       "wind": 10,
+       "wind": 5,
        "windDir": "SW",
-       "freezingLevel": 3050,
+       "freezingLevel": 3150,
        "phrase": "mod. snow"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -6,
+     "tempMax": 3,
+     "tempMin": 0,
      "windMax": 10,
-     "freezeMin": 3050,
-     "freezeMax": 3600
+     "freezeMin": 3150,
+     "freezeMax": 3700
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 3,
+     "snow": 4,
      "periods": [
       {
        "name": "am",
        "snow": 2,
-       "tempMax": -6,
-       "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 2050,
+       "tempMax": 0,
+       "wind": 5,
+       "windDir": "N",
+       "freezingLevel": 3100,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 1,
-       "tempMax": -4,
+       "tempMax": -1,
        "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 2550,
+       "windDir": "NNW",
+       "freezingLevel": 3000,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": -6,
+       "snow": 1,
+       "tempMax": -4,
        "wind": 15,
-       "windDir": "NNW",
-       "freezingLevel": 2050,
-       "phrase": "snow shwrs"
+       "windDir": "NW",
+       "freezingLevel": 2300,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": -4,
-     "tempMin": -7,
+     "tempMax": 0,
+     "tempMin": -6,
      "windMax": 15,
-     "freezeMin": 2050,
-     "freezeMax": 2550
+     "freezeMin": 2300,
+     "freezeMax": 3100
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Mostly dry. Mild temperatures (max 8°C on Fri afternoon, min 1°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mild at first with light rain (total 2.0mm) on Sat afternoon followed by colder weather and light fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 3°C on Sat afternoon, min -7°C on Mon morning). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A dusting of snow on Sat morning. Freezing level rising with drizzle on Sat afternoon. Freeze-thaw conditions (max 8°C on Fri afternoon, min -1°C on Sat morning). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Drizzle on Sun afternoon followed by colder weather and a moderate fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 3°C on Sun afternoon, min -6°C on Mon night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -1571,33 +1517,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 7,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 3950,
-       "phrase": "some clouds"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 3,
        "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3300,
+       "freezingLevel": 3250,
        "phrase": "clear"
       }
      ],
-     "tempMax": 7,
+     "tempMax": 3,
      "tempMin": 2,
-     "windMax": 15,
-     "freezeMin": 3300,
-     "freezeMax": 3950
+     "windMax": 10,
+     "freezeMin": 3250,
+     "freezeMax": 3250
     },
     {
      "date": "2026-10-29",
@@ -1607,8 +1544,8 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 7,
-       "wind": 10,
+       "tempMax": 8,
+       "wind": 5,
        "windDir": "S",
        "freezingLevel": 3600,
        "phrase": "clear"
@@ -1619,7 +1556,7 @@
        "tempMax": 8,
        "wind": 10,
        "windDir": "SSW",
-       "freezingLevel": 4050,
+       "freezingLevel": 4100,
        "phrase": "cloudy"
       },
       {
@@ -1627,16 +1564,16 @@
        "snow": 0,
        "tempMax": 4,
        "wind": 10,
-       "windDir": "SSE",
-       "freezingLevel": 3550,
+       "windDir": "S",
+       "freezingLevel": 3600,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 8,
      "tempMin": 3,
      "windMax": 10,
-     "freezeMin": 3550,
-     "freezeMax": 4050
+     "freezeMin": 3600,
+     "freezeMax": 4100
     },
     {
      "date": "2026-10-30",
@@ -1647,35 +1584,35 @@
        "name": "am",
        "snow": 0,
        "tempMax": 8,
-       "wind": 5,
+       "wind": 10,
        "windDir": "SSE",
-       "freezingLevel": 3650,
+       "freezingLevel": 3700,
        "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 9,
-       "wind": 10,
+       "wind": 5,
        "windDir": "WSW",
-       "freezingLevel": 4100,
-       "phrase": "clear"
+       "freezingLevel": 4150,
+       "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 5,
        "wind": 10,
-       "windDir": "SSE",
-       "freezingLevel": 3550,
+       "windDir": "SE",
+       "freezingLevel": 3650,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 9,
      "tempMin": 3,
      "windMax": 10,
-     "freezeMin": 3550,
-     "freezeMax": 4100
+     "freezeMin": 3650,
+     "freezeMax": 4150
     },
     {
      "date": "2026-10-31",
@@ -1685,119 +1622,119 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 2,
        "wind": 5,
-       "windDir": "SSW",
-       "freezingLevel": 3450,
-       "phrase": "light rain"
+       "windDir": "WSW",
+       "freezingLevel": 3100,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 3,
        "wind": 5,
-       "windDir": "W",
+       "windDir": "WNW",
        "freezingLevel": 3500,
        "phrase": "rain shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 1,
        "wind": 5,
        "windDir": "S",
-       "freezingLevel": 3200,
+       "freezingLevel": 3100,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 3,
-     "tempMin": 1,
+     "tempMin": 0,
      "windMax": 5,
-     "freezeMin": 3200,
+     "freezeMin": 3100,
      "freezeMax": 3500
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 7,
+     "snow": 3,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 5,
-       "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 3450,
-       "phrase": "some clouds"
+       "tempMax": 6,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 3500,
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 5,
-       "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 3750,
+       "tempMax": 7,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 4050,
        "phrase": "light rain"
       },
       {
        "name": "night",
-       "snow": 7,
+       "snow": 3,
        "tempMax": 2,
        "wind": 5,
-       "windDir": "SW",
-       "freezingLevel": 3150,
-       "phrase": "mod. snow"
+       "windDir": "SSW",
+       "freezingLevel": 3250,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 5,
-     "tempMin": -5,
-     "windMax": 5,
-     "freezeMin": 3150,
-     "freezeMax": 3750
+     "tempMax": 7,
+     "tempMin": 1,
+     "windMax": 10,
+     "freezeMin": 3250,
+     "freezeMax": 4050
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 8,
+     "snow": 7,
      "periods": [
       {
        "name": "am",
-       "snow": 3,
-       "tempMax": -5,
-       "wind": 10,
-       "windDir": "NW",
-       "freezingLevel": 2050,
+       "snow": 2,
+       "tempMax": 0,
+       "wind": 5,
+       "windDir": "NNW",
+       "freezingLevel": 3050,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 2,
-       "tempMax": -4,
+       "tempMax": -1,
        "wind": 15,
        "windDir": "NW",
-       "freezingLevel": 2450,
+       "freezingLevel": 2900,
        "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 3,
-       "tempMax": -5,
+       "tempMax": -3,
        "wind": 10,
        "windDir": "NW",
-       "freezingLevel": 2150,
+       "freezingLevel": 2500,
        "phrase": "light snow"
       }
      ],
-     "tempMax": -4,
-     "tempMin": -7,
+     "tempMax": 0,
+     "tempMin": -4,
      "windMax": 15,
-     "freezeMin": 2050,
-     "freezeMax": 2450
+     "freezeMin": 2500,
+     "freezeMax": 3050
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Some drizzle, heaviest during Sat morning. Mild temperatures (max 9°C on Fri afternoon, min 2°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mild at first with light rain (total 5.0mm) on Sun afternoon followed by colder weather and light fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 5°C on Sun morning, min -7°C on Mon night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:Light rain (total 4.0mm), mostly falling on Sat morning. Mild temperatures (max 9°C on Fri afternoon, min 1°C on Sat morning). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mild at first with light rain (total 4.0mm) on Sun night followed by colder weather and light fall of snow, heaviest on Mon afternoon. Freeze-thaw conditions (max 7°C on Sun afternoon, min -4°C on Mon night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -1828,33 +1765,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 8,
-       "wind": 30,
-       "windDir": "WSW",
-       "freezingLevel": 3650,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 5,
        "wind": 10,
        "windDir": "SW",
-       "freezingLevel": 3600,
+       "freezingLevel": 3550,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 8,
+     "tempMax": 5,
      "tempMin": 4,
-     "windMax": 30,
-     "freezeMin": 3600,
-     "freezeMax": 3650
+     "windMax": 10,
+     "freezeMin": 3550,
+     "freezeMax": 3550
     },
     {
      "date": "2026-10-29",
@@ -1882,10 +1810,10 @@
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 7,
+       "tempMax": 8,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 3800,
+       "freezingLevel": 3850,
        "phrase": "some clouds"
       }
      ],
@@ -1904,9 +1832,9 @@
        "name": "am",
        "snow": 0,
        "tempMax": 9,
-       "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 3700,
+       "wind": 15,
+       "windDir": "S",
+       "freezingLevel": 3750,
        "phrase": "some clouds"
       },
       {
@@ -1915,24 +1843,24 @@
        "tempMax": 10,
        "wind": 15,
        "windDir": "WSW",
-       "freezingLevel": 3950,
-       "phrase": "clear"
+       "freezingLevel": 4000,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 8,
        "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 3800,
+       "windDir": "SE",
+       "freezingLevel": 3900,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 10,
-     "tempMin": 6,
+     "tempMin": 7,
      "windMax": 15,
-     "freezeMin": 3700,
-     "freezeMax": 3950
+     "freezeMin": 3750,
+     "freezeMax": 4000
     },
     {
      "date": "2026-10-31",
@@ -1942,119 +1870,119 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 6,
+       "tempMax": 5,
        "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 3650,
+       "windDir": "W",
+       "freezingLevel": 3400,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 5,
+       "tempMax": 4,
        "wind": 10,
        "windDir": "W",
-       "freezingLevel": 3300,
-       "phrase": "light rain"
+       "freezingLevel": 3100,
+       "phrase": "rain shwrs"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 4,
-       "wind": 5,
-       "windDir": "SSW",
+       "wind": 10,
+       "windDir": "S",
        "freezingLevel": 3350,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 6,
-     "tempMin": 4,
+     "tempMax": 5,
+     "tempMin": 3,
      "windMax": 10,
-     "freezeMin": 3300,
-     "freezeMax": 3650
+     "freezeMin": 3100,
+     "freezeMax": 3400
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 5,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 5,
-       "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 3450,
+       "tempMax": 6,
+       "wind": 15,
+       "windDir": "S",
+       "freezingLevel": 3550,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 4,
-       "wind": 10,
-       "windDir": "WSW",
-       "freezingLevel": 3250,
+       "tempMax": 6,
+       "wind": 15,
+       "windDir": "S",
+       "freezingLevel": 3650,
        "phrase": "light rain"
       },
       {
        "name": "night",
-       "snow": 5,
-       "tempMax": 2,
-       "wind": 20,
-       "windDir": "WNW",
-       "freezingLevel": 2250,
-       "phrase": "mod. snow"
+       "snow": 1,
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 3150,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 5,
-     "tempMin": -5,
-     "windMax": 20,
-     "freezeMin": 2250,
-     "freezeMax": 3450
+     "tempMax": 6,
+     "tempMin": 1,
+     "windMax": 15,
+     "freezeMin": 3150,
+     "freezeMax": 3650
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 6,
+     "snow": 5,
      "periods": [
       {
        "name": "am",
-       "snow": 3,
-       "tempMax": -3,
-       "wind": 15,
+       "snow": 2,
+       "tempMax": 1,
+       "wind": 10,
        "windDir": "WNW",
-       "freezingLevel": 1950,
+       "freezingLevel": 2750,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 2,
-       "tempMax": -2,
-       "wind": 15,
+       "snow": 1,
+       "tempMax": 0,
+       "wind": 10,
        "windDir": "WNW",
-       "freezingLevel": 2350,
+       "freezingLevel": 2600,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 1,
-       "tempMax": -3,
+       "snow": 2,
+       "tempMax": 0,
        "wind": 10,
-       "windDir": "NW",
-       "freezingLevel": 2050,
+       "windDir": "WNW",
+       "freezingLevel": 2500,
        "phrase": "light snow"
       }
      ],
-     "tempMax": -2,
-     "tempMin": -5,
-     "windMax": 15,
-     "freezeMin": 1950,
-     "freezeMax": 2350
+     "tempMax": 1,
+     "tempMin": -2,
+     "windMax": 10,
+     "freezeMin": 2500,
+     "freezeMax": 2750
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Mostly dry. Very mild (max 10°C on Fri afternoon, min 4°C on Wed night). Winds decreasing (fresh winds from the WSW on Wed afternoon, calm by Fri night).",
-    "days46": "Days 4-6 weather summary:Mild at first with light rain (total 6.0mm) on Sun afternoon followed by colder weather and light fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 5°C on Sat afternoon, min -5°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:Light rain (total 2.0mm), mostly falling on Sat afternoon. Very mild (max 10°C on Fri afternoon, min 3°C on Sat afternoon). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mild with light rain (total 7.0mm) on Sun afternoon Becoming colder with a light covering of snow, mostly falling on Mon morning. Freeze-thaw conditions (max 6°C on Sun morning, min -3°C on Tue morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -2085,32 +2013,23 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
       {
-       "name": "pm",
+       "name": "night",
        "snow": 0,
        "tempMax": 2,
        "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 3050,
-       "phrase": "clear"
-      },
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 3,
-       "wind": 25,
        "windDir": "SSW",
        "freezingLevel": 3300,
        "phrase": "clear"
       }
      ],
-     "tempMax": 3,
+     "tempMax": 2,
      "tempMin": 2,
-     "windMax": 25,
-     "freezeMin": 3050,
+     "windMax": 20,
+     "freezeMin": 3300,
      "freezeMax": 3300
     },
     {
@@ -2121,10 +2040,10 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 4,
        "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 3150,
+       "freezingLevel": 3200,
        "phrase": "some clouds"
       },
       {
@@ -2149,22 +2068,22 @@
      "tempMax": 5,
      "tempMin": 2,
      "windMax": 20,
-     "freezeMin": 3150,
+     "freezeMin": 3200,
      "freezeMax": 3500
     },
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
        "snow": 0,
        "tempMax": 4,
        "wind": 15,
-       "windDir": "SSW",
+       "windDir": "S",
        "freezingLevel": 3400,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
@@ -2172,36 +2091,36 @@
        "tempMax": 5,
        "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 3450,
-       "phrase": "some clouds"
+       "freezingLevel": 3500,
+       "phrase": "cloudy"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": 4,
+       "snow": 1,
+       "tempMax": 3,
        "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 3350,
+       "windDir": "SSE",
+       "freezingLevel": 3050,
        "phrase": "light snow"
       }
      ],
      "tempMax": 5,
-     "tempMin": 1,
+     "tempMin": 0,
      "windMax": 20,
-     "freezeMin": 3350,
-     "freezeMax": 3450
+     "freezeMin": 3050,
+     "freezeMax": 3500
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 1,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
+       "snow": 0,
        "tempMax": 0,
-       "wind": 10,
-       "windDir": "SW",
+       "wind": 15,
+       "windDir": "SSW",
        "freezingLevel": 2900,
        "phrase": "light snow"
       },
@@ -2210,8 +2129,8 @@
        "snow": 0,
        "tempMax": 2,
        "wind": 15,
-       "windDir": "SSW",
-       "freezingLevel": 3000,
+       "windDir": "S",
+       "freezingLevel": 3050,
        "phrase": "snow shwrs"
       },
       {
@@ -2219,8 +2138,8 @@
        "snow": 0,
        "tempMax": 2,
        "wind": 20,
-       "windDir": "S",
-       "freezingLevel": 3100,
+       "windDir": "SSE",
+       "freezingLevel": 3150,
        "phrase": "light snow"
       }
      ],
@@ -2228,7 +2147,7 @@
      "tempMin": 0,
      "windMax": 20,
      "freezeMin": 2900,
-     "freezeMax": 3100
+     "freezeMax": 3150
     },
     {
      "date": "2026-11-01",
@@ -2237,81 +2156,81 @@
      "periods": [
       {
        "name": "am",
-       "snow": 2,
+       "snow": 1,
        "tempMax": 0,
-       "wind": 40,
-       "windDir": "SSW",
-       "freezingLevel": 2900,
+       "wind": 20,
+       "windDir": "SSE",
+       "freezingLevel": 2850,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 6,
-       "tempMax": -3,
+       "snow": 3,
+       "tempMax": 0,
        "wind": 20,
-       "windDir": "WNW",
-       "freezingLevel": 2300,
-       "phrase": "mod. snow"
+       "windDir": "S",
+       "freezingLevel": 2850,
+       "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 3,
-       "tempMax": -6,
-       "wind": 30,
-       "windDir": "WNW",
-       "freezingLevel": 1900,
-       "phrase": "light snow"
+       "snow": 7,
+       "tempMax": -3,
+       "wind": 15,
+       "windDir": "NW",
+       "freezingLevel": 2200,
+       "phrase": "mod. snow"
       }
      ],
      "tempMax": 0,
-     "tempMin": -7,
-     "windMax": 40,
-     "freezeMin": 1900,
-     "freezeMax": 2900
+     "tempMin": -5,
+     "windMax": 20,
+     "freezeMin": 2200,
+     "freezeMax": 2850
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 0,
+     "snow": 2,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": -3,
-       "wind": 25,
-       "windDir": "NNW",
-       "freezingLevel": 1850,
-       "phrase": "clear"
+       "snow": 2,
+       "tempMax": -4,
+       "wind": 20,
+       "windDir": "NW",
+       "freezingLevel": 2150,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -1,
-       "wind": 10,
+       "tempMax": -3,
+       "wind": 20,
        "windDir": "NNW",
-       "freezingLevel": 2500,
-       "phrase": "clear"
+       "freezingLevel": 2300,
+       "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 1,
        "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 3150,
-       "phrase": "clear"
+       "windDir": "NNW",
+       "freezingLevel": 2500,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 3,
+     "tempMax": 1,
      "tempMin": -5,
-     "windMax": 25,
-     "freezeMin": 1850,
-     "freezeMax": 3150
+     "windMax": 20,
+     "freezeMin": 2150,
+     "freezeMax": 2500
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 5°C on Thu afternoon, min 0°C on Sat morning). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Drizzle on Sat afternoon followed by colder weather and a moderate fall of snow, heaviest on Sun afternoon. Freeze-thaw conditions (max 5°C on Tue morning, min -7°C on Sun night). Winds decreasing (fresh winds from the SSW on Sun morning, light winds from the NNW by Mon afternoon)."
+    "next3": "Next 4 days weather summary:A dusting of snow on Fri night. Freezing level rising with drizzle on Sat afternoon. Freeze-thaw conditions (max 5°C on Thu afternoon, min 0°C on Fri night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 4°C on Tue afternoon, min -5°C on Sun night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -2342,33 +2261,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 1,
-       "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 3100,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 2,
        "wind": 25,
        "windDir": "SW",
-       "freezingLevel": 3300,
+       "freezingLevel": 3250,
        "phrase": "clear"
       }
      ],
      "tempMax": 2,
      "tempMin": 1,
      "windMax": 25,
-     "freezeMin": 3100,
-     "freezeMax": 3300
+     "freezeMin": 3250,
+     "freezeMax": 3250
     },
     {
      "date": "2026-10-29",
@@ -2381,7 +2291,7 @@
        "tempMax": 2,
        "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 3150,
+       "freezingLevel": 3200,
        "phrase": "some clouds"
       },
       {
@@ -2399,29 +2309,29 @@
        "tempMax": 4,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 3400,
+       "freezingLevel": 3450,
        "phrase": "cloudy"
       }
      ],
      "tempMax": 4,
      "tempMin": 1,
      "windMax": 20,
-     "freezeMin": 3150,
+     "freezeMin": 3200,
      "freezeMax": 3500
     },
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
        "snow": 0,
        "tempMax": 3,
        "wind": 15,
-       "windDir": "SSW",
+       "windDir": "S",
        "freezingLevel": 3400,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
@@ -2430,35 +2340,35 @@
        "wind": 20,
        "windDir": "SSW",
        "freezingLevel": 3500,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": 4,
-       "wind": 15,
-       "windDir": "S",
-       "freezingLevel": 3350,
+       "snow": 1,
+       "tempMax": 2,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 3050,
        "phrase": "light snow"
       }
      ],
      "tempMax": 4,
      "tempMin": 0,
      "windMax": 20,
-     "freezeMin": 3350,
+     "freezeMin": 3050,
      "freezeMax": 3500
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 1,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": -1,
-       "wind": 10,
-       "windDir": "SW",
+       "snow": 0,
+       "tempMax": 0,
+       "wind": 15,
+       "windDir": "SSW",
        "freezingLevel": 2900,
        "phrase": "light snow"
       },
@@ -2466,109 +2376,109 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 1,
-       "wind": 15,
-       "windDir": "SSW",
-       "freezingLevel": 3000,
+       "wind": 20,
+       "windDir": "S",
+       "freezingLevel": 3050,
        "phrase": "snow shwrs"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 1,
-       "wind": 25,
+       "wind": 20,
        "windDir": "S",
-       "freezingLevel": 3100,
+       "freezingLevel": 3150,
        "phrase": "light snow"
       }
      ],
      "tempMax": 1,
      "tempMin": -1,
-     "windMax": 25,
+     "windMax": 20,
      "freezeMin": 2900,
-     "freezeMax": 3100
+     "freezeMax": 3150
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 10,
+     "snow": 12,
      "periods": [
       {
        "name": "am",
        "snow": 2,
        "tempMax": -1,
-       "wind": 40,
-       "windDir": "SSW",
-       "freezingLevel": 2900,
+       "wind": 25,
+       "windDir": "SSE",
+       "freezingLevel": 2850,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 6,
-       "tempMax": -4,
+       "snow": 3,
+       "tempMax": -1,
        "wind": 20,
-       "windDir": "WNW",
-       "freezingLevel": 2300,
-       "phrase": "mod. snow"
+       "windDir": "S",
+       "freezingLevel": 2850,
+       "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 2,
-       "tempMax": -7,
-       "wind": 30,
-       "windDir": "WNW",
-       "freezingLevel": 1900,
-       "phrase": "light snow"
+       "snow": 7,
+       "tempMax": -3,
+       "wind": 20,
+       "windDir": "NW",
+       "freezingLevel": 2200,
+       "phrase": "mod. snow"
       }
      ],
      "tempMax": -1,
-     "tempMin": -7,
-     "windMax": 40,
-     "freezeMin": 1900,
-     "freezeMax": 2900
+     "tempMin": -5,
+     "windMax": 25,
+     "freezeMin": 2200,
+     "freezeMax": 2850
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 0,
+     "snow": 2,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": -4,
-       "wind": 25,
-       "windDir": "NNW",
-       "freezingLevel": 1850,
-       "phrase": "clear"
+       "snow": 2,
+       "tempMax": -5,
+       "wind": 20,
+       "windDir": "NW",
+       "freezingLevel": 2150,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -2,
-       "wind": 10,
+       "tempMax": -4,
+       "wind": 20,
        "windDir": "NNW",
-       "freezingLevel": 2500,
-       "phrase": "clear"
+       "freezingLevel": 2300,
+       "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 3,
-       "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 3150,
-       "phrase": "clear"
+       "tempMax": 1,
+       "wind": 20,
+       "windDir": "NNW",
+       "freezingLevel": 2500,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 3,
+     "tempMax": 1,
      "tempMin": -6,
-     "windMax": 25,
-     "freezeMin": 1850,
-     "freezeMax": 3150
+     "windMax": 20,
+     "freezeMin": 2150,
+     "freezeMax": 2500
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 4°C on Thu afternoon, min -1°C on Sat morning). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:A moderate fall of snow, heaviest on Sun afternoon. Freeze-thaw conditions (max 5°C on Tue morning, min -7°C on Sun night). Winds decreasing (strong winds from the SSW on Sun morning, light winds from the NNW by Mon afternoon)."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 4°C on Thu afternoon, min -1°C on Sat morning). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 3°C on Tue morning, min -6°C on Mon morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -2599,33 +2509,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 1,
-       "wind": 20,
-       "windDir": "SW",
-       "freezingLevel": 2650,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -1,
        "wind": 15,
-       "windDir": "SW",
-       "freezingLevel": 2250,
+       "windDir": "SSW",
+       "freezingLevel": 2200,
        "phrase": "clear"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -1,
-     "windMax": 20,
-     "freezeMin": 2250,
-     "freezeMax": 2650
+     "tempMax": -1,
+     "tempMin": -2,
+     "windMax": 15,
+     "freezeMin": 2200,
+     "freezeMax": 2200
     },
     {
      "date": "2026-10-29",
@@ -2636,10 +2537,10 @@
        "name": "am",
        "snow": 0,
        "tempMax": 2,
-       "wind": 10,
+       "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 2350,
-       "phrase": "clear"
+       "freezingLevel": 2400,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
@@ -2654,17 +2555,17 @@
        "name": "night",
        "snow": 0,
        "tempMax": 3,
-       "wind": 15,
+       "wind": 10,
        "windDir": "S",
-       "freezingLevel": 3150,
+       "freezingLevel": 3200,
        "phrase": "cloudy"
       }
      ],
      "tempMax": 4,
      "tempMin": -1,
      "windMax": 15,
-     "freezeMin": 2350,
-     "freezeMax": 3150
+     "freezeMin": 2400,
+     "freezeMax": 3200
     },
     {
      "date": "2026-10-30",
@@ -2675,113 +2576,113 @@
        "name": "am",
        "snow": 0,
        "tempMax": 5,
-       "wind": 10,
+       "wind": 15,
        "windDir": "S",
-       "freezingLevel": 3150,
+       "freezingLevel": 3250,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 7,
-       "wind": 25,
+       "tempMax": 6,
+       "wind": 20,
        "windDir": "SSW",
-       "freezingLevel": 3400,
-       "phrase": "some clouds"
+       "freezingLevel": 3350,
+       "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 4,
        "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 3150,
-       "phrase": "rain shwrs"
+       "windDir": "SSW",
+       "freezingLevel": 3100,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 7,
+     "tempMax": 6,
      "tempMin": 2,
-     "windMax": 25,
-     "freezeMin": 3150,
-     "freezeMax": 3400
+     "windMax": 20,
+     "freezeMin": 3100,
+     "freezeMax": 3350
     },
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 2,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 2,
        "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 2900,
-       "phrase": "light rain"
+       "windDir": "SSE",
+       "freezingLevel": 2850,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 3,
        "wind": 10,
-       "windDir": "SW",
-       "freezingLevel": 3050,
-       "phrase": "rain shwrs"
+       "windDir": "SSW",
+       "freezingLevel": 2950,
+       "phrase": "light rain"
       },
       {
        "name": "night",
-       "snow": 2,
-       "tempMax": 3,
-       "wind": 15,
-       "windDir": "S",
-       "freezingLevel": 3000,
-       "phrase": "snow shwrs"
+       "snow": 0,
+       "tempMax": 2,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 2900,
+       "phrase": "cloudy"
       }
      ],
-     "tempMax": 4,
-     "tempMin": 1,
-     "windMax": 15,
-     "freezeMin": 2900,
-     "freezeMax": 3050
+     "tempMax": 3,
+     "tempMin": 2,
+     "windMax": 10,
+     "freezeMin": 2850,
+     "freezeMax": 2950
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 8,
+     "snow": 6,
      "periods": [
       {
        "name": "am",
-       "snow": 3,
-       "tempMax": 1,
-       "wind": 25,
-       "windDir": "S",
-       "freezingLevel": 2750,
-       "phrase": "light snow"
+       "snow": 0,
+       "tempMax": 2,
+       "wind": 15,
+       "windDir": "SSE",
+       "freezingLevel": 2950,
+       "phrase": "light rain"
       },
       {
        "name": "pm",
-       "snow": 3,
-       "tempMax": -2,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 2200,
+       "snow": 2,
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "SE",
+       "freezingLevel": 2900,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 2,
-       "tempMax": -4,
+       "snow": 4,
+       "tempMax": 0,
        "wind": 10,
-       "windDir": "NW",
-       "freezingLevel": 1850,
+       "windDir": "WNW",
+       "freezingLevel": 2450,
        "phrase": "light snow"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -4,
-     "windMax": 25,
-     "freezeMin": 1850,
-     "freezeMax": 2750
+     "tempMax": 3,
+     "tempMin": -2,
+     "windMax": 15,
+     "freezeMin": 2450,
+     "freezeMax": 2950
     },
     {
      "date": "2026-11-02",
@@ -2791,41 +2692,41 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -3,
+       "tempMax": -2,
        "wind": 10,
-       "windDir": "N",
-       "freezingLevel": 1900,
-       "phrase": "snow shwrs"
+       "windDir": "NW",
+       "freezingLevel": 2250,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": -2,
        "wind": 10,
-       "windDir": "NNW",
-       "freezingLevel": 2300,
-       "phrase": "some clouds"
+       "windDir": "NW",
+       "freezingLevel": 2250,
+       "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 0,
-       "wind": 10,
-       "windDir": "N",
-       "freezingLevel": 1450,
-       "phrase": "clear"
+       "tempMax": -1,
+       "wind": 5,
+       "windDir": "NNW",
+       "freezingLevel": 2050,
+       "phrase": "snow shwrs"
       }
      ],
-     "tempMax": 0,
-     "tempMin": -4,
+     "tempMax": -1,
+     "tempMin": -3,
      "windMax": 10,
-     "freezeMin": 1450,
-     "freezeMax": 2300
+     "freezeMin": 2050,
+     "freezeMax": 2250
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Light rain (total 2.0mm), mostly falling on Fri night. Freeze-thaw conditions (max 7°C on Fri afternoon, min -1°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mild at first with light rain (total 2.0mm) on Sat afternoon followed by colder weather and light fall of snow, heaviest on Sun morning. Freeze-thaw conditions (max 5°C on Tue morning, min -4°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:Light rain (total 2.0mm), mostly falling on Sat afternoon. Freeze-thaw conditions (max 6°C on Fri afternoon, min -2°C on Wed night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mild with light rain (total 2.0mm) on Sun morning Becoming colder with a light covering of snow, mostly falling on Sun afternoon. Freeze-thaw conditions (max 3°C on Sun afternoon, min -3°C on Mon night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -2856,18 +2757,9 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": -2,
-       "wind": 20,
-       "windDir": "SW",
-       "freezingLevel": 2600,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
@@ -2882,7 +2774,7 @@
      "tempMin": -2,
      "windMax": 20,
      "freezeMin": 2350,
-     "freezeMax": 2600
+     "freezeMax": 2350
     },
     {
      "date": "2026-10-29",
@@ -2895,33 +2787,33 @@
        "tempMax": 1,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 2550,
+       "freezingLevel": 2600,
        "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 3,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 3050,
+       "freezingLevel": 3100,
        "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 3,
        "wind": 20,
        "windDir": "S",
-       "freezingLevel": 3250,
+       "freezingLevel": 3300,
        "phrase": "cloudy"
       }
      ],
-     "tempMax": 2,
+     "tempMax": 3,
      "tempMin": -1,
      "windMax": 20,
-     "freezeMin": 2550,
-     "freezeMax": 3250
+     "freezeMin": 2600,
+     "freezeMax": 3300
     },
     {
      "date": "2026-10-30",
@@ -2932,31 +2824,31 @@
        "name": "am",
        "snow": 0,
        "tempMax": 4,
-       "wind": 15,
-       "windDir": "S",
-       "freezingLevel": 3200,
-       "phrase": "some clouds"
+       "wind": 20,
+       "windDir": "SSW",
+       "freezingLevel": 3300,
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 5,
+       "tempMax": 4,
        "wind": 25,
        "windDir": "SSW",
        "freezingLevel": 3350,
-       "phrase": "cloudy"
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 3,
        "wind": 15,
-       "windDir": "SSW",
+       "windDir": "S",
        "freezingLevel": 3100,
        "phrase": "light snow"
       }
      ],
-     "tempMax": 5,
+     "tempMax": 4,
      "tempMin": 1,
      "windMax": 25,
      "freezeMin": 3100,
@@ -2965,10 +2857,19 @@
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 3,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 5,
+       "windDir": "SSE",
+       "freezingLevel": 2850,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
        "snow": 0,
        "tempMax": 1,
        "wind": 10,
@@ -2977,112 +2878,103 @@
        "phrase": "light snow"
       },
       {
-       "name": "pm",
+       "name": "night",
        "snow": 0,
        "tempMax": 2,
-       "wind": 10,
-       "windDir": "SW",
+       "wind": 15,
+       "windDir": "SSE",
        "freezingLevel": 3000,
        "phrase": "light snow"
-      },
-      {
-       "name": "night",
-       "snow": 3,
-       "tempMax": 2,
-       "wind": 20,
-       "windDir": "S",
-       "freezingLevel": 3050,
-       "phrase": "snow shwrs"
       }
      ],
      "tempMax": 2,
      "tempMin": 0,
-     "windMax": 20,
-     "freezeMin": 2900,
-     "freezeMax": 3050
+     "windMax": 15,
+     "freezeMin": 2850,
+     "freezeMax": 3000
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 11,
+     "snow": 10,
      "periods": [
       {
        "name": "am",
-       "snow": 5,
-       "tempMax": 0,
+       "snow": 0,
+       "tempMax": 1,
        "wind": 20,
-       "windDir": "S",
-       "freezingLevel": 2800,
-       "phrase": "mod. snow"
+       "windDir": "SSE",
+       "freezingLevel": 3000,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 4,
-       "tempMax": -4,
-       "wind": 20,
-       "windDir": "WSW",
-       "freezingLevel": 2150,
+       "tempMax": 1,
+       "wind": 5,
+       "windDir": "E",
+       "freezingLevel": 2850,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 2,
-       "tempMax": -5,
-       "wind": 15,
-       "windDir": "NNW",
-       "freezingLevel": 1800,
-       "phrase": "light snow"
+       "snow": 6,
+       "tempMax": -2,
+       "wind": 10,
+       "windDir": "WNW",
+       "freezingLevel": 2350,
+       "phrase": "mod. snow"
       }
      ],
-     "tempMax": 0,
-     "tempMin": -6,
+     "tempMax": 1,
+     "tempMin": -3,
      "windMax": 20,
-     "freezeMin": 1800,
-     "freezeMax": 2800
+     "freezeMin": 2350,
+     "freezeMax": 3000
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
+       "snow": 1,
        "tempMax": -4,
        "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 1800,
+       "windDir": "NW",
+       "freezingLevel": 2200,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -2,
-       "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 2250,
-       "phrase": "some clouds"
+       "tempMax": -4,
+       "wind": 10,
+       "windDir": "NW",
+       "freezingLevel": 2200,
+       "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 1,
-       "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 1400,
-       "phrase": "clear"
+       "tempMax": -1,
+       "wind": 10,
+       "windDir": "NNW",
+       "freezingLevel": 2100,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -5,
+     "tempMax": -1,
+     "tempMin": -4,
      "windMax": 15,
-     "freezeMin": 1400,
-     "freezeMax": 2250
+     "freezeMin": 2100,
+     "freezeMax": 2200
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Mostly dry. Freeze-thaw conditions (max 5°C on Fri afternoon, min -2°C on Wed afternoon). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:A moderate fall of snow, heaviest on Sun morning. Freeze-thaw conditions (max 5°C on Tue morning, min -6°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:Mostly dry. Freeze-thaw conditions (max 4°C on Fri morning, min -2°C on Wed night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sun afternoon. Freeze-thaw conditions (max 2°C on Sat night, min -4°C on Mon morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -3113,18 +3005,9 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 1,
-       "wind": 15,
-       "windDir": "SSW",
-       "freezingLevel": 2400,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
@@ -3135,11 +3018,11 @@
        "phrase": "clear"
       }
      ],
-     "tempMax": 1,
+     "tempMax": -1,
      "tempMin": -1,
-     "windMax": 15,
+     "windMax": 10,
      "freezeMin": 2050,
-     "freezeMax": 2400
+     "freezeMax": 2050
     },
     {
      "date": "2026-10-29",
@@ -3158,7 +3041,7 @@
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 5,
        "wind": 10,
        "windDir": "S",
        "freezingLevel": 2850,
@@ -3169,12 +3052,12 @@
        "snow": 0,
        "tempMax": 3,
        "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 2850,
+       "windDir": "SE",
+       "freezingLevel": 2800,
        "phrase": "cloudy"
       }
      ],
-     "tempMax": 4,
+     "tempMax": 5,
      "tempMin": 0,
      "windMax": 10,
      "freezeMin": 2250,
@@ -3183,7 +3066,7 @@
     {
      "date": "2026-10-30",
      "label": "Friday30",
-     "snow": 1,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
@@ -3191,111 +3074,111 @@
        "tempMax": 3,
        "wind": 10,
        "windDir": "SSE",
-       "freezingLevel": 2600,
+       "freezingLevel": 2750,
        "phrase": "light rain"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 3,
-       "wind": 15,
-       "windDir": "S",
-       "freezingLevel": 2700,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 2650,
        "phrase": "light rain"
       },
       {
        "name": "night",
-       "snow": 1,
+       "snow": 0,
        "tempMax": 2,
        "wind": 10,
        "windDir": "SSW",
-       "freezingLevel": 2650,
+       "freezingLevel": 2600,
        "phrase": "light snow"
       }
      ],
      "tempMax": 3,
      "tempMin": 2,
-     "windMax": 15,
-     "freezeMin": 2600,
-     "freezeMax": 2700
-    },
-    {
-     "date": "2026-10-31",
-     "label": "Saturday31",
-     "snow": 7,
-     "periods": [
-      {
-       "name": "am",
-       "snow": 0,
-       "tempMax": 3,
-       "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 2600,
-       "phrase": "light rain"
-      },
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 3,
-       "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 2700,
-       "phrase": "light rain"
-      },
-      {
-       "name": "night",
-       "snow": 7,
-       "tempMax": 3,
-       "wind": 20,
-       "windDir": "S",
-       "freezingLevel": 2750,
-       "phrase": "mod. snow"
-      }
-     ],
-     "tempMax": 3,
-     "tempMin": 0,
-     "windMax": 20,
+     "windMax": 10,
      "freezeMin": 2600,
      "freezeMax": 2750
     },
     {
-     "date": "2026-11-01",
-     "label": "Sunday 1",
-     "snow": 1,
+     "date": "2026-10-31",
+     "label": "Saturday31",
+     "snow": 0,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": 0,
+       "snow": 0,
+       "tempMax": 2,
        "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 2250,
+       "windDir": "S",
+       "freezingLevel": 2500,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 1,
-       "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 2350,
-       "phrase": "snow shwrs"
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 2600,
+       "phrase": "light rain"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -2,
+       "tempMax": 3,
        "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 1400,
-       "phrase": "clear"
+       "windDir": "SE",
+       "freezingLevel": 2750,
+       "phrase": "heavy rain"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -3,
+     "tempMax": 3,
+     "tempMin": 1,
      "windMax": 15,
-     "freezeMin": 1400,
-     "freezeMax": 2350
+     "freezeMin": 2500,
+     "freezeMax": 2750
+    },
+    {
+     "date": "2026-11-01",
+     "label": "Sunday 1",
+     "snow": 3,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 2,
+       "tempMax": 2,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 2600,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
+       "snow": 1,
+       "tempMax": 2,
+       "wind": 0,
+       "windDir": "W",
+       "freezingLevel": 2550,
+       "phrase": "light snow"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 15,
+       "windDir": "N",
+       "freezingLevel": 2350,
+       "phrase": "snow shwrs"
+      }
+     ],
+     "tempMax": 2,
+     "tempMin": 0,
+     "windMax": 15,
+     "freezeMin": 2350,
+     "freezeMax": 2600
     },
     {
      "date": "2026-11-02",
@@ -3308,16 +3191,16 @@
        "tempMax": 3,
        "wind": 10,
        "windDir": "NNE",
-       "freezingLevel": 1450,
-       "phrase": "clear"
+       "freezingLevel": 2300,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 3,
        "wind": 5,
-       "windDir": "NNW",
-       "freezingLevel": 3050,
+       "windDir": "NW",
+       "freezingLevel": 2800,
        "phrase": "clear"
       },
       {
@@ -3325,21 +3208,21 @@
        "snow": 0,
        "tempMax": 3,
        "wind": 5,
-       "windDir": "NNE",
-       "freezingLevel": 1600,
-       "phrase": "clear"
+       "windDir": "NW",
+       "freezingLevel": 3350,
+       "phrase": "cloudy"
       }
      ],
-     "tempMax": 4,
-     "tempMin": -2,
+     "tempMax": 3,
+     "tempMin": 0,
      "windMax": 10,
-     "freezeMin": 1450,
-     "freezeMax": 3050
+     "freezeMin": 2300,
+     "freezeMax": 3350
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Moderate rain (total 13.0mm), heaviest on Fri night. Freeze-thaw conditions (max 4°C on Thu afternoon, min -1°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mild with moderate rain (total 10.0mm) on Sat night, Becoming colder with a light covering of snow, mostly falling on Sat night. Freeze-thaw conditions (max 8°C on Tue morning, min -3°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:Moderate rain (total 14.0mm), heaviest on Fri afternoon. Freeze-thaw conditions (max 5°C on Thu afternoon, min -1°C on Wed night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Heavy rain (total 25.0mm), heaviest during Sat night. Later becoming colder with a dusting of snow on Sun morning. Freeze-thaw conditions (max 4°C on Tue afternoon, min 0°C on Sun night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "—",
@@ -3370,33 +3253,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": -4,
-       "wind": 20,
-       "windDir": "SSW",
-       "freezingLevel": 2250,
-       "phrase": "clear"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -3,
        "wind": 25,
        "windDir": "SSW",
-       "freezingLevel": 1550,
+       "freezingLevel": 1450,
        "phrase": "some clouds"
       }
      ],
      "tempMax": -3,
      "tempMin": -4,
      "windMax": 25,
-     "freezeMin": 1550,
-     "freezeMax": 2250
+     "freezeMin": 1450,
+     "freezeMax": 1450
     },
     {
      "date": "2026-10-29",
@@ -3409,7 +3283,7 @@
        "tempMax": -1,
        "wind": 15,
        "windDir": "SSW",
-       "freezingLevel": 2050,
+       "freezingLevel": 2000,
        "phrase": "clear"
       },
       {
@@ -3419,7 +3293,7 @@
        "wind": 15,
        "windDir": "SSW",
        "freezingLevel": 2750,
-       "phrase": "cloudy"
+       "phrase": "some clouds"
       },
       {
        "name": "night",
@@ -3427,15 +3301,15 @@
        "tempMax": 1,
        "wind": 15,
        "windDir": "S",
-       "freezingLevel": 2750,
+       "freezingLevel": 2850,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 1,
      "tempMin": -3,
      "windMax": 15,
-     "freezeMin": 2050,
-     "freezeMax": 2750
+     "freezeMin": 2000,
+     "freezeMax": 2850
     },
     {
      "date": "2026-10-30",
@@ -3445,11 +3319,11 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 3,
        "wind": 25,
        "windDir": "S",
        "freezingLevel": 2850,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
@@ -3463,11 +3337,11 @@
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 2,
-       "wind": 30,
-       "windDir": "SSW",
-       "freezingLevel": 3050,
-       "phrase": "some clouds"
+       "tempMax": 1,
+       "wind": 25,
+       "windDir": "S",
+       "freezingLevel": 2850,
+       "phrase": "cloudy"
       }
      ],
      "tempMax": 3,
@@ -3479,13 +3353,13 @@
     {
      "date": "2026-10-31",
      "label": "Saturday31",
-     "snow": 1,
+     "snow": 0,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 1,
-       "wind": 15,
+       "tempMax": 0,
+       "wind": 10,
        "windDir": "S",
        "freezingLevel": 2750,
        "phrase": "cloudy"
@@ -3494,109 +3368,109 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 1,
+       "wind": 10,
+       "windDir": "S",
+       "freezingLevel": 2850,
+       "phrase": "light snow"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 1,
        "wind": 15,
        "windDir": "S",
+       "freezingLevel": 2700,
+       "phrase": "cloudy"
+      }
+     ],
+     "tempMax": 1,
+     "tempMin": 0,
+     "windMax": 15,
+     "freezeMin": 2700,
+     "freezeMax": 2850
+    },
+    {
+     "date": "2026-11-01",
+     "label": "Sunday 1",
+     "snow": 15,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 15,
+       "windDir": "SSE",
+       "freezingLevel": 2800,
+       "phrase": "light snow"
+      },
+      {
+       "name": "pm",
+       "snow": 1,
+       "tempMax": 0,
+       "wind": 5,
+       "windDir": "SE",
        "freezingLevel": 2800,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 1,
-       "tempMax": 0,
-       "wind": 25,
-       "windDir": "S",
-       "freezingLevel": 2750,
-       "phrase": "light snow"
+       "snow": 14,
+       "tempMax": -1,
+       "wind": 15,
+       "windDir": "N",
+       "freezingLevel": 2500,
+       "phrase": "heavy snow"
       }
      ],
      "tempMax": 1,
-     "tempMin": 0,
-     "windMax": 25,
-     "freezeMin": 2750,
+     "tempMin": -3,
+     "windMax": 15,
+     "freezeMin": 2500,
      "freezeMax": 2800
-    },
-    {
-     "date": "2026-11-01",
-     "label": "Sunday 1",
-     "snow": 12,
-     "periods": [
-      {
-       "name": "am",
-       "snow": 1,
-       "tempMax": 0,
-       "wind": 25,
-       "windDir": "S",
-       "freezingLevel": 2700,
-       "phrase": "light snow"
-      },
-      {
-       "name": "pm",
-       "snow": 8,
-       "tempMax": -3,
-       "wind": 15,
-       "windDir": "NNW",
-       "freezingLevel": 2300,
-       "phrase": "mod. snow"
-      },
-      {
-       "name": "night",
-       "snow": 3,
-       "tempMax": -5,
-       "wind": 20,
-       "windDir": "NNW",
-       "freezingLevel": 1800,
-       "phrase": "light snow"
-      }
-     ],
-     "tempMax": 0,
-     "tempMin": -6,
-     "windMax": 25,
-     "freezeMin": 1800,
-     "freezeMax": 2700
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
-       "tempMax": -3,
+       "snow": 1,
+       "tempMax": -4,
        "wind": 15,
-       "windDir": "N",
-       "freezingLevel": 1400,
-       "phrase": "clear"
+       "windDir": "NNW",
+       "freezingLevel": 2000,
+       "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -1,
+       "tempMax": -4,
        "wind": 10,
-       "windDir": "NNW",
-       "freezingLevel": 2400,
-       "phrase": "clear"
+       "windDir": "NW",
+       "freezingLevel": 2200,
+       "phrase": "snow shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 0,
        "wind": 10,
-       "windDir": "NNW",
-       "freezingLevel": 1250,
-       "phrase": "clear"
+       "windDir": "WSW",
+       "freezingLevel": 1300,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 3,
-     "tempMin": -6,
+     "tempMax": 0,
+     "tempMin": -4,
      "windMax": 15,
-     "freezeMin": 1250,
-     "freezeMax": 2400
+     "freezeMin": 1300,
+     "freezeMax": 2200
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Mostly dry. Freeze-thaw conditions (max 3°C on Fri afternoon, min -4°C on Wed afternoon). Mainly fresh winds.",
-    "days46": "Days 4-6 weather summary:A moderate fall of snow, heaviest on Sun afternoon. Freeze-thaw conditions (max 6°C on Tue morning, min -6°C on Sun night). Winds decreasing (fresh winds from the S on Sat night, light winds from the NNE by Mon night)."
+    "next3": "Next 4 days weather summary:Mostly dry. Freeze-thaw conditions (max 3°C on Fri morning, min -4°C on Wed night). Mainly fresh winds.",
+    "days46": "Days 5-7 weather summary:A moderate fall of snow, heaviest on Sun night. Freeze-thaw conditions (max 1°C on Sat night, min -4°C on Mon morning). Winds increasing (calm on Sun afternoon, fresh winds from the W by Tue afternoon)."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -3627,32 +3501,23 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
+     "label": null,
      "snow": 0,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 5,
-       "wind": 15,
-       "windDir": "W",
-       "freezingLevel": 3950,
-       "phrase": "some clouds"
-      },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 6,
        "wind": 10,
-       "windDir": "WSW",
+       "windDir": "SW",
        "freezingLevel": 4000,
        "phrase": "clear"
       }
      ],
      "tempMax": 6,
      "tempMin": 5,
-     "windMax": 15,
-     "freezeMin": 3950,
+     "windMax": 10,
+     "freezeMin": 4000,
      "freezeMax": 4000
     },
     {
@@ -3672,7 +3537,7 @@
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 6,
+       "tempMax": 7,
        "wind": 10,
        "windDir": "WSW",
        "freezingLevel": 4100,
@@ -3688,7 +3553,7 @@
        "phrase": "cloudy"
       }
      ],
-     "tempMax": 6,
+     "tempMax": 7,
      "tempMin": 4,
      "windMax": 10,
      "freezeMin": 3900,
@@ -3706,32 +3571,32 @@
        "wind": 5,
        "windDir": "WNW",
        "freezingLevel": 3750,
-       "phrase": "some clouds"
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 7,
-       "wind": 15,
+       "wind": 10,
        "windDir": "W",
-       "freezingLevel": 4100,
-       "phrase": "clear"
+       "freezingLevel": 4150,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 5,
-       "wind": 10,
-       "windDir": "WSW",
-       "freezingLevel": 3900,
-       "phrase": "some clouds"
+       "wind": 5,
+       "windDir": "SSW",
+       "freezingLevel": 3950,
+       "phrase": "snow shwrs"
       }
      ],
      "tempMax": 7,
-     "tempMin": 2,
-     "windMax": 15,
+     "tempMin": 1,
+     "windMax": 10,
      "freezeMin": 3750,
-     "freezeMax": 4100
+     "freezeMax": 4150
     },
     {
      "date": "2026-10-31",
@@ -3741,119 +3606,119 @@
       {
        "name": "am",
        "snow": 1,
-       "tempMax": 1,
-       "wind": 10,
-       "windDir": "SW",
-       "freezingLevel": 3400,
+       "tempMax": 0,
+       "wind": 15,
+       "windDir": "WSW",
+       "freezingLevel": 3300,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 1,
        "wind": 15,
        "windDir": "W",
-       "freezingLevel": 3350,
+       "freezingLevel": 3250,
        "phrase": "snow shwrs"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 3,
-       "wind": 20,
+       "tempMax": 2,
+       "wind": 25,
        "windDir": "W",
-       "freezingLevel": 3600,
-       "phrase": "light rain"
+       "freezingLevel": 3500,
+       "phrase": "snow shwrs"
       }
      ],
-     "tempMax": 3,
-     "tempMin": 1,
-     "windMax": 20,
-     "freezeMin": 3350,
-     "freezeMax": 3600
+     "tempMax": 2,
+     "tempMin": 0,
+     "windMax": 25,
+     "freezeMin": 3250,
+     "freezeMax": 3500
     },
     {
      "date": "2026-11-01",
      "label": "Sunday 1",
-     "snow": 4,
+     "snow": 3,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": 1,
-       "wind": 15,
-       "windDir": "WSW",
+       "snow": 0,
+       "tempMax": 2,
+       "wind": 10,
+       "windDir": "SW",
        "freezingLevel": 3350,
        "phrase": "light snow"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
-       "wind": 25,
+       "tempMax": 4,
+       "wind": 30,
        "windDir": "SW",
-       "freezingLevel": 3650,
+       "freezingLevel": 3800,
        "phrase": "light rain"
       },
       {
        "name": "night",
        "snow": 3,
-       "tempMax": 2,
-       "wind": 35,
+       "tempMax": 4,
+       "wind": 30,
        "windDir": "WSW",
-       "freezingLevel": 3400,
+       "freezingLevel": 3800,
        "phrase": "light snow"
       }
      ],
-     "tempMax": 3,
-     "tempMin": -3,
-     "windMax": 35,
+     "tempMax": 4,
+     "tempMin": 0,
+     "windMax": 30,
      "freezeMin": 3350,
-     "freezeMax": 3650
+     "freezeMax": 3800
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 1,
+     "snow": 9,
      "periods": [
       {
        "name": "am",
-       "snow": 1,
-       "tempMax": -4,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 2100,
+       "snow": 2,
+       "tempMax": -1,
+       "wind": 30,
+       "windDir": "W",
+       "freezingLevel": 3000,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 0,
-       "tempMax": -5,
-       "wind": 20,
-       "windDir": "NNW",
-       "freezingLevel": 2550,
+       "snow": 4,
+       "tempMax": -3,
+       "wind": 10,
+       "windDir": "WSW",
+       "freezingLevel": 2800,
        "phrase": "light snow"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": -4,
+       "snow": 3,
+       "tempMax": -2,
        "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 2400,
-       "phrase": "some clouds"
+       "windDir": "NNW",
+       "freezingLevel": 2800,
+       "phrase": "snow shwrs"
       }
      ],
-     "tempMax": -4,
-     "tempMin": -7,
-     "windMax": 20,
-     "freezeMin": 2100,
-     "freezeMax": 2550
+     "tempMax": -1,
+     "tempMin": -3,
+     "windMax": 30,
+     "freezeMin": 2800,
+     "freezeMax": 3000
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Mostly dry. Mild temperatures (max 7°C on Fri afternoon, min 1°C on Sat morning). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mild with light rain (total 7.0mm) on Sun afternoon Becoming colder with a light covering of snow, mostly falling on Sun night. Freeze-thaw conditions (max 3°C on Sat night, min -7°C on Mon morning). Winds decreasing (near gales from the W on Sun night, light winds from the NNW by Tue morning)."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 7°C on Thu afternoon, min 0°C on Sat morning). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Moderate rain (total 14.0mm), heaviest on Sun night giving way to a moderate fall of snow, heaviest on Mon afternoon. Freeze-thaw conditions (max 4°C on Sun afternoon, min -3°C on Mon afternoon). Winds decreasing (strong winds from the SW on Sun night, calm by Mon afternoon)."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -3884,33 +3749,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
-     "snow": 4,
+     "label": null,
+     "snow": 3,
      "periods": [
       {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": 2,
-       "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 1550,
-       "phrase": "light snow"
-      },
-      {
        "name": "night",
-       "snow": 4,
+       "snow": 3,
        "tempMax": -1,
        "wind": 0,
-       "windDir": "SW",
-       "freezingLevel": 750,
+       "windDir": "S",
+       "freezingLevel": 650,
        "phrase": "light snow"
       }
      ],
-     "tempMax": 2,
+     "tempMax": -1,
      "tempMin": -4,
-     "windMax": 5,
-     "freezeMin": 750,
-     "freezeMax": 1550
+     "windMax": 0,
+     "freezeMin": 650,
+     "freezeMax": 650
     },
     {
      "date": "2026-10-29",
@@ -3931,7 +3787,7 @@
        "snow": 0,
        "tempMax": 0,
        "wind": 0,
-       "windDir": "E",
+       "windDir": "ENE",
        "freezingLevel": 1350,
        "phrase": "cloudy"
       },
@@ -3942,7 +3798,7 @@
        "wind": 5,
        "windDir": "ENE",
        "freezingLevel": 0,
-       "phrase": "some clouds"
+       "phrase": "clear"
       }
      ],
      "tempMax": 0,
@@ -3959,7 +3815,7 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -2,
+       "tempMax": -1,
        "wind": 5,
        "windDir": "ENE",
        "freezingLevel": 1150,
@@ -3970,9 +3826,9 @@
        "snow": 0,
        "tempMax": 2,
        "wind": 5,
-       "windDir": "ENE",
-       "freezingLevel": 1650,
-       "phrase": "some clouds"
+       "windDir": "NE",
+       "freezingLevel": 1750,
+       "phrase": "clear"
       },
       {
        "name": "night",
@@ -3980,15 +3836,15 @@
        "tempMax": -1,
        "wind": 5,
        "windDir": "ESE",
-       "freezingLevel": 750,
-       "phrase": "clear"
+       "freezingLevel": 900,
+       "phrase": "some clouds"
       }
      ],
      "tempMax": 2,
-     "tempMin": -7,
+     "tempMin": -6,
      "windMax": 5,
-     "freezeMin": 750,
-     "freezeMax": 1650
+     "freezeMin": 900,
+     "freezeMax": 1750
     },
     {
      "date": "2026-10-31",
@@ -3998,7 +3854,7 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 1,
+       "tempMax": 0,
        "wind": 0,
        "windDir": "SE",
        "freezingLevel": 1450,
@@ -4007,27 +3863,27 @@
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
-       "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 1600,
-       "phrase": "snow shwrs"
+       "tempMax": 4,
+       "wind": 0,
+       "windDir": "ENE",
+       "freezingLevel": 1850,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 0,
-       "wind": 0,
-       "windDir": "NNW",
-       "freezingLevel": 1350,
-       "phrase": "cloudy"
+       "tempMax": 1,
+       "wind": 5,
+       "windDir": "NE",
+       "freezingLevel": 1150,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 3,
+     "tempMax": 4,
      "tempMin": -4,
      "windMax": 5,
-     "freezeMin": 1350,
-     "freezeMax": 1600
+     "freezeMin": 1150,
+     "freezeMax": 1850
     },
     {
      "date": "2026-11-01",
@@ -4037,36 +3893,36 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 0,
+       "tempMax": 1,
        "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 1400,
+       "windDir": "NW",
+       "freezingLevel": 1600,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
+       "snow": 0,
+       "tempMax": 3,
+       "wind": 5,
+       "windDir": "W",
+       "freezingLevel": 1700,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "night",
        "snow": 0,
        "tempMax": 1,
        "wind": 5,
        "windDir": "W",
        "freezingLevel": 1400,
        "phrase": "some clouds"
-      },
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": -1,
-       "wind": 5,
-       "windDir": "ESE",
-       "freezingLevel": 700,
-       "phrase": "some clouds"
       }
      ],
-     "tempMax": 1,
-     "tempMin": -3,
+     "tempMax": 3,
+     "tempMin": -1,
      "windMax": 5,
-     "freezeMin": 700,
-     "freezeMax": 1400
+     "freezeMin": 1400,
+     "freezeMax": 1700
     },
     {
      "date": "2026-11-02",
@@ -4076,46 +3932,46 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -1,
+       "tempMax": 0,
        "wind": 5,
-       "windDir": "SE",
-       "freezingLevel": 1300,
-       "phrase": "some clouds"
+       "windDir": "SSE",
+       "freezingLevel": 1450,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 2,
-       "wind": 5,
-       "windDir": "SE",
-       "freezingLevel": 2800,
-       "phrase": "cloudy"
+       "tempMax": 3,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 2250,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 1,
-       "wind": 10,
-       "windDir": "SE",
-       "freezingLevel": 1250,
-       "phrase": "some clouds"
+       "wind": 5,
+       "windDir": "SSE",
+       "freezingLevel": 1350,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -3,
+     "tempMax": 3,
+     "tempMin": -2,
      "windMax": 10,
-     "freezeMin": 1250,
-     "freezeMax": 2800
+     "freezeMin": 1350,
+     "freezeMax": 2250
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:Drizzle at first, then turning colder with dusting of snow on Wed night. Freeze-thaw conditions (max 2°C on Wed afternoon, min -7°C on Fri morning). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mostly dry. Freeze-thaw conditions (max 3°C on Sat afternoon, min -3°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Freeze-thaw conditions (max 4°C on Sat afternoon, min -6°C on Thu night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mostly dry. Freeze-thaw conditions (max 3°C on Sun afternoon, min -2°C on Mon morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
     "Bottom snow depth": "0 cm",
-    "Fresh snowfall depth": "1 cm",
+    "Fresh snowfall depth": "2 cm",
     "Last snowfall": "27 Oct 2026",
     "Snow Alerts": "Create Alert"
    },
@@ -4141,72 +3997,63 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
-     "snow": 6,
+     "label": null,
+     "snow": 1,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 5,
-       "tempMax": -2,
-       "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 1100,
-       "phrase": "light snow"
-      },
       {
        "name": "night",
        "snow": 1,
        "tempMax": -3,
        "wind": 5,
-       "windDir": "NE",
-       "freezingLevel": 600,
+       "windDir": "ENE",
+       "freezingLevel": 650,
        "phrase": "light snow"
       }
      ],
-     "tempMax": -2,
+     "tempMax": -3,
      "tempMin": -5,
      "windMax": 5,
-     "freezeMin": 600,
-     "freezeMax": 1100
+     "freezeMin": 650,
+     "freezeMax": 650
     },
     {
      "date": "2026-10-29",
      "label": "Thursday29",
-     "snow": 0,
+     "snow": 3,
      "periods": [
       {
        "name": "am",
-       "snow": 0,
+       "snow": 1,
        "tempMax": -4,
        "wind": 5,
-       "windDir": "NE",
-       "freezingLevel": 800,
+       "windDir": "ENE",
+       "freezingLevel": 850,
        "phrase": "light snow"
       },
       {
        "name": "pm",
-       "snow": 0,
+       "snow": 2,
        "tempMax": -3,
        "wind": 5,
-       "windDir": "NE",
-       "freezingLevel": 1100,
+       "windDir": "NNE",
+       "freezingLevel": 1050,
        "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -4,
-       "wind": 10,
+       "wind": 5,
        "windDir": "NE",
        "freezingLevel": 0,
        "phrase": "some clouds"
       }
      ],
      "tempMax": -3,
-     "tempMin": -7,
-     "windMax": 10,
+     "tempMin": -6,
+     "windMax": 5,
      "freezeMin": 0,
-     "freezeMax": 1100
+     "freezeMax": 1050
     },
     {
      "date": "2026-10-30",
@@ -4217,10 +4064,10 @@
        "name": "am",
        "snow": 0,
        "tempMax": -4,
-       "wind": 5,
+       "wind": 10,
        "windDir": "NE",
-       "freezingLevel": 850,
-       "phrase": "cloudy"
+       "freezingLevel": 950,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
@@ -4228,24 +4075,24 @@
        "tempMax": -1,
        "wind": 5,
        "windDir": "ENE",
-       "freezingLevel": 1350,
-       "phrase": "cloudy"
+       "freezingLevel": 1400,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 2,
        "tempMax": -2,
-       "wind": 0,
-       "windDir": "ESE",
+       "wind": 5,
+       "windDir": "SE",
        "freezingLevel": 1000,
-       "phrase": "light snow"
+       "phrase": "snow shwrs"
       }
      ],
      "tempMax": -1,
-     "tempMin": -7,
-     "windMax": 5,
-     "freezeMin": 850,
-     "freezeMax": 1350
+     "tempMin": -6,
+     "windMax": 10,
+     "freezeMin": 950,
+     "freezeMax": 1400
     },
     {
      "date": "2026-10-31",
@@ -4255,36 +4102,36 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -3,
+       "tempMax": -2,
        "wind": 0,
-       "windDir": "ESE",
-       "freezingLevel": 1050,
+       "windDir": "E",
+       "freezingLevel": 1100,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -1,
-       "wind": 5,
-       "windDir": "SSW",
-       "freezingLevel": 1350,
-       "phrase": "cloudy"
+       "tempMax": 0,
+       "wind": 0,
+       "windDir": "ENE",
+       "freezingLevel": 1450,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -3,
-       "wind": 0,
-       "windDir": "SW",
-       "freezingLevel": 550,
-       "phrase": "some clouds"
+       "tempMax": -2,
+       "wind": 5,
+       "windDir": "NNE",
+       "freezingLevel": 650,
+       "phrase": "clear"
       }
      ],
-     "tempMax": -1,
-     "tempMin": -5,
+     "tempMax": 0,
+     "tempMin": -4,
      "windMax": 5,
-     "freezeMin": 550,
-     "freezeMax": 1350
+     "freezeMin": 650,
+     "freezeMax": 1450
     },
     {
      "date": "2026-11-01",
@@ -4294,80 +4141,80 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -2,
+       "tempMax": -1,
        "wind": 5,
-       "windDir": "SSW",
-       "freezingLevel": 1150,
-       "phrase": "some clouds"
+       "windDir": "NNW",
+       "freezingLevel": 1300,
+       "phrase": "clear"
       },
       {
        "name": "pm",
+       "snow": 0,
+       "tempMax": 1,
+       "wind": 5,
+       "windDir": "SW",
+       "freezingLevel": 1550,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "night",
        "snow": 0,
        "tempMax": -1,
        "wind": 5,
        "windDir": "SW",
-       "freezingLevel": 1300,
-       "phrase": "cloudy"
-      },
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 0,
-       "wind": 0,
-       "windDir": "NNE",
-       "freezingLevel": 1100,
+       "freezingLevel": 1000,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 0,
-     "tempMin": -4,
+     "tempMax": 1,
+     "tempMin": -3,
      "windMax": 5,
-     "freezeMin": 1100,
-     "freezeMax": 1300
+     "freezeMin": 1000,
+     "freezeMax": 1550
     },
     {
      "date": "2026-11-02",
      "label": "Monday 2",
-     "snow": 0,
+     "snow": 1,
      "periods": [
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": -1,
        "wind": 5,
-       "windDir": "E",
-       "freezingLevel": 2350,
+       "windDir": "SSW",
+       "freezingLevel": 1400,
        "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 4,
-       "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 2550,
+       "tempMax": 0,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 1400,
        "phrase": "cloudy"
       },
       {
        "name": "night",
-       "snow": 0,
-       "tempMax": 4,
+       "snow": 1,
+       "tempMax": 0,
        "wind": 5,
        "windDir": "SSW",
-       "freezingLevel": 2700,
-       "phrase": "some clouds"
+       "freezingLevel": 1450,
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 4,
-     "tempMin": 1,
-     "windMax": 5,
-     "freezeMin": 2350,
-     "freezeMax": 2700
+     "tempMax": 0,
+     "tempMin": -1,
+     "windMax": 10,
+     "freezeMin": 1400,
+     "freezeMax": 1450
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A light covering of new snow, mostly falling on Wed afternoon. Temperatures will be below freezing (max -1°C on Fri afternoon, min -7°C on Thu night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mostly dry. Freeze-thaw conditions (max 4°C on Mon afternoon, min -4°C on Sat night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Temperatures will be below freezing (max 0°C on Sat afternoon, min -6°C on Thu night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mostly dry. Freeze-thaw conditions (max 2°C on Tue afternoon, min -3°C on Sat night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "20 cm",
@@ -4398,18 +4245,9 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
-     "snow": 2,
+     "label": null,
+     "snow": 1,
      "periods": [
-      {
-       "name": "pm",
-       "snow": 1,
-       "tempMax": -5,
-       "wind": 5,
-       "windDir": "E",
-       "freezingLevel": 1500,
-       "phrase": "light snow"
-      },
       {
        "name": "night",
        "snow": 1,
@@ -4420,11 +4258,11 @@
        "phrase": "light snow"
       }
      ],
-     "tempMax": -5,
+     "tempMax": -9,
      "tempMin": -11,
      "windMax": 5,
      "freezeMin": 0,
-     "freezeMax": 1500
+     "freezeMax": 0
     },
     {
      "date": "2026-10-29",
@@ -4454,7 +4292,7 @@
        "snow": 0,
        "tempMax": -9,
        "wind": 0,
-       "windDir": "SSW",
+       "windDir": "S",
        "freezingLevel": 0,
        "phrase": "cloudy"
       }
@@ -4473,10 +4311,10 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -4,
+       "tempMax": -3,
        "wind": 5,
-       "windDir": "SW",
-       "freezingLevel": 250,
+       "windDir": "WSW",
+       "freezingLevel": 0,
        "phrase": "some clouds"
       },
       {
@@ -4491,7 +4329,7 @@
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -3,
+       "tempMax": -4,
        "wind": 5,
        "windDir": "SW",
        "freezingLevel": 900,
@@ -4499,9 +4337,9 @@
       }
      ],
      "tempMax": -2,
-     "tempMin": -8,
+     "tempMin": -9,
      "windMax": 5,
-     "freezeMin": 250,
+     "freezeMin": 0,
      "freezeMax": 1850
     },
     {
@@ -4514,34 +4352,34 @@
        "snow": 0,
        "tempMax": -1,
        "wind": 5,
-       "windDir": "SW",
-       "freezingLevel": 850,
+       "windDir": "WSW",
+       "freezingLevel": 700,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 0,
-       "wind": 5,
-       "windDir": "SW",
-       "freezingLevel": 2150,
-       "phrase": "clear"
+       "tempMax": -1,
+       "wind": 10,
+       "windDir": "WSW",
+       "freezingLevel": 2050,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -4,
-       "wind": 5,
+       "wind": 0,
        "windDir": "SW",
-       "freezingLevel": 1050,
+       "freezingLevel": 1000,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 0,
+     "tempMax": -1,
      "tempMin": -5,
-     "windMax": 5,
-     "freezeMin": 850,
-     "freezeMax": 2150
+     "windMax": 10,
+     "freezeMin": 700,
+     "freezeMax": 2050
     },
     {
      "date": "2026-11-01",
@@ -4551,36 +4389,36 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -2,
-       "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 1250,
-       "phrase": "cloudy"
+       "tempMax": 0,
+       "wind": 0,
+       "windDir": "S",
+       "freezingLevel": 950,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": -3,
+       "tempMax": 1,
        "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 1750,
-       "phrase": "cloudy"
+       "windDir": "WSW",
+       "freezingLevel": 2250,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -5,
+       "tempMax": -4,
        "wind": 5,
-       "windDir": "W",
-       "freezingLevel": 700,
-       "phrase": "some clouds"
+       "windDir": "WNW",
+       "freezingLevel": 850,
+       "phrase": "clear"
       }
      ],
-     "tempMax": -2,
+     "tempMax": 1,
      "tempMin": -6,
      "windMax": 5,
-     "freezeMin": 700,
-     "freezeMax": 1750
+     "freezeMin": 850,
+     "freezeMax": 2250
     },
     {
      "date": "2026-11-02",
@@ -4590,46 +4428,46 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 0,
-       "wind": 0,
-       "windDir": "WSW",
-       "freezingLevel": 650,
-       "phrase": "some clouds"
+       "tempMax": -2,
+       "wind": 5,
+       "windDir": "W",
+       "freezingLevel": 750,
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 2,
-       "wind": 10,
+       "tempMax": 1,
+       "wind": 5,
        "windDir": "SW",
-       "freezingLevel": 3100,
-       "phrase": "some clouds"
+       "freezingLevel": 2350,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -1,
+       "tempMax": -2,
        "wind": 10,
-       "windDir": "SSW",
-       "freezingLevel": 1300,
-       "phrase": "some clouds"
+       "windDir": "WSW",
+       "freezingLevel": 1150,
+       "phrase": "cloudy"
       }
      ],
-     "tempMax": 2,
-     "tempMin": -4,
+     "tempMax": 1,
+     "tempMin": -5,
      "windMax": 10,
-     "freezeMin": 650,
-     "freezeMax": 3100
+     "freezeMin": 750,
+     "freezeMax": 2350
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A dusting of new snow. Temperatures will be below freezing (max -1°C on Sat morning, min -11°C on Wed night). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mostly dry. Freeze-thaw conditions (max 2°C on Mon afternoon, min -6°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A dusting of new snow. Temperatures will be below freezing (max -1°C on Sat morning, min -11°C on Wed night). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mostly dry. Freeze-thaw conditions (max 1°C on Sun afternoon, min -6°C on Sun night). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
     "Bottom snow depth": "0 cm",
-    "Fresh snowfall depth": "8 cm",
+    "Fresh snowfall depth": "10 cm",
     "Last snowfall": "27 Oct 2026",
     "Snow Alerts": "Create Alert"
    },
@@ -4655,33 +4493,24 @@
    "days": [
     {
      "date": "2026-10-28",
-     "label": "Wed28",
-     "snow": 10,
+     "label": null,
+     "snow": 8,
      "periods": [
       {
-       "name": "pm",
-       "snow": 0,
-       "tempMax": -1,
-       "wind": 10,
-       "windDir": "ESE",
-       "freezingLevel": 1700,
-       "phrase": "light snow"
-      },
-      {
        "name": "night",
-       "snow": 10,
+       "snow": 8,
        "tempMax": -3,
-       "wind": 5,
-       "windDir": "ENE",
-       "freezingLevel": 1100,
+       "wind": 0,
+       "windDir": "ESE",
+       "freezingLevel": 1200,
        "phrase": "mod. snow"
       }
      ],
-     "tempMax": -1,
-     "tempMin": -7,
-     "windMax": 10,
-     "freezeMin": 1100,
-     "freezeMax": 1700
+     "tempMax": -3,
+     "tempMin": -8,
+     "windMax": 0,
+     "freezeMin": 1200,
+     "freezeMax": 1200
     },
     {
      "date": "2026-10-29",
@@ -4693,8 +4522,8 @@
        "snow": 0,
        "tempMax": -6,
        "wind": 0,
-       "windDir": "SSW",
-       "freezingLevel": 300,
+       "windDir": "S",
+       "freezingLevel": 350,
        "phrase": "light snow"
       },
       {
@@ -4711,15 +4540,15 @@
        "snow": 0,
        "tempMax": -7,
        "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 400,
+       "windDir": "S",
+       "freezingLevel": 250,
        "phrase": "some clouds"
       }
      ],
      "tempMax": -4,
      "tempMin": -9,
      "windMax": 5,
-     "freezeMin": 300,
+     "freezeMin": 250,
      "freezeMax": 1200
     },
     {
@@ -4732,34 +4561,34 @@
        "snow": 0,
        "tempMax": -4,
        "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 500,
+       "windDir": "S",
+       "freezingLevel": 450,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": -2,
-       "wind": 5,
+       "wind": 0,
        "windDir": "SSE",
-       "freezingLevel": 1450,
-       "phrase": "some clouds"
+       "freezingLevel": 1500,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -5,
        "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 600,
-       "phrase": "clear"
+       "windDir": "SSW",
+       "freezingLevel": 650,
+       "phrase": "some clouds"
       }
      ],
      "tempMax": -2,
      "tempMin": -7,
      "windMax": 5,
-     "freezeMin": 500,
-     "freezeMax": 1450
+     "freezeMin": 450,
+     "freezeMax": 1500
     },
     {
      "date": "2026-10-31",
@@ -4771,34 +4600,34 @@
        "snow": 0,
        "tempMax": -2,
        "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 400,
-       "phrase": "some clouds"
+       "windDir": "SSW",
+       "freezingLevel": 500,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 0,
-       "wind": 5,
-       "windDir": "SSE",
-       "freezingLevel": 1850,
-       "phrase": "snow shwrs"
+       "wind": 0,
+       "windDir": "SSW",
+       "freezingLevel": 1900,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -2,
+       "tempMax": -4,
        "wind": 5,
-       "windDir": "SSW",
-       "freezingLevel": 1100,
-       "phrase": "light snow"
+       "windDir": "S",
+       "freezingLevel": 850,
+       "phrase": "some clouds"
       }
      ],
      "tempMax": 0,
-     "tempMin": -7,
+     "tempMin": -6,
      "windMax": 5,
-     "freezeMin": 400,
-     "freezeMax": 1850
+     "freezeMin": 500,
+     "freezeMax": 1900
     },
     {
      "date": "2026-11-01",
@@ -4810,34 +4639,34 @@
        "snow": 0,
        "tempMax": -1,
        "wind": 5,
-       "windDir": "NW",
-       "freezingLevel": 1350,
-       "phrase": "cloudy"
+       "windDir": "WSW",
+       "freezingLevel": 850,
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 0,
-       "wind": 10,
-       "windDir": "WNW",
-       "freezingLevel": 1800,
+       "tempMax": 1,
+       "wind": 5,
+       "windDir": "NW",
+       "freezingLevel": 1950,
        "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": -5,
+       "tempMax": -3,
        "wind": 5,
-       "windDir": "WSW",
-       "freezingLevel": 700,
-       "phrase": "clear"
+       "windDir": "W",
+       "freezingLevel": 1000,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 0,
-     "tempMin": -6,
-     "windMax": 10,
-     "freezeMin": 700,
-     "freezeMax": 1800
+     "tempMax": 1,
+     "tempMin": -5,
+     "windMax": 5,
+     "freezeMin": 850,
+     "freezeMax": 1950
     },
     {
      "date": "2026-11-02",
@@ -4849,43 +4678,43 @@
        "snow": 0,
        "tempMax": -1,
        "wind": 5,
-       "windDir": "S",
-       "freezingLevel": 600,
-       "phrase": "some clouds"
+       "windDir": "WSW",
+       "freezingLevel": 800,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 1,
+       "tempMax": 2,
        "wind": 5,
        "windDir": "SSE",
-       "freezingLevel": 2750,
-       "phrase": "some clouds"
+       "freezingLevel": 2450,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": -2,
-       "wind": 10,
-       "windDir": "S",
-       "freezingLevel": 1000,
+       "wind": 5,
+       "windDir": "SW",
+       "freezingLevel": 1100,
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 1,
+     "tempMax": 2,
      "tempMin": -5,
-     "windMax": 10,
-     "freezeMin": 600,
-     "freezeMax": 2750
+     "windMax": 5,
+     "freezeMin": 800,
+     "freezeMax": 2450
     }
    ],
    "summary": {
-    "next3": "Next 3 days weather summary:A moderate fall of snow, heaviest on Wed night. Temperatures will be below freezing (max -1°C on Wed afternoon, min -9°C on Thu morning). Wind will be generally light.",
-    "days46": "Days 4-6 weather summary:Mostly dry. Freeze-thaw conditions (max 1°C on Mon afternoon, min -6°C on Sun night). Wind will be generally light."
+    "next3": "Next 4 days weather summary:A light covering of new snow, mostly falling on Wed night. Temperatures will be below freezing (max 0°C on Sat afternoon, min -9°C on Thu morning). Wind will be generally light.",
+    "days46": "Days 5-7 weather summary:Mostly dry. Freeze-thaw conditions (max 2°C on Mon afternoon, min -5°C on Sat night). Wind will be generally light."
    },
    "depths": {
-    "Top snow depth": "7 cm",
-    "Bottom snow depth": "7 cm",
+    "Top snow depth": "16 cm",
+    "Bottom snow depth": "16 cm",
     "Fresh snowfall depth": "1 cm",
     "Last snowfall": "27 Oct 2026",
     "Snow Alerts": "Create Alert"
@@ -4911,27 +4740,6 @@
    },
    "days": [
     {
-     "date": "2026-10-28",
-     "label": null,
-     "snow": 0,
-     "periods": [
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 9,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 2900,
-       "phrase": "some clouds"
-      }
-     ],
-     "tempMax": 9,
-     "tempMin": 8,
-     "windMax": 15,
-     "freezeMin": 2900,
-     "freezeMax": 2900
-    },
-    {
      "date": "2026-10-29",
      "label": "Thursday29",
      "snow": 0,
@@ -4951,8 +4759,8 @@
        "tempMax": 14,
        "wind": 40,
        "windDir": "WSW",
-       "freezingLevel": 3150,
-       "phrase": "some clouds"
+       "freezingLevel": 3100,
+       "phrase": "clear"
       },
       {
        "name": "night",
@@ -4960,14 +4768,14 @@
        "tempMax": 12,
        "wind": 30,
        "windDir": "W",
-       "freezingLevel": 2700,
-       "phrase": "rain shwrs"
+       "freezingLevel": 2800,
+       "phrase": "light rain"
       }
      ],
      "tempMax": 14,
      "tempMin": 8,
      "windMax": 40,
-     "freezeMin": 2700,
+     "freezeMin": 2800,
      "freezeMax": 3250
     },
     {
@@ -4978,17 +4786,17 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 4,
+       "tempMax": 5,
        "wind": 30,
        "windDir": "WNW",
-       "freezingLevel": 1050,
-       "phrase": "light snow"
+       "freezingLevel": 1150,
+       "phrase": "light rain"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 3,
-       "wind": 40,
+       "wind": 45,
        "windDir": "WNW",
        "freezingLevel": 1200,
        "phrase": "rain shwrs"
@@ -4997,15 +4805,15 @@
        "name": "night",
        "snow": 0,
        "tempMax": 1,
-       "wind": 20,
+       "wind": 25,
        "windDir": "NW",
        "freezingLevel": 600,
-       "phrase": "some clouds"
+       "phrase": "light snow"
       }
      ],
-     "tempMax": 4,
+     "tempMax": 5,
      "tempMin": -2,
-     "windMax": 40,
+     "windMax": 45,
      "freezeMin": 600,
      "freezeMax": 1200
     },
@@ -5020,33 +4828,33 @@
        "tempMax": 0,
        "wind": 15,
        "windDir": "NW",
-       "freezingLevel": 900,
+       "freezingLevel": 800,
        "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 2,
        "wind": 10,
        "windDir": "W",
-       "freezingLevel": 1200,
-       "phrase": "some clouds"
+       "freezingLevel": 1150,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 2,
        "wind": 10,
-       "windDir": "W",
-       "freezingLevel": 1350,
-       "phrase": "some clouds"
+       "windDir": "WNW",
+       "freezingLevel": 1200,
+       "phrase": "clear"
       }
      ],
-     "tempMax": 3,
+     "tempMax": 2,
      "tempMin": -2,
      "windMax": 15,
-     "freezeMin": 900,
-     "freezeMax": 1350
+     "freezeMin": 800,
+     "freezeMax": 1200
     },
     {
      "date": "2026-11-01",
@@ -5059,33 +4867,33 @@
        "tempMax": 6,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 2150,
-       "phrase": "some clouds"
+       "freezingLevel": 2100,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 8,
-       "wind": 10,
-       "windDir": "WSW",
+       "wind": 15,
+       "windDir": "W",
        "freezingLevel": 2450,
-       "phrase": "some clouds"
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 8,
-       "wind": 20,
-       "windDir": "WSW",
-       "freezingLevel": 2550,
-       "phrase": "cloudy"
+       "wind": 25,
+       "windDir": "W",
+       "freezingLevel": 2500,
+       "phrase": "some clouds"
       }
      ],
      "tempMax": 8,
-     "tempMin": 3,
-     "windMax": 20,
-     "freezeMin": 2150,
-     "freezeMax": 2550
+     "tempMin": 2,
+     "windMax": 25,
+     "freezeMin": 2100,
+     "freezeMax": 2500
     },
     {
      "date": "2026-11-02",
@@ -5095,41 +4903,80 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 11,
        "wind": 25,
        "windDir": "W",
-       "freezingLevel": 2500,
-       "phrase": "light rain"
+       "freezingLevel": 2600,
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 8,
+       "tempMax": 11,
        "wind": 20,
-       "windDir": "WNW",
-       "freezingLevel": 2400,
-       "phrase": "light rain"
+       "windDir": "W",
+       "freezingLevel": 2550,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 8,
-       "wind": 10,
-       "windDir": "NNW",
-       "freezingLevel": 2200,
-       "phrase": "light rain"
+       "tempMax": 9,
+       "wind": 5,
+       "windDir": "NW",
+       "freezingLevel": 2550,
+       "phrase": "some clouds"
       }
      ],
-     "tempMax": 9,
-     "tempMin": 3,
+     "tempMax": 11,
+     "tempMin": 8,
      "windMax": 25,
-     "freezeMin": 2200,
-     "freezeMax": 2500
+     "freezeMin": 2550,
+     "freezeMax": 2600
+    },
+    {
+     "date": "2026-11-03",
+     "label": "Tuesday 3",
+     "snow": 0,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 5,
+       "windDir": "SSE",
+       "freezingLevel": 2400,
+       "phrase": "cloudy"
+      },
+      {
+       "name": "pm",
+       "snow": 0,
+       "tempMax": 10,
+       "wind": 5,
+       "windDir": "S",
+       "freezingLevel": 2500,
+       "phrase": "cloudy"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 15,
+       "windDir": "S",
+       "freezingLevel": 2700,
+       "phrase": "cloudy"
+      }
+     ],
+     "tempMax": 10,
+     "tempMin": 8,
+     "windMax": 15,
+     "freezeMin": 2400,
+     "freezeMax": 2700
     }
    ],
    "summary": {
-    "next3": "Next 4 days weather summary:Light rain (total 3.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 14°C on Thu afternoon, min -2°C on Fri night). Winds decreasing (strong winds from the WSW on Thu night, light winds from the W by Sat afternoon).",
-    "days46": "Days 5-7 weather summary:Light rain (total 4.0mm), mostly falling on Mon morning. Mild temperatures (max 9°C on Mon morning, min 1°C on Sat night). Wind will be generally light."
+    "next3": "Next 3 days weather summary:Light rain (total 7.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 14°C on Thu afternoon, min -2°C on Fri night). Winds decreasing (strong winds from the WSW on Thu night, light winds from the WNW by Sat afternoon).",
+    "days46": "Days 4-6 weather summary:Mostly dry. Very mild (max 11°C on Mon morning, min 2°C on Sun morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -5159,27 +5006,6 @@
    },
    "days": [
     {
-     "date": "2026-10-28",
-     "label": null,
-     "snow": 0,
-     "periods": [
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 7,
-       "wind": 10,
-       "windDir": "WSW",
-       "freezingLevel": 2900,
-       "phrase": "some clouds"
-      }
-     ],
-     "tempMax": 7,
-     "tempMin": 6,
-     "windMax": 10,
-     "freezeMin": 2900,
-     "freezeMax": 2900
-    },
-    {
      "date": "2026-10-29",
      "label": "Thursday29",
      "snow": 0,
@@ -5200,22 +5026,22 @@
        "wind": 30,
        "windDir": "WSW",
        "freezingLevel": 3200,
-       "phrase": "some clouds"
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 13,
-       "wind": 30,
+       "tempMax": 12,
+       "wind": 25,
        "windDir": "W",
-       "freezingLevel": 2650,
-       "phrase": "rain shwrs"
+       "freezingLevel": 2850,
+       "phrase": "light rain"
       }
      ],
      "tempMax": 13,
      "tempMin": 7,
      "windMax": 30,
-     "freezeMin": 2650,
+     "freezeMin": 2850,
      "freezeMax": 3250
     },
     {
@@ -5227,9 +5053,9 @@
        "name": "am",
        "snow": 0,
        "tempMax": 6,
-       "wind": 35,
+       "wind": 30,
        "windDir": "WNW",
-       "freezingLevel": 1150,
+       "freezingLevel": 1350,
        "phrase": "rain shwrs"
       },
       {
@@ -5239,23 +5065,23 @@
        "wind": 35,
        "windDir": "WNW",
        "freezingLevel": 1200,
-       "phrase": "cloudy"
+       "phrase": "light rain"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 2,
        "wind": 25,
-       "windDir": "NW",
-       "freezingLevel": 650,
+       "windDir": "NNW",
+       "freezingLevel": 600,
        "phrase": "light snow"
       }
      ],
      "tempMax": 6,
      "tempMin": -2,
      "windMax": 35,
-     "freezeMin": 650,
-     "freezeMax": 1200
+     "freezeMin": 600,
+     "freezeMax": 1350
     },
     {
      "date": "2026-10-31",
@@ -5277,7 +5103,7 @@
        "tempMax": 2,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 1100,
+       "freezingLevel": 1050,
        "phrase": "clear"
       },
       {
@@ -5285,16 +5111,16 @@
        "snow": 0,
        "tempMax": 1,
        "wind": 10,
-       "windDir": "WNW",
-       "freezingLevel": 1000,
-       "phrase": "some clouds"
+       "windDir": "NW",
+       "freezingLevel": 750,
+       "phrase": "clear"
       }
      ],
      "tempMax": 2,
      "tempMin": -2,
      "windMax": 20,
      "freezeMin": 750,
-     "freezeMax": 1100
+     "freezeMax": 1050
     },
     {
      "date": "2026-11-01",
@@ -5307,33 +5133,33 @@
        "tempMax": 5,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 1750,
-       "phrase": "some clouds"
+       "freezingLevel": 1800,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 8,
        "wind": 15,
-       "windDir": "W",
-       "freezingLevel": 2350,
+       "windDir": "WNW",
+       "freezingLevel": 2400,
        "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 7,
-       "wind": 15,
-       "windDir": "WSW",
-       "freezingLevel": 2500,
+       "wind": 20,
+       "windDir": "W",
+       "freezingLevel": 2450,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 8,
      "tempMin": 1,
-     "windMax": 15,
-     "freezeMin": 1750,
-     "freezeMax": 2500
+     "windMax": 20,
+     "freezeMin": 1800,
+     "freezeMax": 2450
     },
     {
      "date": "2026-11-02",
@@ -5343,41 +5169,80 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 10,
        "wind": 20,
        "windDir": "W",
-       "freezingLevel": 2400,
+       "freezingLevel": 2500,
        "phrase": "some clouds"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 10,
        "wind": 20,
-       "windDir": "WNW",
-       "freezingLevel": 2350,
-       "phrase": "light rain"
+       "windDir": "W",
+       "freezingLevel": 2550,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 7,
-       "wind": 15,
+       "tempMax": 8,
+       "wind": 10,
        "windDir": "NW",
-       "freezingLevel": 2100,
-       "phrase": "light rain"
+       "freezingLevel": 2650,
+       "phrase": "cloudy"
       }
      ],
-     "tempMax": 9,
-     "tempMin": 4,
+     "tempMax": 10,
+     "tempMin": 7,
      "windMax": 20,
-     "freezeMin": 2100,
-     "freezeMax": 2400
+     "freezeMin": 2500,
+     "freezeMax": 2650
+    },
+    {
+     "date": "2026-11-03",
+     "label": "Tuesday 3",
+     "snow": 0,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 0,
+       "windDir": "WNW",
+       "freezingLevel": 2300,
+       "phrase": "cloudy"
+      },
+      {
+       "name": "pm",
+       "snow": 0,
+       "tempMax": 10,
+       "wind": 5,
+       "windDir": "S",
+       "freezingLevel": 2350,
+       "phrase": "cloudy"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 15,
+       "windDir": "S",
+       "freezingLevel": 2500,
+       "phrase": "cloudy"
+      }
+     ],
+     "tempMax": 10,
+     "tempMin": 7,
+     "windMax": 15,
+     "freezeMin": 2300,
+     "freezeMax": 2500
     }
    ],
    "summary": {
-    "next3": "Next 4 days weather summary:Light rain (total 5.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 13°C on Thu afternoon, min -2°C on Fri night). Winds increasing (light winds from the WSW on Wed night, fresh winds from the WNW by Fri afternoon).",
-    "days46": "Days 5-7 weather summary:Light rain (total 3.0mm), mostly falling on Mon afternoon. Mild temperatures (max 9°C on Mon morning, min 1°C on Sat night). Wind will be generally light."
+    "next3": "Next 3 days weather summary:Light rain (total 7.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 13°C on Thu afternoon, min -2°C on Fri night). Winds decreasing (fresh winds from the WNW on Fri afternoon, light winds from the NW by Sat night).",
+    "days46": "Days 4-6 weather summary:Mostly dry. Very mild (max 10°C on Mon morning, min 1°C on Sun morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -5407,27 +5272,6 @@
    },
    "days": [
     {
-     "date": "2026-10-28",
-     "label": null,
-     "snow": 0,
-     "periods": [
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 8,
-       "wind": 20,
-       "windDir": "WSW",
-       "freezingLevel": 3000,
-       "phrase": "some clouds"
-      }
-     ],
-     "tempMax": 8,
-     "tempMin": 7,
-     "windMax": 20,
-     "freezeMin": 3000,
-     "freezeMax": 3000
-    },
-    {
      "date": "2026-10-29",
      "label": "Thursday29",
      "snow": 0,
@@ -5446,24 +5290,24 @@
        "snow": 0,
        "tempMax": 13,
        "wind": 30,
-       "windDir": "WSW",
+       "windDir": "W",
        "freezingLevel": 3350,
        "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 13,
-       "wind": 35,
+       "tempMax": 12,
+       "wind": 40,
        "windDir": "W",
-       "freezingLevel": 2900,
-       "phrase": "light rain"
+       "freezingLevel": 2950,
+       "phrase": "rain shwrs"
       }
      ],
      "tempMax": 13,
-     "tempMin": 7,
-     "windMax": 35,
-     "freezeMin": 2900,
+     "tempMin": 8,
+     "windMax": 40,
+     "freezeMin": 2950,
      "freezeMax": 3350
     },
     {
@@ -5474,8 +5318,8 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
-       "wind": 30,
+       "tempMax": 8,
+       "wind": 25,
        "windDir": "WNW",
        "freezingLevel": 3050,
        "phrase": "clear"
@@ -5483,11 +5327,11 @@
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 3,
+       "tempMax": 4,
        "wind": 40,
-       "windDir": "WNW",
+       "windDir": "NW",
        "freezingLevel": 1200,
-       "phrase": "some clouds"
+       "phrase": "cloudy"
       },
       {
        "name": "night",
@@ -5499,7 +5343,7 @@
        "phrase": "some clouds"
       }
      ],
-     "tempMax": 9,
+     "tempMax": 8,
      "tempMin": -2,
      "windMax": 40,
      "freezeMin": 700,
@@ -5513,10 +5357,10 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 1,
        "wind": 20,
        "windDir": "NNW",
-       "freezingLevel": 1100,
+       "freezingLevel": 1000,
        "phrase": "clear"
       },
       {
@@ -5525,24 +5369,24 @@
        "tempMax": 3,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 1350,
+       "freezingLevel": 1300,
        "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 2,
+       "tempMax": 1,
        "wind": 10,
-       "windDir": "WNW",
-       "freezingLevel": 1700,
-       "phrase": "some clouds"
+       "windDir": "NW",
+       "freezingLevel": 1450,
+       "phrase": "clear"
       }
      ],
      "tempMax": 3,
-     "tempMin": -2,
+     "tempMin": -1,
      "windMax": 20,
-     "freezeMin": 1100,
-     "freezeMax": 1700
+     "freezeMin": 1000,
+     "freezeMax": 1450
     },
     {
      "date": "2026-11-01",
@@ -5555,33 +5399,33 @@
        "tempMax": 6,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 2350,
-       "phrase": "some clouds"
+       "freezingLevel": 2250,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 8,
-       "wind": 15,
-       "windDir": "W",
-       "freezingLevel": 2550,
-       "phrase": "cloudy"
+       "wind": 10,
+       "windDir": "WNW",
+       "freezingLevel": 2500,
+       "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 7,
+       "tempMax": 6,
        "wind": 20,
-       "windDir": "WSW",
-       "freezingLevel": 2450,
-       "phrase": "some clouds"
+       "windDir": "W",
+       "freezingLevel": 2700,
+       "phrase": "clear"
       }
      ],
      "tempMax": 8,
      "tempMin": 2,
      "windMax": 20,
-     "freezeMin": 2350,
-     "freezeMax": 2550
+     "freezeMin": 2250,
+     "freezeMax": 2700
     },
     {
      "date": "2026-11-02",
@@ -5591,41 +5435,80 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 9,
-       "wind": 25,
+       "tempMax": 11,
+       "wind": 20,
        "windDir": "W",
-       "freezingLevel": 2600,
-       "phrase": "cloudy"
+       "freezingLevel": 2700,
+       "phrase": "clear"
       },
       {
        "name": "pm",
        "snow": 0,
-       "tempMax": 9,
+       "tempMax": 12,
        "wind": 20,
-       "windDir": "W",
-       "freezingLevel": 2550,
-       "phrase": "light rain"
+       "windDir": "WNW",
+       "freezingLevel": 2700,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 10,
+       "windDir": "NW",
+       "freezingLevel": 2700,
+       "phrase": "some clouds"
+      }
+     ],
+     "tempMax": 12,
+     "tempMin": 7,
+     "windMax": 20,
+     "freezeMin": 2700,
+     "freezeMax": 2700
+    },
+    {
+     "date": "2026-11-03",
+     "label": "Tuesday 3",
+     "snow": 0,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": 9,
+       "wind": 5,
+       "windDir": "SE",
+       "freezingLevel": 2450,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "pm",
+       "snow": 0,
+       "tempMax": 10,
+       "wind": 10,
+       "windDir": "SSE",
+       "freezingLevel": 2400,
+       "phrase": "cloudy"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 8,
-       "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 2350,
-       "phrase": "some clouds"
+       "wind": 10,
+       "windDir": "S",
+       "freezingLevel": 2550,
+       "phrase": "cloudy"
       }
      ],
-     "tempMax": 9,
-     "tempMin": 6,
-     "windMax": 25,
-     "freezeMin": 2350,
-     "freezeMax": 2600
+     "tempMax": 10,
+     "tempMin": 7,
+     "windMax": 10,
+     "freezeMin": 2400,
+     "freezeMax": 2550
     }
    ],
    "summary": {
-    "next3": "Next 4 days weather summary:Light rain (total 2.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 13°C on Thu afternoon, min -2°C on Fri night). Winds increasing (light winds from the W on Wed night, strong winds from the W by Fri morning).",
-    "days46": "Days 5-7 weather summary:Some drizzle, heaviest during Mon afternoon. Mild temperatures (max 9°C on Mon morning, min 2°C on Sat night). Wind will be generally light."
+    "next3": "Next 3 days weather summary:Some drizzle, heaviest during Thu night. Freeze-thaw conditions (max 13°C on Thu afternoon, min -2°C on Fri night). Winds decreasing (strong winds from the W on Thu night, light winds from the WNW by Sat night).",
+    "days46": "Days 4-6 weather summary:Mostly dry. Very mild (max 12°C on Mon afternoon, min 2°C on Sun morning). Wind will be generally light."
    },
    "depths": {
     "Top snow depth": "0 cm",
@@ -5655,27 +5538,6 @@
    },
    "days": [
     {
-     "date": "2026-10-28",
-     "label": null,
-     "snow": 0,
-     "periods": [
-      {
-       "name": "night",
-       "snow": 0,
-       "tempMax": 7,
-       "wind": 20,
-       "windDir": "WSW",
-       "freezingLevel": 2850,
-       "phrase": "some clouds"
-      }
-     ],
-     "tempMax": 7,
-     "tempMin": 6,
-     "windMax": 20,
-     "freezeMin": 2850,
-     "freezeMax": 2850
-    },
-    {
      "date": "2026-10-29",
      "label": "Thursday29",
      "snow": 0,
@@ -5693,25 +5555,25 @@
        "name": "pm",
        "snow": 0,
        "tempMax": 12,
-       "wind": 40,
+       "wind": 35,
        "windDir": "WSW",
-       "freezingLevel": 3100,
+       "freezingLevel": 3050,
        "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 10,
-       "wind": 35,
+       "wind": 30,
        "windDir": "W",
-       "freezingLevel": 2700,
+       "freezingLevel": 2650,
        "phrase": "rain shwrs"
       }
      ],
      "tempMax": 12,
      "tempMin": 6,
-     "windMax": 40,
-     "freezeMin": 2700,
+     "windMax": 35,
+     "freezeMin": 2650,
      "freezeMax": 3250
     },
     {
@@ -5722,10 +5584,10 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 4,
-       "wind": 35,
+       "tempMax": 5,
+       "wind": 30,
        "windDir": "WNW",
-       "freezingLevel": 1200,
+       "freezingLevel": 1300,
        "phrase": "rain shwrs"
       },
       {
@@ -5734,24 +5596,24 @@
        "tempMax": 2,
        "wind": 40,
        "windDir": "WNW",
-       "freezingLevel": 1150,
+       "freezingLevel": 1200,
        "phrase": "light snow"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 0,
+       "tempMax": 1,
        "wind": 25,
-       "windDir": "NW",
-       "freezingLevel": 550,
+       "windDir": "NNW",
+       "freezingLevel": 500,
        "phrase": "snow shwrs"
       }
      ],
-     "tempMax": 4,
+     "tempMax": 5,
      "tempMin": -3,
      "windMax": 40,
-     "freezeMin": 550,
-     "freezeMax": 1200
+     "freezeMin": 500,
+     "freezeMax": 1300
     },
     {
      "date": "2026-10-31",
@@ -5761,11 +5623,11 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": -2,
+       "tempMax": -1,
        "wind": 20,
        "windDir": "NW",
        "freezingLevel": 650,
-       "phrase": "clear"
+       "phrase": "some clouds"
       },
       {
        "name": "pm",
@@ -5773,7 +5635,7 @@
        "tempMax": 1,
        "wind": 20,
        "windDir": "WNW",
-       "freezingLevel": 1050,
+       "freezingLevel": 1000,
        "phrase": "clear"
       },
       {
@@ -5782,7 +5644,7 @@
        "tempMax": 0,
        "wind": 15,
        "windDir": "WNW",
-       "freezingLevel": 750,
+       "freezingLevel": 700,
        "phrase": "clear"
       }
      ],
@@ -5790,7 +5652,7 @@
      "tempMin": -3,
      "windMax": 20,
      "freezeMin": 650,
-     "freezeMax": 1050
+     "freezeMax": 1000
     },
     {
      "date": "2026-11-01",
@@ -5803,7 +5665,7 @@
        "tempMax": 4,
        "wind": 20,
        "windDir": "WNW",
-       "freezingLevel": 1600,
+       "freezingLevel": 1550,
        "phrase": "clear"
       },
       {
@@ -5812,24 +5674,24 @@
        "tempMax": 6,
        "wind": 20,
        "windDir": "WNW",
-       "freezingLevel": 2300,
+       "freezingLevel": 2350,
        "phrase": "clear"
       },
       {
        "name": "night",
        "snow": 0,
        "tempMax": 6,
-       "wind": 25,
+       "wind": 30,
        "windDir": "W",
-       "freezingLevel": 2500,
+       "freezingLevel": 2400,
        "phrase": "some clouds"
       }
      ],
      "tempMax": 6,
      "tempMin": 0,
-     "windMax": 25,
-     "freezeMin": 1600,
-     "freezeMax": 2500
+     "windMax": 30,
+     "freezeMin": 1550,
+     "freezeMax": 2400
     },
     {
      "date": "2026-11-02",
@@ -5839,41 +5701,80 @@
       {
        "name": "am",
        "snow": 0,
-       "tempMax": 7,
-       "wind": 25,
+       "tempMax": 8,
+       "wind": 30,
        "windDir": "W",
+       "freezingLevel": 2450,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "pm",
+       "snow": 0,
+       "tempMax": 10,
+       "wind": 30,
+       "windDir": "W",
+       "freezingLevel": 2500,
+       "phrase": "some clouds"
+      },
+      {
+       "name": "night",
+       "snow": 0,
+       "tempMax": 7,
+       "wind": 15,
+       "windDir": "WNW",
+       "freezingLevel": 2600,
+       "phrase": "cloudy"
+      }
+     ],
+     "tempMax": 10,
+     "tempMin": 6,
+     "windMax": 30,
+     "freezeMin": 2450,
+     "freezeMax": 2600
+    },
+    {
+     "date": "2026-11-03",
+     "label": "Tuesday 3",
+     "snow": 0,
+     "periods": [
+      {
+       "name": "am",
+       "snow": 0,
+       "tempMax": 7,
+       "wind": 5,
+       "windDir": "NW",
        "freezingLevel": 2350,
-       "phrase": "light rain"
+       "phrase": "cloudy"
       },
       {
        "name": "pm",
        "snow": 0,
        "tempMax": 8,
-       "wind": 25,
-       "windDir": "WNW",
-       "freezingLevel": 2150,
-       "phrase": "cloudy"
+       "wind": 5,
+       "windDir": "S",
+       "freezingLevel": 2300,
+       "phrase": "some clouds"
       },
       {
        "name": "night",
        "snow": 0,
-       "tempMax": 6,
-       "wind": 15,
-       "windDir": "NW",
-       "freezingLevel": 1850,
-       "phrase": "rain shwrs"
+       "tempMax": 8,
+       "wind": 10,
+       "windDir": "SSW",
+       "freezingLevel": 2500,
+       "phrase": "cloudy"
       }
      ],
      "tempMax": 8,
-     "tempMin": 1,
-     "windMax": 25,
-     "freezeMin": 1850,
-     "freezeMax": 2350
+     "tempMin": 7,
+     "windMax": 10,
+     "freezeMin": 2300,
+     "freezeMax": 2500
     }
    ],
    "summary": {
-    "next3": "Next 4 days weather summary:Light rain (total 6.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 12°C on Thu afternoon, min -3°C on Fri night). Winds increasing (light winds from the WSW on Wed night, strong winds from the WSW by Thu night).",
-    "days46": "Days 5-7 weather summary:Light rain (total 5.0mm), mostly falling on Mon night. Freeze-thaw conditions (max 8°C on Mon afternoon, min -1°C on Sat night). Winds decreasing (fresh winds from the W on Mon afternoon, calm by Tue afternoon)."
+    "next3": "Next 3 days weather summary:Light rain (total 6.0mm), mostly falling on Thu night. Freeze-thaw conditions (max 12°C on Thu afternoon, min -3°C on Fri night). Winds decreasing (strong winds from the WSW on Thu night, light winds from the WNW by Sat night).",
+    "days46": "Days 4-6 weather summary:Mostly dry. Freeze-thaw conditions (max 10°C on Mon afternoon, min 0°C on Sun morning). Winds decreasing (fresh winds from the W on Mon afternoon, calm by Tue afternoon)."
    },
    "depths": {
     "Top snow depth": "0 cm",
