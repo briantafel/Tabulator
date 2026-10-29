@@ -428,7 +428,10 @@ body { background: #F2F2F2; }
 .trips .table { margin-top: calc(22.4 * var(--u)); }
 
 /* Trip rows: full bleed, 82.5 pitch, rule on every edge. */
-.trip-list { margin: calc(29 * var(--u)) -16px 0; }
+/* 13.9 puts the last favourite's baseline 24.3 above the rule — the same
+   gap as the Favorites rule to the "Resort" label, and close to the rule to
+   a trip name (22.4). The 29 it replaced was sized for the pager dots. */
+.trip-list { margin: calc(13.9 * var(--u)) -16px 0; }
 /* With no favourites the block above is a heading, a rule and two lines of
    copy, so the trip list closes up under it. Measured off Brian's
    Tabulator-trips-main-no-faves export. */
