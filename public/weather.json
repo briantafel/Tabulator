@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-29T14:53:16.637Z",
+ "generatedAt": "2026-10-29T22:46:57.026Z",
  "source": "api.weather.gov",
  "note": "US National Weather Service, for a point on each mountain. Canadian resorts have no NWS coverage.",
  "resorts": {
@@ -12,52 +12,52 @@
    "near": "Sunnyside-Tahoe City, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 48,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Cloudy",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Slight Chance Light Snow",
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Chance Rain And Snow",
+     "temperature": 39,
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Chance Rain And Snow",
+     "temperature": 34,
+     "shortForecast": "Slight Chance T-storms then Rain And Snow Likely",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 36,
-     "shortForecast": "Rain And Snow",
+     "shortForecast": "Light Snow Likely then Slight Chance T-storms",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Rain And Snow",
+     "temperature": 30,
+     "shortForecast": "Snow Showers then Light Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Widespread Frost",
+     "temperature": 37,
+     "shortForecast": "Chance Light Snow then Patchy Fog",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
@@ -70,42 +70,42 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 42,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 49,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 47,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 35,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 34,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 47,
+     "temperature": 46,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
@@ -120,37 +120,37 @@
    "near": "South Lake Tahoe, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 46,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Cloudy",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Slight Chance Light Snow",
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 38,
      "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 36,
+     "temperature": 35,
      "shortForecast": "Light Snow",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
@@ -158,14 +158,14 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Light Snow",
+     "shortForecast": "Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Slight Chance Light Snow then Mostly Sunny",
+     "temperature": 34,
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
@@ -178,35 +178,35 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 40,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 44,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Slight Chance Rain And Snow then Partly Cloudy",
+     "temperature": 29,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 43,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
@@ -228,101 +228,101 @@
    "near": "Kirkwood, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 47,
      "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 33,
-     "shortForecast": "Chance Snow Showers then Chance Light Snow",
+     "shortForecast": "Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 38,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 32,
+     "shortForecast": "Slight Chance Snow Showers then Light Snow Likely",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Light Snow",
+     "temperature": 35,
+     "shortForecast": "Light Snow Likely then Snow Showers",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Light Snow",
+     "temperature": 29,
+     "shortForecast": "Snow Showers then Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Slight Chance Light Snow then Widespread Frost",
+     "temperature": 36,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 27,
+     "temperature": 25,
      "shortForecast": "Mostly Clear",
      "startTime": "2026-11-01T18:00:00-08:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 48,
+     "temperature": 45,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 50,
-     "shortForecast": "Slight Chance Light Snow",
+     "temperature": 47,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Slight Chance Light Snow",
+     "temperature": 32,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 47,
-     "shortForecast": "Slight Chance Light Snow",
+     "temperature": 46,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 32,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -336,52 +336,52 @@
    "near": "Soda Springs, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 51,
      "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 35,
+     "shortForecast": "Chance Rain And Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Slight Chance Light Snow then Chance Light Rain",
+     "shortForecast": "Chance Rain And Snow",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Chance Rain And Snow",
+     "temperature": 33,
+     "shortForecast": "Rain And Snow Likely",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Rain And Snow",
+     "temperature": 38,
+     "shortForecast": "Rain And Snow Likely then Slight Chance T-storms",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Rain And Snow",
+     "temperature": 30,
+     "shortForecast": "Slight Chance T-storms then Light Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 44,
-     "shortForecast": "Widespread Frost then Mostly Sunny",
+     "temperature": 41,
+     "shortForecast": "Areas Of Fog then Chance Light Snow",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
@@ -394,7 +394,7 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 52,
+     "temperature": 48,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
@@ -408,29 +408,29 @@
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 53,
-     "shortForecast": "Slight Chance Light Rain",
+     "temperature": 51,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Slight Chance Light Rain",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 51,
+     "temperature": 50,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 34,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -444,17 +444,17 @@
    "near": "Tahoe Vista, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 57,
      "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Mostly Cloudy then Slight Chance Rain And Snow",
+     "temperature": 35,
+     "shortForecast": "Chance Rain And Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
@@ -467,78 +467,78 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Chance Rain And Snow",
+     "temperature": 33,
+     "shortForecast": "Slight Chance Light Rain then Chance Rain And Snow",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 46,
+     "temperature": 44,
      "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 45,
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 27,
      "shortForecast": "Mostly Clear",
      "startTime": "2026-11-01T18:00:00-08:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 54,
+     "temperature": 51,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 32,
+     "temperature": 31,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 57,
-     "shortForecast": "Slight Chance Light Rain",
+     "temperature": 55,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 33,
-     "shortForecast": "Slight Chance Light Rain",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 55,
+     "temperature": 54,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 33,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -552,23 +552,23 @@
    "near": "Incline Village, NV",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 40,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Cloudy",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Mostly Cloudy then Slight Chance Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
@@ -590,14 +590,14 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 23,
-     "shortForecast": "Light Snow",
+     "shortForecast": "Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 31,
-     "shortForecast": "Slight Chance Light Snow then Mostly Sunny",
+     "temperature": 28,
+     "shortForecast": "Chance Light Snow then Partly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
@@ -610,21 +610,21 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 36,
+     "temperature": 33,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 26,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 37,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
@@ -638,7 +638,7 @@
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 38,
+     "temperature": 37,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
@@ -660,101 +660,101 @@
    "near": "Meyers, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 48,
      "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 33,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 39,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Chance Light Snow",
+     "shortForecast": "Slight Chance Snow Showers then Light Snow Likely",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Light Snow",
+     "temperature": 37,
+     "shortForecast": "Light Snow Likely then Snow Showers",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Light Snow",
+     "temperature": 28,
+     "shortForecast": "Snow Showers then Light Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Slight Chance Light Snow then Mostly Sunny",
+     "temperature": 37,
+     "shortForecast": "Light Snow Likely then Patchy Fog",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 24,
      "shortForecast": "Mostly Clear",
      "startTime": "2026-11-01T18:00:00-08:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 48,
+     "temperature": 46,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 33,
+     "temperature": 32,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Slight Chance Light Rain",
+     "temperature": 48,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 31,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 47,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -768,17 +768,17 @@
    "near": "Tahoma, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 51,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Cloudy",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 37,
+     "shortForecast": "Chance Light Rain then Chance Rain And Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
@@ -791,8 +791,8 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 35,
-     "shortForecast": "Chance Rain And Snow",
+     "temperature": 36,
+     "shortForecast": "Rain And Snow Likely",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
@@ -805,15 +805,15 @@
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 32,
+     "temperature": 34,
      "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 42,
-     "shortForecast": "Slight Chance Light Snow then Mostly Sunny",
+     "temperature": 40,
+     "shortForecast": "Chance Light Snow then Mostly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
@@ -826,29 +826,29 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 49,
+     "temperature": 45,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Slight Chance Light Rain",
+     "temperature": 50,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 37,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 36,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
@@ -861,8 +861,8 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 37,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -876,23 +876,23 @@
    "near": "Mammoth Lakes, CA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Mostly Sunny",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Chance Light Snow",
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 32,
+     "temperature": 31,
      "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
@@ -900,76 +900,76 @@
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 25,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Slight Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 31,
-     "shortForecast": "Light Snow",
+     "temperature": 30,
+     "shortForecast": "Snow",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 24,
-     "shortForecast": "Light Snow",
+     "temperature": 25,
+     "shortForecast": "Heavy Snow",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Chance Light Snow then Mostly Sunny",
+     "temperature": 29,
+     "shortForecast": "Light Snow",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 22,
+     "temperature": 16,
      "shortForecast": "Mostly Clear",
      "startTime": "2026-11-01T18:00:00-08:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 38,
      "shortForecast": "Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 28,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Mostly Sunny then Slight Chance Rain And Snow",
+     "temperature": 41,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Slight Chance Rain And Snow then Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 38,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 24,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
@@ -984,37 +984,37 @@
    "near": "Glacier, WA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 35,
-     "shortForecast": "Chance Light Snow",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Partly Cloudy then Chance Light Snow",
+     "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 36,
      "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 37,
+     "temperature": 38,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
@@ -1022,20 +1022,20 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 29,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 38,
+     "temperature": 39,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-01T18:00:00-08:00"
     },
@@ -1043,42 +1043,42 @@
      "name": "Monday",
      "isDaytime": true,
      "temperature": 42,
-     "shortForecast": "Partly Sunny then Slight Chance Rain And Snow",
+     "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Slight Chance Rain And Snow",
+     "temperature": 36,
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 44,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 35,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Partly Sunny",
+     "temperature": 47,
+     "shortForecast": "Mostly Sunny then Slight Chance Light Rain",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 37,
+     "shortForecast": "Slight Chance Light Rain then Slight Chance Light Snow",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -1092,51 +1092,51 @@
    "near": "Greenwater, WA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
-     "temperature": 33,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Snow",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "temperature": 34,
+     "shortForecast": "Chance Light Snow",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 27,
      "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 33,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 34,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 22,
+     "temperature": 23,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 36,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 25,
+     "temperature": 26,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 36,
+     "temperature": 38,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
@@ -1157,36 +1157,36 @@
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 32,
+     "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 42,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 31,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 44,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 33,
+     "shortForecast": "Slight Chance Light Snow",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -1200,37 +1200,37 @@
    "near": "Skykomish, WA",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
-     "temperature": 30,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "temperature": 31,
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Mostly Cloudy then Chance Light Snow",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 31,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 33,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 25,
+     "shortForecast": "Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 33,
+     "temperature": 35,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
@@ -1244,7 +1244,7 @@
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 36,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
@@ -1258,28 +1258,28 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 36,
+     "temperature": 39,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 33,
+     "shortForecast": "Slight Chance Light Rain",
      "startTime": "2026-11-02T18:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 40,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 31,
+     "temperature": 32,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
@@ -1287,14 +1287,14 @@
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Partly Sunny then Slight Chance Light Rain",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 34,
+     "shortForecast": "Slight Chance Light Rain then Slight Chance Rain And Snow",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -1308,23 +1308,23 @@
    "near": "Sunriver, OR",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 37,
      "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T07:00:00-07:00"
+     "startTime": "2026-10-29T15:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 25,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 32,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-07:00"
     },
@@ -1338,21 +1338,21 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 32,
+     "shortForecast": "Snow Showers Likely",
      "startTime": "2026-10-31T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 22,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 25,
+     "shortForecast": "Snow Showers Likely",
      "startTime": "2026-10-31T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 32,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-01T06:00:00-08:00"
     },
@@ -1366,7 +1366,7 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 39,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-02T06:00:00-08:00"
     },
@@ -1380,29 +1380,29 @@
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 39,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 29,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 45,
-     "shortForecast": "Partly Sunny then Slight Chance Rain And Snow Showers",
+     "temperature": 41,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Chance Rain And Snow Showers",
+     "temperature": 30,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-08:00"
     }
    ]
@@ -1416,11 +1416,11 @@
    "near": "Mountain Village, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 50,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1433,7 +1433,7 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 50,
-     "shortForecast": "Mostly Cloudy then Slight Chance Rain And Snow Showers",
+     "shortForecast": "Mostly Sunny then Slight Chance Rain Showers",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
@@ -1446,49 +1446,49 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 44,
      "shortForecast": "Snow Showers Likely",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Snow Showers Likely",
+     "temperature": 33,
+     "shortForecast": "Chance Snow Showers",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 40,
      "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 29,
      "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 36,
      "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 24,
+     "shortForecast": "Snow Showers Likely",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 39,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
@@ -1509,7 +1509,7 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 24,
+     "temperature": 22,
      "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -1524,11 +1524,11 @@
    "near": "Mount Crested Butte, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 48,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1541,21 +1541,21 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 49,
-     "shortForecast": "Partly Sunny",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 32,
+     "temperature": 33,
      "shortForecast": "Mostly Cloudy then Chance Rain And Snow Showers",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 42,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 41,
+     "shortForecast": "Rain And Snow Showers Likely",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
@@ -1569,41 +1569,41 @@
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 40,
-     "shortForecast": "Slight Chance T-storms",
+     "shortForecast": "Rain And Snow Showers Likely then Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 31,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 36,
      "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 24,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 26,
+     "shortForecast": "Snow Showers Likely",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 37,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 25,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
@@ -1611,7 +1611,7 @@
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
@@ -1632,11 +1632,11 @@
    "near": "Aspen, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 55,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1649,7 +1649,7 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 56,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
@@ -1662,14 +1662,14 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 50,
+     "temperature": 49,
      "shortForecast": "Chance Rain And Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 33,
+     "temperature": 34,
      "shortForecast": "Mostly Cloudy then Chance Rain And Snow Showers",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
@@ -1677,55 +1677,55 @@
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 48,
-     "shortForecast": "Chance Rain And Snow Showers then Slight Chance T-storms",
+     "shortForecast": "Chance Rain And Snow Showers then Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 31,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 41,
-     "shortForecast": "Snow Showers",
+     "temperature": 42,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
      "temperature": 26,
-     "shortForecast": "Snow Showers Likely",
+     "shortForecast": "Rain And Snow Showers Likely",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 44,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 49,
+     "temperature": 48,
      "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 24,
      "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -1740,11 +1740,11 @@
    "near": "Steamboat Springs, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 50,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -1757,20 +1757,20 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 53,
-     "shortForecast": "Partly Sunny",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 46,
+     "temperature": 47,
      "shortForecast": "Chance Rain And Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
@@ -1784,57 +1784,57 @@
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Rain And Snow Showers Likely",
+     "temperature": 48,
+     "shortForecast": "Rain Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 33,
      "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 38,
+     "temperature": 39,
      "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Rain And Snow Showers Likely",
+     "temperature": 28,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Partly Sunny",
+     "shortForecast": "Chance Snow Showers then Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 26,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 45,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Slight Chance Snow Showers",
+     "temperature": 25,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -1848,24 +1848,24 @@
    "near": "Vail, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 50,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 33,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 51,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
@@ -1878,29 +1878,29 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 46,
+     "temperature": 43,
      "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Rain And Snow Showers Likely",
+     "temperature": 44,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 34,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
@@ -1913,36 +1913,36 @@
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Snow Showers Likely",
+     "temperature": 29,
+     "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Slight Chance Snow Showers then Mostly Sunny",
+     "temperature": 37,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 40,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Slight Chance Snow Showers",
+     "temperature": 24,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -1956,101 +1956,101 @@
    "near": "Breckenridge, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
-     "temperature": 45,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "temperature": 47,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 32,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 49,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 31,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 44,
      "shortForecast": "Chance Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 30,
+     "shortForecast": "Mostly Cloudy then Slight Chance Snow Showers",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 40,
      "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 31,
      "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 23,
-     "shortForecast": "Snow Showers Likely",
+     "temperature": 26,
+     "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 22,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 24,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 41,
-     "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
+     "temperature": 39,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 22,
-     "shortForecast": "Slight Chance Snow Showers",
+     "temperature": 21,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2064,37 +2064,37 @@
    "near": "Keystone, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "temperature": 42,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 29,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 41,
+     "shortForecast": "Partly Sunny then Slight Chance Snow Showers",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 34,
      "shortForecast": "Chance Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
@@ -2102,27 +2102,27 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Chance Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 20,
+     "temperature": 23,
      "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 25,
+     "temperature": 26,
      "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
@@ -2130,34 +2130,34 @@
      "name": "Monday Night",
      "isDaytime": false,
      "temperature": 19,
-     "shortForecast": "Snow Showers Likely",
+     "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "Slight Chance Snow Showers then Mostly Sunny",
+     "temperature": 26,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 21,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 31,
+     "temperature": 28,
      "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 21,
+     "temperature": 17,
      "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -2172,11 +2172,11 @@
    "near": "Alta, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 51,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -2196,56 +2196,56 @@
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 37,
-     "shortForecast": "Rain And Snow Likely",
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Chance Light Snow then Slight Chance Showers And Thunderstorms",
+     "temperature": 47,
+     "shortForecast": "Chance Rain And Snow",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Showers And Thunderstorms Likely",
+     "temperature": 37,
+     "shortForecast": "Slight Chance Rain And Snow then Rain And Snow Likely",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Rain And Snow then Snow Showers",
+     "temperature": 40,
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance T-storms then Light Snow",
+     "temperature": 32,
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
      "temperature": 38,
-     "shortForecast": "Chance Light Snow",
+     "shortForecast": "Light Snow",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Slight Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 44,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 43,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
@@ -2259,14 +2259,14 @@
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 46,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Snow",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Slight Chance Light Snow then Partly Cloudy",
+     "temperature": 30,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2280,16 +2280,16 @@
    "near": "Alta, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 45,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
@@ -2304,77 +2304,77 @@
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 35,
-     "shortForecast": "Rain And Snow Likely",
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 42,
-     "shortForecast": "Chance Light Snow then Slight Chance Snow Showers",
+     "temperature": 41,
+     "shortForecast": "Chance Light Snow",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 35,
+     "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 35,
-     "shortForecast": "Rain And Snow then Snow Showers",
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Snow Showers then Light Snow",
+     "temperature": 30,
+     "shortForecast": "Snow then Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 31,
+     "shortForecast": "Light Snow",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Slight Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 37,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Snow",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance Light Snow then Partly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2388,23 +2388,23 @@
    "near": "Brighton, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 32,
+     "temperature": 33,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 38,
      "shortForecast": "Partly Sunny then Chance Rain And Snow",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
@@ -2412,21 +2412,21 @@
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 33,
-     "shortForecast": "Rain And Snow Likely",
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Chance Light Snow then Slight Chance Snow Showers",
+     "temperature": 37,
+     "shortForecast": "Chance Light Snow then Chance Snow Showers",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 32,
+     "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
@@ -2439,29 +2439,29 @@
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Snow Showers then Light Snow",
+     "temperature": 27,
+     "shortForecast": "Rain And Snow then Snow Showers",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 29,
+     "shortForecast": "Light Snow",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 23,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 24,
+     "shortForecast": "Slight Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 33,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
@@ -2475,14 +2475,14 @@
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 35,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Snow",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Slight Chance Light Snow then Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2496,80 +2496,80 @@
    "near": "Brighton, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 46,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T07:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T15:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 44,
-     "shortForecast": "Partly Sunny then Chance Light Rain",
+     "temperature": 43,
+     "shortForecast": "Partly Sunny then Chance Rain And Snow",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 35,
-     "shortForecast": "Light Rain Likely",
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 42,
-     "shortForecast": "Chance Rain And Snow then Slight Chance Showers And Thunderstorms",
+     "shortForecast": "Chance Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Showers And Thunderstorms Likely then Rain And Snow",
+     "temperature": 35,
+     "shortForecast": "Rain",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Rain And Snow then Slight Chance T-storms",
+     "temperature": 36,
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Snow Showers then Light Snow",
+     "temperature": 30,
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 33,
+     "shortForecast": "Light Snow",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Slight Chance Light Snow then Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 38,
-     "shortForecast": "Mostly Sunny",
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
@@ -2583,14 +2583,14 @@
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 40,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Snow",
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance Light Snow",
+     "temperature": 28,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2604,16 +2604,16 @@
    "near": "Ogden, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 48,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 39,
+     "temperature": 40,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
@@ -2621,14 +2621,14 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 48,
-     "shortForecast": "Mostly Sunny then Slight Chance Light Rain",
+     "shortForecast": "Partly Sunny then Slight Chance Light Rain",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 41,
-     "shortForecast": "Chance Light Rain",
+     "shortForecast": "Chance Showers And Thunderstorms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
@@ -2641,64 +2641,64 @@
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 37,
-     "shortForecast": "Showers And Thunderstorms",
+     "temperature": 38,
+     "shortForecast": "Rain",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 42,
-     "shortForecast": "Slight Chance T-storms",
+     "shortForecast": "Showers And Thunderstorms then Rain And Snow",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Slight Chance T-storms then Rain And Snow Likely",
+     "temperature": 34,
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Chance Rain And Snow then Partly Sunny",
+     "temperature": 37,
+     "shortForecast": "Rain And Snow Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 39,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 41,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Slight Chance Light Rain",
+     "temperature": 32,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2712,23 +2712,23 @@
    "near": "Wolf Creek, UT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 40,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 40,
+     "temperature": 42,
      "shortForecast": "Mostly Sunny then Slight Chance Light Rain",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
@@ -2742,7 +2742,7 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 38,
      "shortForecast": "Chance Light Rain then Chance Showers And Thunderstorms",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
@@ -2750,42 +2750,42 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Slight Chance Showers And Thunderstorms then Showers And Thunderstorms",
+     "shortForecast": "Light Rain",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "Slight Chance T-storms",
+     "shortForecast": "Showers And Thunderstorms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Slight Chance T-storms then Light Snow Likely",
+     "temperature": 30,
+     "shortForecast": "Rain And Snow then Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 29,
-     "shortForecast": "Chance Light Snow then Partly Sunny",
+     "temperature": 32,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 27,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 33,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 32,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
@@ -2798,15 +2798,15 @@
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 37,
+     "temperature": 35,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Slight Chance Light Snow",
+     "temperature": 28,
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -2820,11 +2820,11 @@
    "near": "Teton Village, WY",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
-     "temperature": 45,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "temperature": 46,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
@@ -2836,7 +2836,7 @@
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 46,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
@@ -2844,76 +2844,76 @@
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 35,
-     "shortForecast": "Slight Chance Rain Showers then Chance Rain And Snow Showers",
+     "shortForecast": "Chance Rain Showers then Chance Rain And Snow Showers",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Chance Rain And Snow Showers then Showers And Thunderstorms Likely",
+     "temperature": 41,
+     "shortForecast": "Rain And Snow Showers Likely then Slight Chance T-storms",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Rain And Snow Showers",
+     "shortForecast": "Rain And Snow Showers Likely",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Rain And Snow Showers",
+     "temperature": 38,
+     "shortForecast": "Rain And Snow Showers Likely then Slight Chance T-storms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Rain And Snow Showers",
+     "temperature": 32,
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
      "temperature": 36,
-     "shortForecast": "Chance Rain And Snow Showers then Partly Sunny",
+     "shortForecast": "Rain And Snow Showers Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 27,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 28,
+     "shortForecast": "Slight Chance Rain And Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 38,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 29,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 41,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 28,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -2928,100 +2928,100 @@
    "near": "Alta, WY",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 33,
+     "temperature": 34,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 45,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 35,
      "shortForecast": "Chance Rain And Snow Showers",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance Snow Showers then Slight Chance T-storms",
+     "temperature": 40,
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Showers And Thunderstorms Likely",
+     "shortForecast": "Rain And Snow Showers Likely",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Rain And Snow Showers",
+     "temperature": 37,
+     "shortForecast": "Rain And Snow Showers Likely then Slight Chance T-storms",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 29,
-     "shortForecast": "Snow Showers",
+     "temperature": 31,
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Chance Snow Showers",
+     "temperature": 35,
+     "shortForecast": "Snow Showers Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 27,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 37,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 40,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 28,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -3036,30 +3036,30 @@
    "near": "Ketchum, ID",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Mostly Cloudy then Chance Light Snow",
+     "shortForecast": "Mostly Cloudy then Slight Chance Rain And Snow",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Rain And Snow Likely",
+     "temperature": 39,
+     "shortForecast": "Patchy Fog then Rain And Snow",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 29,
      "shortForecast": "Chance Rain And Snow then Areas Of Fog",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
@@ -3067,13 +3067,13 @@
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 40,
-     "shortForecast": "Areas Of Fog then Rain And Snow Likely",
+     "shortForecast": "Areas Of Fog then Chance Rain And Snow",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 31,
+     "temperature": 32,
      "shortForecast": "Rain And Snow",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
@@ -3081,34 +3081,34 @@
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 38,
-     "shortForecast": "Rain And Snow",
+     "shortForecast": "Widespread Fog",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 24,
-     "shortForecast": "Slight Chance Rain And Snow then Partly Cloudy",
+     "temperature": 26,
+     "shortForecast": "Chance Light Rain then Mostly Cloudy",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 42,
-     "shortForecast": "Sunny",
+     "temperature": 41,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 25,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 41,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
@@ -3122,14 +3122,14 @@
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 47,
+     "temperature": 44,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 27,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -3144,16 +3144,16 @@
    "near": "Big Sky, MT",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Patchy Fog then Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Mostly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
@@ -3161,49 +3161,49 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 44,
-     "shortForecast": "Partly Sunny",
+     "shortForecast": "Patchy Fog then Partly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 34,
+     "shortForecast": "Mostly Cloudy then Slight Chance Light Snow",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 41,
-     "shortForecast": "Chance Light Snow",
+     "temperature": 40,
+     "shortForecast": "Chance Light Snow then Light Rain Likely",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Rain And Snow Likely",
+     "temperature": 33,
+     "shortForecast": "Chance Rain And Snow",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Rain And Snow",
+     "temperature": 39,
+     "shortForecast": "Chance Rain And Snow then Rain And Snow Likely",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Snow",
+     "temperature": 28,
+     "shortForecast": "Rain And Snow",
      "startTime": "2026-11-01T18:00:00-07:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Chance Light Snow then Mostly Sunny",
+     "temperature": 35,
+     "shortForecast": "Light Snow Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
@@ -3216,21 +3216,21 @@
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 41,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 39,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 26,
-     "shortForecast": "Mostly Cloudy",
+     "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 41,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
@@ -3252,17 +3252,17 @@
    "near": "Taos Ski Valley, NM",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 45,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
+     "temperature": 33,
+     "shortForecast": "Mostly Cloudy then Slight Chance Rain And Snow Showers",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
@@ -3275,29 +3275,29 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 31,
-     "shortForecast": "Mostly Cloudy then Chance Rain And Snow Showers",
+     "temperature": 32,
+     "shortForecast": "Chance Rain And Snow Showers",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance Rain And Snow Showers",
+     "temperature": 38,
+     "shortForecast": "Chance Rain And Snow Showers then Mostly Cloudy",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Rain And Snow Showers Likely",
+     "temperature": 30,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Slight Chance T-storms",
+     "temperature": 38,
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
@@ -3310,14 +3310,14 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 32,
+     "temperature": 31,
      "shortForecast": "Snow Showers",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 25,
      "shortForecast": "Chance Snow Showers",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
@@ -3338,15 +3338,15 @@
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 38,
+     "temperature": 37,
      "shortForecast": "Mostly Sunny",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Slight Chance Snow Showers",
+     "temperature": 24,
+     "shortForecast": "Partly Cloudy then Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
    ]
@@ -3360,52 +3360,52 @@
    "near": "South Fork, CO",
    "periods": [
     {
-     "name": "Today",
+     "name": "This Afternoon",
      "isDaytime": true,
      "temperature": 40,
      "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-29T08:00:00-06:00"
+     "startTime": "2026-10-29T16:00:00-06:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 31,
      "shortForecast": "Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 42,
-     "shortForecast": "Partly Sunny",
+     "temperature": 43,
+     "shortForecast": "Mostly Sunny",
      "startTime": "2026-10-30T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Rain And Snow Showers",
+     "shortForecast": "Slight Chance T-storms",
      "startTime": "2026-10-30T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 33,
      "shortForecast": "Snow Showers Likely",
      "startTime": "2026-10-31T06:00:00-06:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Snow Showers",
+     "temperature": 29,
+     "shortForecast": "Chance Snow Showers",
      "startTime": "2026-10-31T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 34,
-     "shortForecast": "Snow Showers",
+     "shortForecast": "Rain And Snow Showers",
      "startTime": "2026-11-01T06:00:00-07:00"
     },
     {
@@ -3418,42 +3418,42 @@
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 31,
+     "temperature": 30,
      "shortForecast": "Snow Showers Likely",
      "startTime": "2026-11-02T06:00:00-07:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 23,
-     "shortForecast": "Chance Snow Showers then Partly Cloudy",
+     "temperature": 22,
+     "shortForecast": "Slight Chance Snow Showers then Partly Cloudy",
      "startTime": "2026-11-02T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 36,
+     "temperature": 35,
      "shortForecast": "Sunny",
      "startTime": "2026-11-03T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 22,
+     "temperature": 21,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-03T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 37,
+     "temperature": 36,
      "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
      "startTime": "2026-11-04T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 20,
      "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-11-04T18:00:00-07:00"
     }
@@ -3468,37 +3468,30 @@
    "near": "Wilmington, NY",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 56,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T10:00:00-04:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 40,
+     "temperature": 36,
      "shortForecast": "Rain Showers Likely",
      "startTime": "2026-10-29T18:00:00-04:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Slight Chance Rain Showers then Slight Chance Snow Showers",
+     "temperature": 41,
+     "shortForecast": "Slight Chance Snow Showers",
      "startTime": "2026-10-30T06:00:00-04:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 31,
+     "temperature": 30,
      "shortForecast": "Slight Chance Snow Showers then Mostly Cloudy",
      "startTime": "2026-10-30T18:00:00-04:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 37,
+     "temperature": 38,
      "shortForecast": "Sunny",
      "startTime": "2026-10-31T06:00:00-04:00"
     },
@@ -3506,64 +3499,71 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Partly Cloudy",
+     "shortForecast": "Mostly Clear",
      "startTime": "2026-10-31T18:00:00-04:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 45,
-     "shortForecast": "Mostly Sunny",
+     "temperature": 46,
+     "shortForecast": "Sunny",
      "startTime": "2026-11-01T06:00:00-05:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 38,
      "shortForecast": "Partly Cloudy",
      "startTime": "2026-11-01T18:00:00-05:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 49,
+     "temperature": 50,
      "shortForecast": "Partly Sunny",
      "startTime": "2026-11-02T06:00:00-05:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 38,
-     "shortForecast": "Slight Chance Rain Showers",
+     "temperature": 41,
+     "shortForecast": "Mostly Cloudy then Slight Chance Rain Showers",
      "startTime": "2026-11-02T18:00:00-05:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 47,
-     "shortForecast": "Slight Chance Rain Showers then Partly Sunny",
+     "temperature": 50,
+     "shortForecast": "Slight Chance Rain Showers",
      "startTime": "2026-11-03T06:00:00-05:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 39,
+     "temperature": 44,
      "shortForecast": "Chance Rain Showers",
      "startTime": "2026-11-03T18:00:00-05:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 49,
+     "temperature": 51,
      "shortForecast": "Chance Rain Showers",
      "startTime": "2026-11-04T06:00:00-05:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 40,
-     "shortForecast": "Chance Rain Showers",
+     "temperature": 44,
+     "shortForecast": "Slight Chance Rain Showers",
      "startTime": "2026-11-04T18:00:00-05:00"
+    },
+    {
+     "name": "Thursday",
+     "isDaytime": true,
+     "temperature": 51,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-05T06:00:00-05:00"
     }
    ]
   },
@@ -3576,16 +3576,9 @@
    "near": "Underhill Center, VT",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 58,
-     "shortForecast": "Sunny",
-     "startTime": "2026-10-29T10:00:00-04:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 43,
+     "temperature": 40,
      "shortForecast": "Chance Rain Showers then Mostly Cloudy",
      "startTime": "2026-10-29T18:00:00-04:00"
     },
@@ -3599,237 +3592,21 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 33,
-     "shortForecast": "Slight Chance Rain Showers then Mostly Cloudy",
-     "startTime": "2026-10-30T18:00:00-04:00"
-    },
-    {
-     "name": "Saturday",
-     "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-31T06:00:00-04:00"
-    },
-    {
-     "name": "Saturday Night",
-     "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Mostly Clear",
-     "startTime": "2026-10-31T18:00:00-04:00"
-    },
-    {
-     "name": "Sunday",
-     "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Sunny",
-     "startTime": "2026-11-01T06:00:00-05:00"
-    },
-    {
-     "name": "Sunday Night",
-     "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Mostly Clear",
-     "startTime": "2026-11-01T18:00:00-05:00"
-    },
-    {
-     "name": "Monday",
-     "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-11-02T06:00:00-05:00"
-    },
-    {
-     "name": "Monday Night",
-     "isDaytime": false,
-     "temperature": 38,
-     "shortForecast": "Slight Chance Rain Showers",
-     "startTime": "2026-11-02T18:00:00-05:00"
-    },
-    {
-     "name": "Tuesday",
-     "isDaytime": true,
-     "temperature": 50,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-11-03T06:00:00-05:00"
-    },
-    {
-     "name": "Tuesday Night",
-     "isDaytime": false,
-     "temperature": 39,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-03T18:00:00-05:00"
-    },
-    {
-     "name": "Wednesday",
-     "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-04T06:00:00-05:00"
-    },
-    {
-     "name": "Wednesday Night",
-     "isDaytime": false,
-     "temperature": 41,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-04T18:00:00-05:00"
-    }
-   ]
-  },
-  "killington": {
-   "point": [
-    43.615,
-    -72.808
-   ],
-   "gridElevationM": 1042,
-   "near": "Killington Village, VT",
-   "periods": [
-    {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 53,
-     "shortForecast": "Sunny",
-     "startTime": "2026-10-29T10:00:00-04:00"
-    },
-    {
-     "name": "Tonight",
-     "isDaytime": false,
-     "temperature": 44,
-     "shortForecast": "Slight Chance Rain Showers",
-     "startTime": "2026-10-29T18:00:00-04:00"
-    },
-    {
-     "name": "Friday",
-     "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-10-30T06:00:00-04:00"
-    },
-    {
-     "name": "Friday Night",
-     "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-10-30T18:00:00-04:00"
-    },
-    {
-     "name": "Saturday",
-     "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Sunny",
-     "startTime": "2026-10-31T06:00:00-04:00"
-    },
-    {
-     "name": "Saturday Night",
-     "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Mostly Clear",
-     "startTime": "2026-10-31T18:00:00-04:00"
-    },
-    {
-     "name": "Sunday",
-     "isDaytime": true,
-     "temperature": 44,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-11-01T06:00:00-05:00"
-    },
-    {
-     "name": "Sunday Night",
-     "isDaytime": false,
-     "temperature": 35,
-     "shortForecast": "Partly Cloudy",
-     "startTime": "2026-11-01T18:00:00-05:00"
-    },
-    {
-     "name": "Monday",
-     "isDaytime": true,
-     "temperature": 49,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-11-02T06:00:00-05:00"
-    },
-    {
-     "name": "Monday Night",
-     "isDaytime": false,
-     "temperature": 39,
-     "shortForecast": "Mostly Cloudy",
-     "startTime": "2026-11-02T18:00:00-05:00"
-    },
-    {
-     "name": "Tuesday",
-     "isDaytime": true,
-     "temperature": 49,
-     "shortForecast": "Partly Sunny",
-     "startTime": "2026-11-03T06:00:00-05:00"
-    },
-    {
-     "name": "Tuesday Night",
-     "isDaytime": false,
-     "temperature": 40,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-03T18:00:00-05:00"
-    },
-    {
-     "name": "Wednesday",
-     "isDaytime": true,
-     "temperature": 49,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-04T06:00:00-05:00"
-    },
-    {
-     "name": "Wednesday Night",
-     "isDaytime": false,
-     "temperature": 41,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-11-04T18:00:00-05:00"
-    }
-   ]
-  },
-  "jay-peak": {
-   "point": [
-    44.932,
-    -72.515
-   ],
-   "gridElevationM": 762,
-   "near": "Troy, VT",
-   "periods": [
-    {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 60,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-29T10:00:00-04:00"
-    },
-    {
-     "name": "Tonight",
-     "isDaytime": false,
-     "temperature": 44,
-     "shortForecast": "Chance Rain Showers",
-     "startTime": "2026-10-29T18:00:00-04:00"
-    },
-    {
-     "name": "Friday",
-     "isDaytime": true,
-     "temperature": 46,
-     "shortForecast": "Slight Chance Rain Showers",
-     "startTime": "2026-10-30T06:00:00-04:00"
-    },
-    {
-     "name": "Friday Night",
-     "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Slight Chance Rain Showers then Mostly Cloudy",
-     "startTime": "2026-10-30T18:00:00-04:00"
-    },
-    {
-     "name": "Saturday",
-     "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Mostly Sunny",
-     "startTime": "2026-10-31T06:00:00-04:00"
-    },
-    {
-     "name": "Saturday Night",
-     "isDaytime": false,
      "temperature": 29,
+     "shortForecast": "Slight Chance Rain Showers then Mostly Cloudy",
+     "startTime": "2026-10-30T18:00:00-04:00"
+    },
+    {
+     "name": "Saturday",
+     "isDaytime": true,
+     "temperature": 39,
+     "shortForecast": "Mostly Sunny",
+     "startTime": "2026-10-31T06:00:00-04:00"
+    },
+    {
+     "name": "Saturday Night",
+     "isDaytime": false,
+     "temperature": 30,
      "shortForecast": "Mostly Clear",
      "startTime": "2026-10-31T18:00:00-04:00"
     },
@@ -3843,35 +3620,35 @@
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Partly Cloudy",
+     "temperature": 37,
+     "shortForecast": "Mostly Clear",
      "startTime": "2026-11-01T18:00:00-05:00"
     },
     {
      "name": "Monday",
      "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Mostly Sunny then Slight Chance Rain Showers",
+     "temperature": 52,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-02T06:00:00-05:00"
     },
     {
      "name": "Monday Night",
      "isDaytime": false,
-     "temperature": 37,
-     "shortForecast": "Slight Chance Rain Showers",
+     "temperature": 41,
+     "shortForecast": "Mostly Cloudy",
      "startTime": "2026-11-02T18:00:00-05:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 50,
-     "shortForecast": "Partly Sunny then Slight Chance Rain Showers",
+     "temperature": 51,
+     "shortForecast": "Partly Sunny",
      "startTime": "2026-11-03T06:00:00-05:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 39,
+     "temperature": 43,
      "shortForecast": "Chance Rain Showers",
      "startTime": "2026-11-03T18:00:00-05:00"
     },
@@ -3885,9 +3662,232 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
+     "temperature": 43,
+     "shortForecast": "Slight Chance Rain Showers",
+     "startTime": "2026-11-04T18:00:00-05:00"
+    },
+    {
+     "name": "Thursday",
+     "isDaytime": true,
+     "temperature": 54,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-05T06:00:00-05:00"
+    }
+   ]
+  },
+  "killington": {
+   "point": [
+    43.615,
+    -72.808
+   ],
+   "gridElevationM": 1042,
+   "near": "Killington Village, VT",
+   "periods": [
+    {
+     "name": "Tonight",
+     "isDaytime": false,
      "temperature": 41,
+     "shortForecast": "Slight Chance Rain Showers",
+     "startTime": "2026-10-29T18:00:00-04:00"
+    },
+    {
+     "name": "Friday",
+     "isDaytime": true,
+     "temperature": 45,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-10-30T06:00:00-04:00"
+    },
+    {
+     "name": "Friday Night",
+     "isDaytime": false,
+     "temperature": 32,
+     "shortForecast": "Mostly Cloudy",
+     "startTime": "2026-10-30T18:00:00-04:00"
+    },
+    {
+     "name": "Saturday",
+     "isDaytime": true,
+     "temperature": 38,
+     "shortForecast": "Sunny",
+     "startTime": "2026-10-31T06:00:00-04:00"
+    },
+    {
+     "name": "Saturday Night",
+     "isDaytime": false,
+     "temperature": 30,
+     "shortForecast": "Mostly Clear",
+     "startTime": "2026-10-31T18:00:00-04:00"
+    },
+    {
+     "name": "Sunday",
+     "isDaytime": true,
+     "temperature": 45,
+     "shortForecast": "Sunny",
+     "startTime": "2026-11-01T06:00:00-05:00"
+    },
+    {
+     "name": "Sunday Night",
+     "isDaytime": false,
+     "temperature": 36,
+     "shortForecast": "Mostly Clear",
+     "startTime": "2026-11-01T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 50,
+     "shortForecast": "Mostly Sunny",
+     "startTime": "2026-11-02T06:00:00-05:00"
+    },
+    {
+     "name": "Monday Night",
+     "isDaytime": false,
+     "temperature": 42,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-11-02T18:00:00-05:00"
+    },
+    {
+     "name": "Tuesday",
+     "isDaytime": true,
+     "temperature": 51,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-11-03T06:00:00-05:00"
+    },
+    {
+     "name": "Tuesday Night",
+     "isDaytime": false,
+     "temperature": 43,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-03T18:00:00-05:00"
+    },
+    {
+     "name": "Wednesday",
+     "isDaytime": true,
+     "temperature": 51,
+     "shortForecast": "Slight Chance Rain Showers",
+     "startTime": "2026-11-04T06:00:00-05:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 44,
      "shortForecast": "Chance Rain Showers",
      "startTime": "2026-11-04T18:00:00-05:00"
+    },
+    {
+     "name": "Thursday",
+     "isDaytime": true,
+     "temperature": 52,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-05T06:00:00-05:00"
+    }
+   ]
+  },
+  "jay-peak": {
+   "point": [
+    44.932,
+    -72.515
+   ],
+   "gridElevationM": 762,
+   "near": "Troy, VT",
+   "periods": [
+    {
+     "name": "Tonight",
+     "isDaytime": false,
+     "temperature": 42,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-10-29T18:00:00-04:00"
+    },
+    {
+     "name": "Friday",
+     "isDaytime": true,
+     "temperature": 47,
+     "shortForecast": "Slight Chance Rain Showers",
+     "startTime": "2026-10-30T06:00:00-04:00"
+    },
+    {
+     "name": "Friday Night",
+     "isDaytime": false,
+     "temperature": 30,
+     "shortForecast": "Slight Chance Rain And Snow Showers then Mostly Cloudy",
+     "startTime": "2026-10-30T18:00:00-04:00"
+    },
+    {
+     "name": "Saturday",
+     "isDaytime": true,
+     "temperature": 40,
+     "shortForecast": "Sunny",
+     "startTime": "2026-10-31T06:00:00-04:00"
+    },
+    {
+     "name": "Saturday Night",
+     "isDaytime": false,
+     "temperature": 30,
+     "shortForecast": "Mostly Clear",
+     "startTime": "2026-10-31T18:00:00-04:00"
+    },
+    {
+     "name": "Sunday",
+     "isDaytime": true,
+     "temperature": 48,
+     "shortForecast": "Sunny",
+     "startTime": "2026-11-01T06:00:00-05:00"
+    },
+    {
+     "name": "Sunday Night",
+     "isDaytime": false,
+     "temperature": 37,
+     "shortForecast": "Partly Cloudy",
+     "startTime": "2026-11-01T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 52,
+     "shortForecast": "Partly Sunny then Slight Chance Rain Showers",
+     "startTime": "2026-11-02T06:00:00-05:00"
+    },
+    {
+     "name": "Monday Night",
+     "isDaytime": false,
+     "temperature": 41,
+     "shortForecast": "Slight Chance Rain Showers then Mostly Cloudy",
+     "startTime": "2026-11-02T18:00:00-05:00"
+    },
+    {
+     "name": "Tuesday",
+     "isDaytime": true,
+     "temperature": 51,
+     "shortForecast": "Partly Sunny",
+     "startTime": "2026-11-03T06:00:00-05:00"
+    },
+    {
+     "name": "Tuesday Night",
+     "isDaytime": false,
+     "temperature": 43,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-03T18:00:00-05:00"
+    },
+    {
+     "name": "Wednesday",
+     "isDaytime": true,
+     "temperature": 52,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-04T06:00:00-05:00"
+    },
+    {
+     "name": "Wednesday Night",
+     "isDaytime": false,
+     "temperature": 44,
+     "shortForecast": "Slight Chance Rain Showers",
+     "startTime": "2026-11-04T18:00:00-05:00"
+    },
+    {
+     "name": "Thursday",
+     "isDaytime": true,
+     "temperature": 55,
+     "shortForecast": "Chance Rain Showers",
+     "startTime": "2026-11-05T06:00:00-05:00"
     }
    ]
   }

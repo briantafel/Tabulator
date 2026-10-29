@@ -30,9 +30,9 @@
    "stowe": 0,
    "killington": 0,
    "jay-peak": 0,
-   "palisades": 1,
+   "palisades": 2,
    "heavenly": 1,
-   "kirkwood": 3,
+   "kirkwood": 4,
    "mammoth": 1,
    "mt-baker": 0,
    "crystal": 1,
@@ -50,14 +50,14 @@
    "big-sky": 0,
    "taos": 0,
    "revelstoke": 0,
-   "whistler": 1,
+   "whistler": 0,
    "lake-louise": 0,
    "kicking-horse": 0,
-   "sugar-bowl": 0,
-   "northstar": 0,
+   "sugar-bowl": 2,
+   "northstar": 1,
    "mt-rose": 0,
    "sierra-at-tahoe": 2,
-   "homewood": 1,
+   "homewood": 2,
    "vail": 0,
    "breckenridge": 0,
    "arapahoe-basin": 0,
@@ -68,5 +68,5 @@
    "wolf-creek": 0
   }
  },
- "updatedAt": "2026-10-29T14:48:40.927Z"
+ "updatedAt": "2026-10-29T22:43:07.650Z"
 }
