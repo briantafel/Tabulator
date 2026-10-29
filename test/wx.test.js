@@ -20,11 +20,12 @@ test("every icon the mapping can return actually exists", () => {
   }
 });
 
-test("snow wins over rain in a mixed phrase", () => {
-  // This app exists to find snow; a phrase mentioning both should show the
-  // half that matters here.
-  assert.equal(iconFor("Rain And Snow"), "snow");
-  assert.equal(iconFor("Chance Rain And Snow Showers"), "snow--scattered");
+test("rain and snow together show the mixed icon", () => {
+  // Brian, 2026-10-29: a rain-snow mix should not read as all snow. Carbon's
+  // sleet glyph — a snowflake beside rain streaks — says both.
+  assert.equal(iconFor("Rain And Snow"), "sleet");
+  assert.equal(iconFor("Chance Rain And Snow Showers"), "sleet");
+  assert.equal(iconFor("Snow Showers"), "snow--scattered");
   assert.equal(iconFor("Blizzard Conditions"), "snow--blizzard");
   assert.equal(iconFor("Heavy Snow"), "snow--heavy");
 });

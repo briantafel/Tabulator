@@ -36,6 +36,9 @@ const ICON_RULES = [
   [/heavy snow/i, "snow--heavy"],
   [/wintry|freezing rain|ice pellet/i, "wintry-mix"],
   [/sleet/i, "sleet"],
+  // Rain and snow together: Carbon's sleet glyph is a snowflake beside rain
+  // streaks. Must sit above the plain snow rules, which would claim it.
+  [/rain\s+(and|&)\s+snow|snow\s+(and|&)\s+rain/i, "sleet"],
   [/blowing snow|snow.*wind|wind.*snow/i, "windy--snow"],
   [/scattered.*snow|snow shower|isolated.*snow|chance.*snow/i, "snow--scattered"],
   [/snow|flurr/i, "snow"],
