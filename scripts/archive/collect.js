@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* ------------------------------------------------------------------ *
- * One archive run: Snow-Forecast (all tiers), Open-Meteo ensembles and
- * SNOTEL, each saved raw and as archive rows.
+ * One archive run: Snow-Forecast (all tiers), Open-Meteo ensembles, SNOTEL,
+ * NWS gridpoints and OnTheSnow, each saved raw and as archive rows.
  *
  *   node scripts/archive/collect.js <outDir>
  *
@@ -20,6 +20,8 @@ import { rowSink } from "./common.js";
 import * as sf from "./snow-forecast.js";
 import * as ens from "./ensembles.js";
 import * as snotel from "./snotel.js";
+import * as nws from "./nws.js";
+import * as ots from "./onthesnow.js";
 
 const root = new URL("../..", import.meta.url).pathname;
 const outDir = process.argv[2];
@@ -58,6 +60,12 @@ await run("open-meteo-ensemble", (sink, rawDir) =>
 
 await run("snotel", (sink, rawDir) =>
   snotel.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+await run("nws", (sink, rawDir) =>
+  nws.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+await run("onthesnow", (sink, rawDir) =>
+  ots.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
 for (const s of Object.values(manifest.sources)) delete s.elevations;
 await writeFile(`${outDir}/manifest.json`, JSON.stringify(manifest, null, 1));

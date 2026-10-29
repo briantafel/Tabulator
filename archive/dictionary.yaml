@@ -85,8 +85,35 @@ sources:
       - AWDB reports English units in station-local standard time; rows are converted to metric and UTC.
       - No Canadian coverage. Revelstoke, Whistler, Lake Louise and Kicking Horse need another source.
 
+  nws:
+    name: US National Weather Service gridpoint forecast
+    kind: forecast
+    url: https://api.weather.gov/gridpoints/{office}/{x},{y} (found from each resort's `nws` point via /points)
+    cadence: twice daily
+    since: 2026-10-29 (second archive patch)
+    raw: every gridpoint response, gzipped JSON
+    notes:
+      - issued_at is the gridpoint's own updateTime — the only source here that states when its forecast was made.
+      - Each value has its own window (validTime), from one hour to several days. Rows keep those windows as given.
+      - US resorts only. station_id is the grid cell, office/x,y.
+  onthesnow:
+    name: OnTheSnow resort snow report and skier reports
+    kind: observation
+    url: https://www.onthesnow.com/{otsPath}/skireport and /ski-report-reviews
+    cadence: twice daily
+    since: 2026-10-29 (second archive patch)
+    raw: both pages for every resort, gzipped HTML
+    notes:
+      - >
+        The snow report page (resort-reported daily snowfall, base depth in
+        season, OnTheSnow's own 5-day snow forecast) is archived RAW ONLY
+        for now. Its parser is written once a winter page has been seen,
+        and then runs over every page saved since this date.
+      - Skier reports are parsed into rows (text, photo URL). Reporter names are not archived. station_id is OnTheSnow's report id.
+      - Covers all 40 resorts, including the four Canadian ones.
+
 variables:
-  snow: { unit: cm, meaning: New snowfall over the valid period. Snow-Forecast prints an em-dash for none; stored as 0. }
+  snow: { unit: cm, meaning: New snowfall over the valid period. Snow-Forecast prints an em-dash for none; stored as 0. NWS gives it in mm and is converted. }
   rain: { unit: mm, meaning: Rain over the valid period (Snow-Forecast). }
   precip: { unit: mm, meaning: Total precipitation, liquid equivalent, over the valid period (ensembles). }
   temp_max: { unit: C, meaning: Maximum air temperature over the period. }
@@ -105,6 +132,15 @@ variables:
   "history_*": { unit: null, meaning: Snow-Forecast's powder-day counts, verbatim text. }
   snow_depth: { unit: cm, meaning: Snow depth on the ground at a SNOTEL station. }
   swe: { unit: mm, meaning: Snow water equivalent at a SNOTEL station — the water in the snowpack. }
-  temp: { unit: C, meaning: Observed air temperature at a SNOTEL station. }
+  temp: { unit: C, meaning: Air temperature — observed at a SNOTEL station, or forecast by NWS for its window. }
   precip_accum: { unit: mm, meaning: Precipitation accumulated since the water year began (1 October), SNOTEL. }
   candidate_distance: { unit: km, meaning: Distance from a resort's mountain point to a nearby SNOTEL station (kind mapping). value_text is the station name. }
+  reported_new_snow: { unit: cm, meaning: Snow-Forecast's resort-reported fresh snowfall, as a number. Only written when the page gives a figure in cm; "—" stays text-only in reported_fresh_snowfall_depth. As of fetched_at. }
+  reported_top_depth: { unit: cm, meaning: Snow-Forecast's resort-reported upper-mountain snow depth. As of fetched_at. }
+  reported_bottom_depth: { unit: cm, meaning: Snow-Forecast's resort-reported lower-mountain snow depth. As of fetched_at. }
+  snow_level: { unit: m, meaning: NWS snow level — the height above which precipitation falls as snow. }
+  wind_gust: { unit: km/h, meaning: NWS forecast wind gust. }
+  precip_probability: { unit: "%", meaning: NWS probability of precipitation for the window. }
+  sky_cover: { unit: "%", meaning: NWS sky cover. }
+  skier_report: { unit: null, meaning: A first-hand OnTheSnow skier report, verbatim text. valid_start is when it was posted. }
+  skier_report_photo: { unit: null, meaning: The photo URL on that report. }

@@ -16,7 +16,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { createGzip, gzipSync } from "node:zlib";
 
-export const UA = "Tabulator/1.0 (personal ski-trip planner; forecast archive; low volume)";
+export const UA = "Tabulator/1.0 (personal ski-trip planner; forecast archive; low volume; github.com/briantafel/Tabulator)";
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** The archive's columns, in order. to_parquet.py declares the same list

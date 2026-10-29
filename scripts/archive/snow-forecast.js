@@ -130,8 +130,18 @@ export function pageToRows(html, { resort, slug, tier, fetchedAt, runId }) {
       // The powder-days table puts the count first; the depths table, the label.
       if (/^[\d.]+$/.test(label ?? "") && !/^[\d.]+$/.test(value ?? "")) [label, value] = [value, label];
       if (!label || value == null || /snow alerts/i.test(label)) return;
-      rows.push({ ...base, kind: "observation", tier: null, elevation_m: null,
-        variable: `${prefix}${slugKey(label)}`, value_text: value });
+      // As of the fetch: the page states these as current, with no time of its own.
+      const asOf = { kind: "observation", tier: null, elevation_m: null, valid_start: fetchedAt, valid_end: fetchedAt };
+      rows.push({ ...base, ...asOf, variable: `${prefix}${slugKey(label)}`, value_text: value });
+      /* The depths as numbers too, for comparing against OnTheSnow and
+         SNOTEL. Only a figure with its unit counts: "—" stays text-only,
+         because "nothing reported" is not the same as "0 cm fell". */
+      const key = { top_snow_depth: "reported_top_depth", bottom_snow_depth: "reported_bottom_depth",
+        fresh_snowfall_depth: "reported_new_snow" }[slugKey(label)];
+      const num = value.match(/^(\d+(?:\.\d+)?)\s*cm$/);
+      if (prefix === "reported_" && key && num) {
+        rows.push({ ...base, ...asOf, variable: key, value: parseFloat(num[1]), unit: "cm" });
+      }
     });
     side("table.snow-depths-table__table", "reported_");
     side("table.snow-history-table__table", "history_");

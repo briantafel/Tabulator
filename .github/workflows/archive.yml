@@ -2,7 +2,8 @@ name: Archive forecasts
 
 # Started 2026-10-29. Twice a day, 30 minutes after the app's own scrape, it
 # collects every forecast and observation the archive tracks — Snow-Forecast
-# at all three tiers, the Open-Meteo ensembles and SNOTEL — and uploads the
+# at all three tiers, the Open-Meteo ensembles, SNOTEL, NWS gridpoints and
+# OnTheSnow's snow and skier reports — and uploads the
 # raw bytes plus Parquet rows to the private R2 bucket. Nothing is committed.
 # See archive/README.md and archive/dictionary.yaml.
 #

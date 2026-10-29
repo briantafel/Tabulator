@@ -19,8 +19,10 @@ archive/source=<source>/month=<yyyy-mm>/<run_id>.parquet   one row per value
 ```
 
 Sources so far: `snow-forecast` (all three tiers, the spine),
-`open-meteo-ensemble` (ECMWF and GFS, every member) and `snotel` (ground
-truth for US resorts). Every column and variable is defined in
+`open-meteo-ensemble` (ECMWF and GFS, every member), `snotel` (ground truth
+for US resorts), `nws` (gridpoint forecasts with snowfall amounts and issue
+times) and `onthesnow` (resort-reported snow and skier reports; the snow
+report page is raw-only until its parser is written). Every column and variable is defined in
 `dictionary.yaml`.
 
 ## Reading it
