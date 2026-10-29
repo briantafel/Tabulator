@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Table from "./Table.jsx";
-import Chart from "./Chart.jsx";
 
 /* The same two check states as the resort sheet's naming row — Brian's own
    paths, kept in his coordinates. Black here rather than white: the sheet
@@ -30,14 +29,13 @@ const CHECK_FULL =
 /** The Trips screen, measured off Brian's Tabulator-trips-main export.
  *
  *  Two blocks. Favourites at the top — the same results table as the mountains
- *  screen, on the same column grid, with his 10x10 star before each name and a
- *  two-dot pager beneath. Then the trips themselves, in full-bleed rows that
- *  match the Add-to-trip panel, ending in a ghosted New trip row. */
+ *  screen, on the same column grid, with his 10x10 star before each name.
+ *  Then the trips themselves, in full-bleed rows that match the Add-to-trip
+ *  panel, ending in a ghosted New trip row. */
 export default function Trips({
   trips, favs, data, metric, onOpen, onNewTrip, onEditTrip, onRemoveTrip, onOpenTrip,
   onToggleFav,
 }) {
-  const [page, setPage] = useState(0);
   const [picking, setPicking] = useState(false);
   const [query, setQuery] = useState("");
   const [confirmed, setConfirmed] = useState(false);
@@ -226,20 +224,9 @@ export default function Trips({
           </p>
         ) : (
           <>
-            {page === 0
-              ? <Table data={rows} metric={metric} onOpen={onOpen} favs={favs} />
-              : <Chart data={rows} metric={metric} />}
-            <div className="fav-dots" role="group" aria-label="Favourites view">
-              {[0, 1].map((i) => (
-                <button
-                  key={i}
-                  className={page === i ? "on" : ""}
-                  onClick={() => setPage(i)}
-                  aria-current={page === i}
-                  aria-label={i === 0 ? "Table" : "Chart"}
-                />
-              ))}
-            </div>
+            {/* The table/chart pager is gone for now — Brian is redesigning
+                that switch, 2026-10-28. */}
+            <Table data={rows} metric={metric} onOpen={onOpen} favs={favs} />
           </>
         )}
 

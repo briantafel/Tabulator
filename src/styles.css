@@ -427,17 +427,6 @@ body { background: #F2F2F2; }
 
 .trips .table { margin-top: calc(22.4 * var(--u)); }
 
-/* Two dots, 12 on a 24 pitch — larger than the calendar's 6. */
-.fav-dots {
-  display: flex; justify-content: center; gap: calc(12 * var(--u));
-  margin-top: calc(22.6 * var(--u));
-}
-.fav-dots button {
-  width: calc(12 * var(--u)); height: calc(12 * var(--u));
-  flex: none; padding: 0; border-radius: 50%; background: #DBDBDB;
-}
-.fav-dots button.on { background: #0F0F0F; }
-
 /* Trip rows: full bleed, 82.5 pitch, rule on every edge. */
 .trip-list { margin: calc(29 * var(--u)) -16px 0; }
 /* With no favourites the block above is a heading, a rule and two lines of
