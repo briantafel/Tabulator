@@ -113,12 +113,24 @@ body { background: #F2F2F2; }
 .gear { display: flex; width: calc(32 * var(--u)); height: calc(32 * var(--u)); flex: none; padding: 0; }
 .gear svg { width: 100%; height: 100%; flex: none; fill: currentColor; stroke: none; display: block; }
 
+/* Settings — Brian's export, Figma 2142:674. One grey block from the top of
+   the screen to 240: the header band shrinks to its 56 row and turns grey,
+   the panel continues it to 240. Labels sit 6 above their controls, the two
+   settings 20 apart, the stamps 29 below the last control. */
+.bar.open {
+  background: var(--line); height: calc(56 * var(--u)); margin-bottom: 0;
+}
 .settings {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 12px 22px 14px; border-bottom: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
+  padding: 12px 22px 11px; background: var(--line);
   font-size: 13px; color: #666;
 }
-.settings .set { display: inline-flex; align-items: center; gap: 12px; }
+.settings .set { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.settings .set-label { line-height: 16px; }
+.settings .set-row { display: flex; align-items: center; gap: 7px; }
+.settings .pill.sm button { line-height: 15px; }
+.settings .link { line-height: 18px; }
+.settings .stamps { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 9px; line-height: 14px; }
 .link { color: var(--red); font-weight: 600; font-size: 13px; }
 
 .body { flex: 1; padding: 0 16px 30px; }

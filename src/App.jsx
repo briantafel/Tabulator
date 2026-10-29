@@ -110,6 +110,11 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("favs", favs); }, [favs]);
   useEffect(() => { saveLocal("metric", metric); }, [metric]);
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
+  /* The browser's own chrome follows the grey panel while it is open. */
+  useEffect(() => {
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute("content", settings ? "#ECECEC" : "#ffffff");
+  }, [settings]);
 
   const data = useMemo(
     () =>
@@ -201,8 +206,10 @@ export default function Tabulator() {
   return (
     <div className="app">
       <div className="phone">
-        <header className="bar">
-          <span className="mark">Tabulator</span>
+        <header className={`bar${settings ? " open" : ""}`}>
+          {/* Brian's settings export (Figma 2142:674): open, the header names
+              the panel it heads and turns the same grey. */}
+          <span className="mark">{settings ? "Settings" : "Tabulator"}</span>
           <button className="gear" onClick={() => setSettings((s) => !s)} aria-label="Settings">
             <svg viewBox="0 0 32 32" aria-hidden="true">
               <path d="M27.0033 16.7619C27.0033 16.5119 27.0033 16.2619 27.0033 16.0018C27.0033 15.7418 27.0033 15.4918 27.0033 15.2317L28.9235 13.5515C29.2775 13.2396 29.5097 12.8125 29.5793 12.3458C29.6488 11.8791 29.5512 11.4029 29.3035 11.0012L26.9433 7.00076C26.7679 6.69698 26.5157 6.44467 26.212 6.26913C25.9083 6.09359 25.5638 6.001 25.213 6.00064C24.9957 5.99897 24.7795 6.03275 24.573 6.10065L22.1427 6.92075C21.7231 6.64192 21.2854 6.39134 20.8325 6.17066L20.3225 3.65036C20.231 3.18991 19.9805 2.77629 19.6148 2.48192C19.2492 2.18754 18.7916 2.03117 18.3222 2.04016H13.6417C13.1723 2.03117 12.7147 2.18754 12.3491 2.48192C11.9834 2.77629 11.7329 3.18991 11.6414 3.65036L11.1314 6.17066C10.6752 6.39128 10.2342 6.64186 9.8112 6.92075L7.43092 6.06064C7.22219 6.00626 7.00604 5.986 6.79084 6.00064C6.44007 6.001 6.09557 6.09359 5.79188 6.26913C5.4882 6.44467 5.23602 6.69698 5.06063 7.00076L2.70035 11.0012C2.46691 11.4023 2.38016 11.872 2.45497 12.33C2.52977 12.7879 2.76148 13.2056 3.1104 13.5115L5.00062 15.2417C5.00062 15.4918 5.00062 15.7418 5.00062 16.0018C5.00062 16.2619 5.00062 16.5119 5.00062 16.7719L3.1104 18.4521C2.75162 18.7602 2.51358 19.1853 2.43852 19.6522C2.36345 20.1191 2.45621 20.5975 2.70035 21.0024L5.06063 25.0029C5.23602 25.3067 5.4882 25.559 5.79188 25.7345C6.09557 25.9101 6.44007 26.0027 6.79084 26.003C7.00822 26.0047 7.22441 25.9709 7.43092 25.903L9.86121 25.0829C10.2808 25.3618 10.7185 25.6123 11.1714 25.833L11.6814 28.3533C11.7729 28.8138 12.0234 29.2274 12.3891 29.5218C12.7547 29.8161 13.2123 29.9725 13.6817 29.9635H18.4022C18.8716 29.9725 19.3292 29.8161 19.6948 29.5218C20.0605 29.2274 20.311 28.8138 20.4025 28.3533L20.9125 25.833C21.3687 25.6124 21.8097 25.3618 22.2327 25.0829L24.653 25.903C24.8595 25.9709 25.0757 26.0047 25.2931 26.003C25.6438 26.0027 25.9883 25.9101 26.292 25.7345C26.5957 25.559 26.8479 25.3067 27.0233 25.0029L29.3035 21.0024C29.537 20.6014 29.6237 20.1317 29.5489 19.6737C29.4741 19.2158 29.2424 18.798 28.8935 18.4921L27.0033 16.7619ZM25.213 24.0028L21.7826 22.8427C20.9796 23.5228 20.0618 24.0545 19.0723 24.4128L18.3622 28.0033H13.6417L12.9316 24.4529C11.9499 24.0844 11.0371 23.5536 10.2313 22.8827L6.79084 24.0028L4.43056 20.0023L7.15088 17.602C6.96596 16.5668 6.96596 15.5069 7.15088 14.4717L4.43056 12.0014L6.79084 8.00088L10.2213 9.16102C11.0243 8.48083 11.9421 7.94913 12.9316 7.59083L13.6417 4.0004H18.3622L19.0723 7.55082C20.054 7.91929 20.9668 8.45007 21.7726 9.12101L25.213 8.00088L27.5733 12.0014L24.853 14.4016C25.0379 15.4369 25.0379 16.4968 24.853 17.532L27.5733 20.0023L25.213 24.0028Z" />
@@ -213,23 +220,26 @@ export default function Tabulator() {
 
         {settings && (
           <div className="settings">
-            {/* Each label travels with its pill, so a narrow screen wraps a
-                whole setting onto the next line rather than splitting one. */}
-            <span className="set">
-              <span>Units</span>
+            {/* Label above control, Brian's export. Reload sits beside the
+                weather toggle it most often follows. */}
+            <div className="set">
+              <span className="set-label">Units</span>
               <span className="pill sm">
                 <button className={!metric ? "on" : ""} onClick={() => setMetric(false)}>in / °F</button>
                 <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
               </span>
-            </span>
-            <span className="set">
-              <span>Weather</span>
-              <span className="pill sm">
-                <button className={wxSource !== "sf" ? "on" : ""} onClick={() => setWxSource("nws")}>NWS</button>
-                <button className={wxSource === "sf" ? "on" : ""} onClick={() => setWxSource("sf")}>Snow-Forecast</button>
-              </span>
-            </span>
-            <button className="link" onClick={load}>Reload forecast</button>
+            </div>
+            <div className="set">
+              <span className="set-label">Weather</span>
+              <div className="set-row">
+                <span className="pill sm">
+                  <button className={wxSource !== "sf" ? "on" : ""} onClick={() => setWxSource("nws")}>NWS</button>
+                  <button className={wxSource === "sf" ? "on" : ""} onClick={() => setWxSource("sf")}>Snow-Forecast</button>
+                </span>
+                <button className="link" onClick={load}>Reload forecast</button>
+              </div>
+            </div>
+            <div className="stamps">
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {/* Was a pink banner over the results; Brian asked for it here
                 instead, reading like the sample-data line. Quieter, but the
@@ -251,6 +261,7 @@ export default function Tabulator() {
                 })}
               </span>
             )}
+            </div>
           </div>
         )}
 
