@@ -10,8 +10,12 @@ name: Archive forecasts
 # Needs four repository secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
 # R2_SECRET_ACCESS_KEY, R2_BUCKET.
 #
-# Run it by hand from the Actions tab. Tick "backfill" once to also load
-# every real forecast.json already in git history into the archive.
+# Run it by hand from the Actions tab. One-time extras, each a checkbox:
+#   backfill          every real forecast.json already in git history
+#   backfill_models   two past winters of ECMWF/GFS forecasts (Open-Meteo
+#                     previous runs) and SNOTEL daily history — over an hour
+#   import_hindcast   Snow-Forecast hindcast files uploaded by hand to the
+#                     bucket's imports/ folder (subscriber data; never in git)
 on:
   schedule:
     - cron: "45 6 * * *"    # 06:45 UTC
@@ -20,6 +24,14 @@ on:
     inputs:
       backfill:
         description: "Also archive the forecast.json history from git (one-time)"
+        type: boolean
+        default: false
+      backfill_models:
+        description: "Also backfill two winters of model forecasts + SNOTEL history (one-time, ~75 min)"
+        type: boolean
+        default: false
+      import_hindcast:
+        description: "Also import Snow-Forecast hindcast files from the bucket's imports/ folder"
         type: boolean
         default: false
 
@@ -34,7 +46,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 150   # a normal run takes ~15 min; backfill_models alone is over an hour
     steps:
       - uses: actions/checkout@v4
         with:
@@ -83,6 +95,30 @@ jobs:
         if: inputs.backfill
         run: node scripts/archive/backfill-git.js out/backfill-rows
 
+      - name: Backfill model forecasts and SNOTEL history
+        id: backfill_models
+        if: inputs.backfill_models
+        continue-on-error: true
+        run: node scripts/archive/backfill-models.js out/backfill-models
+
+      - name: Fetch and parse hindcast imports
+        id: hindcast
+        if: inputs.import_hindcast
+        continue-on-error: true
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/imports/" imports/ --recursive --exclude "*" --include "*.ndjson.gz" --endpoint-url "$ENDPOINT" --only-show-errors
+          ls imports/*.ndjson.gz || { echo "::error::No .ndjson.gz files in the bucket's imports/ folder"; exit 1; }
+          node scripts/archive/import-hindcast.js imports/*.ndjson.gz out/hindcast-rows
+
       - name: Package raw files and Parquet
         run: |
           test -f out/manifest.json || { echo "::error::collect.js wrote no manifest"; exit 1; }
@@ -97,9 +133,23 @@ jobs:
             mkdir -p "up/raw/source=$src/date=$DATE"
             tar -cf "up/raw/source=$src/date=$DATE/$RUN_ID.tar" -C "$dir" .
           done
-          if [ -d out/backfill-rows ]; then
-            for m in out/backfill-rows/*/; do
-              python3 scripts/archive/to_parquet.py "$m" up/archive backfill-git "$(basename "$m")"
+          # One-time extras: each folder holds <yyyy-mm>/ subfolders of rows.
+          for pair in backfill-rows:backfill-git backfill-models:backfill-models hindcast-rows:hindcast-import; do
+            dir="out/${pair%%:*}"; name="${pair##*:}"
+            # Each hindcast import gets its own file name, so a later import
+            # (more winters, more tiers) adds to the archive instead of replacing.
+            [ "$name" = hindcast-import ] && name="hindcast-$RUN_ID"
+            [ -d "$dir" ] || continue
+            for m in "$dir"/*/; do
+              [ "$(basename "$m")" = raw ] && continue
+              python3 scripts/archive/to_parquet.py "$m" up/archive "$name" "$(basename "$m")"
+            done
+          done
+          if [ -d out/backfill-models/raw ]; then
+            for dir in out/backfill-models/raw/*/; do
+              src=$(basename "$dir")
+              mkdir -p "up/raw/source=$src/date=$DATE"
+              tar -cf "up/raw/source=$src/date=$DATE/backfill-models.tar" -C "$dir" .
             done
           fi
           cp out/manifest.json "up/runs/$RUN_ID.json"
@@ -122,10 +172,22 @@ jobs:
           aws s3 cp up "s3://$R2_BUCKET/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           # Prove it landed rather than trusting the copy's exit code.
           aws s3 ls "s3://$R2_BUCKET/runs/$RUN_ID.json" --endpoint-url "$ENDPOINT"
+          # Imported hindcast files have been turned into rows: keep them as
+          # the raw record, out of imports/ so they are not imported twice.
+          if [ "${{ steps.hindcast.outcome }}" = "success" ]; then
+            for f in imports/*.ndjson.gz; do
+              aws s3 mv "s3://$R2_BUCKET/imports/$(basename "$f")" \
+                "s3://$R2_BUCKET/raw/source=snow-forecast-hindcast/imported/$(basename "$f")" \
+                --endpoint-url "$ENDPOINT" --only-show-errors
+            done
+          fi
 
-      - name: Fail the run if any source fell short
-        if: steps.collect.outcome == 'failure'
+      - name: Fail the run if any source or one-time job fell short
+        if: steps.collect.outcome == 'failure' || steps.backfill_models.outcome == 'failure' || steps.hindcast.outcome == 'failure'
         run: |
+          [ "${{ steps.backfill_models.outcome }}" = "failure" ] && echo "::error::The model/SNOTEL backfill failed — see its step. Whatever it collected was still uploaded."
+          [ "${{ steps.hindcast.outcome }}" = "failure" ] && echo "::error::The hindcast import failed — see its step. The files stay in imports/ to retry."
+          [ "${{ steps.collect.outcome }}" = "failure" ] || exit 1
           jq -r '.sources | to_entries[] | "\(.key): ok=\(.value.ok) rows=\(.value.rows) \(.value.error // "")"' out/manifest.json
           echo "::error::One or more archive sources failed — see the Collect step. What succeeded was still uploaded."
           exit 1

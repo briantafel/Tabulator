@@ -16,7 +16,7 @@ conventions:
 
 columns:
   source: Which source produced the row. One of the keys under `sources`.
-  kind: forecast | observation | mapping (a resort-to-station candidate, see snotel).
+  kind: forecast | observation | hindcast (a source's model record of past weather — not a forecast, not a measurement) | mapping (a resort-to-station candidate, see snotel).
   resort_id: Tabulator's own resort ID from src/data/resorts.json. Null on station observations.
   tier: top | mid | bot for Snow-Forecast; mid for the ensembles (requested at Snow-Forecast's mid elevation); null otherwise.
   elevation_m: Height the value is for, in metres, as the source states it.
@@ -74,7 +74,7 @@ sources:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
     url: https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1
-    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily
+    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily. A one-time backfill (run_id backfill-models, parser_version snotel-history-1) adds daily readings for Nov–Apr of 2024-25 and 2025-26.
     since: 2026-10-29
     raw: station list and every data response, gzipped JSON
     notes:
@@ -112,6 +112,29 @@ sources:
       - Skier reports are parsed into rows (text, photo URL). Reporter names are not archived. station_id is OnTheSnow's report id.
       - Covers all 40 resorts, including the four Canadian ones.
 
+  open-meteo-previous-runs:
+    name: Open-Meteo Previous Runs API (one-time backfill)
+    kind: forecast
+    url: https://previous-runs-api.open-meteo.com/v1/forecast
+    models:
+      ecmwf_ifs025: ECMWF IFS, 0.25°, deterministic
+      gfs_seamless: NOAA GFS, deterministic
+    coverage: Nov–Apr of 2024-25 and 2025-26, every resort, run_id backfill-models
+    notes:
+      - What each model forecast for each past hour from the runs 0–7 days before it. 6-hour blocks like the ensembles.
+      - period_label is the source's own lead label (previous_day0 … previous_day7) and is exact. issued_at is APPROXIMATE (valid_start minus that many days); the archive has no exact run time for these.
+      - Snowfall, precipitation and temperature only, to stay inside the free tier's limits.
+  snow-forecast-hindcast:
+    name: Snow-Forecast.com hindcast ("Past Weather"), subscriber-only
+    kind: hindcast
+    url: https://www.snow-forecast.com/resorts/{slug}/hindcasts/{yyyy-mm-dd}/{tier}
+    coverage: pulled by hand in Brian's logged-in Chrome (scripts/archive/sf-hindcast-runner.browser.js), imported from the bucket's imports/ folder. First pull planned 2026-10-29 — the last two winters, mid tier. Available back to 2007.
+    raw: the imported file itself, kept under raw/source=snow-forecast-hindcast/imported/
+    notes:
+      - Snow-Forecast's own model record of what happened, per AM / PM / night period. Not what it forecast days ahead, and not a measurement. Its use is comparison against SNOTEL — where Snow-Forecast runs high or low at each resort.
+      - Subscriber data. Lives only in the private bucket; never committed to the public repo or shared.
+      - Same period-hour assumption as snow-forecast (AM 06–12, PM 12–18, night 18–06 local).
+
 variables:
   snow: { unit: cm, meaning: New snowfall over the valid period. Snow-Forecast prints an em-dash for none; stored as 0. NWS gives it in mm and is converted. }
   rain: { unit: mm, meaning: Rain over the valid period (Snow-Forecast). }
@@ -144,3 +167,4 @@ variables:
   sky_cover: { unit: "%", meaning: NWS sky cover. }
   skier_report: { unit: null, meaning: A first-hand OnTheSnow skier report, verbatim text. valid_start is when it was posted. }
   skier_report_photo: { unit: null, meaning: The photo URL on that report. }
+  wind_arrow_deg: { unit: deg, meaning: Rotation of Snow-Forecast's hindcast wind arrow, as drawn. Whether it points from or toward the wind is not yet confirmed — treat as a direction, not a bearing. }

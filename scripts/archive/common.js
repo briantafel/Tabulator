@@ -27,15 +27,20 @@ export const COLUMNS = [
   "variable", "value", "value_text", "unit", "model", "member", "run_id", "parser_version",
 ];
 
-/** Fetch with retries. Returns { status, text }. A 404 is not retried. */
+/** Fetch with retries. Returns { status, text }.
+ *  A 4xx other than 429 is returned at once, unretried, with its body — the
+ *  body is usually the source saying exactly what it rejected. A 429 (rate
+ *  limit) waits at least a minute before trying again. */
 export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {} } = {}) {
-  let lastErr;
+  let lastErr, wait = 0;
   for (let attempt = 0; attempt <= retries; attempt++) {
-    if (attempt) await sleep(delayMs * (attempt + 1));
+    if (attempt) await sleep(Math.max(wait, delayMs * (attempt + 1)));
+    wait = 0;
     try {
       const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "en", ...headers } });
       const text = await res.text();
-      if (res.status === 404) return { status: 404, text };
+      if (res.status >= 400 && res.status < 500 && res.status !== 429) return { status: res.status, text };
+      if (res.status === 429) { wait = 60000 * (attempt + 1); throw new Error("HTTP 429 (rate limited)"); }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return { status: res.status, text };
     } catch (e) { lastErr = e; }

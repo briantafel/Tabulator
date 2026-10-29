@@ -163,6 +163,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
         try {
           const { status, text } = await fetchText(url, { delayMs: DELAY_MS });
           if (status === 404) throw new Error(`404 — slug "${slug}" is wrong or was renamed`);
+          if (status !== 200) throw new Error(`HTTP ${status}`);
           await saveRaw(`${rawDir}/${slug}-${tier}.html.gz`, text);
           const { rows, elevation } = pageToRows(text, { resort, slug, tier, fetchedAt, runId });
           if (!rows.length) throw new Error("page parsed to zero rows");

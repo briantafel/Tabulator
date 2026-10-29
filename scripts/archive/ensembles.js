@@ -121,7 +121,7 @@ export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, ru
       if (elevation) q.set("elevation", String(elevation));
       try {
         const { status, text } = await fetchText(`${URL_BASE}?${q}`, { retries: 3, delayMs: 5000 });
-        if (status !== 200) throw new Error(`HTTP ${status}`);
+        if (status !== 200) throw new Error(`HTTP ${status}: ${text.slice(0, 200)}`);
         await saveRaw(`${rawDir}/${resort.id}-${model}.json.gz`, text);
         const out = responseToRows(JSON.parse(text), { resort, model, elevation, fetchedAt, runId });
         out.rows.forEach((r) => sink.write(r));
