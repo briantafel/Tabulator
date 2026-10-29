@@ -34,7 +34,9 @@ export default function Radar({ resorts, dates, metric, onJump }) {
       <div className="rd-scroll">
         <div
           className="rd-grid"
-          style={{ gridTemplateColumns: `92px repeat(${dates.length}, 28px)` }}
+          /* The name column takes the slack, so the day columns sit against
+             the right margin like every other right-hand edge in the app. */
+          style={{ gridTemplateColumns: `minmax(92px, 1fr) repeat(${dates.length}, 28px)` }}
         >
           <span />
           {dates.map((d, i) => (
