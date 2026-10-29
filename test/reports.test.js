@@ -78,11 +78,14 @@ test("real data is only unfiltered when it says why", () => {
 
 test("the shipped fixture is well formed and declares what it is", async () => {
   const j = JSON.parse(await readFile(new URL("../public/reports.json", import.meta.url), "utf8"));
-  // Either it is invented (synthetic) or it is real but out of season (demo).
-  // Silence would mean a section that empties itself without explanation.
-  assert.ok(j.synthetic || j.demo,
-    "the fixture must say why its reports survive the seven-day window");
-  assert.ok(j.note, "and it must say in words where the data came from");
+  // Either it is a dated scrape (the live feed, since 2026-10-28), or a
+  // fixture that says why its reports survive the window: invented
+  // (synthetic) or real but out of season (demo). Silence would mean a
+  // section that empties itself without explanation.
+  const scraped = j.source === "OnTheSnow" && !Number.isNaN(Date.parse(j.generatedAt));
+  assert.ok(scraped || j.synthetic || j.demo,
+    "reports.json must be a dated scrape or say why its reports survive the seven-day window");
+  if (!scraped) assert.ok(j.note, "a fixture must say in words where the data came from");
   const ids = Object.keys(j.resorts);
   assert.ok(ids.length >= 20, `only ${ids.length} resorts have reports`);
   for (const id of ids) {
