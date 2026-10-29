@@ -6,6 +6,7 @@ import Table from "./components/Table.jsx";
 import Chart from "./components/Chart.jsx";
 import Radar from "./components/Radar.jsx";
 import Detail from "./components/Detail.jsx";
+import PlaceSheet from "./components/PlaceSheet.jsx";
 import Trips from "./components/Trips.jsx";
 import TripEdit from "./components/TripEdit.jsx";
 import TripDetail from "./components/TripDetail.jsx";
@@ -17,6 +18,7 @@ import { score } from "./lib/scoring.js";
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { bySnow } from "./lib/rank.js";
+import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
 
@@ -71,6 +73,8 @@ export default function Tabulator() {
   const [shown, setShown] = useState(false);
   const [page, setPage] = useState(0); // 0 table, 1 chart
   const [open, setOpen] = useState(null);
+  /* A range or state opened from the radar paragraph: { title, rows }. */
+  const [place, setPlace] = useState(null);
   const [trips, setTrips] = useState(() => loadSaved("trips", []));
   /* { id } while the edit screen is up; the extra `leaving` flag drives the
      slide back out, because the screen has to finish moving before it goes. */
@@ -194,6 +198,24 @@ export default function Tabulator() {
      opens a picker that calls this same toggle. */
   const toggleFav = (name) =>
     setFavs((f) => (f.includes(name) ? f.filter((x) => x !== name) : [...f, name]));
+
+  /* A tap in the radar paragraph. Scored over the same days the paragraph
+     read — today to the end of the forecast — so the card's numbers are the
+     paragraph's numbers. */
+  const openPlace = (link) => {
+    if (!feed) return;
+    const today = new Date();
+    const t = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    const from = Math.max(0, dates.findIndex((d) => d >= t));
+    const ids = new Set(membersOf(link));
+    const rows = feed.resorts
+      .filter((r) => ids.has(r.id))
+      .map((r) => score(r, from, dates.length - 1, feed.history))
+      .sort(bySnow);
+    if (!rows.length) return;
+    if (link.kind === "resort") setOpen(rows[0]);
+    else setPlace({ title: titleOf(link), rows });
+  };
 
   const jumpToDate = (i) => {
     setMode("calendar");
@@ -368,7 +390,7 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} />
+            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} onPlace={openPlace} />
           )}
 
           {feed && tab === "trips" && !editing && !viewing && (
@@ -476,6 +498,14 @@ export default function Tabulator() {
           ))}
         </nav>
       </div>
+
+      <PlaceSheet
+        place={place}
+        metric={metric}
+        favs={favs}
+        onClose={() => setPlace(null)}
+        onOpen={(r) => { setPlace(null); setOpen(r); }}
+      />
 
       <Detail
         r={open}

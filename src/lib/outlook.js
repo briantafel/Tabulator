@@ -66,11 +66,6 @@ const WET_DAY_CM = 1; // a day counts toward "over the next N days" from here
 const iso = (d) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-const listOf = (names) =>
-  names.length <= 1 ? names.join("")
-    : names.length === 2 ? `${names[0]} and ${names[1]}`
-      : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
-
 /** Mean of a group's two best totals — one lucky resort should not make a
  *  range the best bet on its own. */
 const strength = (totals) => {
@@ -147,8 +142,9 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
   for (const r of bestRows) states.set(r.state, Math.max(states.get(r.state) ?? 0, r.total));
   const topResort = bestRows.reduce((a, b) => (b.total > a.total ? b : a));
   const closer = states.size > 1
-    ? [...states.entries()].sort((a, b) => b[1] - a[1])[0][0]
-    : topResort.name;
+    ? { t: [...states.entries()].sort((a, b) => b[1] - a[1])[0][0], link: { kind: "state" } }
+    : { t: topResort.name, link: { kind: "resort", id: topResort.id } };
+  closer.link.key = closer.t;
 
   const inches = cmToIn(biggest.total);
   const peakDay = cmToIn(Math.max(...rows.filter((r) => crossingNames.has(r.range)).flatMap((r) => r.snow)));
@@ -157,17 +153,45 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
     ? `${Math.max(1, Math.round(biggest.total))}cm`
     : `${Math.max(1, Math.round(inches))}"`;
 
+  /* Brian, 2026-10-29: each range is tappable, and so is the place the
+     sentence closes on. "the" stays outside the link — he bracketed
+     "the [Sierra]" — but inside the red, which runs across the whole list. */
+  const place = (label, link) => [
+    { t: "the ", hot: true },
+    { t: label.replace(/^the /, ""), hot: true, link },
+  ];
+  const kindOf = (name) => (units.has(name) && rows.some((r) => r.sub === name) ? "sub" : "range");
+  const through = [];
+  crossing.forEach((g, i) => {
+    if (i) through.push({ t: i === crossing.length - 1 ? " and " : ", ", hot: true });
+    through.push(...place(g.name, { kind: "range", key: g.name }));
+  });
+
   return [
     { t: `A ${word} storm is moving through `, hot: false },
-    { t: listOf(crossing.map((g) => g.name)), hot: true },
+    ...through,
     { t: ", with up to ", hot: false },
     { t: amount, hot: true },
     { t: " falling over ", hot: false },
     { t: over, hot: true },
     { t: ". The best bet for snow is ", hot: false },
-    { t: bestName, hot: true },
+    ...place(bestName, { kind: kindOf(bestName), key: bestName }),
     { t: ", with ", hot: false },
-    { t: closer, hot: true },
+    { t: closer.t, hot: true, link: closer.link },
     { t: " the strongest move right now.", hot: false },
   ];
 }
+
+/** The resorts a tapped place stands for. */
+export function membersOf(link) {
+  if (!link) return [];
+  if (link.kind === "resort") return [link.id];
+  const field = link.kind === "sub" ? "sub" : link.kind === "state" ? "state" : "range";
+  return Object.entries(RANGES).filter(([, v]) => v[field] === link.key).map(([id]) => id);
+}
+
+/** Heading for a place's card: "Sierra", "Northern Rockies", "Montana". */
+export const titleOf = (link) => {
+  const t = String(link?.key ?? "").replace(/^the /, "");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};

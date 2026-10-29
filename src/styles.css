@@ -405,6 +405,17 @@ body { background: #F2F2F2; }
   color: var(--fill);
 }
 .rd-outlook b { font-weight: 700; color: var(--mark-red); }
+/* The tappable places read exactly like the rest of the red — Brian's mock
+   gives them no extra mark. Inline, so the paragraph wraps through them. */
+.rd-place {
+  display: inline; padding: 0; background: none; border: 0;
+  font: inherit; letter-spacing: inherit; line-height: inherit; color: var(--mark-red);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.rd-place:active { opacity: .6; }
+/* The region card: the resort sheet's shell around the results table. */
+.place-sheet .table { margin-top: calc(17 * var(--u)); }
+.place-sheet .sheet-head { margin-top: calc(5.8 * var(--u)); }
 
 /* trips */
 /* ------------------------------------------------------------------

@@ -8,7 +8,7 @@ import { outlook } from "../lib/outlook.js";
  *  At six days this reads as "the shape of this week" rather than the
  *  storm-spotting it did over Open-Meteo's sixteen. Whether it still earns a
  *  tab is an open question — see claude/RESUME-HERE.md. */
-export default function Radar({ resorts, dates, metric, onJump }) {
+export default function Radar({ resorts, dates, metric, onJump, onPlace }) {
   const rows = useMemo(
     () =>
       [...resorts]
@@ -73,7 +73,16 @@ export default function Radar({ resorts, dates, metric, onJump }) {
       {/* The forecaster's paragraph — Brian's Figma 2142:872. Grey prose, red
           where the numbers speak, like the resort sheet's summary. */}
       <p className="rd-outlook">
-        {said.map((seg, i) => (seg.hot ? <b key={i}>{seg.t}</b> : <span key={i}>{seg.t}</span>))}
+        {said.map((seg, i) => {
+          if (seg.link) {
+            return (
+              <button key={i} className="rd-place" onClick={() => onPlace?.(seg.link)}>
+                {seg.t}
+              </button>
+            );
+          }
+          return seg.hot ? <b key={i}>{seg.t}</b> : <span key={i}>{seg.t}</span>;
+        })}
       </p>
     </div>
   );
