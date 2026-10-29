@@ -106,3 +106,67 @@ export function toDays(periods, limit = 6) {
   }
   return out;
 }
+
+/* ---- The same row, from Snow-Forecast instead ----------------------- *
+ * Settings can switch the row's source. Snow-Forecast writes a sky per
+ * period in its own shorthand — "mod. snow", "snow shwrs", "some clouds" —
+ * so each phrase is translated into the NWS wording the icons and labels
+ * already understand, rather than given a second set of rules. */
+const SF_WORDS = [
+  [/^clear/i, "Clear"],
+  [/some clouds|part cloud/i, "Partly Cloudy"],
+  [/^cloudy|overcast/i, "Cloudy"],
+  [/heavy snow/i, "Heavy Snow"],
+  [/mod\.? snow/i, "Snow"],
+  [/light snow/i, "Light Snow"],
+  [/snow shwrs|snow showers/i, "Snow Showers"],
+  [/sleet/i, "Sleet"],
+  [/freezing|wintry|mixed/i, "Wintry Mix"],
+  [/thunder/i, "Thunderstorms"],
+  [/heavy rain/i, "Heavy Rain"],
+  [/mod\.? rain/i, "Rain"],
+  [/light rain|drizzle/i, "Light Rain"],
+  [/rain shwrs|rain showers/i, "Rain Showers"],
+];
+
+export function sfSky(phrase) {
+  const t = String(phrase ?? "").trim();
+  if (!t) return null;
+  for (const [re, words] of SF_WORDS) if (re.test(t)) return words;
+  // Unknown shorthand: spell it out as best we can and let the icon fall to cloudy.
+  return t.replace(/shwrs/gi, "showers").replace(/\bmod\.\s*/gi, "").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/* Which sky a DAY gets when its morning and afternoon differ: the worse one,
+   because that is the half of the day that decides whether you go. */
+const SEVERITY = [
+  "snow--blizzard", "snow--heavy", "wintry-mix", "sleet", "windy--snow", "snow",
+  "snow--scattered", "rain--heavy", "rain", "rain--scattered", "rain--drizzle",
+  "windy--strong", "cloudy", "mostly-cloudy", "partly-cloudy", "sun",
+];
+const rankOf = (sky) => {
+  const i = SEVERITY.indexOf(iconFor(sky));
+  return i === -1 ? SEVERITY.length : i;
+};
+
+const toF = (c) => (typeof c === "number" ? Math.round((c * 9) / 5 + 32) : null);
+
+/** Snow-Forecast days, in the same shape toDays() gives for NWS: one column
+ *  per day, °F, so the sheet draws both sources with the same markup. The
+ *  daytime periods choose the sky; the night only stands in when a day has
+ *  no daytime left in the table (the evening of the first day). */
+export function sfDays(days, limit = 6) {
+  const out = [];
+  for (const d of days ?? []) {
+    if (!d?.date) continue;
+    const ps = d.periods ?? [];
+    const daytime = ps.filter((p) => p.name !== "night" && p.phrase);
+    const pool = daytime.length ? daytime : ps.filter((p) => p.phrase);
+    const skies = pool.map((p) => sfSky(p.phrase)).filter(Boolean);
+    if (!skies.length) continue;
+    const short = skies.reduce((a, b) => (rankOf(b) < rankOf(a) ? b : a));
+    out.push({ date: d.date, name: d.date, short, icon: iconFor(short), hi: toF(d.tempMax), lo: toF(d.tempMin) });
+    if (out.length >= limit) break;
+  }
+  return out;
+}

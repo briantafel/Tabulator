@@ -53,6 +53,9 @@ export default function Tabulator() {
   const [err, setErr] = useState(null);
 
   const [metric, setMetric] = useState(() => loadSaved("metric", false));
+  /* Where the resort sheet's daily weather row comes from: "nws" (the
+     National Weather Service, US only) or "sf" (Snow-Forecast, every resort). */
+  const [wxSource, setWxSource] = useState(() => loadSaved("wxSource", "nws"));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -100,12 +103,13 @@ export default function Tabulator() {
   const [wa, wb] =
     mode === "days" ? [0, Math.min(days - 1, last)] : [Math.min(a, last), Math.min(b, last)];
 
-  /* The three things worth remembering. Written on change rather than on
+  /* The things worth remembering. Written on change rather than on
      unload: iOS kills a backgrounded home-screen app without firing
      beforeunload, so anything saved at exit is not saved at all. */
   useEffect(() => { saveLocal("trips", trips); }, [trips]);
   useEffect(() => { saveLocal("favs", favs); }, [favs]);
   useEffect(() => { saveLocal("metric", metric); }, [metric]);
+  useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
 
   const data = useMemo(
     () =>
@@ -209,11 +213,22 @@ export default function Tabulator() {
 
         {settings && (
           <div className="settings">
-            <span>Units</span>
-            <div className="pill sm">
-              <button className={!metric ? "on" : ""} onClick={() => setMetric(false)}>in / °F</button>
-              <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
-            </div>
+            {/* Each label travels with its pill, so a narrow screen wraps a
+                whole setting onto the next line rather than splitting one. */}
+            <span className="set">
+              <span>Units</span>
+              <span className="pill sm">
+                <button className={!metric ? "on" : ""} onClick={() => setMetric(false)}>in / °F</button>
+                <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
+              </span>
+            </span>
+            <span className="set">
+              <span>Weather</span>
+              <span className="pill sm">
+                <button className={wxSource !== "sf" ? "on" : ""} onClick={() => setWxSource("nws")}>NWS</button>
+                <button className={wxSource === "sf" ? "on" : ""} onClick={() => setWxSource("sf")}>Snow-Forecast</button>
+              </span>
+            </span>
             <button className="link" onClick={load}>Reload forecast</button>
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {/* Was a pink banner over the results; Brian asked for it here
@@ -456,6 +471,7 @@ export default function Tabulator() {
         metric={metric}
         reports={feed?.reports}
         weather={feed?.weather}
+        wxSource={wxSource}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

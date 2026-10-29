@@ -3,7 +3,7 @@ import { snowWithUnit, tempTxt, windTxt, elevTxt } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
-import { toDays, iconPaths, shortLabel } from "../lib/wx.js";
+import { toDays, sfDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import Dot from "./Dot.jsx";
 
@@ -50,7 +50,7 @@ const RT_X =
 
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
-  reports, weather,
+  reports, weather, wxSource = "nws",
 }) {
   const [adding, setAdding] = useState(false);
   const [removing, setRemoving] = useState(false);
@@ -126,7 +126,11 @@ export default function Detail({
   /* NWS covers the United States only, so most resorts have nothing here
      yet and the section simply does not render — a strip of six dashes
      would be worse than no strip. */
-  const wx = toDays(weather?.resorts?.[r.id]?.periods ?? []);
+  /* Settings picks the row's source. Snow-Forecast covers every resort;
+     NWS covers the US ones, and a Canadian sheet on NWS simply has no row. */
+  const wx = wxSource === "sf"
+    ? sfDays(r.days)
+    : toDays(weather?.resorts?.[r.id]?.periods ?? []);
 
   /* Which trips already carry this resort. The calendar button reads off
      this: a plus while it is in none, a red X once it is in one. */

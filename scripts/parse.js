@@ -18,9 +18,26 @@ const N_PERIODS = DAYS * PERIODS_PER_DAY; // 18
 /** Rows carry an optional leading unit/label cell. The period cells are
  *  always the trailing 18, so slice from the end rather than assuming
  *  an offset — `time` has no label cell while `snow` does. */
+/* The value cells of one row. Each data row opens with a <th> label ("cm",
+ * "max °C"); the time row has none. Only the <td>s are periods.
+ *
+ * 2026-10-28: this used to take "the last 18 cells", which is right only when
+ * the table holds all 18 periods. It usually holds fewer — the first day
+ * starts at whatever period is current — and then the label cell was read as
+ * a period and every value after it sat one slot from its time label. */
 function periodCells($, row) {
-  const cells = $(row).find("td, th").toArray();
+  const cells = $(row).find("td").toArray();
   return cells.slice(Math.max(0, cells.length - N_PERIODS));
+}
+
+/** How many periods each day header covers. Snow-Forecast says so with
+ *  colspan — "Wed28" spans 2 when the table opens at the afternoon. Without
+ *  colspans, the days are full from the back and the first takes the rest. */
+export function daySpans(dayCells, nPeriods) {
+  const spans = dayCells.map((c) => parseInt(c.attribs?.colspan ?? "", 10));
+  if (spans.every((n) => Number.isFinite(n) && n > 0)) return spans;
+  const rest = (dayCells.length - 1) * PERIODS_PER_DAY;
+  return [Math.max(0, nPeriods - rest), ...Array(dayCells.length - 1).fill(PERIODS_PER_DAY)];
 }
 
 const text = ($, el) => $(el).text().replace(/\s+/g, " ").trim();
@@ -108,7 +125,8 @@ export function parseResortPage(html, { now = new Date() } = {}) {
   const dayCells = daysRow.find("td, th").toArray();
   const elevLabel = text($, dayCells[0]);
   const elevs = (elevLabel.match(/(\d+)\s*m/g) || []).map(parseNumber);
-  const headers = dayCells.slice(1, 1 + DAYS).map((c) => text($, c));
+  const headerCells = dayCells.slice(1, 1 + DAYS);
+  const headers = headerCells.map((c) => text($, c));
   const dates = resolveDates(headers, now);
 
   const series = (name, fn) => {
@@ -127,10 +145,15 @@ export function parseResortPage(html, { now = new Date() } = {}) {
   const times = periodCells($, required("time")).map((c) => text($, c).toLowerCase());
 
   const nums = (a) => a.filter((x) => typeof x === "number" && Number.isFinite(x));
+  /* Group by the day headers' own spans, not by counting in threes: a
+     first day that starts in the afternoon has two periods, and counting in
+     threes would hand each day the next day's morning. */
+  const spans = daySpans(headerCells, times.length);
+  const starts = spans.map((_, i) => spans.slice(0, i).reduce((a, b) => a + b, 0));
   const days = [];
-  for (let d = 0; d < DAYS; d++) {
-    const s = d * PERIODS_PER_DAY;
-    const slice = (a) => a.slice(s, s + PERIODS_PER_DAY);
+  for (let d = 0; d < headerCells.length; d++) {
+    const s = starts[d];
+    const slice = (a) => a.slice(s, s + spans[d]);
     const t = slice(tmax), n = slice(tmin), w = slice(wind), f = slice(freeze);
     days.push({
       date: dates[d],

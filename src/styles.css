@@ -118,6 +118,7 @@ body { background: #F2F2F2; }
   padding: 12px 22px 14px; border-bottom: 1px solid var(--line);
   font-size: 13px; color: #666;
 }
+.settings .set { display: inline-flex; align-items: center; gap: 12px; }
 .link { color: var(--red); font-weight: 600; font-size: 13px; }
 
 .body { flex: 1; padding: 0 16px 30px; }

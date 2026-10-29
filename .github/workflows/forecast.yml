@@ -1,7 +1,8 @@
 name: Fetch forecast
 
 # Live again 2026-10-28 (paused 2026-08-25 while the UI was built on sample
-# data). Twice a day it scrapes Snow-Forecast and OnTheSnow, commits whatever
+# data). Twice a day it scrapes Snow-Forecast and OnTheSnow, fetches the NWS
+# forecast for the US resorts, commits whatever
 # changed, and redeploys the site — a commit made by this workflow's own token
 # does NOT trigger pages.yml on its own, so the deploy is kicked explicitly.
 on:
@@ -47,12 +48,21 @@ jobs:
         if: steps.reports.outcome == 'failure'
         run: git checkout -- public/reports.json
 
+      # The NWS row in the resort sheet. The forecast still commits if this
+      # fails, and the run goes red at the end. The script itself decides
+      # whether to write: it keeps the last good file when NWS is down, and
+      # writes the rest when only a point or two failed.
+      - name: Fetch NWS weather
+        id: weather
+        continue-on-error: true
+        run: npm run weather
+
       - name: Commit if changed
         id: commit
         run: |
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
-          git add public/forecast.json public/history.json public/reports.json
+          git add public/forecast.json public/history.json public/reports.json public/weather.json
           if git diff --staged --quiet; then
             echo "no change"
           else
@@ -67,10 +77,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
 
-      - name: Fail the run if the reports scrape failed
-        if: steps.reports.outcome == 'failure'
+      - name: Fail the run if the reports or weather failed
+        if: steps.reports.outcome == 'failure' || steps.weather.outcome == 'failure'
         run: |
-          echo "::error::Skier reports scrape failed — forecast was still committed; reports.json kept from the last good run."
+          if [ "${{ steps.reports.outcome }}" = "failure" ]; then
+            echo "::error::Skier reports scrape failed — forecast was still committed; reports.json kept from the last good run."
+          fi
+          if [ "${{ steps.weather.outcome }}" = "failure" ]; then
+            echo "::error::NWS weather fetch failed — forecast was still committed; see the Fetch NWS weather step for which resorts."
+          fi
           exit 1
 
       # The scrape step already exits non-zero when too few resorts parse, so a

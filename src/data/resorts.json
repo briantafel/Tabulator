@@ -7,7 +7,8 @@
     "notes": [
       "The per-resort key is a Snow-Forecast URL slug. Coordinates and elevations are no longer stored here \u2014 the scraper reads tier elevations off each page.",
       "Palisades is one entry backed by TWO slugs. Snow-Forecast still files the mountain under its former name Squaw-Valley and lists Alpine-Meadows separately; the real resort is the merged, lift-connected operation. Combined per the rule in `combine` below.",
-      "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching."
+      "Slugs follow no pattern. Taos and Revelstoke are bare; Whistler is Whistler-Blackcomb; Whiteface is Whiteface-Mountain. Never guess one \u2014 verify by fetching.",
+      "`nws` is a point ON THE MOUNTAIN (mid-slope, not the base town) for api.weather.gov, US resorts only. NWS answers for the ~2.5km grid cell around it; scripts/fetch-weather.js rejects any point whose grid sits below the resort's base elevation, which is what a town forecast looks like. Added 2026-10-28."
     ]
   },
   "tier": "mid",
@@ -24,7 +25,11 @@
         "Squaw-Valley",
         "Alpine-Meadows"
       ],
-      "otsPath": "california/palisades-tahoe"
+      "otsPath": "california/palisades-tahoe",
+      "nws": [
+        39.192,
+        -120.255
+      ]
     },
     {
       "id": "heavenly",
@@ -33,7 +38,11 @@
       "slugs": [
         "Heavenly-Ski"
       ],
-      "otsPath": "california/heavenly-mountain-resort"
+      "otsPath": "california/heavenly-mountain-resort",
+      "nws": [
+        38.925,
+        -119.925
+      ]
     },
     {
       "id": "kirkwood",
@@ -42,7 +51,11 @@
       "slugs": [
         "Kirkwood-Mountain"
       ],
-      "otsPath": "california/kirkwood"
+      "otsPath": "california/kirkwood",
+      "nws": [
+        38.678,
+        -120.075
+      ]
     },
     {
       "id": "mammoth",
@@ -51,7 +64,11 @@
       "slugs": [
         "Mammoth-Mountain"
       ],
-      "otsPath": "california/mammoth-mountain-ski-area"
+      "otsPath": "california/mammoth-mountain-ski-area",
+      "nws": [
+        37.638,
+        -119.04
+      ]
     },
     {
       "id": "telluride",
@@ -60,7 +77,11 @@
       "slugs": [
         "Telluride"
       ],
-      "otsPath": "colorado/telluride"
+      "otsPath": "colorado/telluride",
+      "nws": [
+        37.92,
+        -107.835
+      ]
     },
     {
       "id": "crested-butte",
@@ -69,7 +90,11 @@
       "slugs": [
         "Crested-Butte-Mountain"
       ],
-      "otsPath": "colorado/crested-butte-mountain-resort"
+      "otsPath": "colorado/crested-butte-mountain-resort",
+      "nws": [
+        38.89,
+        -106.955
+      ]
     },
     {
       "id": "aspen-highlands",
@@ -78,7 +103,11 @@
       "slugs": [
         "Aspen-Highlands"
       ],
-      "otsPath": "colorado/aspen-snowmass"
+      "otsPath": "colorado/aspen-snowmass",
+      "nws": [
+        39.165,
+        -106.862
+      ]
     },
     {
       "id": "steamboat",
@@ -87,7 +116,11 @@
       "slugs": [
         "Steamboat-Ski"
       ],
-      "otsPath": "colorado/steamboat"
+      "otsPath": "colorado/steamboat",
+      "nws": [
+        40.455,
+        -106.775
+      ]
     },
     {
       "id": "snowbird",
@@ -96,7 +129,11 @@
       "slugs": [
         "Snowbird"
       ],
-      "otsPath": "utah/snowbird"
+      "otsPath": "utah/snowbird",
+      "nws": [
+        40.582,
+        -111.6562
+      ]
     },
     {
       "id": "alta",
@@ -105,7 +142,11 @@
       "slugs": [
         "Alta"
       ],
-      "otsPath": "utah/alta-ski-area"
+      "otsPath": "utah/alta-ski-area",
+      "nws": [
+        40.58,
+        -111.63
+      ]
     },
     {
       "id": "jackson-hole",
@@ -114,7 +155,11 @@
       "slugs": [
         "Jackson-Hole"
       ],
-      "otsPath": "wyoming/jackson-hole"
+      "otsPath": "wyoming/jackson-hole",
+      "nws": [
+        43.592,
+        -110.85
+      ]
     },
     {
       "id": "grand-targhee",
@@ -123,7 +168,11 @@
       "slugs": [
         "Grand-Targhee"
       ],
-      "otsPath": "wyoming/grand-targhee-resort"
+      "otsPath": "wyoming/grand-targhee-resort",
+      "nws": [
+        43.782,
+        -110.945
+      ]
     },
     {
       "id": "sun-valley",
@@ -132,7 +181,11 @@
       "slugs": [
         "Sun-Valley"
       ],
-      "otsPath": "idaho/sun-valley"
+      "otsPath": "idaho/sun-valley",
+      "nws": [
+        43.665,
+        -114.385
+      ]
     },
     {
       "id": "big-sky",
@@ -141,7 +194,11 @@
       "slugs": [
         "Big-Sky"
       ],
-      "otsPath": "montana/big-sky-resort"
+      "otsPath": "montana/big-sky-resort",
+      "nws": [
+        45.282,
+        -111.42
+      ]
     },
     {
       "id": "taos",
@@ -150,7 +207,11 @@
       "slugs": [
         "Taos"
       ],
-      "otsPath": "new-mexico/taos-ski-valley"
+      "otsPath": "new-mexico/taos-ski-valley",
+      "nws": [
+        36.585,
+        -105.45
+      ]
     },
     {
       "id": "revelstoke",
@@ -195,7 +256,11 @@
       "slugs": [
         "Whiteface-Mountain"
       ],
-      "otsPath": "new-york/whiteface-mountain-resort"
+      "otsPath": "new-york/whiteface-mountain-resort",
+      "nws": [
+        44.36,
+        -73.88
+      ]
     },
     {
       "id": "stowe",
@@ -204,7 +269,11 @@
       "slugs": [
         "Stowe"
       ],
-      "otsPath": "vermont/stowe-mountain-resort"
+      "otsPath": "vermont/stowe-mountain-resort",
+      "nws": [
+        44.535,
+        -72.795
+      ]
     },
     {
       "id": "killington",
@@ -213,7 +282,11 @@
       "slugs": [
         "Killington"
       ],
-      "otsPath": "vermont/killington-resort"
+      "otsPath": "vermont/killington-resort",
+      "nws": [
+        43.615,
+        -72.808
+      ]
     },
     {
       "id": "jay-peak",
@@ -222,7 +295,11 @@
       "slugs": [
         "Jay-Peak"
       ],
-      "otsPath": "vermont/jay-peak"
+      "otsPath": "vermont/jay-peak",
+      "nws": [
+        44.932,
+        -72.515
+      ]
     }
   ]
 }

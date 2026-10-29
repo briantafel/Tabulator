@@ -14,6 +14,7 @@
     "test:smoke": "node test/smoke.mjs",
     "scrape": "node scripts/scrape.js",
     "scrape:reports": "node scripts/scrape-reports.js",
+    "weather": "node scripts/fetch-weather.js",
     "fixture": "node scripts/make-dev-fixture.js"
   },
   "dependencies": {
