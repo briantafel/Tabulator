@@ -171,7 +171,11 @@ async function runPiece(p) {
   const q = new URLSearchParams({ latitude: lat, longitude: lon, models: p.model, hourly: om.HOURLY.join(","),
     start_date: p.winter[0], end_date: p.winter[1], timezone: "GMT", timeformat: "iso8601" });
   if (elevations[p.resort.id]) q.set("elevation", String(elevations[p.resort.id]));
-  const res = await fetchText(`${om.URL_BASE}?${q}`, { retries: 0 });
+  // Retry network faults. A connect timeout means the request never reached
+  // Open-Meteo, so it cost nothing against the budget; the GFS pieces on
+  // 2026-10-30 failed exactly this way (UND_ERR_CONNECT_TIMEOUT) between
+  // ECMWF pieces that succeeded. Waits 30 s, then 60 s.
+  const res = await fetchText(`${om.URL_BASE}?${q}`, { retries: 2, delayMs: 15000 });
   if (res.status !== 200) {
     const err = new Error(`HTTP ${res.status}: ${res.text.slice(0, 200)}`);
     if (/limit exceeded/i.test(res.text)) err.rateLimited = true;
