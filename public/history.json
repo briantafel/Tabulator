@@ -30,12 +30,12 @@
    "stowe": 0,
    "killington": 0,
    "jay-peak": 0,
-   "palisades": 2,
+   "palisades": 0,
    "heavenly": 1,
-   "kirkwood": 4,
+   "kirkwood": 3,
    "mammoth": 1,
    "mt-baker": 0,
-   "crystal": 1,
+   "crystal": 0,
    "stevens-pass": 0,
    "mt-bachelor": 0,
    "telluride": 0,
@@ -50,14 +50,14 @@
    "big-sky": 0,
    "taos": 0,
    "revelstoke": 0,
-   "whistler": 0,
+   "whistler": 1,
    "lake-louise": 0,
    "kicking-horse": 0,
-   "sugar-bowl": 2,
-   "northstar": 1,
+   "sugar-bowl": 0,
+   "northstar": 0,
    "mt-rose": 0,
-   "sierra-at-tahoe": 2,
-   "homewood": 2,
+   "sierra-at-tahoe": 1,
+   "homewood": 0,
    "vail": 0,
    "breckenridge": 0,
    "arapahoe-basin": 0,
@@ -66,7 +66,13 @@
    "snowbasin": 0,
    "powder-mountain": 0,
    "wolf-creek": 0
+  },
+  "2026-10-30": {
+   "whiteface": 0,
+   "stowe": 0,
+   "killington": 0,
+   "jay-peak": 0
   }
  },
- "updatedAt": "2026-10-29T22:43:07.650Z"
+ "updatedAt": "2026-10-30T12:52:22.604Z"
 }
