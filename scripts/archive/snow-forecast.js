@@ -15,7 +15,7 @@ import * as cheerio from "cheerio";
 import { daySpans, parseNumber, parseSnow, parseWind, resolveDates } from "../parse.js";
 import { addHours, fetchText, saveRaw, sleep, zonedToUtc } from "./common.js";
 
-export const PARSER_VERSION = "sf-archive-1";
+export const PARSER_VERSION = "sf-archive-2";
 const BASE = "https://www.snow-forecast.com/resorts";
 const TIERS = ["top", "mid", "bot"];
 const N_PERIODS = 18;
@@ -39,6 +39,23 @@ const ROWS = {
 const IMPERIAL = /°F|mph|\bin\b|\bft\b/;
 
 const clean = (s) => s.replace(/\s+/g, " ").trim();
+
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+/** The page's own issue time, "Issued: 11am 29 Oct 2026 (local time)" —
+ *  the resort's local time — as UTC. Null when the page does not say, rather
+ *  than a guess: lead time then falls back to fetched_at. (sf-archive-2) */
+export function issuedAt(text, tz) {
+  const m = String(text).replace(/\s+/g, " ").match(/Issued:?\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)\s+(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})/i);
+  if (!m || !tz) return null;
+  const mon = MONTHS.indexOf(m[5].toLowerCase());
+  if (mon < 0) return null;
+  let h = Number(m[1]) % 12;
+  if (m[3].toLowerCase() === "pm") h += 12;
+  const date = `${m[6]}-${String(mon + 1).padStart(2, "0")}-${String(m[4]).padStart(2, "0")}`;
+  const t = Date.parse(zonedToUtc(date, h, tz)) + Number(m[2] ?? 0) * 60e3;
+  return Number.isFinite(t) ? new Date(t).toISOString() : null;
+}
 const slugKey = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 
 /** Parse one page into archive rows. Pure: no network, so it can be run
@@ -80,7 +97,8 @@ export function pageToRows(html, { resort, slug, tier, fetchedAt, runId }) {
 
   const base = {
     source: "snow-forecast", kind: "forecast", resort_id: resort.id, tier,
-    elevation_m: elevation, station_id: slug, fetched_at: fetchedAt, run_id: runId,
+    elevation_m: elevation, station_id: slug, issued_at: issuedAt($.root().text(), resort.tz),
+    fetched_at: fetchedAt, run_id: runId,
     parser_version: PARSER_VERSION,
   };
   const rows = [];

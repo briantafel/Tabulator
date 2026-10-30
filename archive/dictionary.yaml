@@ -46,6 +46,7 @@ sources:
     since: 2026-10-29 at all three tiers; mid tier back to 2026-08-21 via the git backfill
     raw: every page, gzipped HTML
     notes:
+      - issued_at is the page's own "Issued:" time (resort-local, converted to UTC) from parser_version sf-archive-2 on; null before that and wherever the page does not state it.
       - >
         Periods are labelled AM / PM / night in the resort's local time without
         stated hours. valid_start/valid_end ASSUME AM 06–12, PM 12–18, night
@@ -131,7 +132,7 @@ sources:
     name: Snow-Forecast.com hindcast ("Past Weather"), subscriber-only
     kind: hindcast
     url: https://www.snow-forecast.com/resorts/{slug}/hindcasts/{yyyy-mm-dd}/{tier}
-    coverage: pulled by hand in Brian's logged-in Chrome (scripts/archive/sf-hindcast-runner.browser.js), imported from the bucket's imports/ folder. First pull planned 2026-10-29 — the last two winters, mid tier. Available back to 2007.
+    coverage: pulled by hand in Brian's logged-in Chrome (scripts/archive/sf-hindcast-runner.browser.js), imported automatically by the next Archive forecasts run after a file lands in the bucket's imports/ folder. First pull planned — the last two winters, mid tier. Available back to 2007.
     raw: the imported file itself, kept under raw/source=snow-forecast-hindcast/imported/
     notes:
       - Snow-Forecast's own model record of what happened, per AM / PM / night period. Not what it forecast days ahead, and not a measurement. Its use is comparison against SNOTEL — where Snow-Forecast runs high or low at each resort.
