@@ -3,6 +3,8 @@ import { snowWithUnit, tempTxt, windTxt, elevTxt, cmToIn, snowUnit } from "../li
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
+import { resortVoice } from "../lib/voice.js";
+import { copyVoice } from "../lib/flags.js";
 import { toDays, sfDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import { snowpack } from "../lib/depths.js";
@@ -123,7 +125,10 @@ export default function Detail({
 
   if (!shown) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
-  const verdict = resortVerdict(r, metric);
+  /* Two voices for the summary while Brian reads the new one. "classic" is
+     the shipped sentence and the default; ?copy=next switches this browser
+     to voice.js, ?copy=classic switches it back. */
+  const verdict = (copyVoice() === "next" ? resortVoice : resortVerdict)(r, metric);
   /* NWS covers the United States only, so most resorts have nothing here
      yet and the section simply does not render — a strip of six dashes
      would be worse than no strip. */
