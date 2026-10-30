@@ -1,0 +1,101 @@
+name: Backfill history
+
+# The one-time historical backfill for the forecast archive: two past winters
+# of ECMWF/GFS forecasts (Open-Meteo previous runs), SNOTEL daily history, and
+# OnTheSnow monthly history. See scripts/archive/backfill-runner.js.
+#
+# It works in small pieces and marks each done in the bucket, so every run
+# picks up where the last one stopped. It runs itself once a night, just after
+# midnight UTC, spending only part of Open-Meteo's free daily allowance so the
+# twice-daily collection always has enough left. Expect two nights; after that
+# every run finds nothing to do and finishes in about a minute.
+#
+# Separate from "Archive forecasts" so a long backfill can never hold up or
+# take down the regular collection. They share a concurrency group, so the
+# two never run at the same time.
+on:
+  schedule:
+    - cron: "20 0 * * *"    # 00:20 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write    # to open an issue when a piece keeps failing
+
+concurrency:
+  group: archive
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110   # the script stops itself at 95
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DuckDB
+        run: pip install duckdb==2.0.0
+
+      - name: Backfill the next pieces
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: node scripts/archive/backfill-runner.js work
+
+      - name: Open an issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = [
+              context.serverUrl,
+              context.repo.owner,
+              context.repo.repo,
+              "actions/runs",
+              context.runId,
+            ].join("/");
+            const body = [
+              "Run: " + runUrl,
+              "",
+              "Some backfill pieces failed. Everything that succeeded is in the",
+              "bucket and marked done; the failed pieces are retried on the next",
+              "run. The step log lists which pieces and why.",
+            ].join("\n");
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "archive-failure",
+            });
+            if (existing.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: "Forecast archive backfill failed",
+                body,
+                labels: ["archive-failure"],
+              });
+            }

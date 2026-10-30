@@ -23,7 +23,7 @@
  * Values are centimetres (5.08 = the 2" the page shows).
  *
  * Also here: the one-time /historical-snowfall parser — monthly resort
- * totals back to 2012-13 — used by backfill-models.js.
+ * totals back to 2012-13 — used by backfill-runner.js.
  * ------------------------------------------------------------------ */
 
 import { flightRows, parseReportsPage, resolve } from "../parse-reports.js";

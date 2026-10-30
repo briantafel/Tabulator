@@ -74,7 +74,7 @@ sources:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
     url: https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1
-    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily. A one-time backfill (run_id backfill-models, parser_version snotel-history-1) adds daily readings for Nov–Apr of 2024-25 and 2025-26.
+    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily. A one-time backfill (run_id bf-snotel-<year>, parser_version snotel-history-1, workflow backfill.yml) adds daily readings for Nov–Apr of 2024-25 and 2025-26.
     since: 2026-10-29
     raw: station list and every data response, gzipped JSON
     notes:
@@ -100,7 +100,7 @@ sources:
     name: OnTheSnow resort snow report, skier reports and monthly history
     kind: observation (and its own daily snow forecast, kind forecast)
     url: https://www.onthesnow.com/{otsPath}/skireport, /ski-report-reviews, /historical-snowfall
-    cadence: twice daily (snow report, skier reports); one-time (monthly history, run_id backfill-ots-history)
+    cadence: twice daily (snow report, skier reports); one-time (monthly history, run_id bf-ots-history-<resort>, workflow backfill.yml)
     since: 2026-10-29. Snow report parsed into rows from parser_version ots-2; earlier captures that day are raw only.
     raw: every page, gzipped HTML
     notes:
@@ -122,7 +122,7 @@ sources:
     models:
       ecmwf_ifs025: ECMWF IFS, 0.25°, deterministic
       gfs_seamless: NOAA GFS, deterministic
-    coverage: Nov–Apr of 2024-25 and 2025-26, every resort, run_id backfill-models
+    coverage: Nov–Apr of 2024-25 and 2025-26, every resort, run_id bf-om-<resort>-<model>-<year>, workflow backfill.yml (resumable, a share of the free daily allowance per night)
     notes:
       - What each model forecast for each past hour from the runs 0–7 days before it. 6-hour blocks like the ensembles.
       - period_label is the source's own lead label (previous_day0 … previous_day7) and is exact. issued_at is APPROXIMATE (valid_start minus that many days); the archive has no exact run time for these.

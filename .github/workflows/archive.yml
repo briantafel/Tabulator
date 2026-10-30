@@ -12,12 +12,9 @@ name: Archive forecasts
 #
 # Run it by hand from the Actions tab. One-time extras, each a checkbox:
 #   backfill          every real forecast.json already in git history
-#   backfill_models   two past winters of ECMWF/GFS forecasts (Open-Meteo
-#                     previous runs) and SNOTEL daily history — over an hour
 #   import_hindcast   Snow-Forecast hindcast files uploaded by hand to the
 #                     bucket's imports/ folder (subscriber data; never in git)
-#   backfill_ots_history  OnTheSnow resort-reported monthly snowfall back to
-#                     2012-13 — a few minutes
+# The long historical backfill has its own workflow, backfill.yml.
 on:
   schedule:
     - cron: "45 6 * * *"    # 06:45 UTC
@@ -28,16 +25,8 @@ on:
         description: "Also archive the forecast.json history from git (one-time)"
         type: boolean
         default: false
-      backfill_models:
-        description: "Also backfill two winters of model forecasts + SNOTEL history (one-time, ~75 min)"
-        type: boolean
-        default: false
       import_hindcast:
         description: "Also import Snow-Forecast hindcast files from the bucket's imports/ folder"
-        type: boolean
-        default: false
-      backfill_ots_history:
-        description: "Also backfill OnTheSnow monthly snowfall history (one-time, a few minutes)"
         type: boolean
         default: false
 
@@ -52,7 +41,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 150   # a normal run takes ~15 min; backfill_models alone is over an hour
+    timeout-minutes: 60   # a normal run takes ~15 min
     steps:
       - uses: actions/checkout@v4
         with:
@@ -101,18 +90,6 @@ jobs:
         if: inputs.backfill
         run: node scripts/archive/backfill-git.js out/backfill-rows
 
-      - name: Backfill model forecasts and SNOTEL history
-        id: backfill_models
-        if: inputs.backfill_models
-        continue-on-error: true
-        run: node scripts/archive/backfill-models.js out/backfill-models
-
-      - name: Backfill OnTheSnow monthly history
-        id: ots_history
-        if: inputs.backfill_ots_history
-        continue-on-error: true
-        run: node scripts/archive/backfill-ots-history.js out/backfill-ots-history
-
       - name: Fetch and parse hindcast imports
         id: hindcast
         if: inputs.import_hindcast
@@ -146,7 +123,7 @@ jobs:
             tar -cf "up/raw/source=$src/date=$DATE/$RUN_ID.tar" -C "$dir" .
           done
           # One-time extras: each folder holds <yyyy-mm>/ subfolders of rows.
-          for pair in backfill-rows:backfill-git backfill-models:backfill-models backfill-ots-history:backfill-ots-history hindcast-rows:hindcast-import; do
+          for pair in backfill-rows:backfill-git hindcast-rows:hindcast-import; do
             dir="out/${pair%%:*}"; name="${pair##*:}"
             # Each hindcast import gets its own file name, so a later import
             # (more winters, more tiers) adds to the archive instead of replacing.
@@ -155,14 +132,6 @@ jobs:
             for m in "$dir"/*/; do
               [ "$(basename "$m")" = raw ] && continue
               python3 scripts/archive/to_parquet.py "$m" up/archive "$name" "$(basename "$m")"
-            done
-          done
-          for job in backfill-models backfill-ots-history; do
-            [ -d "out/$job/raw" ] || continue
-            for dir in "out/$job/raw"/*/; do
-              src=$(basename "$dir")
-              mkdir -p "up/raw/source=$src/date=$DATE"
-              tar -cf "up/raw/source=$src/date=$DATE/$job.tar" -C "$dir" .
             done
           done
           cp out/manifest.json "up/runs/$RUN_ID.json"
@@ -196,10 +165,8 @@ jobs:
           fi
 
       - name: Fail the run if any source or one-time job fell short
-        if: steps.collect.outcome == 'failure' || steps.backfill_models.outcome == 'failure' || steps.hindcast.outcome == 'failure' || steps.ots_history.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.hindcast.outcome == 'failure'
         run: |
-          [ "${{ steps.ots_history.outcome }}" = "failure" ] && echo "::error::The OnTheSnow history backfill failed — see its step." 
-          [ "${{ steps.backfill_models.outcome }}" = "failure" ] && echo "::error::The model/SNOTEL backfill failed — see its step. Whatever it collected was still uploaded."
           [ "${{ steps.hindcast.outcome }}" = "failure" ] && echo "::error::The hindcast import failed — see its step. The files stay in imports/ to retry."
           [ "${{ steps.collect.outcome }}" = "failure" ] || exit 1
           jq -r '.sources | to_entries[] | "\(.key): ok=\(.value.ok) rows=\(.value.rows) \(.value.error // "")"' out/manifest.json
