@@ -204,15 +204,23 @@ export default function Tabulator() {
   /* A tap in the radar paragraph. Scored over the same days the paragraph
      read — today to the end of the forecast — so the card's numbers are the
      paragraph's numbers. */
-  const openPlace = (link) => {
-    if (!feed) return;
+  /* Today to the end of the forecast — the window the radar reads. Both
+     ways into a sheet from the radar use it: the paragraph's places and the
+     resort search. Brian, 2026-10-31: a sheet opened from search "should
+     cover the full forecast", not whatever the mountains screen is set to. */
+  const scoreFull = (r) => {
     const today = new Date();
     const t = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
     const from = Math.max(0, dates.findIndex((d) => d >= t));
+    return score(r, from, dates.length - 1, feed.history);
+  };
+
+  const openPlace = (link) => {
+    if (!feed) return;
     const ids = new Set(membersOf(link));
     const rows = feed.resorts
       .filter((r) => ids.has(r.id))
-      .map((r) => score(r, from, dates.length - 1, feed.history))
+      .map(scoreFull)
       .sort(bySnow);
     if (!rows.length) return;
     if (link.kind === "resort") setOpen(rows[0]);
@@ -385,7 +393,8 @@ export default function Tabulator() {
 
           {feed && tab === "radar" && (
             <Radar resorts={feed.resorts} dates={dates} metric={metric} onPlace={openPlace}
-              editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts} />
+              editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
+              favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}
 
           {feed && tab === "trips" && !editing && !viewing && (

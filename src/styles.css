@@ -1371,3 +1371,47 @@ body { background: #F2F2F2; }
 .ios-alert-btn + .ios-alert-btn { border-left: 1px solid rgba(60,60,67,.29); font-weight: 600; }
 .ios-alert-btn.danger { color: #FF3B30; }
 .app .ios-alert-btn:active { background: rgba(0,0,0,.06); }
+
+/* ------------------------------------------------------------------
+ * Resort search on the radar — Tabulator-radar, -radar-1, -radar-2.
+ * The bar, rule, head and rows are the Favorites picker's .fs-* rules;
+ * only the radar's own pieces live here — at the END of the file, because
+ * they override .fs-* and .tp-row at equal specificity and source order is
+ * what decides that.
+ * ------------------------------------------------------------------ */
+.rd-head { display: flex; align-items: flex-start; justify-content: space-between; }
+/* The magnifier at rest beside the title: ink top 1.9 below the title's,
+   right edge 18.25 in from the frame. */
+.rd-glass {
+  padding: 0; line-height: 0; margin: calc(16.3 * var(--u)) calc(2.25 * var(--u)) 0 0;
+  width: calc(20.323 * var(--u)); height: calc(20.323 * var(--u));
+}
+.rd-glass svg { display: block; width: 100%; height: 100%; fill: var(--ink); }
+/* The bar takes the title's place. Its typed text sits on the title's own
+   baseline (137.5), and the full-bleed rule lands at 176 — so the bar starts
+   5.2 above the title's box with that much more padding. */
+.rd-bar { margin-top: calc(-5.2 * var(--u)); padding-top: calc(23.4 * var(--u)); }
+/* Holds the title and grid, or the search. flow-root keeps the children's
+   margins inside it, so the height measured at rest is the height held while
+   searching and the paragraph below never moves. */
+.rd-top { display: flow-root; }
+/* The X: 16 across, 20 below the bar top, its right edge 18 in. */
+.rd-close {
+  position: absolute; right: calc(18 * var(--u)); top: calc(20 * var(--u));
+  width: calc(16 * var(--u)); height: calc(16 * var(--u)); padding: 0; line-height: 0;
+}
+.rd-close svg { display: block; width: 100%; height: 100%; fill: var(--ink); }
+/* No check at the bottom of this list, so no room kept for one. */
+.rd-results { padding-bottom: 0; }
+/* A result row holds two buttons: the name opens the sheet, the star only
+   stars. The name button fills the row so the whole row is the target. */
+.rd-hit { padding: 0; }
+/* Flex, not block: a <button> centres its content vertically, which parked
+   the name ~20 below its measured line. Same trap as the Trips rows. */
+.rd-hit-open {
+  display: flex; flex-direction: column; justify-content: flex-start;
+  width: 100%; height: 100%; text-align: left; box-sizing: border-box;
+  padding: calc(18.2 * var(--u)) calc(52 * var(--u)) 0 16px;
+}
+.rd-hit .tp-name { color: var(--ink); }
+.rd-star { padding: 0; line-height: 0; top: calc(24.3 * var(--u)); }
