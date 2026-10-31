@@ -30,12 +30,15 @@ const TZ = { EST: -5, EDT: -4, CST: -6, CDT: -5, MST: -7, MDT: -6, PST: -8, PDT:
 const MON = { JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11 };
 
 /** The issuance line every NWS text product carries:
- *  "300 PM EST Thu January 08 2026", "1055 PM MDT Wed Oct 28 2026".
+ *  "300 PM EST Thu January 08 2026", "1055 PM MDT Wed Oct 28 2026",
+ *  and CPC's "3:00 PM EDT Fri October 30 2026".
  *  Returns an ISO string, or null when there is no such line. */
 export function issuedAt(text) {
-  const m = String(text).match(/^\s*(\d{1,4})\s+(AM|PM)\s+([A-Z]{3,4})\s+[A-Za-z]{3}\s+([A-Za-z]{3,9})\s+(\d{1,2})\s+(\d{4})\s*$/m);
+  // "300 PM" in most products; CPC writes "3:00 PM" (first live run, 2026-10-30).
+  const m = String(text).match(/^\s*(\d{1,2}:\d{2}|\d{1,4})\s+(AM|PM)\s+([A-Z]{3,4})\s+[A-Za-z]{3}\s+([A-Za-z]{3,9})\s+(\d{1,2})\s+(\d{4})\s*$/m);
   if (!m) return null;
-  const [, hm, ap, tz, mon, day, year] = m;
+  const [, rawHm, ap, tz, mon, day, year] = m;
+  const hm = rawHm.replace(":", "");
   const off = TZ[tz.toUpperCase()];
   const month = MON[mon.slice(0, 3).toUpperCase()];
   if (off == null || month == null) return null;

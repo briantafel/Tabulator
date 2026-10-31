@@ -113,6 +113,9 @@ test("NWS issuance lines parse to UTC", () => {
   assert.equal(issuedAt("300 PM EST Thu January 08 2026"), "2026-01-08T20:00:00.000Z");
   assert.equal(issuedAt("1200 PM EDT Fri Oct 30 2026"), "2026-10-30T16:00:00.000Z");
   assert.equal(issuedAt("1200 AM EDT Fri Oct 30 2026"), "2026-10-30T04:00:00.000Z");
+  // CPC's page, verbatim from the 2026-10-30 run that skipped it.
+  assert.equal(issuedAt("Prognostic Discussion for 6 to 10 and 8 to 14 Day Outlooks \nNWS Climate Prediction Center College Park MD \n3:00 PM EDT Fri October 30 2026 \n \n6-10 Day Outlook f"),
+    "2026-10-30T19:00:00.000Z");
   assert.equal(issuedAt("no header here"), null);
   assert.equal(isFresh("2026-10-30T16:00:00Z", NOW), true);
   assert.equal(isFresh("2026-10-28T16:00:00Z", NOW), false);
