@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-31T02:54:07.153Z",
+ "generatedAt": "2026-10-31T03:10:08.145Z",
  "source": "api.weather.gov",
  "note": "US National Weather Service, for a point on each mountain. Canadian resorts have no NWS coverage.",
  "resorts": {
@@ -18,7 +18,7 @@
      "temperature": 34,
      "shortForecast": "Rain And Snow Likely",
      "detailedForecast": "Rain and snow likely. Mostly cloudy. Low around 34, with temperatures rising to around 36 overnight. Southwest wind around 3 mph. Chance of precipitation is 70%. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -149,7 +149,7 @@
      "temperature": 29,
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 29. South wind around 15 mph, with gusts as high as 25 mph. Chance of precipitation is 70%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -279,8 +279,8 @@
      "isDaytime": false,
      "temperature": 33,
      "shortForecast": "Snow Showers Likely then Light Snow",
-     "detailedForecast": "Snow showers likely and patchy fog and a slight chance of thunderstorms before 8pm, then snow. Cloudy. Low around 33, with temperatures rising to around 35 overnight. South southwest wind 1 to 5 mph. Chance of precipitation is 80%. New snow accumulation of 2 to 4 inches possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "detailedForecast": "Snow showers likely and a slight chance of thunderstorms before 7pm, then snow showers likely and patchy fog and a slight chance of thunderstorms between 7pm and 8pm, then snow. Mostly cloudy. Low around 33, with temperatures rising to around 35 overnight. South southwest wind 1 to 5 mph. Chance of precipitation is 80%. New snow accumulation of 2 to 4 inches possible.",
+     "startTime": "2026-10-30T18:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -410,8 +410,8 @@
      "isDaytime": false,
      "temperature": 33,
      "shortForecast": "Patchy Fog",
-     "detailedForecast": "Patchy fog and a slight chance of rain and snow before midnight, then patchy fog and rain and snow. Mostly cloudy, with a low around 33. South southwest wind around 2 mph. Chance of precipitation is 80%. New rainfall amounts between a quarter and half of an inch possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "detailedForecast": "Patchy fog before 11pm, then a slight chance of rain and snow between 11pm and midnight, then patchy fog and rain and snow. Mostly cloudy, with a low around 33. South southwest wind around 2 mph. Chance of precipitation is 80%. New rainfall amounts between a quarter and half of an inch possible.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -542,7 +542,7 @@
      "temperature": 33,
      "shortForecast": "Light Rain Likely then Rain And Snow Likely",
      "detailedForecast": "Rain likely before 5am, then rain and snow likely. Mostly cloudy, with a low around 33. South wind around 0 mph. Chance of precipitation is 70%.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -673,7 +673,7 @@
      "temperature": 27,
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 27. Southwest wind 20 to 25 mph, with gusts as high as 35 mph. Chance of precipitation is 60%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -802,9 +802,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Chance Snow Showers then Light Snow",
-     "detailedForecast": "A chance of snow showers and patchy fog and a slight chance of thunderstorms before 8pm, then snow and patchy fog. Mostly cloudy, with a low around 31. South southwest wind around 2 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "shortForecast": "Light Snow",
+     "detailedForecast": "Snow and patchy fog. Cloudy, with a low around 31. South southwest wind around 2 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -934,8 +934,8 @@
      "isDaytime": false,
      "temperature": 35,
      "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 35. Southwest wind around 0 mph. Chance of precipitation is 70%.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "detailedForecast": "A chance of rain before 11pm, then rain and snow likely. Mostly cloudy, with a low around 35. Southwest wind around 0 mph. Chance of precipitation is 70%.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1066,7 +1066,7 @@
      "temperature": 27,
      "shortForecast": "Chance Light Snow",
      "detailedForecast": "A chance of snow. Mostly cloudy. Low around 27, with temperatures rising to around 30 overnight. Wind chill values as low as 18. Southwest wind 15 to 20 mph, with gusts as high as 30 mph. Chance of precipitation is 40%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1195,9 +1195,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Chance Rain And Snow then Mostly Cloudy",
-     "detailedForecast": "A chance of rain and snow before 11pm. Mostly cloudy, with a low around 28. Wind chill values as low as 22. South wind 1 to 6 mph. Chance of precipitation is 40%. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "shortForecast": "Chance Light Snow then Mostly Cloudy",
+     "detailedForecast": "A chance of snow before 11pm. Mostly cloudy, with a low around 28. Wind chill values as low as 22. South wind 2 to 6 mph. Chance of precipitation is 30%. New snow accumulation of less than half an inch possible.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1320,8 +1320,8 @@
      "isDaytime": false,
      "temperature": 24,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 24. Wind chill values as low as 16. Southeast wind 3 to 9 mph.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "detailedForecast": "Partly cloudy, with a low around 24. Wind chill values as low as 16. Southeast wind 5 to 9 mph.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1443,9 +1443,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 27. Wind chill values as low as 24. South southeast wind around 3 mph.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 27. Wind chill values as low as 24. South southeast wind around 3 mph.",
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1569,7 +1569,7 @@
      "temperature": 23,
      "shortForecast": "Widespread Frost",
      "detailedForecast": "Widespread frost before 5am. Mostly cloudy, with a low around 23. Southwest wind 2 to 6 mph.",
-     "startTime": "2026-10-30T19:00:00-07:00"
+     "startTime": "2026-10-30T20:00:00-07:00"
     },
     {
      "name": "Saturday",
@@ -1692,8 +1692,8 @@
      "isDaytime": false,
      "temperature": 31,
      "shortForecast": "Slight Chance T-storms",
-     "detailedForecast": "A chance of showers and thunderstorms before 9pm, then a slight chance of thunderstorms and rain and snow showers likely between 9pm and 1am, then a slight chance of thunderstorms and rain and snow showers between 1am and 2am, then a slight chance of thunderstorms and rain and snow showers between 2am and 4am, then a slight chance of thunderstorms and rain and snow showers. Cloudy, with a low around 31. South southeast wind 0 to 10 mph. Chance of precipitation is 90%. Little or no snow accumulation expected.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "A slight chance of thunderstorms and rain and snow showers likely before 1am, then a slight chance of thunderstorms and rain and snow showers between 1am and 2am, then a slight chance of thunderstorms and rain and snow showers between 2am and 4am, then a slight chance of thunderstorms and rain and snow showers. Cloudy, with a low around 31. South southeast wind 0 to 10 mph. Chance of precipitation is 90%. Little or no snow accumulation expected.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -1824,7 +1824,7 @@
      "temperature": 33,
      "shortForecast": "Mostly Cloudy then Chance Rain And Snow Showers",
      "detailedForecast": "A chance of rain and snow showers after 3am. Mostly cloudy, with a low around 33. East southeast wind 0 to 5 mph. Chance of precipitation is 50%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -1955,7 +1955,7 @@
      "temperature": 33,
      "shortForecast": "Mostly Cloudy then Chance Rain And Snow Showers",
      "detailedForecast": "A slight chance of rain showers between 4am and 5am, then a chance of rain and snow showers. Mostly cloudy, with a low around 33. South wind 0 to 10 mph. Chance of precipitation is 30%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2086,7 +2086,7 @@
      "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy, with a low around 35. Southeast wind 0 to 10 mph.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2210,7 +2210,7 @@
      "temperature": 35,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy, with a low around 35. East southeast wind 0 to 5 mph, with gusts as high as 20 mph.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2341,7 +2341,7 @@
      "temperature": 31,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. Low around 31, with temperatures rising to around 33 overnight. South southeast wind around 10 mph, with gusts as high as 17 mph.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2465,7 +2465,7 @@
      "temperature": 27,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. Low around 27, with temperatures rising to around 30 overnight. Southeast wind around 10 mph, with gusts as high as 16 mph.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T19:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2587,9 +2587,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 37,
-     "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Cloudy, with a low around 37. South wind around 7 mph. Chance of precipitation is 80%. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "shortForecast": "Rain And Snow Likely",
+     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 37. South wind around 7 mph. Chance of precipitation is 60%. New rainfall amounts less than a tenth of an inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2711,9 +2711,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 35,
-     "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Cloudy, with a low around 35. South wind around 7 mph. Chance of precipitation is 80%. New rainfall amounts between a tenth and quarter of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "shortForecast": "Rain And Snow Likely",
+     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 35. South wind around 7 mph. Chance of precipitation is 60%. New rainfall amounts between a tenth and quarter of an inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2835,9 +2835,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Mostly cloudy, with a low around 34. South wind 5 to 8 mph. Chance of precipitation is 80%. New rainfall amounts between a tenth and quarter of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "shortForecast": "Rain And Snow Likely",
+     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 34. South wind 5 to 8 mph. Chance of precipitation is 60%. New rainfall amounts between a tenth and quarter of an inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -2960,8 +2960,8 @@
      "isDaytime": false,
      "temperature": 36,
      "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 36. South wind around 7 mph. Chance of precipitation is 70%. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 36. South wind around 7 mph. Chance of precipitation is 60%. New rainfall amounts less than a tenth of an inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3084,8 +3084,8 @@
      "isDaytime": false,
      "temperature": 41,
      "shortForecast": "Chance Light Rain then Showers And Thunderstorms Likely",
-     "detailedForecast": "A chance of rain before 3am, then showers and thunderstorms likely. Cloudy. Low around 41, with temperatures rising to around 44 overnight. South wind 2 to 6 mph. Chance of precipitation is 70%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "A chance of rain before 3am, then showers and thunderstorms likely. Mostly cloudy. Low around 41, with temperatures rising to around 44 overnight. South wind 2 to 6 mph. Chance of precipitation is 70%.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3209,7 +3209,7 @@
      "temperature": 37,
      "shortForecast": "Chance Light Rain then Showers And Thunderstorms",
      "detailedForecast": "A chance of rain before 3am, then showers and thunderstorms. Cloudy, with a low around 37. South wind 5 to 8 mph. Chance of precipitation is 80%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3333,7 +3333,7 @@
      "temperature": 36,
      "shortForecast": "Rain And Snow Showers",
      "detailedForecast": "Rain and snow showers. Cloudy, with a low around 36. South southwest wind 0 to 5 mph. Chance of precipitation is 80%. New rainfall amounts between a tenth and quarter of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3457,7 +3457,7 @@
      "temperature": 36,
      "shortForecast": "Rain And Snow Showers",
      "detailedForecast": "Rain showers likely before 11pm, then rain and snow showers between 11pm and 4am, then rain and snow showers likely between 4am and 5am, then rain and snow showers likely. Cloudy, with a low around 36. South southeast wind 1 to 8 mph. Chance of precipitation is 80%. New rainfall amounts between a tenth and quarter of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3580,8 +3580,8 @@
      "isDaytime": false,
      "temperature": 31,
      "shortForecast": "Areas Of Fog",
-     "detailedForecast": "Areas of fog and a chance of rain before 2am, then areas of fog and a slight chance of rain and snow. Mostly cloudy, with a low around 31. South wind around 5 mph. Chance of precipitation is 30%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "Areas of fog and a slight chance of rain before 2am, then areas of fog and a slight chance of rain and snow. Mostly cloudy, with a low around 31. South southwest wind around 5 mph. Chance of precipitation is 20%.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3711,8 +3711,8 @@
      "isDaytime": false,
      "temperature": 35,
      "shortForecast": "Slight Chance Light Snow",
-     "detailedForecast": "A slight chance of drizzle between 10pm and 11pm, then a slight chance of snow and a slight chance of drizzle between 11pm and 5am, then patchy fog and a slight chance of snow. Mostly cloudy, with a low around 35. Southeast wind 3 to 8 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "A slight chance of drizzle between 10pm and 11pm, then a slight chance of snow and a slight chance of drizzle between 11pm and 5am, then patchy fog and a slight chance of snow. Mostly cloudy, with a low around 35. East southeast wind 3 to 8 mph. Chance of precipitation is 20%.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3835,8 +3835,8 @@
      "isDaytime": false,
      "temperature": 32,
      "shortForecast": "Chance Rain And Snow Showers",
-     "detailedForecast": "A chance of rain and snow showers. Mostly cloudy, with a low around 32. South wind 5 to 10 mph. Chance of precipitation is 50%. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "A chance of rain and snow showers. Mostly cloudy, with a low around 32. Southwest wind 5 to 10 mph. Chance of precipitation is 50%. New rainfall amounts less than a tenth of an inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -3959,8 +3959,8 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Slight Chance T-storms",
-     "detailedForecast": "A slight chance of thunderstorms and a slight chance of rain and snow showers before 9pm, then a slight chance of thunderstorms and a chance of rain and snow showers between 9pm and midnight, then a slight chance of thunderstorms and rain and snow showers. Mostly cloudy, with a low around 30. South southwest wind 5 to 15 mph. Chance of precipitation is 80%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-10-30T20:00:00-06:00"
+     "detailedForecast": "A slight chance of thunderstorms and a chance of rain and snow showers before midnight, then a slight chance of thunderstorms and rain and snow showers. Mostly cloudy, with a low around 30. South southwest wind 5 to 15 mph. Chance of precipitation is 80%. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-10-30T21:00:00-06:00"
     },
     {
      "name": "Saturday",
@@ -4089,9 +4089,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 31,
-     "shortForecast": "Slight Chance Snow Showers then Mostly Cloudy",
-     "detailedForecast": "A slight chance of snow showers before 11pm. Mostly cloudy, with a low around 31. Northwest wind 14 to 25 mph. Chance of precipitation is 20%. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-10-30T22:00:00-04:00"
+     "shortForecast": "Mostly Cloudy",
+     "detailedForecast": "Mostly cloudy, with a low around 31. Northwest wind 14 to 25 mph. New rainfall amounts less than a tenth of an inch possible.",
+     "startTime": "2026-10-30T23:00:00-04:00"
     },
     {
      "name": "Saturday",
@@ -4213,9 +4213,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 32,
-     "shortForecast": "Chance Rain And Snow Showers",
-     "detailedForecast": "A chance of rain and snow showers before 3am. Cloudy, with a low around 32. Northwest wind 13 to 21 mph, with gusts as high as 37 mph. Chance of precipitation is 50%. Little or no snow accumulation expected.",
-     "startTime": "2026-10-30T22:00:00-04:00"
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers before 3am. Cloudy, with a low around 32. Northwest wind 13 to 20 mph, with gusts as high as 33 mph. Chance of precipitation is 40%. Little or no snow accumulation expected.",
+     "startTime": "2026-10-30T23:00:00-04:00"
     },
     {
      "name": "Saturday",
@@ -4337,9 +4337,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Slight Chance Rain And Snow Showers then Cloudy",
-     "detailedForecast": "A slight chance of rain and snow showers before 11pm. Cloudy, with a low around 34. Northwest wind 18 to 24 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-10-30T22:00:00-04:00"
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy, with a low around 34. Northwest wind 18 to 23 mph.",
+     "startTime": "2026-10-30T23:00:00-04:00"
     },
     {
      "name": "Saturday",
@@ -4461,9 +4461,9 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 33,
-     "shortForecast": "Chance Rain And Snow Showers",
-     "detailedForecast": "A chance of rain and snow showers before 2am. Cloudy, with a low around 33. Northwest wind 7 to 14 mph. Chance of precipitation is 30%. Little or no snow accumulation expected.",
-     "startTime": "2026-10-30T22:00:00-04:00"
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers before 2am. Cloudy, with a low around 33. Northwest wind 7 to 14 mph. Chance of precipitation is 30%. Little or no snow accumulation expected.",
+     "startTime": "2026-10-30T23:00:00-04:00"
     },
     {
      "name": "Saturday",

@@ -1,8 +1,9 @@
 {
- "generatedAt": "2026-10-31T02:54:07.387Z",
- "forecastGeneratedAt": "2026-10-31T02:49:26.140Z",
+ "generatedAt": "2026-10-31T03:10:08.389Z",
+ "forecastGeneratedAt": "2026-10-31T03:05:25.393Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-10-31",
   "to": "2026-11-04",
@@ -12,42 +13,81 @@
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride is forecast for about 14\", 11\" of it Sunday. Crested Butte about 7\" and Aspen Highlands about 5\". The National Weather Service has rain mixed in at Telluride Sunday. Winter Storm Watch in effect at Telluride."
+   "text": "Telluride leads the region with 14\" of total snow, peaking Sunday at 11\". NWS calls for rain and snow showers Sunday, with a slight chance of thunderstorms, then snow showers Monday (2 to 4 inches possible), and a Winter Storm Watch is in effect. Crested Butte is forecast for 7\" and Aspen Highlands for 5\", with 4\" of that at Aspen on Monday. A Winter Weather Advisory covers Crested Butte."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 13\", 12\" of it Sunday. Taos about 4\". The National Weather Service has rain mixed in at Taos Sunday and Sunday night. Winter Storm Watch in effect at Wolf Creek."
+   "text": "Wolf Creek has 13\" of total snow, with 12\" falling Sunday. NWS notes rain and snow showers Sunday, with snow showers and gusts to 45 mph, and a Winter Storm Watch is in effect. Taos is forecast for 4\" total, with 2\" Sunday and 2\" Monday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 7\", all of it Sunday. Jackson Hole about 6\" and Big Sky about 3\". The National Weather Service has rain mixed in at Jackson Hole Sunday and Sunday night."
+   "text": "Grand Targhee leads with 7\" total, all of it forecast for Sunday. NWS calls for rain and snow showers Saturday night, then snow showers Sunday (less than one inch possible), followed by 1 to 2 inches Sunday night. Jackson Hole is forecast for 6\", with 5\" on Sunday, and Big Sky for 3\"."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 6\", all of it Saturday. The National Weather Service has heavy snow at Mammoth Saturday and Saturday night. Winter Weather Advisory in effect at Mammoth."
+   "text": "Mammoth is forecast for 6\" total, all falling Saturday. NWS calls for heavy snow Saturday and Saturday night, with 8 to 12 inches possible overnight, and wind chill values as low as 14. A Winter Weather Advisory is in effect. Snow is likely again Sunday, with 1 to 2 inches possible."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Alta is forecast for about 6\", 5\" of it Sunday. Snowbird about 6\" and Brighton about 6\". The National Weather Service has heavy snow at Alta Sunday and Sunday night."
+   "text": "Alta leads with 6\" total, peaking Sunday at 5\". NWS calls for heavy snow Sunday and Sunday night, with 9 to 13 inches possible Sunday and 10 to 14 inches Sunday night. Snowbird and Brighton are both forecast for 6\" total, with Snowbird's Sunday night snow at 6 to 10 inches possible."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Climate Prediction Center is not in the discussions provided, so nothing here. The Weather Prediction Center's extended outlook shows snow likely over higher Rockies elevations early next week, with an active pattern and Pacific energy reaching the West Coast by midweek, though its confidence drops after Monday.",
+  "sources": [
+   {
+    "name": "NWS GJT Area Forecast Discussion",
+    "issuedAt": "2026-10-30T23:23:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
+   },
+   {
+    "name": "NWS PUB Area Forecast Discussion",
+    "issuedAt": "2026-10-30T23:40:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
+   },
+   {
+    "name": "NWS ABQ Area Forecast Discussion",
+    "issuedAt": "2026-10-31T00:01:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
+   },
+   {
+    "name": "NWS RIW Area Forecast Discussion",
+    "issuedAt": "2026-10-31T00:36:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
+   },
+   {
+    "name": "NWS REV Area Forecast Discussion",
+    "issuedAt": "2026-10-30T20:40:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
+   },
+   {
+    "name": "NWS SLC Area Forecast Discussion",
+    "issuedAt": "2026-10-30T17:59:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-10-30T20:00:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-10-31T02:49:26.140Z"
+   "issuedAt": "2026-10-31T03:05:25.393Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-10-31T02:54:07.153Z"
+   "issuedAt": "2026-10-31T03:10:08.145Z"
   }
  ],
  "api": {
   "day": "2026-10-31",
-  "calls": 3
+  "calls": 5
  }
 }
