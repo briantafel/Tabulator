@@ -190,11 +190,11 @@ test("daily-only data still finds the sequence", () => {
   assert.equal(layering([d(25, 15, 6), d(38, 24, 0), d(22, 15, 2)]), "fluffOnCrust");
 });
 
-test("Brian's blower line never runs on a warm storm", () => {
-  for (const id of ["alta", "kirkwood", "vail", "stowe", "whistler", "taos", "big-sky", "crystal"]) {
-    const s = say(resortVoice(resort({ id, total: 48, days: 5, hi: 36, lo: 25, wind: 8 }), false));
-    assert.ok(!/blower/i.test(s), s);
-  }
+test("Brian's blower line never runs on a warm storm — it turns epic instead", () => {
+  const ids = ["alta", "kirkwood", "vail", "stowe", "whistler", "taos", "big-sky", "crystal", "snowbird", "telluride"];
+  const warm = ids.map((id) => say(resortVoice(resort({ id, total: 48, days: 5, hi: 36, lo: 25, wind: 8 }), false)));
+  for (const s of warm) assert.ok(!/blower/i.test(s), s);
+  assert.ok(warm.some((s) => /Somebody call TGR\. It's gonna be epic\./.test(s)), "the epic twin never came up");
   // …and it does run somewhere when it is cold.
   const cold = ["alta", "kirkwood", "vail", "stowe", "whistler", "taos", "big-sky", "crystal", "snowbird", "telluride"]
     .map((id) => say(resortVoice(resort({ id, total: 48, days: 5, hi: 22, lo: 10, wind: 8 }), false)));

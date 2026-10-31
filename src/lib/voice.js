@@ -31,7 +31,7 @@
 
 import { rainRisk, tempSeverity, windSeverity } from "./scoring.js";
 import { snowWithUnit, cmToIn, cToF, kmhToMph } from "./units.js";
-import { vetoOf } from "./rank.js";
+import { vetoOf, inSpring, cornDay } from "./rank.js";
 import { RANGES } from "./outlook.js";
 
 /* ------------------------------------------------------------------ copy -- */
@@ -102,6 +102,25 @@ export const CONDITIONS = {
       "Temps look [springlike], but winds are [howling].",
       "[Warm as April], and [blowing hard] up top.",
       "It'll feel [like spring] down low and [ripping] up high.",
+    ],
+  },
+  /* Over 40°F from March 20 on. Not "like" spring: it is spring, and Brian's
+     original line finally fits. */
+  springReal: {
+    still: [
+      "It's [spring, baby], with [{wn}].",
+      "Proper [spring temps], and winds are [{w}].",
+      "[Warm spring afternoons], with [{wn}].",
+    ],
+    windy: [
+      "[Spring temps], though winds are [{w}].",
+      "It's [spring], with [{wn}].",
+      "[Warm spring afternoons], and winds are [{w}].",
+    ],
+    howling: [
+      "[Spring temps], but winds are [howling].",
+      "It's [spring], but it's [blowing hard] up top.",
+      "[Warm] down low, with winds [ripping] up high.",
     ],
   },
   tooWarm: {
@@ -267,7 +286,7 @@ export const GALE = [
   "It's [blowing a gale], and temps look [{t}].",
 ];
 export const GALE_TEMP = {
-  spring: "springlike", tooWarm: "almost too warm", warm: "warm", bitWarm: "mild",
+  spring: "springlike", springReal: "springlike", tooWarm: "almost too warm", warm: "warm", bitWarm: "mild",
   mixed: "all over the place", frigid: "frigid", deep: "properly cold", cold: "cold",
   pleasant: "pleasant", fine: "fine",
 };
@@ -292,6 +311,10 @@ export const SO_WHAT = {
     "Warm enough to be a deal breaker and slush by noon.",
     "Too warm to hold up. Deal breaker.",
     "Spring conditions, not ski-trip conditions. Deal breaker.",
+  ],
+  vetoWarmSpring: [
+    "No refreeze overnight, so it's slush all day. Deal breaker.",
+    "Nights stay above freezing. Slush all day, so it's a deal breaker.",
   ],
   rain: [
     "The freezing level sits above mid-mountain, so expect rain lower down.",
@@ -343,6 +366,11 @@ export const SO_WHAT = {
     "Fresh snow over a refrozen crust. Soft on top, firm underneath.",
     "Expect fluff on crust. Fun until you find the layer below.",
   ],
+  springCorn: [
+    "Firm mornings, soft afternoons. Time it for corn.",
+    "Corn season. Let it soften, then go.",
+    "Spring skiing. Sunscreen and a late start.",
+  ],
   crust: [
     "Expect a crust after the thaw.",
     "Whatever melts will refreeze, so expect it firm.",
@@ -383,8 +411,17 @@ const pick = (pool, seed, salt) => pool[hash(`${seed}|${salt}`) % pool.length];
    whichever pool it is in. */
 const DRY_WORDS = /blower|cold smoke|light and dry|bottomless|champagne/i;
 const DRY_MAX_F = 30;
+/* A dry line can name its own warm twin instead of just sitting out.
+   Brian, 2026-10-31: "This could also be 'It's gonna be epic.' if the snow
+   isn't dry but it's a ton." */
+const WARM_TWIN = {
+  "Looking like [{snow}] {over}. Somebody call TGR. It's gonna be blower.":
+    "Looking like [{snow}] {over}. Somebody call TGR. It's gonna be epic.",
+};
 const forWindow = (pool, x) =>
-  x.hi != null && x.hi > DRY_MAX_F ? pool.filter((t) => !DRY_WORDS.test(t)) : pool;
+  x.hi != null && x.hi > DRY_MAX_F
+    ? pool.map((t) => WARM_TWIN[t] ?? t).filter((t) => !DRY_WORDS.test(t))
+    : pool;
 
 /* ------------------------------------------------------- the snowpack -- */
 
@@ -471,6 +508,7 @@ function read(r) {
       hi: hiC.length ? Math.max(...hiC) : null,
       lo: loC.length ? Math.min(...loC) : null,
       wind: wK.length ? Math.max(...wK) : null,
+      spring: inSpring(r),
     },
   };
 }
@@ -532,9 +570,10 @@ const region = (id) => {
  *  can name the rule that fired. */
 export function soWhatKey(x, r) {
   const veto = vetoOf(x.m);
+  const corn = x.hi != null && x.hi > 40 && cornDay(x.m);
   if (veto === "wind") return "vetoWind";
   if (veto === "cold") return "vetoCold";
-  if (veto === "warm") return "vetoWarm";
+  if (veto === "warm") return x.m.spring ? "vetoWarmSpring" : "vetoWarm";
 
   const snow = snowBucket(x);
   const snowy = snow === "solid" || snow === "dump" || snow === "cycle";
@@ -560,6 +599,8 @@ export function soWhatKey(x, r) {
   if (thin && column(band) === "still") return "cruise";
 
   if (!snowy && tempBucket(x) === "mixed") return "crust";
+
+  if (corn && windSeverity(x.m.wind) !== "red") return "springCorn";
 
   const badWind = windSeverity(x.m.wind) === "red";
   const badTemp = tempSeverity(x.m.hi, x.m.lo) === "red";
@@ -591,7 +632,8 @@ export function resortVoice(r, metric) {
   const x = read(r);
   const seed = `${r.id ?? r.name ?? ""}|${r.win[0]?.date ?? ""}|${x.days}`;
   const band = windBand(x.wind);
-  const temp = tempBucket(x);
+  const bucket = tempBucket(x);
+  const temp = bucket === "spring" && x.m.spring ? "springReal" : bucket;
   const words = WIND_WORDS[band];
 
   const fill = {

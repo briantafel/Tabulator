@@ -29,7 +29,7 @@
 
 import { tempSeverity, windSeverity, rainRisk } from "./scoring.js";
 import { snowWithUnit } from "./units.js";
-import { rank, bestOf, vetoOf } from "./rank.js";
+import { rank, bestOf, vetoOf, inSpring, cornDay } from "./rank.js";
 import {
   COLD_RED, COLD_DEEP, COLD_AMBER_HI,
   WARM_AMBER_LO, WARM_RED, TOO_WARM, WARM_SPRING, PLEASANT_LO,
@@ -99,7 +99,11 @@ export function tempWord({ hi, lo, wind }) {
  *  new sentence instead of continuing this one. Hence a clause, not a word:
  *  the caller needs to know which of the two shapes it got back. */
 export function tempClause(x) {
-  if (x.hi != null && x.hi > WARM_SPRING) return { t: "It's spring, baby!", bang: true };
+  /* Only in spring. Brian, 2026-10-31: in December it is just LIKE spring,
+     so out of season the frame stays and the word says so. */
+  if (x.hi != null && x.hi > WARM_SPRING) {
+    return x.spring ? { t: "It's spring, baby!", bang: true } : { t: "Temps look springlike", bang: false };
+  }
   return { t: `Temps look ${tempWord(x)}`, bang: false };
 }
 
@@ -148,11 +152,17 @@ const VETO_LINE = {
   warm: ". Overall, that is spring, not skiing — give it a miss.",
 };
 
-export function closingWord({ total, days, hi, lo, wind, rain = false }) {
+export function closingWord({ total, days, hi, lo, wind, rain = false, spring = false }) {
   // Brian's deal breakers outrank everything, including the snow lines. That
   // is the whole point of a veto: no amount of powder argues with it.
-  const veto = vetoOf({ hi, lo, wind });
+  const veto = vetoOf({ hi, lo, wind, spring });
+  // In spring the warm veto only fires without a refreeze, so say that.
+  if (veto === "warm" && spring) return ". Overall, nothing refreezes overnight — that's slush, give it a miss.";
   if (veto) return VETO_LINE[veto];
+  // Past March 20 with a refreeze, warm is corn, not a fight.
+  if (hi != null && hi > WARM_SPRING && cornDay({ hi, lo, spring }) && !rain && windSeverity(wind) !== "red") {
+    return ". Overall, that's spring skiing — let it soften, then go.";
+  }
   /* There used to be a "soft snow and sunshine" line here for anything over
      40°F. VETO_WARM is that same 40, so the veto above always got there
      first and the line was unreachable. Its job moved into VETO_LINE.warm,
@@ -223,7 +233,8 @@ export function tripVerdict(rows, metric) {
   const best = bestOf(ranked);
   const days = best.win.length;
   const { hi, lo, wind } = extremes(best.win);
-  const temp = tempClause({ hi, lo, wind });
+  const spring = inSpring(best);
+  const temp = tempClause({ hi, lo, wind, spring });
 
   return [
     { t: "Your best bet is looking like " },
@@ -235,7 +246,7 @@ export function tripVerdict(rows, metric) {
     // "It's spring, baby!" has ended the sentence; the wind starts a new one.
     { t: temp.bang ? " " : ", and " },
     { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
-    { t: closingWord({ total: best.total ?? 0, days, hi, lo, wind, rain: rainRisk(best) }) },
+    { t: closingWord({ total: best.total ?? 0, days, hi, lo, wind, rain: rainRisk(best), spring }) },
   ];
 }
 
@@ -261,7 +272,8 @@ export function resortVerdict(r, metric) {
   if (!r?.win?.length) return null;
   const days = r.win.length;
   const { hi, lo, wind } = extremes(r.win);
-  const temp = tempClause({ hi, lo, wind });
+  const spring = inSpring(r);
+  const temp = tempClause({ hi, lo, wind, spring });
 
   const out = [
     { t: "Looking like " },
@@ -272,7 +284,7 @@ export function resortVerdict(r, metric) {
     { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
     { t: "." },
   ];
-  const concern = concernClause({ hi, lo, wind });
+  const concern = concernClause({ hi, lo, wind, spring });
   if (concern) out.push({ t: ` ${concern}` });
   return out;
 }
@@ -283,8 +295,8 @@ export function resortVerdict(r, metric) {
  *  temps "a bit warm" or the winds "moderate", and a screen that flags every
  *  ordinary winter day teaches you to stop reading it. Red earns a mention,
  *  and one of Brian's deal breakers earns the stronger word. */
-export function concernClause({ hi, lo, wind }) {
-  const veto = vetoOf({ hi, lo, wind });
+export function concernClause({ hi, lo, wind, spring = false }) {
+  const veto = vetoOf({ hi, lo, wind, spring });
   if (veto === "wind") return "Wind is a deal breaker.";
   if (veto) return "Temps are a deal breaker.";
 

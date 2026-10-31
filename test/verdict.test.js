@@ -23,8 +23,10 @@ test("the warm ladder runs from a bit warm up to spring", () => {
 
 test("over 40 is its own sentence, not a word in the frame", () => {
   // Brian: "Anything over 40 should be something like 'it's spring, baby!'"
-  const C = (hi) => tempClause({ hi: F(hi), lo: F(25), wind: MPH(5) });
+  // …from March 20. Before that it is only LIKE spring (Brian, 2026-10-31).
+  const C = (hi, spring = true) => tempClause({ hi: F(hi), lo: F(25), wind: MPH(5), spring });
   assert.deepEqual(C(44), { t: "It's spring, baby!", bang: true });
+  assert.deepEqual(C(44, false), { t: "Temps look springlike", bang: false });
   assert.equal(C(39).bang, false);
   assert.equal(C(39).t, "Temps look almost too warm to ski");
   // 40 itself is not over 40.
@@ -121,7 +123,8 @@ test("an unscored row still gets a real reading, not a default one", () => {
   // extremes() derives hi/lo/wind from the window, so a row that never went
   // through score() cannot silently read "good and calm".
   const v = tripVerdict([{ name: "Alta", total: IN(2), win: win(3, { tempMax: F(44) }) }], false);
-  assert.match(say(v), /days\. It's spring, baby! Winds are calm\. Overall, that is spring, not skiing — give it a miss\.$/);
+  // No dates on the window, so no season: it reads as merely springlike.
+  assert.match(say(v), /days\. Temps look springlike, and winds are calm\. Overall, that is spring, not skiing — give it a miss\.$/);
 });
 
 test("rain is read off the freezing level, not guessed from temperature", () => {

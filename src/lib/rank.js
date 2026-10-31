@@ -25,7 +25,7 @@ import {
   RANK_SNOW, RANK_BASE, RANK_TEMP, RANK_WIND, SNOW_FULL_RATE, BASE_FULL,
   VETO_WIND, VETO_COLD, VETO_WARM,
   COLD_RED, COLD_AMBER_HI, WARM_AMBER_LO, WARM_SPRING,
-  WIND_AMBER, WIND_HOWLING,
+  WIND_AMBER, WIND_HOWLING, SPRING_FROM, SPRING_TO, SPRING_REFREEZE,
 } from "./constants.js";
 
 /** The deal breakers, which sit outside the weighting entirely.
@@ -41,9 +41,24 @@ import {
 export function vetoOf(r) {
   if (r.wind != null && r.wind > VETO_WIND) return "wind";
   if (r.lo != null && r.lo < VETO_COLD) return "cold";
-  if (r.hi != null && r.hi > VETO_WARM) return "warm";
+  if (r.hi != null && r.hi > VETO_WARM && !cornDay(r)) return "warm";
   return null;
 }
+
+/** Is the window's warmest day in spring? Callers that only have extremes
+ *  pass `spring` directly; anything carrying a window gets it worked out. */
+export function inSpring(r) {
+  if (typeof r?.spring === "boolean") return r.spring;
+  const days = (r?.win ?? []).filter((d) => typeof d.tempMax === "number" && d.date);
+  if (!days.length) return false;
+  const warmest = days.reduce((a, b) => (b.tempMax > a.tempMax ? b : a));
+  const md = warmest.date.slice(5, 10);
+  return md >= SPRING_FROM && md <= SPRING_TO;
+}
+
+/** Brian, 2026-10-31: from March 20, a warm afternoon is a deal breaker only
+ *  when the nights do not freeze. A refreeze makes it corn. */
+export const cornDay = (r) => inSpring(r) && r.lo != null && r.lo <= SPRING_REFREEZE;
 
 /** 0 at `lo`, 1 at `hi`, clamped — the one shape every term is built from. */
 const ramp = (v, lo, hi) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));

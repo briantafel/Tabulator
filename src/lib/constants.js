@@ -100,6 +100,16 @@ export const VETO_WIND = MPH(45);
 export const VETO_COLD = F(-10);
 export const VETO_WARM = F(40);
 
+/* Spring, by the calendar. Brian, 2026-10-31: over 40°F in December is
+ * "like spring"; from March 20 it IS spring, and a warm afternoon after a
+ * frozen night is a corn day, not a deal breaker. MM-DD, inclusive at both
+ * ends; read off the date of the window's warmest day. */
+export const SPRING_FROM = "03-20";
+export const SPRING_TO = "06-30";
+/* A night this cold sets the snow up again — the same line the resort sheet
+ * uses for "hard freeze". Above it, a warm day is slush with no refreeze. */
+export const SPRING_REFREEZE = F(28);
+
 export const RANK_SNOW = 70;          // forecast snow over the window
 export const RANK_BASE = 12;          // the -3 days archive — something to ski on
 export const RANK_TEMP = 12;
