@@ -63,3 +63,44 @@ export const removeResort = (list, name) => list.filter((e) => e.name !== name);
  *  as part of that place. */
 export const holdsPlace = (list, names, title) =>
   names.every((n) => list.some((e) => e.name === n && e.via?.includes(title)));
+
+/* ------------------------------------------------------------------
+ * Watchlists. Brian, 2026-10-31: "a list that has no dates applied, so
+ * data for the maximum period for which there is current data displays."
+ *
+ * A watchlist is still a trip — same container, same resorts, same rows —
+ * with `watch: true` and no start or end. It is scored over the whole
+ * forecast horizon, so it grows and shifts as the forecast does instead of
+ * pointing at a week that will eventually be in the past.
+ * ------------------------------------------------------------------ */
+
+export const WATCH_LABEL = "Watchlist";
+
+/** Turn a trip into a watchlist. The dates go, not just the flag: a
+ *  watchlist that kept stale dates would quietly score them again the day
+ *  someone flipped it back. */
+export const toWatchlist = (trip) =>
+  ({ ...trip, watch: true, start: null, end: null, label: WATCH_LABEL });
+
+/** Give a trip dates, which also makes it not a watchlist. `label` is the
+ *  rendering of the range, passed in so this file needs no date formatting. */
+export const withDates = (trip, start, end, label) =>
+  ({ ...trip, watch: false, start, end, label });
+
+/** The forecast days a trip is scored over, as indexes into `dates`.
+ *
+ *   watchlist                 -> every day there is data for
+ *   dated, inside the horizon -> exactly those days
+ *   dated, outside it         -> `beyond`: nothing to score yet
+ *   no dates, not a watchlist -> a trip saved before trips carried their
+ *                                window; the app's default four days, so the
+ *                                page means the same thing every time
+ */
+export function tripWindow(trip, dates) {
+  const last = Math.max(0, dates.length - 1);
+  if (trip.watch) return { ta: 0, tb: last, beyond: false };
+  if (trip.start == null || trip.end == null) return { ta: 0, tb: Math.min(3, last), beyond: false };
+  const ta = dates.indexOf(trip.start);
+  const tb = dates.indexOf(trip.end);
+  return { ta, tb, beyond: ta === -1 || tb === -1 };
+}

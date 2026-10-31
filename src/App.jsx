@@ -18,7 +18,7 @@ import { score } from "./lib/scoring.js";
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { bySnow } from "./lib/rank.js";
-import { addResort, addPlace, removeResort, removePlace } from "./lib/trips.js";
+import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
@@ -169,11 +169,12 @@ export default function Tabulator() {
 
   /* Editing writes back the dates the calendar chose, and relabels the row
      from them — the label is a rendering of the range, not a separate fact. */
-  const setTripDates = (id, { start, end }) =>
-    setTrips((t) => t.map((x) => (x.id === id
-      ? { ...x, start, end,
-          label: start === end ? shortDate(start) : `${shortDate(start)}–${shortDate(end)}` }
-      : x)));
+  const setTripDates = (id, { start, end, watch }) =>
+    setTrips((t) => t.map((x) => (x.id !== id ? x
+      /* A watchlist has no dates of its own — it follows the forecast. */
+      : watch ? toWatchlist(x)
+        : withDates(x, start, end,
+          start === end ? shortDate(start) : `${shortDate(start)}–${shortDate(end)}`))));
 
   const renameTrip = (id, name) =>
     setTrips((t) => t.map((x) => (x.id === id ? { ...x, name } : x)));
@@ -420,17 +421,10 @@ export default function Tabulator() {
                calendar is deliberately not horizon-bound, because you plan a
                February week in August — so the overlap is what gets scored,
                and no overlap means there is nothing to say yet. */
-            /* Three cases, and they are genuinely different:
-               - dates stored and inside the horizon -> score exactly them
-               - dates stored but outside it -> beyond the forecast, say so
-               - no dates at all -> a trip saved before trips carried their
-                 window. Fall back to the app's DEFAULT four days rather than
-                 the current search, so at least the page means the same thing
-                 every time it is opened. */
-            const dated = t.start != null && t.end != null;
-            const ta = dated ? dates.indexOf(t.start) : 0;
-            const tb = dated ? dates.indexOf(t.end) : Math.min(3, dates.length - 1);
-            const beyond = dated && (ta === -1 || tb === -1);
+            /* Which days the trip covers — its own dates, the whole horizon
+               for a watchlist, or nothing yet if it is past the forecast.
+               The cases are spelled out in lib/trips.js tripWindow. */
+            const { ta, tb, beyond } = tripWindow(t, dates);
             const tripData = beyond || !feed
               ? []
               : feed.resorts

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import TripWhen from "./TripWhen.jsx";
 import Table from "./Table.jsx";
 import { shortDate } from "../lib/dates.js";
 import { holdsPlace } from "../lib/trips.js";
@@ -113,7 +114,7 @@ export default function PlaceSheet({
             {inTrips.map((t) => (
               <div className="at-row" key={t.id}>
                 <span className="at-name">{t.name}</span>
-                <span className="at-when">{t.label}</span>
+                <TripWhen trip={t} className="at-when" />
                 <button
                   className="rt-x"
                   onClick={() => {
@@ -141,7 +142,7 @@ export default function PlaceSheet({
                 onClick={() => { onAddToTrip?.(t.id, resorts); setAdding(false); }}
               >
                 <span className="at-name">{t.name}</span>
-                <span className="at-when">{t.label}</span>
+                <TripWhen trip={t} className="at-when" />
               </button>
             ))}
             {naming ? (

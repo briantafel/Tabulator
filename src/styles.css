@@ -1100,6 +1100,39 @@ body { background: #F2F2F2; }
 .te-check.on .te-tick { fill: #fff; }
 .te-check:disabled { color: var(--fill); }
 
+/* The watchlist toggle — Tabulator-trips-main-1/-2/-3. A 25x21 binoculars
+   centred over a 12.5 grey label, between the calendar and the check. Grey
+   glyph = dates; ink glyph = watchlist. The label never changes colour. */
+.te-watch {
+  display: flex; flex-direction: column; align-items: center;
+  margin: calc(42 * var(--u)) auto 0; padding: 0; color: #8A8A8A;
+}
+.te-watch svg {
+  display: block; width: calc(25 * var(--u)); height: calc(21 * var(--u));
+  fill: currentColor;
+}
+.te-watch.on svg { color: var(--ink); }
+.te-watch span {
+  display: block; margin-top: calc(14 * var(--u));
+  font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u));
+}
+.tripedit .te-done { margin-top: calc(34.4 * var(--u)); }
+
+/* Watchlist on: the calendar ghosts to the export's #D9D9D9 — days, month
+   and arrows alike — and the selection is hidden, not cleared. */
+.te-grid.ghost .cal-d,
+.te-month.ghost em,
+.te-month.ghost .te-arrow { color: #D9D9D9; }
+
+/* "Watchlist" under a trip's name, with the 12x10 glyph inline before it:
+   foot on the baseline, top on the cap height, 5.8 clear of the W. */
+.tw-glyph {
+  display: inline-block; vertical-align: baseline;
+  width: calc(12 * var(--u)); height: calc(10 * var(--u));
+  margin-right: calc(5.8 * var(--u)); fill: currentColor;
+}
+.tw-watch .tw-glyph { color: var(--ink); }
+
 /* Trip rows gain the same coral Edit the Favorites block has. */
 .tp-edit {
   position: absolute; right: 16px; top: calc(26.5 * var(--u));
@@ -1286,8 +1319,11 @@ body { background: #F2F2F2; }
 
 /* Deleting a trip. The trash is the same glyph as the swipe panel, 124 below
    the check that saves — far enough that the two are not neighbours. */
-.te-danger { display: flex; justify-content: center; margin-top: calc(124 * var(--u)); }
-.te-trash { padding: 0; line-height: 0; color: var(--ink); }
+/* The trash stays where it always was; the watchlist toggle took the room
+   above the check, so the check moved down to meet it — 51 between the two glyphs now
+   (Tabulator-trips-main-1). Red at rest, as that export draws it. */
+.te-danger { display: flex; justify-content: center; margin-top: calc(50.4 * var(--u)); }
+.te-trash { padding: 0; line-height: 0; color: var(--mark-red); }
 .te-trash.on { color: var(--mark-red); }
 .te-trash svg {
   display: block; width: calc(18.75 * var(--u)); height: calc(21.9 * var(--u));

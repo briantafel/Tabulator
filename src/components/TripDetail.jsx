@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Table from "./Table.jsx";
+import TripWhen from "./TripWhen.jsx";
 import { tripVerdict } from "../lib/verdict.js";
 
 /** One trip: its name, its window, and the resorts in it on the same results
@@ -32,7 +33,7 @@ export default function TripDetail({ trip, data, beyond, favs, metric, onOpen, o
 
       <div className="td-head">
         <h2>{trip.name}</h2>
-        {trip.label && <p>{trip.label}</p>}
+        {(trip.label || trip.watch) && <p><TripWhen trip={trip} /></p>}
       </div>
 
       <div className="td-rule" />

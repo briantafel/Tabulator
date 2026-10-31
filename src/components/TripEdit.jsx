@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { iso, fromIso } from "../lib/dates.js";
+import { BINOCULARS } from "./tripIcons.js";
 
 /* Brian's own check, in his coordinates — the same two states as the trip
    naming row: a ring while the range is unconfirmed, filled once tapped. */
@@ -36,6 +37,10 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
   const [cursor, setCursor] = useState(new Date(start.getFullYear(), start.getMonth(), 1));
   const [a, setA] = useState(trip.start ?? null);
   const [b, setB] = useState(trip.end ?? trip.start ?? null);
+  /* Watchlist: no dates, so the trip reads the whole forecast. Toggling it
+     on ghosts the calendar rather than clearing it — flip it back off and the
+     range you had picked is still there. */
+  const [watch, setWatch] = useState(!!trip.watch);
   const [done, setDone] = useState(false);
   const [naming, setNaming] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -66,18 +71,25 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
 
   const pick = (d) => {
     setDone(false);
+    /* A ghosted day still answers a tap: picking a date is plainly asking
+       for dates, so it turns the watchlist off rather than doing nothing. */
+    if (watch) {
+      setWatch(false);
+      if (a) return;            // the earlier range comes back as it was
+    }
     // First tap sets the start; the next one closes the range, unless it lands
     // before the start, in which case it becomes the new start.
     if (!a || (a && b && a !== b) || d < a) { setA(d); setB(d); return; }
     setB(d);
   };
 
+  const ready = watch || !!a;
   const commit = () => {
-    if (!a) return;
+    if (!ready) return;
     setDone(true);
     // Let the filled check land before the screen leaves — Brian: "a confirmed
     // date selection after the tap is included".
-    setTimeout(() => onSave({ start: a, end: b ?? a }), 260);
+    setTimeout(() => onSave(watch ? { watch: true } : { start: a, end: b ?? a }), 260);
   };
 
   const rename = () => {
@@ -117,7 +129,7 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
 
       <div className="fav-rule" />
 
-      <div className="te-month">
+      <div className={`te-month${watch ? " ghost" : ""}`}>
         <button
           className="te-arrow"
           onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}
@@ -131,11 +143,12 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
         >→</button>
       </div>
 
-      <div className="cal-grid te-grid" key={key(cursor)}>
+      <div className={`cal-grid te-grid${watch ? " ghost" : ""}`} key={key(cursor)}>
         {cells.map((d, i) => {
           if (!d) return <span key={`p${i}`} />;
-          const inRange = a && b && d >= a && d <= b;
-          const cls = ["cal-d", inRange ? "in" : "", d === a ? "sel-a" : "", d === b ? "sel-b" : ""]
+          const inRange = !watch && a && b && d >= a && d <= b;
+          const end = (x) => !watch && d === x;
+          const cls = ["cal-d", inRange ? "in" : "", end(a) ? "sel-a" : "", end(b) ? "sel-b" : ""]
             .filter(Boolean).join(" ");
           return (
             <button key={d} className={cls} onClick={() => pick(d)}>
@@ -145,12 +158,24 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
         })}
       </div>
 
+      {/* Tabulator-trips-main-1 (off: grey glyph) and -2 (on: ink glyph,
+          calendar ghosted). The label stays grey in both — it names the
+          option, the glyph carries the state. */}
+      <button
+        className={`te-watch${watch ? " on" : ""}`}
+        aria-pressed={watch}
+        onClick={() => { setDone(false); setWatch(!watch); }}
+      >
+        <svg viewBox="189 487 25 21" aria-hidden="true"><path d={BINOCULARS} /></svg>
+        <span>Watchlist (no dates)</span>
+      </button>
+
       <div className="te-done">
         <button
           className={`te-check${done ? " on" : ""}`}
           onClick={commit}
-          disabled={!a}
-          aria-label="Save these dates"
+          disabled={!ready}
+          aria-label={watch ? "Save as a watchlist" : "Save these dates"}
         >
           <svg viewBox="373 218 23.3 23.3" aria-hidden="true">
             {done

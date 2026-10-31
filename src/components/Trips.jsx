@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import TripWhen from "./TripWhen.jsx";
 import Table from "./Table.jsx";
 
 /* The same two check states as the resort sheet's naming row — Brian's own
@@ -261,7 +262,7 @@ export default function Trips({
                 onKeyDown={(e) => { if (e.key === "Enter") onOpenTrip(t.id); }}
               >
                 <span className="tp-name">{t.name}</span>
-                <span className="tp-when">{t.label}</span>
+                <TripWhen trip={t} className="tp-when" />
                 {/* Every named trip gets one, matching the Favorites link. */}
                 <button
                   className="tp-edit"

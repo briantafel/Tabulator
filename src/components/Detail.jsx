@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import TripWhen from "./TripWhen.jsx";
 import { snowWithUnit, tempTxt, windTxt, elevTxt, cmToIn, snowUnit } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
@@ -455,7 +456,7 @@ export default function Detail({
             {inTrips.map((t) => (
               <div className="at-row" key={t.id}>
                 <span className="at-name">{t.name}</span>
-                <span className="at-when">{t.label}</span>
+                <TripWhen trip={t} className="at-when" />
                 <button
                   className="rt-x"
                   onClick={() => {
@@ -485,7 +486,7 @@ export default function Detail({
                 onClick={() => { onAddToTrip(t.id); setAdding(false); }}
               >
                 <span className="at-name">{t.name}</span>
-                <span className="at-when">{t.label}</span>
+                <TripWhen trip={t} className="at-when" />
               </button>
             ))}
             {naming ? (
