@@ -69,10 +69,10 @@ export const SNOW = {
     "Looking like [{snow}] {over}. Get there early.",
   ],
   cycle: [
-    "Looking like [{snow}] {over}. That's a full storm cycle.",
+    "Looking like [{snow}] {over}. That's a fat storm cycle.",
     "[{snow}] {over}. Clear the calendar.",
     "A serious cycle, [{snow}] {over}.",
-    "Looking like [{snow}] {over}, the kind of number you plan a trip around.",
+    "Looking like [{snow}] {over}. Somebody call TGR. It's gonna be blower.",
   ],
 };
 
@@ -289,7 +289,7 @@ export const SO_WHAT = {
     "Frostbite cold, so it's a deal breaker.",
   ],
   vetoWarm: [
-    "That's warm enough to be a deal breaker. Slush by noon.",
+    "Warm enough to be a deal breaker and slush by noon.",
     "Too warm to hold up. Deal breaker.",
     "Spring conditions, not ski-trip conditions. Deal breaker.",
   ],
@@ -320,8 +320,8 @@ export const SO_WHAT = {
   dryRockies: ["Light, dry Rockies snow.", "That should be cold smoke."],
   go: [
     "That's the move.",
-    "This is the one.",
-    "Worth calling in sick for.",
+    "Lordy. This is the one.",
+    "Call in sick.",
     "Get there for first chair.",
   ],
   corn: [
@@ -376,6 +376,15 @@ function hash(s) {
   return h >>> 0;
 }
 const pick = (pool, seed, salt) => pool[hash(`${seed}|${salt}`) % pool.length];
+
+/* Words that promise cold, dry snow. Brian's own storm-cycle line says "It's
+   gonna be blower", which is exactly right at 20°F and exactly wrong at 36°F
+   — so any line carrying one of these sits out a window with a thaw in it,
+   whichever pool it is in. */
+const DRY_WORDS = /blower|cold smoke|light and dry|bottomless|champagne/i;
+const DRY_MAX_F = 30;
+const forWindow = (pool, x) =>
+  x.hi != null && x.hi > DRY_MAX_F ? pool.filter((t) => !DRY_WORDS.test(t)) : pool;
 
 /* ------------------------------------------------------- the snowpack -- */
 
@@ -593,13 +602,13 @@ export function resortVoice(r, metric) {
     t: GALE_TEMP[temp],
   };
 
-  const snowTpl = pick(SNOW[snowBucket(x)], seed, "snow");
+  const snowTpl = pick(forWindow(SNOW[snowBucket(x)], x), seed, "snow");
   const condTpl = band === "gale"
     ? pick(GALE, seed, "cond")
     : pick(CONDITIONS[temp][column(band)], seed, "cond");
   const key = soWhatKey(x, r);
 
   const out = [...segments(snowTpl, fill), { t: " " }, ...segments(condTpl, fill)];
-  if (key) out.push({ t: " " }, { t: pick(SO_WHAT[key], seed, "so") });
+  if (key) out.push({ t: " " }, { t: pick(forWindow(SO_WHAT[key], x), seed, "so") });
   return out;
 }
