@@ -392,7 +392,7 @@ const THAW_F = 33;        // above freezing: Snow-Forecast's 1°C is 33.8°F
 const HARD_FREEZE_F = 28; // a refreeze that sets a crust
 const VERY_COLD_F = 15;   // "very cold" — locks a cooked surface solid
 const FIRST_SNOW_IN = 2;  // enough new snow for the thaw to cook
-const LIGHT_SNOW = [0.5, 6]; // inches: a coat on top, not a fresh storm
+const LIGHT_SNOW = [0.5, 4]; // inches: a coat on top, not a fresh storm (Brian: "6\" is significant")
 const STEPS_48H = 6;      // three periods a day (am / pm / night)
 
 /** The window as a time series. Snow-Forecast gives three periods a day, each

@@ -200,3 +200,9 @@ test("Brian's blower line never runs on a warm storm", () => {
     .map((id) => say(resortVoice(resort({ id, total: 48, days: 5, hi: 22, lo: 10, wind: 8 }), false)));
   assert.ok(cold.some((s) => /TGR/.test(s)), "the TGR line never came up");
 });
+
+test("a light coat tops out at 4 inches — more than that is a fresh storm", () => {
+  const coat = (n) => P([[24, 4], [26, 4], [22, 2], [30, 0], [37, 0], [24, 0], [22, n / 2], [20, n / 2], [18, 0]]);
+  assert.equal(layering(coat(3.5)), "fluffOnCrust");
+  assert.notEqual(layering(coat(5)), "fluffOnCrust");
+});
