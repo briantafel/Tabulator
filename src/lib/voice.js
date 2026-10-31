@@ -91,7 +91,7 @@ export const CONDITIONS = {
     still: [
       "It's going to feel [like spring], with [{wn}].",
       "Temps look [downright springlike], and winds are [{w}].",
-      "[T-shirt warm] in the afternoons, with [{wn}].",
+      "[T-shirt temps] in the afternoons, with [{wn}].",
     ],
     windy: [
       "It's going to feel [like spring], though winds are [{w}].",
