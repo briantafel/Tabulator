@@ -1,4 +1,4 @@
-import { iso, fromIso } from "../lib/dates.js";
+import { iso, fromIso, leadingBlanks } from "../lib/dates.js";
 
 /** Month grid, no weekday headers — tap a start date, tap an end date.
  *  Dates outside the forecast horizon are ghosted and disabled. With a 6-day
@@ -16,7 +16,7 @@ export default function MonthGrid({ dates, a, b, offset = 0, onPick }) {
   const anchor = fromIso(dates[0]);
   const cursor = new Date(anchor.getFullYear(), anchor.getMonth() + offset, 1);
 
-  const pad = (cursor.getDay() + 6) % 7; // Monday-first
+  const pad = leadingBlanks(cursor); // Sunday-first
   const count = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
 
   /* Today, keyed the same way the cells are — built at midday LOCAL and only

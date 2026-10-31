@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { leadingBlanks } from "../src/lib/dates.js";
 
 import { RESORT_META as RESORTS, isStale } from "../src/lib/forecast.js";
 import { score, before, flags, rainRisk, tempSeverity, windSeverity } from "../src/lib/scoring.js";
@@ -178,4 +179,12 @@ test("a forecast older than a day is flagged stale", () => {
   assert.equal(isStale("2026-01-09T00:00:00Z", now), true);
   assert.equal(isStale(undefined, now), true);
   assert.equal(isStale("not a date", now), true);
+});
+
+
+test("calendar weeks start on Sunday", () => {
+  assert.equal(leadingBlanks(new Date(2026, 1, 1)), 0);   // Feb 1 2026 is a Sunday
+  assert.equal(leadingBlanks(new Date(2027, 1, 1)), 1);   // Feb 1 2027 is a Monday
+  assert.equal(leadingBlanks(new Date(2026, 10, 1)), 0);  // Nov 1 2026, Sunday
+  assert.equal(leadingBlanks(new Date(2026, 9, 1)), 4);   // Oct 1 2026, Thursday
 });

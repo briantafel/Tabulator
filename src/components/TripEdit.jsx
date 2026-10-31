@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { iso, fromIso } from "../lib/dates.js";
+import { iso, fromIso, leadingBlanks } from "../lib/dates.js";
 import { BINOCULARS } from "./tripIcons.js";
 
 /* Brian's own check, in his coordinates — the same two states as the trip
@@ -60,7 +60,7 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
     return () => window.removeEventListener("keydown", k);
   }, [onClose, naming, confirming]);
 
-  const pad = (cursor.getDay() + 6) % 7;                       // Monday-first
+  const pad = leadingBlanks(cursor);                           // Sunday-first
   const count = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
   /* Only the rows this month needs, which is what the export draws — February
      is five rows with the check right beneath it, not five rows and a gap. */
