@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse } from "yaml";
-import { readoutFacts, templateReadout, validateReadout, readoutMatches, CUTOFF_IN } from "../src/lib/readout.js";
+import { readoutFacts, templateReadout, validateReadout, readoutMatches, accumulation, CUTOFF_IN } from "../src/lib/readout.js";
 import { outlook } from "../src/lib/outlook.js";
 import { issuedAt, isFresh, afdAhead, cpcAhead } from "../scripts/discussions.js";
 import { parseReply } from "../scripts/readout-api.js";
@@ -33,7 +33,12 @@ const WX = {
   ] },
   telluride: { office: "GJT", periods: [
     { name: "Sunday", shortForecast: "Rain And Snow Showers", temperature: 41, startTime: "2026-11-01T06:00:00-07:00" },
-  ], alerts: [{ event: "Winter Storm Watch" }] },
+  ], alerts: [{ event: "Winter Storm Watch", onset: "2026-11-01T06:00:00-07:00", ends: "2026-11-02T18:00:00-07:00" }] },
+  mammoth: { office: "REV", periods: [
+    { name: "Tonight", shortForecast: "Chance Light Snow", detailedForecast: "A chance of snow. New snow accumulation of 1 to 2 inches possible.", temperature: 27, startTime: "2026-10-30T18:00:00-07:00" },
+    { name: "Saturday", shortForecast: "Heavy Snow", detailedForecast: "Snow. Wind chill values as low as 14. New snow accumulation of 4 to 8 inches possible.", temperature: 30, startTime: "2026-10-31T06:00:00-07:00" },
+    { name: "Saturday Night", shortForecast: "Heavy Snow", detailedForecast: "Snow. New snow accumulation of 8 to 12 inches possible.", temperature: 24, startTime: "2026-10-31T18:00:00-07:00" },
+  ] },
 };
 const facts0 = () => readoutFacts({ resorts: feed(WEEK), weather: WX, generatedAt: "2026-10-30T22:16:00Z", now: NOW });
 
@@ -66,7 +71,7 @@ test("totals are our inches and the NWS lines come from weather.json", () => {
   assert.equal(t.totalIn, 16);
   assert.deepEqual(t.peak, { dow: "Sunday", in: 10 });
   assert.equal(t.nws[0].short, "Rain And Snow Showers");
-  assert.deepEqual(t.alerts, ["Winter Storm Watch"]);
+  assert.deepEqual(t.alerts, [{ event: "Winter Storm Watch", from: "Sunday", to: "Monday night" }]);
 });
 
 // --- the template -------------------------------------------------------
@@ -78,9 +83,29 @@ test("the template passes its own check and quotes the NWS", () => {
   const by = Object.fromEntries(t.regions.map((r) => [r.key, r.text]));
   assert.match(by["the central Rockies"], /^Telluride is forecast for about 16", 10" of it Sunday\./);
   assert.match(by["the central Rockies"], /rain mixed in at Telluride Sunday/);
-  assert.match(by["the central Rockies"], /Winter Storm Watch in effect at Telluride/);
+  assert.match(by["the central Rockies"], /Winter Storm Watch at Telluride from Sunday to Monday night/);
+  assert.match(by["the Eastern Sierra"], /The NWS is calling for more at Mammoth: 13 to 22" Friday night through Saturday night\./);
   assert.match(by["the Wasatch"], /heavy snow at Alta Sunday and Sunday night/);
   assert.equal(t.ahead, null);
+});
+
+test("NWS amounts reach the writer only through nwsHigher", () => {
+  const m = facts0().regions.find((g) => g.key === "the Eastern Sierra").resorts[0];
+  assert.equal(m.totalIn, 9);
+  assert.deepEqual(m.nwsHigher, { fromIn: 13, toIn: 22, over: "Friday night through Saturday night" });
+  assert.equal(m.nws[0].name, "Friday Night", "'Tonight' goes stale; the read-out is read the next day");
+  for (const p of m.nws) assert.doesNotMatch(p.detail ?? "", /inch|accumulation/i);
+  // Alta's NWS 4-8" Sunday is not clearly above our 8": no line.
+  const alta = facts0().regions.find((g) => g.key === "the Wasatch").resorts.find((r) => r.name === "Alta");
+  assert.equal(alta?.nwsHigher, undefined);
+});
+
+test("NWS accumulation wording parses", () => {
+  assert.deepEqual(accumulation("New snow accumulation of 8 to 12 inches possible."), [8, 12]);
+  assert.deepEqual(accumulation("New snow accumulation of around 2 inches possible."), [2, 2]);
+  assert.deepEqual(accumulation("New snow accumulation of less than one inch possible."), [0, 1]);
+  assert.deepEqual(accumulation("New snow accumulation of less than half an inch possible."), [0, 0.5]);
+  assert.equal(accumulation("Mostly sunny."), null);
 });
 
 // --- the check ----------------------------------------------------------
@@ -89,13 +114,29 @@ test("the check rejects an invented number, a stray place and the wrong order", 
   const facts = facts0();
   const good = templateReadout(facts);
   const bump = (fn) => ({ ...good, regions: good.regions.map((r, i) => (i ? r : { ...r, text: fn(r.text) })) });
-  assert.match(validateReadout(bump((t) => `${t} Up to 14" up high.`), facts).join(), /number 14/);
+  assert.match(validateReadout(bump((t) => `${t} Up to 57" up high.`), facts).join(), /number 57/);
   assert.match(validateReadout(bump((t) => `${t} Stowe stays dry.`), facts).join(), /names Stowe/);
   assert.match(validateReadout(bump((t) => t.repeat(8)), facts).join(), /chars, limit/);
   assert.match(validateReadout({ ...good, regions: [...good.regions].reverse() }, facts).join(), /in that order/);
   assert.match(validateReadout({ ...good, ahead: "More next week." }, facts).join(), /no fresh discussion/);
   // Numbers the NWS gave are fair game, commas and all.
   assert.deepEqual(validateReadout(bump((t) => `${t} Snow levels drop to 6,000 feet.`), facts), []);
+  // The first live read-out opened its look-ahead by explaining its inputs.
+  assert.match(validateReadout(bump((t) => `${t} The fact sheet has nothing more.`), facts).join(), /talks about its own inputs/);
+});
+
+test("the look-ahead must name a date after the window", () => {
+  const facts = readoutFacts({ resorts: feed(WEEK), weather: WX, now: NOW,
+    ahead: [{ source: "WPC", issuedAt: NOW.toISOString(), url: "u", excerpt: "Pacific trough reaches the West Coast Nov 6 to 7." }] });
+  assert.equal(facts.window.toLabel, "Wednesday Nov 4");
+  assert.equal(facts.afterWindow[0].label, "Thursday Nov 5");
+  const base = templateReadout(facts);
+  const ahead = (text) => validateReadout({ ...base, ahead: text }, facts);
+  assert.deepEqual(ahead("The Weather Prediction Center sees a Pacific trough reaching the West Coast around Friday Nov 6."), []);
+  assert.match(ahead("Snow likely early next week, says the Weather Prediction Center.").join(), /inside the radar's window/);
+  assert.match(ahead("The Weather Prediction Center sees more snow later on.").join(), /names no date/);
+  assert.match(ahead("The Weather Prediction Center sees snow on Nov 3.").join(), /inside the radar's window/);
+  assert.match(ahead("The Climate Prediction Center is not in the discussions provided.").join(), /own inputs/);
 });
 
 test("a stale read-out is never shown", () => {

@@ -33,29 +33,108 @@ export const CUTOFF_IN = 6;
 const MAX_RESORTS = 3;          // per region, strongest first
 const NWS_RESORTS = 2;          // whose NWS periods go in the fact sheet
 const MAX_PERIODS = 8;
-const DETAIL_CHARS = 240;
-export const REGION_TEXT_MAX = 420;
+const DETAIL_CHARS = 200;
+export const REGION_TEXT_MAX = 320; // about 50 words; the prompt asks for 40
 export const AHEAD_TEXT_MAX = 320;
 
 const DOW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** "2026-11-05" → "Thursday Nov 5". */
+export const dateLabel = (iso) => {
+  const d = new Date(`${iso}T12:00:00Z`);
+  return `${DOW[d.getUTCDay()]} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+};
+/** "Saturday Night" → "Saturday night", "Tonight" → "tonight". */
+const when = (name) => String(name).replace(/ Night$/, " night").replace(/^(Tonight|This Afternoon|Today|Overnight)$/, (m) => m.toLowerCase());
 const dowOf = (date) => DOW[new Date(`${date}T12:00:00Z`).getUTCDay()];
 const inch = (cm) => Math.round(cmToIn(cm));
 const WET = /snow|rain|sleet|flurr|freezing|mix|storm|shower/i;
 
 /** The NWS periods worth quoting for one resort: wet ones, inside the window. */
+const inWindow = (wx, from, to) => (wx?.periods ?? []).filter((p) => {
+  const d = String(p.startTime ?? "").slice(0, 10);
+  return d >= from && d <= to;
+});
+
+/* NWS inch figures never reach the writer as loose text: they sat beside our
+   totals in the first live read-out (2026-10-30) and made it contradict
+   itself — "6\" total" next to "8 to 12 inches possible overnight". They go
+   in only through `nwsHigher`, below, which code works out. */
+const ACCUM = /[^.]*\b(accumulation|inches|inch)\b[^.]*\.\s*/gi;
+
+/** A period's name as a day: "Tonight" is only true until morning, and the
+ *  read-out is read for a day or more. "Tonight" → "Friday night". */
+function periodName(p) {
+  if (!/^(Tonight|This Afternoon|Today|Overnight|This Morning)$/i.test(p.name ?? "")) return p.name;
+  const day = DOW[new Date(`${String(p.startTime).slice(0, 10)}T12:00:00Z`).getUTCDay()];
+  return /night|overnight/i.test(p.name) ? `${day} Night` : day;
+}
+
+/** The useful part of the NWS sentence: its first clause, plus anything on
+ *  snow level, wind or heavy snow. Drops the hour-by-hour chance-of lists. */
+function detailOf(text) {
+  const sentences = String(text ?? "").replace(ACCUM, "").split(/(?<=\.)\s+/).filter(Boolean);
+  const keep = sentences.filter((x, i) => i === 0 || /snow level|gust|heavy|blowing|wind chill/i.test(x));
+  return keep.join(" ").replace(/ between \d.*$/, ".").trim().slice(0, DETAIL_CHARS);
+}
+
 function nwsFor(wx, from, to) {
-  return (wx?.periods ?? [])
-    .filter((p) => {
-      const d = String(p.startTime ?? "").slice(0, 10);
-      return d >= from && d <= to && (WET.test(p.shortForecast ?? "") || /accumulation/i.test(p.detailedForecast ?? ""));
-    })
+  return inWindow(wx, from, to)
+    .filter((p) => WET.test(p.shortForecast ?? "") || /accumulation/i.test(p.detailedForecast ?? ""))
     .slice(0, MAX_PERIODS)
-    .map((p) => ({
-      name: p.name,
-      short: p.shortForecast,
-      ...(p.detailedForecast ? { detail: p.detailedForecast.slice(0, DETAIL_CHARS) } : {}),
-      tempF: p.temperature,
-    }));
+    .map((p) => {
+      const detail = detailOf(p.detailedForecast);
+      return { name: periodName(p), short: p.shortForecast, ...(detail ? { detail } : {}), tempF: p.temperature };
+    });
+}
+
+const WORD_N = { one: 1, two: 2, three: 3, four: 4, five: 5, half: 0.5, "a half": 0.5 };
+/** "New snow accumulation of 8 to 12 inches possible" → [8, 12];
+ *  "around 2 inches" → [2, 2]; "less than one inch" → [0, 1]. */
+export function accumulation(text) {
+  const t = String(text ?? "");
+  if (!/snow accumulation/i.test(t)) return null;
+  let m = t.match(/accumulation of (\d+) to (\d+) inch/i);
+  if (m) return [Number(m[1]), Number(m[2])];
+  m = t.match(/accumulation of around (\d+|one|two|three|four|five) inch/i);
+  if (m) { const n = Number(m[1]) || WORD_N[m[1].toLowerCase()]; return [n, n]; }
+  m = t.match(/accumulation of less than (\d+|one|two|half|a half)\b/i);
+  if (m) return [0, Number(m[1]) || WORD_N[m[1].toLowerCase()]];
+  return null;
+}
+
+/** Where the NWS calls for clearly more than our table: its summed range
+ *  over the window, and the period that carries most of it. Brian,
+ *  2026-10-30: the read-out says so, once. */
+export const NWS_HIGHER_BY_IN = 3;
+export const NWS_HIGHER_RATIO = 1.5;
+function nwsHigher(wx, from, to, totalIn) {
+  const amounts = inWindow(wx, from, to)
+    .map((p) => ({ name: periodName(p), a: accumulation(p.detailedForecast) }))
+    .filter((x) => x.a);
+  if (!amounts.length) return null;
+  const lo = Math.round(amounts.reduce((s, x) => s + x.a[0], 0));
+  const hi = Math.round(amounts.reduce((s, x) => s + x.a[1], 0));
+  if (hi < totalIn + NWS_HIGHER_BY_IN || hi < totalIn * NWS_HIGHER_RATIO) return null;
+  const big = amounts.reduce((a, b) => (b.a[1] > a.a[1] ? b : a));
+  const wet = amounts.filter((x) => x.a[1] >= 1).map((x) => x.name);
+  return {
+    fromIn: lo, toIn: hi,
+    over: wet.length > 1 ? `${when(wet[0])} through ${when(wet[wet.length - 1])}` : when(wet[0] ?? big.name),
+  };
+}
+
+/** An alert's span as day names: "Saturday to Sunday night". */
+function alertSpan(a) {
+  const day = (iso) => {
+    if (!iso) return null;
+    const d = new Date(iso);
+    const h = Number(String(iso).slice(11, 13));
+    const name = DOW[new Date(`${String(iso).slice(0, 10)}T12:00:00Z`).getUTCDay()];
+    return Number.isFinite(h) && h >= 18 ? `${name} night` : (Number.isFinite(d.getTime()) ? name : null);
+  };
+  const from = day(a.onset), to = day(a.ends);
+  return { event: a.event, ...(from ? { from } : {}), ...(to && to !== from ? { to } : {}) };
 }
 
 /**
@@ -68,6 +147,7 @@ export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = 
   const rows = snowRows(resorts, now);
   const all = rows.map((r) => r.days.map((d) => d.date)).find((d) => d.length) ?? [];
   const window = { from: all[0] ?? null, to: all[all.length - 1] ?? null, days: all.length };
+  if (window.to) window.toLabel = dateLabel(window.to);
   const biggest = Math.max(0, ...rows.map((r) => r.total));
 
   if (cmToIn(biggest) < QUIET_IN) {
@@ -99,10 +179,14 @@ export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = 
           totalIn: inch(r.total),
           days,
           ...(peak ? { peak: { dow: peak.dow, in: peak.in } } : {}),
-          ...(j < NWS_RESORTS && wx ? {
-            nws: nwsFor(wx, window.from, window.to),
-            ...(wx.alerts?.length ? { alerts: wx.alerts.map((a) => a.event) } : {}),
-          } : {}),
+          ...(j < NWS_RESORTS && wx ? (() => {
+            const higher = nwsHigher(wx, window.from, window.to, inch(r.total));
+            return {
+              nws: nwsFor(wx, window.from, window.to),
+              ...(higher ? { nwsHigher: higher } : {}),
+              ...(wx.alerts?.length ? { alerts: wx.alerts.map(alertSpan) } : {}),
+            };
+          })() : {}),
         };
       }),
     });
@@ -122,14 +206,23 @@ export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = 
   }
   const offLimits = [...universe].filter((n) => !allowed.has(n) && ![...allowed].some((a) => a.includes(n)));
 
-  return { generatedAt, window, quiet: false, regions, ahead, offLimits };
+  /* The look-ahead may only talk about these days. Spelled out so the writer
+     can turn a forecaster's "Friday" into a date, and so the check knows
+     which dates are fair. */
+  const afterWindow = window.to && ahead.length
+    ? Array.from({ length: 9 }, (_, i) => {
+      const d = new Date(`${window.to}T12:00:00Z`);
+      d.setUTCDate(d.getUTCDate() + i + 1);
+      const iso = d.toISOString().slice(0, 10);
+      return { date: iso, label: dateLabel(iso) };
+    })
+    : [];
+
+  return { generatedAt, window, quiet: false, regions, ahead, afterWindow, offLimits };
 }
 
 /** The fact sheet as the model sees it: without the validator's own list. */
 export const factsForWriter = ({ offLimits, ...rest }) => rest; // eslint-disable-line no-unused-vars
-
-/** "Saturday Night" → "Saturday night", "Tonight" → "tonight". */
-const when = (name) => name.replace(/ Night$/, " night").replace(/^(Tonight|This Afternoon|Today|Overnight)$/, (m) => m.toLowerCase());
 
 const andList = (xs) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
@@ -154,7 +247,10 @@ export function templateReadout(facts) {
       const mixed = said((p) => /rain/i.test(p.short) && /snow/i.test(p.short) && p.name.startsWith(peakDow) && peakDow);
       if (heavy) parts.push(`The National Weather Service has heavy snow at ${heavy.r.name} ${andList(heavy.ps.map((p) => when(p.name)))}.`);
       else if (mixed) parts.push(`The National Weather Service has rain mixed in at ${mixed.r.name} ${andList(mixed.ps.map((p) => when(p.name)))}.`);
-      if (top.alerts?.length) parts.push(`${andList([...new Set(top.alerts)])} in effect at ${top.name}.`);
+      const hi = g.resorts.slice(0, 2).find((r) => r.nwsHigher);
+      if (hi) parts.push(`The NWS is calling for more at ${hi.name}: ${hi.nwsHigher.fromIn} to ${hi.nwsHigher.toIn}" ${hi.nwsHigher.over}.`);
+      const alert = top.alerts?.[0];
+      if (alert) parts.push(`${alert.event} at ${top.name}${alert.from ? ` from ${alert.from}${alert.to ? ` to ${alert.to}` : ""}` : ""}.`);
       return { key: g.key, text: parts.join(" ") };
     }),
     ahead: null, // summarising forecasters' prose needs a model
@@ -163,6 +259,19 @@ export function templateReadout(facts) {
 
 const numbersIn = (s) =>
   (String(s).match(/\d[\d,]*(?:\.\d+)?/g) ?? []).map((n) => String(Number(n.replace(/,/g, ""))));
+const META = /\b(fact sheet|the data provided|provided (data|discussions?|sources?)|discussions? provided|not (in|included in) the|no (fresh |recent )?discussions?|JSON|the input)\b/i;
+const RELATIVE = /\b(today|tonight|tomorrow|this weekend|this week|early next week|next few days)\b/i;
+const MONTH_RE = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2})\b/gi;
+/** "Nov 7", "November 7" → ISO dates, in the year that keeps them nearest the window. */
+function datesIn(text, ref) {
+  const y = Number(String(ref).slice(0, 4));
+  const refMonth = Number(String(ref).slice(5, 7));
+  return [...String(text).matchAll(MONTH_RE)].map((m) => {
+    const mon = MONTHS.indexOf(m[1].slice(0, 3)[0].toUpperCase() + m[1].slice(1, 3).toLowerCase()) + 1;
+    const year = refMonth === 12 && mon === 1 ? y + 1 : y;
+    return `${year}-${String(mon).padStart(2, "0")}-${String(m[2]).padStart(2, "0")}`;
+  });
+}
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** Every reason a writer's output may not ship. Empty means it may. */
@@ -178,6 +287,7 @@ export function validateReadout(out, facts) {
   const check = (label, text, max) => {
     if (typeof text !== "string" || !text.trim()) { problems.push(`${label}: empty`); return; }
     if (text.length > max) problems.push(`${label}: ${text.length} chars, limit ${max}`);
+    if (META.test(text)) problems.push(`${label}: talks about its own inputs ("${text.match(META)[0]}") — readers never see the fact sheet`);
     for (const n of numbersIn(text)) {
       if (!allowedNumbers.has(n)) problems.push(`${label}: the number ${n} is not in the fact sheet`);
     }
@@ -189,7 +299,15 @@ export function validateReadout(out, facts) {
 
   if (out.ahead != null) {
     if (!facts.ahead?.length) problems.push("ahead: written with no fresh discussion to draw on");
-    else check("ahead", out.ahead, AHEAD_TEXT_MAX);
+    else {
+      check("ahead", out.ahead, AHEAD_TEXT_MAX);
+      /* Brian's rule 5: past the radar's window, never inside it. It must
+         name at least one date, and every date it names must be after. */
+      if (RELATIVE.test(out.ahead)) problems.push(`ahead: "${out.ahead.match(RELATIVE)[0]}" is inside the radar's window — name a date after ${facts.window.toLabel}`);
+      const dates = datesIn(out.ahead, facts.window.to);
+      if (!dates.length) problems.push(`ahead: names no date — say when, after ${facts.window.toLabel}`);
+      for (const d of dates) if (d <= facts.window.to) problems.push(`ahead: ${d} is inside the radar's window (to ${facts.window.to})`);
+    }
   }
   return problems;
 }
