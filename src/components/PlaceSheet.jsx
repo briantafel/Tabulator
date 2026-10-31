@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Table from "./Table.jsx";
 import { shortDate } from "../lib/dates.js";
+import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 
 /** A range, part of a range or a state, opened from the radar's paragraph.
  *
@@ -12,10 +13,28 @@ import { shortDate } from "../lib/dates.js";
  *  So it is the resort sheet's card — same scrim, handle, header and Close —
  *  holding the mountains screen's results table for just those resorts, over
  *  the same days the paragraph was read over. Tapping a row hands over to that
- *  resort's own sheet. */
-export default function PlaceSheet({ place, metric, favs, onClose, onOpen }) {
+ *  resort's own sheet.
+ *
+ *  Brian, 2026-10-31: the resort sheet's add-to / remove-from-trip button,
+ *  beside Close. Here it acts on the whole place: Add puts every resort in it
+ *  into the trip, and the button turns to the red X once some trip holds all
+ *  of them, where Remove takes them all back out. A trip holding only some of
+ *  them still shows the plus, and adding fills in the rest. */
+export default function PlaceSheet({
+  place, metric, favs, onClose, onOpen, trips = [], onAddToTrip, onNewTrip, onRemoveFromTrip,
+}) {
   const shown = !!place?.rows?.length;
   const fromScrim = useRef(false);
+  const [adding, setAdding] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [naming, setNaming] = useState(false);
+  const [draft, setDraft] = useState("");
+  const field = useRef(null);
+
+  // A different place, or the sheet closing, starts the panels over.
+  const key = place?.title;
+  useEffect(() => { setAdding(false); setRemoving(false); setNaming(false); setDraft(""); }, [key]);
+  useEffect(() => { if (naming) field.current?.focus(); }, [naming]);
 
   // Same body lock as the resort sheet: the page behind must not scroll.
   useEffect(() => {
@@ -31,14 +50,36 @@ export default function PlaceSheet({ place, metric, favs, onClose, onOpen }) {
 
   useEffect(() => {
     if (!shown) return undefined;
-    const k = (e) => { if (e.key === "Escape") onClose(); };
+    // Escape backs out one layer at a time, as on the resort sheet.
+    const k = (e) => {
+      if (e.key !== "Escape") return;
+      if (naming) return setNaming(false);
+      if (adding) return setAdding(false);
+      if (removing) return setRemoving(false);
+      onClose();
+    };
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
-  }, [shown, onClose]);
+  }, [shown, onClose, naming, adding, removing]);
 
   if (!shown) return null;
   const win = place.rows[0].win ?? [];
   const n = place.rows.length;
+
+  const resorts = place.rows.map((r) => ({ name: r.name, total: r.total }));
+  const names = resorts.map((r) => r.name);
+  const holdsAll = (t) => names.every((nm) => t.resorts?.some((x) => x.name === nm));
+  const inTrips = trips.filter(holdsAll);
+  const booked = inTrips.length > 0;
+
+  const commit = () => {
+    const name = draft.trim();
+    if (!name) return;
+    onNewTrip?.(resorts, name);
+    setNaming(false);
+    setDraft("");
+    setAdding(false);
+  };
 
   return (
     <div
@@ -63,8 +104,89 @@ export default function PlaceSheet({ place, metric, favs, onClose, onOpen }) {
           <Table data={place.rows} metric={metric} favs={favs} onOpen={onOpen} />
         </div>
 
+        {removing && (
+          <div className="addtrip" role="dialog" aria-label="Remove from trip">
+            <h2>Remove from trip</h2>
+            {inTrips.map((t) => (
+              <div className="at-row" key={t.id}>
+                <span className="at-name">{t.name}</span>
+                <span className="at-when">{t.label}</span>
+                <button
+                  className="rt-x"
+                  onClick={() => {
+                    onRemoveFromTrip?.(t.id, names);
+                    if (inTrips.length === 1) setRemoving(false);
+                  }}
+                  aria-label={`Remove ${place.title} from ${t.name}`}
+                >
+                  <svg viewBox="373.03 135.06 23.88 23.88" aria-hidden="true">
+                    <path d={RT_X} />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {adding && (
+          <div className="addtrip" role="dialog" aria-label="Add to trip">
+            <h2>Add to trip</h2>
+            {trips.filter((t) => !holdsAll(t)).map((t) => (
+              <button
+                key={t.id}
+                className="at-row"
+                onClick={() => { onAddToTrip?.(t.id, resorts); setAdding(false); }}
+              >
+                <span className="at-name">{t.name}</span>
+                <span className="at-when">{t.label}</span>
+              </button>
+            ))}
+            {naming ? (
+              <div className="at-row at-new naming">
+                <input
+                  ref={field}
+                  className="at-field"
+                  value={draft}
+                  placeholder=""
+                  aria-label="Name this trip"
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") commit(); }}
+                />
+                <button
+                  className="at-check"
+                  onClick={commit}
+                  disabled={!draft.trim()}
+                  aria-label="Save trip name"
+                >
+                  <svg viewBox="373 218 23.3 23.3" aria-hidden="true">
+                    {draft.trim()
+                      ? <path d={CHECK_FULL} />
+                      : CHECK_RING.map((d) => <path key={d.slice(0, 12)} d={d} />)}
+                  </svg>
+                </button>
+              </div>
+            ) : (
+              <button className="at-row at-new" onClick={() => setNaming(true)}>
+                <span className="at-name">New trip</span>
+                <span className="at-plus" aria-hidden="true" />
+              </button>
+            )}
+          </div>
+        )}
+
         <div className="sheet-actions">
           <button className="sheet-close" onClick={onClose}>Close</button>
+          <button
+            className={`sheet-add${(adding || removing) ? " on" : ""}${booked ? " booked" : ""}`}
+            onClick={() => (booked ? setRemoving((v) => !v) : setAdding((v) => !v))}
+            aria-expanded={adding || removing}
+            aria-label={booked ? `Remove ${place.title} from trip` : `Add ${place.title} to trip`}
+          >
+            <svg viewBox="349 33 24 26" aria-hidden="true">
+              <path d={CAL_FRAME} />
+              <path d={booked ? CAL_X : CAL_PLUS} />
+            </svg>
+          </button>
         </div>
       </div>
     </div>

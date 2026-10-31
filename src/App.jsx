@@ -159,7 +159,8 @@ export default function Tabulator() {
          the range; these are the range. */
       return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
                       start: dates?.[wa], end: dates?.[wb],
-                      resorts: resort ? [resort] : [] }];
+                      // One resort from its sheet, or a whole place from the radar.
+                      resorts: Array.isArray(resort) ? resort : resort ? [resort] : [] }];
     });
 
   const removeTrip = (id) => setTrips((t) => t.filter((x) => x.id !== id));
@@ -175,22 +176,27 @@ export default function Tabulator() {
   const renameTrip = (id, name) =>
     setTrips((t) => t.map((x) => (x.id === id ? { ...x, name } : x)));
 
+  /* One resort, or a whole place's worth from the radar — the ones already
+     in the trip are skipped, so adding a place fills in the rest. */
   const addToTrip = (id, resort) =>
     setTrips((t) =>
-      t.map((x) =>
-        x.id !== id || x.resorts.some((r) => r.name === resort.name)
-          ? x
-          : { ...x, resorts: [...x.resorts, resort] }
-      )
+      t.map((x) => {
+        if (x.id !== id) return x;
+        const add = (Array.isArray(resort) ? resort : [resort])
+          .filter((r) => !x.resorts.some((y) => y.name === r.name));
+        return add.length ? { ...x, resorts: [...x.resorts, ...add] } : x;
+      })
     );
 
   /* The mirror of addToTrip. Removing the last resort leaves an empty trip
      rather than deleting it — a trip is a named container with its own dates,
      and dropping it because its last resort went would throw away the part
      the user actually typed. */
-  const removeFromTrip = (id, name) =>
+  const removeFromTrip = (id, name) => {
+    const drop = new Set(Array.isArray(name) ? name : [name]);
     setTrips((all) => all.map((x) =>
-      (x.id === id ? { ...x, resorts: x.resorts.filter((r) => r.name !== name) } : x)));
+      (x.id === id ? { ...x, resorts: x.resorts.filter((r) => !drop.has(r.name)) } : x)));
+  };
 
   /* The star favourites a resort; the calendar-plus saves the window. Two
      different actions, which is why the sheet carries both icons.
@@ -498,6 +504,10 @@ export default function Tabulator() {
         favs={favs}
         onClose={() => setPlace(null)}
         onOpen={(r) => { setPlace(null); setOpen(r); }}
+        trips={trips}
+        onAddToTrip={addToTrip}
+        onNewTrip={(list, named) => newTrip(list, named)}
+        onRemoveFromTrip={removeFromTrip}
       />
 
       <Detail
