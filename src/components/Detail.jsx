@@ -308,7 +308,14 @@ export default function Detail({
             <p className="sheet-pack">
               {pack.base != null && <span>Base: <b>{depth(pack.base)}</b></span>}
               {pack.top != null && <span>Top depth: <b>{depth(pack.top)}</b></span>}
-              {pack.last && <span>Last: <b>{shortDate(pack.last)}</b></span>}
+              {/* Brian, 2026-10-31: the amount goes just before the date,
+                  same bold as Base and Top depth — 'Last: 5.5" Oct 29'. */}
+              {pack.last && (
+                <span>Last: <b>
+                  {pack.fresh != null && `${snowWithUnit(pack.fresh, metric)} `}
+                  {shortDate(pack.last)}
+                </b></span>
+              )}
             </p>
           )}
 

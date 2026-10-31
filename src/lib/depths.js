@@ -4,6 +4,12 @@
  * `depths` since August — "Bottom snow depth: 5 cm", "Top snow depth: 20 cm",
  * "Last snowfall: 27 Oct 2026". Snow-Forecast calls the base "Bottom".
  *
+ * "Fresh snowfall depth" is how much fell in that last snowfall. Snow-Forecast
+ * only publishes it while the snowfall is recent (22 of 56 resorts on
+ * 2026-10-31; a week-old storm reads "—"), so it is shown beside the date
+ * when present and simply left off when not. Zero reads as absent: "0 cm of
+ * snow last fell" is not a snowfall.
+ *
  * Every value is optional. A depth that is absent or unreadable is null, never
  * 0: a missing base and a bare mountain look identical as a number and mean
  * opposite things. */
@@ -25,11 +31,14 @@ export function parseDay(raw) {
   return `${m[3]}-${String(mon + 1).padStart(2, "0")}-${String(Number(m[1])).padStart(2, "0")}`;
 }
 
+const positive = (n) => (n != null && n > 0 ? n : null);
+
 export function snowpack(resort) {
   const d = resort?.depths ?? {};
   return {
     base: parseDepthCm(d["Bottom snow depth"]),
     top: parseDepthCm(d["Top snow depth"]),
     last: parseDay(d["Last snowfall"]),
+    fresh: positive(parseDepthCm(d["Fresh snowfall depth"])),
   };
 }
