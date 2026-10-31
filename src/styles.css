@@ -1415,3 +1415,20 @@ body { background: #F2F2F2; }
 }
 .rd-hit .tp-name { color: var(--ink); }
 .rd-star { padding: 0; line-height: 0; top: calc(24.3 * var(--u)); }
+
+/* ------------------------------------------------------------------
+ * The same search inside a trip. Magnifier beside the trip name; the
+ * result rows carry the trip calendar (Brian's 24x26, plus / red X) where
+ * the radar has the star — centred on the star's own spot.
+ * ------------------------------------------------------------------ */
+.td-head { display: flex; align-items: flex-start; justify-content: space-between; }
+.td-id { flex: 1; min-width: 0; }
+.td-glass { margin-top: calc(1.5 * var(--u)); }
+.td-cal {
+  position: absolute; right: calc(14.5 * var(--u)); top: calc(20.5 * var(--u));
+  width: calc(24 * var(--u)); height: calc(26 * var(--u));
+  padding: 0; line-height: 0; color: var(--ink);
+}
+.td-cal.booked { color: var(--mark-red); }
+.td-cal svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.td-cal svg path { fill: currentColor; }

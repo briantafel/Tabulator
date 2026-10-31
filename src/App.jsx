@@ -443,6 +443,15 @@ export default function Tabulator() {
               <div className={viewing.leaving ? "tripdetail-out" : ""}>
                 <TripDetail
                   trip={t}
+                  catalog={feed.resorts}
+                  onAddResort={(r) => {
+                    const scored = tripData.find((x) => x.name === r.name);
+                    addToTrip(t.id, { name: r.name, total: scored?.total ?? 0 });
+                  }}
+                  onRemoveResort={(name) => removeFromTrip(t.id, name)}
+                  /* The trip's own numbers when it has a window in the
+                     forecast; the full forecast when it is beyond it. */
+                  onOpenResort={(r) => setOpen(tripData.find((x) => x.name === r.name) ?? scoreFull(r))}
                   data={tripData}
                   beyond={beyond}
                   favs={favs}
