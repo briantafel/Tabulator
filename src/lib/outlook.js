@@ -75,7 +75,7 @@ export const RANGES = {
    The storm's strength is read off its heaviest single DAY, not its total:
    Brian's own example calls 17" over five days "moderate", and it is — that
    is a steady few inches a day. A foot in one day is what reads as strong. */
-const QUIET_IN = 1;
+export const QUIET_IN = 1;
 const LIGHT_BELOW_IN_DAY = 3;
 const STRONG_ABOVE_IN_DAY = 8;
 const JOIN_SHARE = 0.25;
@@ -92,15 +92,12 @@ const strength = (totals) => {
   return top.reduce((s, v) => s + v, 0) / top.length;
 };
 
-/**
- * @param resorts  forecast.json resorts (cm)
- * @param opts.now     defaults to now; days before today are ignored
- * @param opts.metric  amount in cm rather than inches
- * @returns segments [{ t, hot }] — never null
- */
-export function outlook(resorts, { now = new Date(), metric = false } = {}) {
+/** Each resort's snow from today on, with its range, sub-range and state.
+ *  Shared with the radar read-out (readout.js) so the two can never rank
+ *  the week differently. */
+export function snowRows(resorts, now = new Date()) {
   const today = iso(now);
-  const rows = (resorts ?? [])
+  return (resorts ?? [])
     .filter((r) => RANGES[r.id])
     .map((r) => {
       const days = (r.days ?? []).filter((d) => d.date && d.date >= today);
@@ -108,8 +105,32 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
       const total = snow.reduce((s, v) => s + v, 0);
       // Snow-weighted mean day: where in the week this resort's snow lands.
       const when = total ? snow.reduce((s, v, i) => s + v * i, 0) / total : Infinity;
-      return { ...r, ...RANGES[r.id], snow, total, when };
+      return { ...r, ...RANGES[r.id], days, snow, total, when };
     });
+}
+
+/** Rows grouped into the units the best bet is chosen from — ranges, with
+ *  the Rockies and the Sierra broken into their parts — strongest first.
+ *  The first entry IS the paragraph's best bet. */
+export function unitsOf(rows) {
+  const units = new Map();
+  for (const r of rows) {
+    const key = r.sub ?? r.range;
+    if (!units.has(key)) units.set(key, []);
+    units.get(key).push(r);
+  }
+  return new Map([...units.entries()]
+    .sort((a, b) => strength(b[1].map((r) => r.total)) - strength(a[1].map((r) => r.total))));
+}
+
+/**
+ * @param resorts  forecast.json resorts (cm)
+ * @param opts.now     defaults to now; days before today are ignored
+ * @param opts.metric  amount in cm rather than inches
+ * @returns segments [{ t, hot }] — never null
+ */
+export function outlook(resorts, { now = new Date(), metric = false } = {}) {
+  const rows = snowRows(resorts, now);
 
   const nDays = Math.max(0, ...rows.map((r) => r.snow.length));
   const biggest = rows.reduce((a, b) => (b.total > (a?.total ?? -1) ? b : a), null);
@@ -146,14 +167,8 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
   const over = span === 1 ? "today" : `the next ${span} days`;
 
   // Best bet: ranges, with the Rockies broken into their parts.
-  const units = new Map();
-  for (const r of rows) {
-    const key = r.sub ?? r.range;
-    if (!units.has(key)) units.set(key, []);
-    units.get(key).push(r);
-  }
-  const [bestName, bestRows] = [...units.entries()]
-    .sort((a, b) => strength(b[1].map((r) => r.total)) - strength(a[1].map((r) => r.total)))[0];
+  const units = unitsOf(rows);
+  const [bestName, bestRows] = units.entries().next().value;
 
   // Then one step closer: the state, or the resort when the unit is one state
   // — "the Sierra, with California" says the same place twice. Tahoe always

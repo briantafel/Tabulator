@@ -138,6 +138,10 @@ export async function loadForecast() {
     embedded("__TABULATOR_WEATHER__") ??
     (preset ? { resorts: {} } : await getJson("weather.json", { resorts: {} }));
 
+  /* The radar read-out. Optional, and never for the embedded demo — its
+     dates are shifted, so a real read-out would describe a different week. */
+  const editorial = preset ? null : await getJson("editorial.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -152,6 +156,7 @@ export async function loadForecast() {
     history: rolled.history?.days ?? {},
     reports,
     weather: rolled.weather,
+    editorial,
   };
 }
 

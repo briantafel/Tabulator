@@ -57,12 +57,38 @@ jobs:
         continue-on-error: true
         run: npm run weather
 
+      # The radar read-out (claude/radar-readout-spec.md). Written from this
+      # run's forecast and weather so it commits alongside them. Uses the
+      # Claude API when the ANTHROPIC_API_KEY secret exists, the template
+      # otherwise; the script caps API calls per run and per day itself.
+      # Failure here never costs the forecast its commit — the app hides a
+      # read-out whose forecast stamp does not match the radar's.
+      - name: Write the radar read-out
+        id: readout
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # A Sonnet version of each read-out, saved to the artifact only,
+          # for Brian to compare with Haiku. Delete this line to stop it.
+          READOUT_COMPARE_UNTIL: "2026-11-08"
+        run: npm run readout
+
+      - name: Keep what the read-out was given and wrote
+        if: always() && steps.readout.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: readout-debug
+          path: readout-debug/
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Commit if changed
         id: commit
         run: |
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
-          git add public/forecast.json public/history.json public/reports.json public/weather.json
+          git add public/forecast.json public/history.json public/reports.json public/weather.json public/editorial.json
           if git diff --staged --quiet; then
             echo "no change"
           else
@@ -77,14 +103,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
 
-      - name: Fail the run if the reports or weather failed
-        if: steps.reports.outcome == 'failure' || steps.weather.outcome == 'failure'
+      - name: Fail the run if the reports, weather or read-out failed
+        if: steps.reports.outcome == 'failure' || steps.weather.outcome == 'failure' || steps.readout.outcome == 'failure'
         run: |
           if [ "${{ steps.reports.outcome }}" = "failure" ]; then
             echo "::error::Skier reports scrape failed — forecast was still committed; reports.json kept from the last good run."
           fi
           if [ "${{ steps.weather.outcome }}" = "failure" ]; then
             echo "::error::NWS weather fetch failed — forecast was still committed; see the Fetch NWS weather step for which resorts."
+          fi
+          if [ "${{ steps.readout.outcome }}" = "failure" ]; then
+            echo "::error::Radar read-out step failed — forecast was still committed; see the Write the radar read-out step (an expired API key or a used-up spend limit says so there)."
           fi
           exit 1
 

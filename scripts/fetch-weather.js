@@ -80,16 +80,38 @@ for (const [i, r] of wanted.entries()) {
       isDaytime: p.isDaytime,
       temperature: p.temperatureUnit === "C" ? Math.round((p.temperature * 9) / 5 + 32) : p.temperature,
       shortForecast: p.shortForecast,
+      /* The full sentence — "New snow accumulation of 4 to 8 inches
+         possible." The radar read-out quotes conditions from it; the resort
+         sheet still reads only shortForecast. */
+      detailedForecast: p.detailedForecast,
       startTime: p.startTime,
     }));
     if (!periods.length) throw new Error("forecast has no periods");
+
+    /* Winter storm watches and warnings for this point. Optional: a failure
+       here costs the resort its alerts, never its forecast. */
+    let alerts = [];
+    try {
+      await sleep(DELAY_MS);
+      const al = await getJson(`${API}/alerts/active?point=${lat},${lon}`);
+      alerts = (al?.features ?? [])
+        .map((f) => f.properties ?? {})
+        .filter((a) => /winter|snow|blizzard|ice|avalanche/i.test(a.event ?? ""))
+        .map((a) => ({ event: a.event, headline: a.headline, onset: a.onset, ends: a.ends ?? a.expires }));
+    } catch (e) {
+      console.error(`${r.id.padEnd(16)} alerts skipped — ${e.message}`);
+    }
 
     const rel = point.properties.relativeLocation?.properties;
     out[r.id] = {
       point: [lat, lon],
       gridElevationM: gridM,
       near: rel ? `${rel.city}, ${rel.state}` : null,
+      // The forecast office that covers this mountain — which Area Forecast
+      // Discussion the radar read-out reads. Looked up, never guessed.
+      office: point.properties.gridId ?? null,
       periods,
+      alerts,
     };
     console.error(`${r.id.padEnd(16)} ok  grid ${gridM ?? "?"}m  (base ${base ?? "?"}m, top ${elevation[r.id]?.top ?? "?"}m)`);
   } catch (e) {

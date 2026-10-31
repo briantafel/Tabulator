@@ -390,7 +390,8 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} onPlace={openPlace} />
+            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} onPlace={openPlace}
+              editorial={feed.editorial} generatedAt={feed.generatedAt} />
           )}
 
           {feed && tab === "trips" && !editing && !viewing && (
