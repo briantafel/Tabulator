@@ -318,15 +318,3 @@ export function validateReadout(out, facts) {
 export const readoutMatches = (editorial, generatedAt) =>
   !!editorial && !editorial.quiet && !!editorial.regions?.length &&
   !!generatedAt && editorial.forecastGeneratedAt === generatedAt;
-
-/** Behind a flag while Brian looks at it: ?readout=1 turns it on in this
- *  browser, ?readout=0 off. Same idea as the resort-sheet copy flag. */
-export function readoutOn() {
-  try {
-    const q = new URLSearchParams(window.location.search).get("readout");
-    if (q === "1" || q === "0") window.localStorage.setItem("tabulator.readout", q);
-    return window.localStorage.getItem("tabulator.readout") === "1";
-  } catch {
-    return false;
-  }
-}

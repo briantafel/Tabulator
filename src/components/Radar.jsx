@@ -2,7 +2,7 @@ import { Fragment, useMemo } from "react";
 import { fromIso } from "../lib/dates.js";
 import { snowWithUnit, cellSnowTxt, CELL_KO_FROM } from "../lib/units.js";
 import { outlook } from "../lib/outlook.js";
-import { readoutMatches, readoutOn } from "../lib/readout.js";
+import { readoutMatches } from "../lib/readout.js";
 
 /** Where and when snow lands across the whole network.
  *
@@ -87,9 +87,9 @@ export default function Radar({ resorts, dates, metric, onJump, onPlace, editori
       </p>
 
       {/* The read-out, region by region (claude/radar-readout-spec.md).
-          Behind ?readout=1 until Brian has seen it, and only ever shown when
-          it was written from the forecast on screen. Inches only for now. */}
-      {readoutOn() && readoutMatches(editorial, generatedAt) && (
+          Live for everyone since 2026-10-30 (Brian). Only ever shown when it
+          was written from the forecast on screen. Inches only for now. */}
+      {readoutMatches(editorial, generatedAt) && (
         <section className="rd-read" aria-label="Read-out">
           {editorial.regions.map((g) => (
             <div key={g.key} className="rd-read-g">
