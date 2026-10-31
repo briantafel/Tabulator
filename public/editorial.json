@@ -1,0 +1,53 @@
+{
+ "generatedAt": "2026-10-31T02:54:07.387Z",
+ "forecastGeneratedAt": "2026-10-31T02:49:26.140Z",
+ "quiet": false,
+ "writer": "template",
+ "window": {
+  "from": "2026-10-31",
+  "to": "2026-11-04",
+  "days": 5
+ },
+ "regions": [
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride is forecast for about 14\", 11\" of it Sunday. Crested Butte about 7\" and Aspen Highlands about 5\". The National Weather Service has rain mixed in at Telluride Sunday. Winter Storm Watch in effect at Telluride."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek is forecast for about 13\", 12\" of it Sunday. Taos about 4\". The National Weather Service has rain mixed in at Taos Sunday and Sunday night. Winter Storm Watch in effect at Wolf Creek."
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Grand Targhee is forecast for about 7\", all of it Sunday. Jackson Hole about 6\" and Big Sky about 3\". The National Weather Service has rain mixed in at Jackson Hole Sunday and Sunday night."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 6\", all of it Saturday. The National Weather Service has heavy snow at Mammoth Saturday and Saturday night. Winter Weather Advisory in effect at Mammoth."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Alta is forecast for about 6\", 5\" of it Sunday. Snowbird about 6\" and Brighton about 6\". The National Weather Service has heavy snow at Alta Sunday and Sunday night."
+  }
+ ],
+ "ahead": null,
+ "sources": [
+  {
+   "name": "Snow-Forecast (totals)",
+   "issuedAt": "2026-10-31T02:49:26.140Z"
+  },
+  {
+   "name": "National Weather Service point forecasts",
+   "issuedAt": "2026-10-31T02:54:07.153Z"
+  }
+ ],
+ "api": {
+  "day": "2026-10-31",
+  "calls": 3
+ }
+}
