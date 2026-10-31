@@ -12,7 +12,8 @@
       "The four Cascades resorts (Mt. Baker, Crystal Mountain, Stevens Pass, Mt. Bachelor) were added 2026-10-29 from search results, not fetched: the sandbox cannot reach any of the three sources. Verified by scripts/check-new-resorts.sh on Brian's Mac before the first scrape that includes them. Crystal's OnTheSnow path is crystal-mountain-wa — plain crystal-mountain is the Michigan resort.",
       "Thirteen more added 2026-10-29 at Brian's pick — Tahoe (Sugar Bowl, Northstar, Mt. Rose, Sierra-at-Tahoe, Homewood), the Wasatch (Brighton, Solitude, Snowbasin, Powder Mountain) and Colorado (Vail, Breckenridge, Arapahoe Basin, Wolf Creek). Addresses from search results, checked by check-new-resorts.sh on his Mac before the first scrape. Snowbasin's Snow-Forecast slug is Snow-Basin; Wolf Creek's is Wolf-Creek-Ski-Area (Wolf-Creek-Utah is a different hill).",
       "`tz` (every resort) and `latlon` (the four Canadian resorts, which have no `nws` point) were added 2026-10-29 for the forecast archive: tz turns Snow-Forecast's local AM/PM/night periods into UTC, latlon is where the Open-Meteo ensembles are requested. The Canadian points are approximate mid-mountain coordinates from memory, not fetched; Open-Meteo is also given the Snow-Forecast mid elevation, so a few hundred metres of error in position matters little.",
-      "`eccc` (the four Canadian resorts, added 2026-10-31) names the Environment and Climate Change Canada city-page forecast nearest the resort — a town, so a valley forecast: Revelstoke bc-65, Whistler bc-86, Banff ab-49 for Lake Louise, Golden bc-34 for Kicking Horse. Site ids read from the API on Brian's Mac. Alerts are looked up at the resort's own `latlon`; ECCC alert areas are forecast regions tens of kilometres across, so the approximate coordinates are close enough."
+      "`eccc` (the four Canadian resorts, added 2026-10-31) names the Environment and Climate Change Canada city-page forecast nearest the resort — a town, so a valley forecast: Revelstoke bc-65, Whistler bc-86, Banff ab-49 for Lake Louise, Golden bc-34 for Kicking Horse. Site ids read from the API on Brian's Mac. Alerts are looked up at the resort's own `latlon`; ECCC alert areas are forecast regions tens of kilometres across, so the approximate coordinates are close enough.",
+      "Sixteen Canadian resorts added 2026-10-31 at Brian's pick (Fernie, RED Mountain, Whitewater, Panorama, Kimberley, Big White, SilverStar, Sun Peaks, Sunshine Village, Norquay, Marmot Basin, Cypress, Tremblant, Le Massif, Mont-Sainte-Anne, Blue Mountain). Every Snow-Forecast slug was fetched (WebFetch reaches the site; curl does not) and its mid page's title and location checked. Sunshine Village is `Sunshine`, Norquay is `Banff-Norquay`, Le Massif is `Le-Massif-Ski-Area` — the obvious guesses 404. OnTheSnow paths are read off each province's ski-resorts index; Sunshine has two OnTheSnow entries and `sunshine-village` is the one still updated (banff-sunshine last updated in July). `eccc` sites are the nearest town with a city-page forecast: s-codes from dd.weather.gc.ca site_list_en.csv mapped to city codes by ECCC-MSC/msc-pygeoapi resources/wxo_lookup.json — the same lookup reproduces the original four exactly. Fernie uses Sparwood (Cranbrook is ~95 km away), RED uses Trail, Le Massif uses Baie-Saint-Paul, Mont-Sainte-Anne uses Québec, Blue Mountain uses Collingwood. `latlon` is Snow-Forecast's own resort point where its page shows one; Fernie, RED, Panorama and Kimberley are approximate, from memory. Fernie, Panorama and Kimberley keep Mountain time (America/Edmonton) like Kicking Horse; the Quebec and Ontario resorts are America/Toronto."
     ]
   },
   "tier": "mid",
@@ -543,6 +544,222 @@
       }
     },
     {
+      "id": "fernie",
+      "name": "Fernie",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Fernie"
+      ],
+      "otsPath": "british-columbia/fernie-alpine",
+      "latlon": [
+        49.46,
+        -115.09
+      ],
+      "eccc": {
+        "site": "bc-52",
+        "name": "Sparwood"
+      }
+    },
+    {
+      "id": "red-mountain",
+      "name": "RED Mountain",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Red-Mountain"
+      ],
+      "otsPath": "british-columbia/red-resort",
+      "latlon": [
+        49.1,
+        -117.82
+      ],
+      "eccc": {
+        "site": "bc-71",
+        "name": "Trail"
+      }
+    },
+    {
+      "id": "whitewater",
+      "name": "Whitewater",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Whitewater"
+      ],
+      "otsPath": "british-columbia/whitewater",
+      "latlon": [
+        49.44,
+        -117.15
+      ],
+      "eccc": {
+        "site": "bc-37",
+        "name": "Nelson"
+      }
+    },
+    {
+      "id": "panorama",
+      "name": "Panorama",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Panorama"
+      ],
+      "otsPath": "british-columbia/panorama-mountain",
+      "latlon": [
+        50.46,
+        -116.24
+      ],
+      "eccc": {
+        "site": "bc-72",
+        "name": "Invermere"
+      }
+    },
+    {
+      "id": "kimberley",
+      "name": "Kimberley",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Kimberley"
+      ],
+      "otsPath": "british-columbia/kimberley",
+      "latlon": [
+        49.68,
+        -116.01
+      ],
+      "eccc": {
+        "site": "bc-77",
+        "name": "Cranbrook"
+      }
+    },
+    {
+      "id": "big-white",
+      "name": "Big White",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Big-White"
+      ],
+      "otsPath": "british-columbia/big-white",
+      "latlon": [
+        49.72,
+        -118.92
+      ],
+      "eccc": {
+        "site": "bc-48",
+        "name": "Kelowna"
+      }
+    },
+    {
+      "id": "silverstar",
+      "name": "SilverStar",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Silver-Star"
+      ],
+      "otsPath": "british-columbia/silver-star",
+      "latlon": [
+        50.36,
+        -119.11
+      ],
+      "eccc": {
+        "site": "bc-27",
+        "name": "Vernon"
+      }
+    },
+    {
+      "id": "sun-peaks",
+      "name": "Sun Peaks",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Sun-Peaks"
+      ],
+      "otsPath": "british-columbia/sun-peaks",
+      "latlon": [
+        50.94,
+        -119.91
+      ],
+      "eccc": {
+        "site": "bc-45",
+        "name": "Kamloops"
+      }
+    },
+    {
+      "id": "sunshine",
+      "name": "Sunshine Village",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Sunshine"
+      ],
+      "otsPath": "alberta/sunshine-village",
+      "latlon": [
+        51.08,
+        -115.75
+      ],
+      "eccc": {
+        "site": "ab-49",
+        "name": "Banff"
+      }
+    },
+    {
+      "id": "norquay",
+      "name": "Norquay",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Banff-Norquay"
+      ],
+      "otsPath": "alberta/ski-banff-norquay",
+      "latlon": [
+        51.17,
+        -115.56
+      ],
+      "eccc": {
+        "site": "ab-49",
+        "name": "Banff"
+      }
+    },
+    {
+      "id": "marmot",
+      "name": "Marmot Basin",
+      "region": "Canada",
+      "tz": "America/Edmonton",
+      "slugs": [
+        "Marmot-Basin"
+      ],
+      "otsPath": "alberta/marmot-basin",
+      "latlon": [
+        52.87,
+        -118.1
+      ],
+      "eccc": {
+        "site": "ab-70",
+        "name": "Jasper"
+      }
+    },
+    {
+      "id": "cypress",
+      "name": "Cypress Mountain",
+      "region": "Canada",
+      "tz": "America/Vancouver",
+      "slugs": [
+        "Cypress-Mountain"
+      ],
+      "otsPath": "british-columbia/cypress-mountain",
+      "latlon": [
+        49.39,
+        -123.22
+      ],
+      "eccc": {
+        "site": "bc-99",
+        "name": "West Vancouver"
+      }
+    },
+    {
       "id": "whiteface",
       "name": "Whiteface",
       "region": "New York",
@@ -597,6 +814,78 @@
         44.932,
         -72.515
       ]
+    },
+    {
+      "id": "tremblant",
+      "name": "Tremblant",
+      "region": "Canada",
+      "tz": "America/Toronto",
+      "slugs": [
+        "Tremblant"
+      ],
+      "otsPath": "quebec/tremblant",
+      "latlon": [
+        46.21,
+        -74.58
+      ],
+      "eccc": {
+        "site": "qc-167",
+        "name": "Mont-Tremblant"
+      }
+    },
+    {
+      "id": "le-massif",
+      "name": "Le Massif",
+      "region": "Canada",
+      "tz": "America/Toronto",
+      "slugs": [
+        "Le-Massif-Ski-Area"
+      ],
+      "otsPath": "quebec/le-massif",
+      "latlon": [
+        47.28,
+        -70.61
+      ],
+      "eccc": {
+        "site": "qc-165",
+        "name": "Baie-Saint-Paul"
+      }
+    },
+    {
+      "id": "mont-sainte-anne",
+      "name": "Mont-Sainte-Anne",
+      "region": "Canada",
+      "tz": "America/Toronto",
+      "slugs": [
+        "Mont-Sainte-Anne"
+      ],
+      "otsPath": "quebec/mont-sainte-anne",
+      "latlon": [
+        47.07,
+        -70.91
+      ],
+      "eccc": {
+        "site": "qc-133",
+        "name": "Québec"
+      }
+    },
+    {
+      "id": "blue-mountain",
+      "name": "Blue Mountain",
+      "region": "Canada",
+      "tz": "America/Toronto",
+      "slugs": [
+        "Blue-Mountain"
+      ],
+      "otsPath": "ontario/blue-mountain",
+      "latlon": [
+        44.48,
+        -80.2
+      ],
+      "eccc": {
+        "site": "on-150",
+        "name": "Collingwood"
+      }
     }
   ]
 }

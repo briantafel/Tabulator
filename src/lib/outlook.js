@@ -23,8 +23,14 @@ import { cmToIn } from "./units.js";
    Tahoe and the Eastern Sierra (Mammoth) — a different trip, a different
    airport, and often a different storm. Splits only ever name the best bet;
    the "moving through" list stays at range level.
-   Revelstoke and Kicking Horse sit in the Columbia Mountains, strictly, but
-   skiers file them with Lake Louise and so does he. */
+   Canada, 2026-10-31 (Brian approved): the Columbia Mountains resorts move
+   out of the Canadian Rockies into a new "BC Interior", split for the best
+   bet into the Kootenays and the Okanagan — the names skiers use. Fernie is
+   in the Rockies strictly but is filed with the Kootenays, as everyone does.
+   Marmot joins the Canadian Rockies, Cypress the Coast Mountains, and the
+   Quebec and Ontario resorts the Northeast, where the closing line names the
+   province. Blue Mountain's snow is lake-effect off Georgian Bay, but one
+   resort does not earn a range of its own. */
 /* `warnIn`: the snowfall, in inches, at which the forecaster for that
    mountain issues a winter storm warning (Brian, 2026-10-30: "6\" on the
    east coast is a big day, but in Tahoe that's a moderate day"). US values
@@ -72,13 +78,29 @@ export const RANGES = {
   "aspen-highlands": { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
   steamboat: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
   taos: { range: "the Rockies", sub: "the southern Rockies", state: "New Mexico", warnIn: 10 },
-  revelstoke: { range: "the Canadian Rockies", state: "British Columbia", warnIn: 10 },
-  "kicking-horse": { range: "the Canadian Rockies", state: "British Columbia", warnIn: 10 },
+  revelstoke: { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  "kicking-horse": { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  fernie: { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  "red-mountain": { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  whitewater: { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  panorama: { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  kimberley: { range: "the BC Interior", sub: "the Kootenays", state: "British Columbia", warnIn: 10 },
+  "big-white": { range: "the BC Interior", sub: "the Okanagan", state: "British Columbia", warnIn: 10 },
+  silverstar: { range: "the BC Interior", sub: "the Okanagan", state: "British Columbia", warnIn: 10 },
+  "sun-peaks": { range: "the BC Interior", sub: "the Okanagan", state: "British Columbia", warnIn: 10 },
   "lake-louise": { range: "the Canadian Rockies", state: "Alberta", warnIn: 10 },
+  sunshine: { range: "the Canadian Rockies", state: "Alberta", warnIn: 10 },
+  norquay: { range: "the Canadian Rockies", state: "Alberta", warnIn: 10 },
+  marmot: { range: "the Canadian Rockies", state: "Alberta", warnIn: 10 },
+  cypress: { range: "the Coast Mountains", state: "British Columbia", warnIn: 10 },
   whiteface: { range: "the Northeast", state: "New York", warnIn: 7 },
   stowe: { range: "the Northeast", state: "Vermont", warnIn: 7 },
   killington: { range: "the Northeast", state: "Vermont", warnIn: 7 },
   "jay-peak": { range: "the Northeast", state: "Vermont", warnIn: 7 },
+  tremblant: { range: "the Northeast", state: "Quebec", warnIn: 7 },
+  "le-massif": { range: "the Northeast", state: "Quebec", warnIn: 7 },
+  "mont-sainte-anne": { range: "the Northeast", state: "Quebec", warnIn: 7 },
+  "blue-mountain": { range: "the Northeast", state: "Ontario", warnIn: 7 },
 };
 
 /* Below QUIET (inches, biggest total anywhere) there is nothing worth a

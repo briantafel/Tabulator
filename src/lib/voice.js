@@ -561,7 +561,7 @@ const region = (id) => {
   if (r.range === "the Sierra") return "sierra";
   if (r.range === "the Cascades" || r.range === "the Coast Mountains") return "cascades";
   if (r.range === "the Wasatch") return "wasatch";
-  if (r.range === "the Rockies" || r.range === "the Canadian Rockies") return "rockies";
+  if (r.range === "the Rockies" || r.range === "the Canadian Rockies" || r.range === "the BC Interior") return "rockies";
   if (r.range === "the Northeast") return "east";
   return null;
 };

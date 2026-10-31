@@ -11,7 +11,16 @@ import { toBlocks } from "./ensembles.js";
 
 export const PARSER_VERSION = "om-prev-1";
 export const URL_BASE = "https://previous-runs-api.open-meteo.com/v1/forecast";
-export const MODELS = ["ecmwf_ifs025", "gfs_seamless"];
+/* GEM — Environment Canada's model — added 2026-10-31 for every resort.
+   Open-Meteo's docs page names it "GEM Seamless" but shows only
+   `cmc_gem_seamless` in an example URL, and the sandbox cannot reach the
+   API to check, so the backfill asks for `gem_seamless` first and falls
+   back through MODEL_IDS when Open-Meteo rejects the name. The piece key
+   and the archive's `model` column keep the canonical name either way. */
+export const MODELS = ["ecmwf_ifs025", "gfs_seamless", "gem_seamless"];
+export const MODEL_IDS = { gem_seamless: ["gem_seamless", "cmc_gem_seamless"] };
+/** A 400 that complains about the model name, not about anything else. */
+export const unknownModel = (status, text) => status === 400 && /model/i.test(text ?? "");
 export const VARS = ["snowfall", "precipitation", "temperature_2m"];
 export const LEADS = [0, 1, 2, 3, 4, 5, 6, 7];
 export const HOURLY = VARS.flatMap((v) => LEADS.map((l) => (l ? `${v}_previous_day${l}` : v)));

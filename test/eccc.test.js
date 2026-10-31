@@ -64,9 +64,9 @@ test("alerts are looked up in a small box at the resort", () => {
 
 test("every Canadian resort names its forecast town", () => {
   const ca = resortData.resorts.filter((r) => r.region === "Canada");
-  assert.equal(ca.length, 4);
+  assert.equal(ca.length, 20);
   for (const r of ca) {
-    assert.match(r.eccc?.site ?? "", /^(bc|ab)-\d+$/, `${r.id} has no Environment Canada site`);
+    assert.match(r.eccc?.site ?? "", /^(bc|ab|qc|on)-\d+$/, `${r.id} has no Environment Canada site`);
     assert.ok(Array.isArray(r.latlon), `${r.id} needs latlon for its alerts`);
   }
 });
@@ -131,14 +131,14 @@ test("a Canadian region names Environment Canada, never the NWS", () => {
     },
   };
   const facts = readoutFacts({ resorts: feed({ revelstoke: [0, 0, 0, 0, 0, 0], "kicking-horse": [0, 0, 0, 0, 0, 0] }).map((r) => r.id === "revelstoke" ? { ...r, days: r.days.map((d, i) => ({ ...d, snow: i === 0 ? 8 * 2.54 : 0 })) } : r), weather, now: NOW });
-  const g = facts.regions.find((x) => x.key === "the Canadian Rockies");
-  assert.ok(g, "Canadian Rockies region present");
+  const g = facts.regions.find((x) => x.key === "the Kootenays");
+  assert.ok(g, "Kootenays region present");
   const rev = g.resorts[0];
   assert.equal(rev.forecaster, "Environment Canada");
   assert.equal(rev.nwsHigher.by, "Environment Canada");
   for (const p of rev.nws) assert.doesNotMatch(p.detail ?? "", /cm|amount/i, "amounts reach the writer only through nwsHigher");
   const t = templateReadout(facts);
-  const text = t.regions.find((r) => r.key === "the Canadian Rockies").text;
+  const text = t.regions.find((r) => r.key === "the Kootenays").text;
   assert.match(text, /Environment Canada has heavy snow at Revelstoke Sunday/);
   assert.match(text, /Environment Canada is calling for more at Revelstoke: 12 to 16" Sunday/);
   assert.doesNotMatch(text, /NWS|National Weather Service/);

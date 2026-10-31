@@ -122,7 +122,10 @@ const year = (w) => w[0].slice(0, 4);
 const pieces = [
   ...WINTERS.map((w) => ({ key: `snotel-${year(w)}`, kind: "snotel", winter: w })),
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
-  ...resorts.filter(coordsOf).flatMap((r) => om.MODELS.flatMap((model) => WINTERS.map((w) => ({
+  // Model by model, not resort by resort: every ECMWF and GFS piece (new
+  // resorts included) is fetched before the first GEM piece, so a GEM model
+  // name Open-Meteo rejects can only ever stop GEM.
+  ...om.MODELS.flatMap((model) => resorts.filter(coordsOf).flatMap((r) => WINTERS.map((w) => ({
     key: `om-${r.id}-${model}-${year(w)}`, kind: "om", resort: r, model, winter: w,
     weight: om.callWeight(om.HOURLY.length, (Date.parse(w[1]) - Date.parse(w[0])) / 864e5 + 1),
   })))),
@@ -168,14 +171,20 @@ async function runPiece(p) {
     return finish(p, "onthesnow", rows, [[`${p.key}.html.gz`, res.text]]);
   }
   const [lat, lon] = coordsOf(p.resort);
-  const q = new URLSearchParams({ latitude: lat, longitude: lon, models: p.model, hourly: om.HOURLY.join(","),
-    start_date: p.winter[0], end_date: p.winter[1], timezone: "GMT", timeformat: "iso8601" });
-  if (elevations[p.resort.id]) q.set("elevation", String(elevations[p.resort.id]));
-  // Retry network faults. A connect timeout means the request never reached
-  // Open-Meteo, so it cost nothing against the budget; the GFS pieces on
-  // 2026-10-30 failed exactly this way (UND_ERR_CONNECT_TIMEOUT) between
-  // ECMWF pieces that succeeded. Waits 30 s, then 60 s.
-  const res = await fetchText(`${om.URL_BASE}?${q}`, { retries: 2, delayMs: 15000 });
+  const ids = om.MODEL_IDS[p.model] ?? [p.model];
+  let res;
+  for (const id of ids) {
+    const q = new URLSearchParams({ latitude: lat, longitude: lon, models: id, hourly: om.HOURLY.join(","),
+      start_date: p.winter[0], end_date: p.winter[1], timezone: "GMT", timeformat: "iso8601" });
+    if (elevations[p.resort.id]) q.set("elevation", String(elevations[p.resort.id]));
+    // Retry network faults. A connect timeout means the request never reached
+    // Open-Meteo, so it cost nothing against the budget; the GFS pieces on
+    // 2026-10-30 failed exactly this way (UND_ERR_CONNECT_TIMEOUT) between
+    // ECMWF pieces that succeeded. Waits 30 s, then 60 s.
+    res = await fetchText(`${om.URL_BASE}?${q}`, { retries: 2, delayMs: 15000 });
+    if (!om.unknownModel(res.status, res.text)) break;
+    log(`  · ${p.key}: Open-Meteo does not know the model name "${id}"`);
+  }
   if (res.status !== 200) {
     const err = new Error(`HTTP ${res.status}: ${res.text.slice(0, 200)}`);
     if (/limit exceeded/i.test(res.text)) err.rateLimited = true;
