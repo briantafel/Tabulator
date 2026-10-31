@@ -329,6 +329,20 @@ export const SO_WHAT = {
     "Let it soften up, then go.",
     "Expect a crust in the mornings.",
   ],
+  /* Brian, 2026-10-31: "one state that exists when it snows, gets warm, then
+     very cold. Expect crust on fluff." and "snow → warm → freezing → light
+     snow in a 48 hour period. Expect fluff on crust." Read off the sequence
+     of forecast periods, not the window's extremes — order is the point. */
+  crustOnFluff: [
+    "Snow, then a thaw, then a hard freeze. Expect crust on fluff.",
+    "The warm spell will cook the new snow and the cold will lock it up. Crust on fluff.",
+    "Expect a breakable crust over soft snow underneath.",
+  ],
+  fluffOnCrust: [
+    "Thaw, refreeze, then a light coat on top. Expect fluff on crust.",
+    "Fresh snow over a refrozen crust. Soft on top, firm underneath.",
+    "Expect fluff on crust. Fun until you find the layer below.",
+  ],
   crust: [
     "Expect a crust after the thaw.",
     "Whatever melts will refreeze, so expect it firm.",
@@ -362,6 +376,72 @@ function hash(s) {
   return h >>> 0;
 }
 const pick = (pool, seed, salt) => pool[hash(`${seed}|${salt}`) % pool.length];
+
+/* ------------------------------------------------------- the snowpack -- */
+
+const THAW_F = 33;        // above freezing: Snow-Forecast's 1°C is 33.8°F
+const HARD_FREEZE_F = 28; // a refreeze that sets a crust
+const VERY_COLD_F = 15;   // "very cold" — locks a cooked surface solid
+const FIRST_SNOW_IN = 2;  // enough new snow for the thaw to cook
+const LIGHT_SNOW = [0.5, 6]; // inches: a coat on top, not a fresh storm
+const STEPS_48H = 6;      // three periods a day (am / pm / night)
+
+/** The window as a time series. Snow-Forecast gives three periods a day, each
+ *  with its own snow and temperature; a day without them becomes one step
+ *  carrying its high and low, which cannot say which came first but can say
+ *  "it thawed and froze that day". */
+function steps(win) {
+  const out = [];
+  for (const d of win) {
+    const ps = (d.periods ?? []).filter((p) => typeof p.tempMax === "number");
+    if (ps.length) {
+      for (const p of ps) {
+        const t = cToF(p.tempMax);
+        out.push({ snow: cmToIn(p.snow ?? 0), hi: t, lo: t, perDay: ps.length });
+      }
+    } else if (typeof d.tempMax === "number" && typeof d.tempMin === "number") {
+      out.push({ snow: cmToIn(d.snow ?? 0), hi: cToF(d.tempMax), lo: cToF(d.tempMin), perDay: 1, day: true });
+    }
+  }
+  return out;
+}
+
+/** "fluffOnCrust", "crustOnFluff", or null.
+ *
+ *  fluff on crust: new snow, a thaw, a hard freeze, then a light coat — the
+ *    thaw-freeze-coat inside 48 hours.
+ *  crust on fluff: new snow, a thaw, then very cold, with nothing worth
+ *    mentioning falling after the thaw to bury the crust.
+ *
+ *  The most recent thaw decides, because that is the surface you will ski. */
+export function layering(win) {
+  const s = steps(win);
+  let verdict = null;
+  for (let j = 0; j < s.length; j++) {
+    if (s[j].hi < THAW_F) continue;
+    const before = s.slice(0, j).reduce((a, x) => a + x.snow, 0);
+    if (before < FIRST_SNOW_IN) continue;
+    // A daily step's own low counts as the night after its high.
+    const from = s[j].day ? j : j + 1;
+    const after = s.slice(j + 1).reduce((a, x) => a + x.snow, 0);
+
+    // 48 hours from the thaw: six periods, or the next day for a daily step.
+    const reach = s[j].day ? 1 : Math.round((STEPS_48H * s[j].perDay) / 3);
+    let fluff = false;
+    for (let k = from; k < Math.min(s.length, j + reach); k++) {
+      if (s[k].lo > HARD_FREEZE_F) continue;
+      const coat = s.slice(k + 1, j + reach + 1).reduce((a, x) => a + x.snow, 0);
+      if (coat >= LIGHT_SNOW[0] && coat <= LIGHT_SNOW[1]) fluff = true;
+      break;
+    }
+    if (fluff) { verdict = "fluffOnCrust"; continue; }
+
+    const cold = s.slice(from).some((x) => x.lo <= VERY_COLD_F);
+    if (cold && after < LIGHT_SNOW[0]) verdict = "crustOnFluff";
+    else verdict = null; // buried by a real storm, or never set hard
+  }
+  return verdict;
+}
 
 /** Window extremes in the AUTHORED units (°F, mph, inches) — the copy is
  *  written against those numbers, so the logic reads them too. */
@@ -454,6 +534,8 @@ export function soWhatKey(x, r) {
   const band = windBand(x.wind);
 
   if (snowy && rainRisk(r)) return "rain";
+  const layers = layering(r.win ?? []);
+  if (layers) return layers;
   if (snowy && band === "howling") return "stormWind";
   if (snowy && x.hi != null && x.hi > 34) {
     return reg === "sierra" ? "heavySierra" : reg === "cascades" ? "heavyCascades" : reg === "east" ? "heavyEast" : "heavy";

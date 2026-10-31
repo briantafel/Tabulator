@@ -137,3 +137,55 @@ test("the classic sentence is untouched", () => {
   const s = say(resortVerdict({ total: IN(9), win: resort().win.map((d) => ({ ...d, tempMax: F(25), tempMin: F(15), windMax: MPH(8) })) }, false));
   assert.equal(s, 'Looking like 9.0" of snow over 4 days. Temps look pleasant, and winds are calm.');
 });
+
+/* Period-level windows: three periods a day, temps in °F, snow in inches. */
+const P = (spec) => {
+  const days = [];
+  for (let i = 0; i < spec.length; i += 3) {
+    const ps = spec.slice(i, i + 3).map(([t, sn], n) => ({ name: ["am", "pm", "night"][n], tempMax: F(t), snow: IN(sn) }));
+    days.push({
+      date: `2026-12-${10 + i / 3}`,
+      snow: ps.reduce((a, p) => a + p.snow, 0),
+      tempMax: Math.max(...ps.map((p) => p.tempMax)),
+      tempMin: Math.min(...ps.map((p) => p.tempMax)),
+      windMax: MPH(6),
+      periods: ps,
+    });
+  }
+  return days;
+};
+import { layering } from "../src/lib/voice.js";
+
+test("snow, then warm, then very cold reads crust on fluff", () => {
+  const win = P([[24, 3], [26, 4], [22, 3], [30, 0], [38, 0], [30, 0], [12, 0], [14, 0], [8, 0]]);
+  assert.equal(layering(win), "crustOnFluff");
+  const r = { id: "alta", total: win.reduce((a, d) => a + d.snow, 0), win, elevation: { mid: 2600 } };
+  assert.match(say(resortVoice(r, false)), /crust over soft snow|[Cc]rust on fluff/);
+});
+
+test("snow, warm, freeze, then a light coat inside 48 hours reads fluff on crust", () => {
+  const win = P([[24, 4], [26, 4], [22, 2], [30, 0], [37, 0], [24, 0], [22, 1], [20, 2], [18, 0]]);
+  assert.equal(layering(win), "fluffOnCrust");
+  const r = { id: "vail", total: win.reduce((a, d) => a + d.snow, 0), win, elevation: { mid: 2600 } };
+  assert.match(say(resortVoice(r, false)), /fluff on crust|refrozen crust/i);
+});
+
+test("a real storm after the freeze buries the crust, and says nothing about it", () => {
+  const win = P([[24, 4], [26, 4], [22, 2], [30, 0], [37, 0], [10, 0], [20, 6], [18, 8], [16, 6]]);
+  assert.equal(layering(win), null);
+});
+
+test("the light coat has to land within 48 hours of the thaw", () => {
+  const win = P([[24, 4], [26, 4], [22, 2], [37, 0], [24, 0], [22, 0], [20, 0], [20, 0], [20, 0], [20, 0], [18, 2], [18, 0]]);
+  assert.notEqual(layering(win), "fluffOnCrust");
+});
+
+test("no snow before the thaw means no layer to speak of", () => {
+  assert.equal(layering(P([[24, 0], [26, 0], [22, 0], [38, 0], [10, 0], [8, 0]])), null);
+});
+
+test("daily-only data still finds the sequence", () => {
+  const d = (hi, lo, sn) => ({ snow: IN(sn), tempMax: F(hi), tempMin: F(lo), windMax: MPH(5) });
+  assert.equal(layering([d(25, 15, 6), d(38, 26, 0), d(18, 8, 0)]), "crustOnFluff");
+  assert.equal(layering([d(25, 15, 6), d(38, 24, 0), d(22, 15, 2)]), "fluffOnCrust");
+});
