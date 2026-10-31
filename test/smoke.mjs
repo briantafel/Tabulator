@@ -200,8 +200,10 @@ await check("the grabber maximizes the sheet and the reports scroll", async () =
   // highlighted clauses the trip page uses minus the resort's own name.
   await page.waitForSelector(".rs-summary");
   const sum = await page.locator(".rs-summary").innerText();
-  assert.match(sum, /^Looking like .+ of snow over \d+ days\. /);
-  assert.match(sum, /(Temps look .+, and winds are |It's spring, baby! Winds are )/);
+  // The new voice (voice.js) is the default: varied wording, so check the
+  // shape — an amount over a day count — rather than a fixed frame.
+  assert.match(sum, /(over \d+ days|in a single day)/);
+  assert.match(sum, /[.!]$/);
   assert.ok(!/Overall/.test(sum), "the resort summary should not carry the trip page's closing line");
   assert.equal(await page.locator(".rs-summary b").count(), 3,
     "expected three highlighted clauses in the resort summary");

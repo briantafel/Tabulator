@@ -251,7 +251,7 @@ export const CONDITIONS = {
     ],
     windy: [
       "Temps look [pleasant], and winds are [{w}].",
-      "[Comfortable] temps, though it's [{w}] up top.",
+      "[Comfortable] temps, though winds are [{w}] up top.",
       "[Mild], with [{wn}].",
     ],
     howling: [

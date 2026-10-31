@@ -126,8 +126,8 @@ export default function Detail({
   if (!shown) return null;
   const dayMax = Math.max(0.1, ...r.win.map((d) => d.snow ?? 0));
   /* Two voices for the summary while Brian reads the new one. "classic" is
-     the shipped sentence and the default; ?copy=next switches this browser
-     to voice.js, ?copy=classic switches it back. */
+     the old sentence; voice.js has been the default since 2026-10-31.
+     ?copy=classic switches one browser back, ?copy=next undoes that. */
   const verdict = (copyVoice() === "next" ? resortVoice : resortVerdict)(r, metric);
   /* NWS covers the United States only, so most resorts have nothing here
      yet and the section simply does not render — a strip of six dashes

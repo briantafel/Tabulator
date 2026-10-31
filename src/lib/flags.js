@@ -1,8 +1,8 @@
 /* Preview switches — a way to put new work on the live site without it being
  * what anyone sees by default.
  *
- * Open the site with ?copy=next and this browser remembers it; ?copy=classic
- * puts it back. Nothing else changes, nobody else is affected, and reverting
+ * Open the site with ?copy=classic and this browser remembers it; ?copy=next
+ * puts the default back. Nothing else changes, nobody else is affected, and reverting
  * the feature is deleting the flag check.
  *
  * iOS keeps a home-screen app's storage separate from Safari's, so the switch
@@ -20,6 +20,9 @@ export function copyVoice() {
   } catch {
     /* No window (tests) or no URL API — fall through to what is stored. */
   }
-  const v = load("copy", "classic");
-  return COPY.includes(v) ? v : "classic";
+  /* Brian, 2026-10-31: the new voice is the default. ?copy=classic still
+     brings the old sentence back in one browser, and changing this one word
+     back to "classic" reverts it for everyone. */
+  const v = load("copy", "next");
+  return COPY.includes(v) ? v : "next";
 }
