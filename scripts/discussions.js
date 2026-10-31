@@ -46,6 +46,17 @@ export function issuedAt(text) {
   return new Date(Date.UTC(Number(year), month, Number(day), h - off, min)).toISOString();
 }
 
+/** CPC's page also prints "Issued: Oct 30, 2026" above the text. Its
+ *  discussions go out at 3 PM Eastern; that is close enough for a 26-hour
+ *  freshness test when the full issuance line cannot be read. */
+export function issuedDateLine(text) {
+  const m = String(text).match(/Issued:\s*([A-Za-z]{3,9})\s+(\d{1,2}),\s*(\d{4})/);
+  if (!m) return null;
+  const month = MON[m[1].slice(0, 3).toUpperCase()];
+  if (month == null) return null;
+  return new Date(Date.UTC(Number(m[3]), month, Number(m[2]), 20, 0)).toISOString();
+}
+
 export const isFresh = (iso, now = new Date()) =>
   !!iso && now - new Date(iso) >= -3600e3 && now - new Date(iso) <= FRESH_HOURS * 3600e3;
 
@@ -64,17 +75,25 @@ export function afdAhead(text) {
 }
 
 const squash = (s) => s.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
-const preText = (html) => load(html)("pre").first().text();
+/* The discussion's own text: every <pre> on the page, or the whole page if
+   it has none — the first live run could not find CPC's issuance line in
+   the first <pre> alone. */
+const pageText = (html) => {
+  const $ = load(html);
+  const pres = $("pre").map((_, el) => $(el).text()).get().join("\n");
+  return pres.trim() ? pres : $("body").text();
+};
 
 export function wpcAhead(html) {
-  const text = preText(html);
-  return { issuedAt: issuedAt(text), excerpt: squash(text).slice(0, WPC_CHARS) };
+  const text = pageText(html);
+  return { issuedAt: issuedAt(text), excerpt: squash(text).slice(0, WPC_CHARS), head: squash(text).slice(0, 160) };
 }
 
 export function cpcAhead(html) {
-  const text = preText(html);
-  const body = text.split(/\bFORECASTER\b/)[0];
-  return { issuedAt: issuedAt(text), excerpt: squash(body).slice(0, CPC_CHARS) };
+  const text = pageText(html);
+  const start = text.search(/Prognostic Discussion|6-10 DAY OUTLOOK/i);
+  const body = text.slice(Math.max(0, start)).split(/\bFORECASTER\b/)[0];
+  return { issuedAt: issuedAt(text) ?? issuedDateLine(text), excerpt: squash(body).slice(0, CPC_CHARS), head: squash(text).slice(0, 160) };
 }
 
 async function get(url, accept) {
@@ -89,8 +108,10 @@ export async function gatherAhead(offices, { now = new Date(), log = console.err
   const out = [];
   const add = (item) => {
     if (!item.excerpt) return log(`ahead: ${item.source} — nothing forward-looking in it, skipped`);
-    if (!isFresh(item.issuedAt, now)) return log(`ahead: ${item.source} issued ${item.issuedAt ?? "?"} — older than ${FRESH_HOURS}h, skipped`);
-    out.push(item);
+    if (!item.issuedAt) return log(`ahead: ${item.source} — could not read when it was issued, skipped. Page starts: ${JSON.stringify(item.head ?? item.excerpt.slice(0, 160))}`);
+    if (!isFresh(item.issuedAt, now)) return log(`ahead: ${item.source} issued ${item.issuedAt} — older than ${FRESH_HOURS}h, skipped`);
+    const { head, ...keep } = item; // eslint-disable-line no-unused-vars
+    out.push(keep);
   };
   for (const office of offices) {
     try {

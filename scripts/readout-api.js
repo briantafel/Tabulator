@@ -30,6 +30,19 @@ Hard rules — your text is checked automatically and rejected if it breaks them
 Reply with JSON only, no prose around it:
 {"regions":[{"key":"...","text":"..."}],"ahead":null}`;
 
+/* Thinking, per model. These models reason before answering unless told
+   not to, and that reasoning counts against max_tokens: the first live run
+   (2026-10-30) spent all 1,000 tokens thinking on every call and returned
+   nothing. Rewriting a fact sheet needs no reasoning. Haiku 5.5 accepts
+   "disabled"; Sonnet 5.5 does not, and its lowest setting is
+   "between_tools" (no up-front thinking) at medium effort or below.
+   platform.claude.com/docs/en/build-with-claude/effort */
+export function thinkingFor(model) {
+  if (/haiku/.test(model)) return { thinking: { type: "disabled" } };
+  if (/sonnet/.test(model)) return { thinking: { type: "between_tools" }, output_config: { effort: "medium" } };
+  return {};
+}
+
 export class ApiError extends Error {
   constructor(message, { status = null, fatal = false } = {}) {
     super(message);
@@ -57,7 +70,7 @@ export async function callClaude({ key, model, user, maxTokens, timeoutMs, fetch
     res = await fetchImpl(API_URL, {
       method: "POST",
       headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model, max_tokens: maxTokens, system: SYSTEM, messages: [{ role: "user", content: user }] }),
+      body: JSON.stringify({ model, max_tokens: maxTokens, ...thinkingFor(model), system: SYSTEM, messages: [{ role: "user", content: user }] }),
       signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (e) {
@@ -77,5 +90,8 @@ export async function callClaude({ key, model, user, maxTokens, timeoutMs, fetch
     throw new ApiError(`API answered ${res.status}: ${msg}`, { status: res.status });
   }
   const text = (body?.content ?? []).filter((c) => c.type === "text").map((c) => c.text).join("");
+  if (!text && body?.stop_reason === "max_tokens") {
+    throw new ApiError(`${model} used all ${maxTokens} output tokens without writing anything (thinking: ${body?.usage?.output_tokens_details?.thinking_tokens ?? "?"})`);
+  }
   return { text, usage: body?.usage ?? null, stop: body?.stop_reason ?? null };
 }

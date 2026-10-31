@@ -30,7 +30,7 @@ import { gatherAhead } from "./discussions.js";
 export const MAX_ATTEMPTS = 2;
 export const DAILY_CAP = 6;
 export const MAX_INPUT_CHARS = 30000;
-export const MAX_TOKENS = 1000;
+export const MAX_TOKENS = 2000;
 export const TIMEOUT_MS = 45000;
 
 const readJson = async (path, fallback) => {

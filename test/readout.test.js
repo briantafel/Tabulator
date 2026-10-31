@@ -136,6 +136,20 @@ test("CPC's page yields its issuance and stops at the forecaster line", () => {
   assert.doesNotMatch(c.excerpt, /Someone/);
 });
 
+test("CPC's date line stands in when the issuance line cannot be read", () => {
+  const c = cpcAhead("<html><body><div>Issued: Oct 30, 2026</div><p>Prognostic Discussion for 6 to 10 and 8 to 14 day outlooks. Trough west.</p></body></html>");
+  assert.equal(c.issuedAt, "2026-10-30T20:00:00.000Z");
+  assert.match(c.excerpt, /^Prognostic Discussion/);
+});
+
+test("all thinking and no text is an error, not an empty read-out", async () => {
+  const root = await sandbox();
+  const fetchImpl = async () => new Response(JSON.stringify({ content: [], stop_reason: "max_tokens", usage: { output_tokens_details: { thinking_tokens: 2000 } } }), { status: 200 });
+  const { editorial, debug } = await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(editorial.writer, "template");
+  assert.match(debug.attempts[0].error, /without writing anything/);
+});
+
 test("a fenced JSON reply still parses", () => {
   assert.deepEqual(parseReply('```json\n{"regions":[],"ahead":null}\n```'), { regions: [], ahead: null });
   assert.throws(() => parseReply("Sorry, I can't."));
@@ -186,7 +200,8 @@ test("with a key: one call, capped, and its text ships", async () => {
   assert.equal(editorial.writer, "claude");
   assert.equal(editorial.model, "claude-haiku-5-5");
   assert.equal(api.calls.length, 1);
-  assert.equal(api.calls[0].body.max_tokens, 1000);
+  assert.equal(api.calls[0].body.max_tokens, 2000);
+  assert.deepEqual(api.calls[0].body.thinking, { type: "disabled" }, "thinking ate the whole budget on the first live run");
   assert.equal(api.calls[0].body.tools, undefined, "no tools, so no agent loop");
   assert.equal(api.calls[0].headers["x-api-key"], "k");
   assert.doesNotMatch(api.calls[0].body.messages[0].content, /offLimits/, "the model never sees the checker's list");
@@ -249,6 +264,7 @@ test("the Sonnet comparison is one extra call, saved but never shown", async () 
   const { editorial, debug } = await run({ root, env: { ANTHROPIC_API_KEY: "k", READOUT_COMPARE_UNTIL: "2026-11-08" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
   assert.equal(api.calls.length, 2);
   assert.equal(api.calls[1].body.model, "claude-sonnet-5-5");
+  assert.deepEqual(api.calls[1].body.thinking, { type: "between_tools" }, "Sonnet 5.5 has no 'disabled'");
   assert.equal(editorial.model, "claude-haiku-5-5");
   assert.deepEqual(debug.compare.problems, []);
   // And it stops on its date.
