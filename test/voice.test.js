@@ -206,3 +206,12 @@ test("a light coat tops out at 4 inches — more than that is a fresh storm", ()
   assert.equal(layering(coat(3.5)), "fluffOnCrust");
   assert.notEqual(layering(coat(5)), "fluffOnCrust");
 });
+
+test("blower is never said twice in one summary", () => {
+  for (const id of ["alta", "snowbird", "brighton", "solitude", "snowbasin", "powder-mountain", "vail", "big-sky"]) {
+    for (const total of [24, 40, 60]) {
+      const s = say(resortVoice(resort({ id, total, days: 3, hi: 18, lo: 4, wind: 6 }), false));
+      assert.ok((s.match(/blower/gi) ?? []).length <= 1, s);
+    }
+  }
+});

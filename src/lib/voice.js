@@ -644,11 +644,16 @@ export function resortVoice(r, metric) {
     t: GALE_TEMP[temp],
   };
 
-  const snowTpl = pick(forWindow(SNOW[snowBucket(x)], x), seed, "snow");
+  const key = soWhatKey(x, r);
+  /* "It's gonna be blower" followed by "Classic Wasatch blower." says it
+     twice — when the closing line is already about dry snow, the TGR line
+     takes its epic twin. */
+  const snowPool = forWindow(SNOW[snowBucket(x)], x)
+    .map((t) => (key?.startsWith("dry") ? WARM_TWIN[t] ?? t : t));
+  const snowTpl = pick(snowPool, seed, "snow");
   const condTpl = band === "gale"
     ? pick(GALE, seed, "cond")
     : pick(CONDITIONS[temp][column(band)], seed, "cond");
-  const key = soWhatKey(x, r);
 
   const out = [...segments(snowTpl, fill), { t: " " }, ...segments(condTpl, fill)];
   if (key) out.push({ t: " " }, { t: pick(forWindow(SO_WHAT[key], x), seed, "so") });
