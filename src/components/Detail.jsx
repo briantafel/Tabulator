@@ -128,7 +128,8 @@ export default function Detail({
      yet and the section simply does not render — a strip of six dashes
      would be worse than no strip. */
   /* Settings picks the row's source. Snow-Forecast covers every resort;
-     NWS covers the US ones, and a Canadian sheet on NWS simply has no row. */
+     the "NWS" setting is the forecasters' row — the NWS for US resorts and
+     Environment Canada for the Canadian four (since 2026-10-31). */
   const pack = snowpack(r);
   /* Depths are whole numbers in the design — 5", 15" — not the forecast's
      one decimal place. */

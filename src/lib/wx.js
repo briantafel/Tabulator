@@ -12,9 +12,10 @@
  * 9,298 ft" rather than Salt Lake City, four thousand feet below it.
  *
  * Two limits, both real:
- *   - NWS is UNITED STATES ONLY. Four of the twenty-three (Revelstoke,
- *     Whistler, Lake Louise, Kicking Horse) are Canadian and have no NWS
- *     forecast at any coordinate. They need Environment Canada or nothing.
+ *   - NWS is UNITED STATES ONLY. The four Canadian resorts (Revelstoke,
+ *     Whistler, Lake Louise, Kicking Horse) come from Environment Canada
+ *     instead (scripts/eccc.js, 2026-10-31): the forecast for the nearest
+ *     town, mapped into this same shape, so this file treats both alike.
  *   - 2.5km is a grid cell, not a summit. It is the mountain's neighbourhood
  *     at roughly the right elevation, which is the useful answer, but it is
  *     not a point forecast for the top of the tram.
@@ -33,22 +34,26 @@ import { WX_ICONS } from "./wx-icons.js";
  *  is closer to cloudy than to sunshine. */
 const ICON_RULES = [
   [/blizzard/i, "snow--blizzard"],
-  [/heavy snow/i, "snow--heavy"],
+  [/heavy snow|snow at times heavy/i, "snow--heavy"],
   [/wintry|freezing rain|ice pellet/i, "wintry-mix"],
   [/sleet/i, "sleet"],
   // Rain and snow together: Carbon's sleet glyph is a snowflake beside rain
   // streaks. Must sit above the plain snow rules, which would claim it.
   [/rain\s+(and|&)\s+snow|snow\s+(and|&)\s+rain/i, "sleet"],
   [/blowing snow|snow.*wind|wind.*snow/i, "windy--snow"],
-  [/scattered.*snow|snow shower|isolated.*snow|chance.*snow/i, "snow--scattered"],
+  // Environment Canada: "Chance of rain showers or wet flurries".
+  [/rain.*(or|and).*flurr|flurr.*(or|and).*rain|wet flurr/i, "sleet"],
+  [/scattered.*snow|snow shower|isolated.*snow|chance.*(snow|flurr)|periods of snow/i, "snow--scattered"],
   [/snow|flurr/i, "snow"],
   [/heavy rain|t-storm|thunderstorm/i, "rain--heavy"],
   [/drizzle/i, "rain--drizzle"],
   [/scattered.*(rain|shower)|isolated.*(rain|shower)|chance.*(rain|shower)|rain shower/i, "rain--scattered"],
   [/rain|showers/i, "rain"],
   [/wind|breezy|blustery/i, "windy--strong"],
-  [/mostly sunny|partly cloudy/i, "partly-cloudy"],
-  [/mostly cloudy|partly sunny/i, "mostly-cloudy"],
+  // Environment Canada writes "a mix of sun and cloud", "a few clouds",
+  // "mainly sunny", "cloudy periods" where the NWS writes "partly cloudy".
+  [/mostly sunny|partly cloudy|mix of sun and cloud|a few clouds|mainly sunny/i, "partly-cloudy"],
+  [/mostly cloudy|partly sunny|cloudy periods|mainly cloudy|increasing cloudiness/i, "mostly-cloudy"],
   [/sunny|clear|fair/i, "sun"],
   [/cloud|overcast|fog|haze/i, "cloudy"],
 ];
@@ -78,7 +83,9 @@ export const iconPaths = (name) => WX_ICONS[name] ?? WX_ICONS.cloudy;
 export function shortLabel(shortForecast) {
   if (!shortForecast) return "—";
   let t = firstClause(shortForecast);
+  t = t.replace(/^(a )?(slight chance of|chance of|periods of)\s+/i, ""); // Environment Canada
   t = t.replace(/^(Slight Chance|Chance|Isolated|Scattered|Likely)\s+/i, "");
+  t = t.replace(/^a (mix of sun and cloud)$/i, "$1").replace(/^a few clouds$/i, "few clouds");
   return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
 }
 

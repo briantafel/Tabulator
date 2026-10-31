@@ -60,7 +60,7 @@ const inWindow = (wx, from, to) => (wx?.periods ?? []).filter((p) => {
    totals in the first live read-out (2026-10-30) and made it contradict
    itself — "6\" total" next to "8 to 12 inches possible overnight". They go
    in only through `nwsHigher`, below, which code works out. */
-const ACCUM = /[^.]*\b(accumulation|inches|inch)\b[^.]*\.\s*/gi;
+const ACCUM = /[^.]*\b(accumulation|inches|inch|amount|cm)\b[^.]*\.\s*/gi;
 
 /** A period's name as a day: "Tonight" is only true until morning, and the
  *  read-out is read for a day or more. "Tonight" → "Friday night". */
@@ -93,6 +93,12 @@ const WORD_N = { one: 1, two: 2, three: 3, four: 4, five: 5, half: 0.5, "a half"
  *  "around 2 inches" → [2, 2]; "less than one inch" → [0, 1]. */
 export function accumulation(text) {
   const t = String(text ?? "");
+  /* Environment Canada: "Snow at times heavy. Amount 15 to 20 cm." */
+  const cm = t.match(/amount (\d+) to (\d+) cm/i) ?? t.match(/amount (\d+) cm/i);
+  if (cm) {
+    const toIn = (x) => Math.round(Number(x) / 2.54);
+    return [toIn(cm[1]), toIn(cm[2] ?? cm[1])];
+  }
   if (!/snow accumulation/i.test(t)) return null;
   let m = t.match(/accumulation of (\d+) to (\d+) inch/i);
   if (m) return [Number(m[1]), Number(m[2])];
@@ -119,10 +125,14 @@ function nwsHigher(wx, from, to, totalIn) {
   const big = amounts.reduce((a, b) => (b.a[1] > a.a[1] ? b : a));
   const wet = amounts.filter((x) => x.a[1] >= 1).map((x) => x.name);
   return {
+    by: forecasterOf(wx),
     fromIn: lo, toIn: hi,
     over: wet.length > 1 ? `${when(wet[0])} through ${when(wet[wet.length - 1])}` : when(wet[0] ?? big.name),
   };
 }
+
+/** Which agency wrote a weather.json entry. */
+export const forecasterOf = (wx) => (wx?.source === "eccc" ? "Environment Canada" : "NWS");
 
 /** An alert's span as day names: "Saturday to Sunday night". */
 function alertSpan(a) {
@@ -182,6 +192,7 @@ export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = 
           ...(j < NWS_RESORTS && wx ? (() => {
             const higher = nwsHigher(wx, window.from, window.to, inch(r.total));
             return {
+              forecaster: forecasterOf(wx),
               nws: nwsFor(wx, window.from, window.to),
               ...(higher ? { nwsHigher: higher } : {}),
               ...(wx.alerts?.length ? { alerts: wx.alerts.map(alertSpan) } : {}),
@@ -242,13 +253,14 @@ export function templateReadout(facts) {
       /* NWS colour, from the top two resorts: heavy snow wherever it is
          called, rain only when it falls on the big day itself. */
       const said = (pick) => g.resorts.slice(0, 2).map((r) => ({ r, ps: (r.nws ?? []).filter(pick) })).find((x) => x.ps.length);
-      const heavy = said((p) => /heavy snow/i.test(p.short));
+      const heavy = said((p) => /heavy snow/i.test(p.short) || /snow at times heavy/i.test(p.detail ?? ""));
       const peakDow = top.peak?.dow ?? "";
-      const mixed = said((p) => /rain/i.test(p.short) && /snow/i.test(p.short) && p.name.startsWith(peakDow) && peakDow);
-      if (heavy) parts.push(`The National Weather Service has heavy snow at ${heavy.r.name} ${andList(heavy.ps.map((p) => when(p.name)))}.`);
-      else if (mixed) parts.push(`The National Weather Service has rain mixed in at ${mixed.r.name} ${andList(mixed.ps.map((p) => when(p.name)))}.`);
+      const mixed = said((p) => /rain/i.test(p.short) && /snow|flurr/i.test(p.short) && p.name.startsWith(peakDow) && peakDow);
+      const agency = (r) => (r.forecaster === "Environment Canada" ? "Environment Canada" : "The National Weather Service");
+      if (heavy) parts.push(`${agency(heavy.r)} has heavy snow at ${heavy.r.name} ${andList(heavy.ps.map((p) => when(p.name)))}.`);
+      else if (mixed) parts.push(`${agency(mixed.r)} has rain mixed in at ${mixed.r.name} ${andList(mixed.ps.map((p) => when(p.name)))}.`);
       const hi = g.resorts.slice(0, 2).find((r) => r.nwsHigher);
-      if (hi) parts.push(`The NWS is calling for more at ${hi.name}: ${hi.nwsHigher.fromIn} to ${hi.nwsHigher.toIn}" ${hi.nwsHigher.over}.`);
+      if (hi) parts.push(`${hi.nwsHigher.by === "NWS" ? "The NWS" : hi.nwsHigher.by} is calling for more at ${hi.name}: ${hi.nwsHigher.fromIn} to ${hi.nwsHigher.toIn}" ${hi.nwsHigher.over}.`);
       const alert = top.alerts?.[0];
       if (alert) parts.push(`${alert.event} at ${top.name}${alert.from ? ` from ${alert.from}${alert.to ? ` to ${alert.to}` : ""}` : ""}.`);
       return { key: g.key, text: parts.join(" ") };

@@ -92,7 +92,7 @@ test("the template passes its own check and quotes the NWS", () => {
 test("NWS amounts reach the writer only through nwsHigher", () => {
   const m = facts0().regions.find((g) => g.key === "the Eastern Sierra").resorts[0];
   assert.equal(m.totalIn, 9);
-  assert.deepEqual(m.nwsHigher, { fromIn: 13, toIn: 22, over: "Friday night through Saturday night" });
+  assert.deepEqual(m.nwsHigher, { by: "NWS", fromIn: 13, toIn: 22, over: "Friday night through Saturday night" });
   assert.equal(m.nws[0].name, "Friday Night", "'Tonight' goes stale; the read-out is read the next day");
   for (const p of m.nws) assert.doesNotMatch(p.detail ?? "", /inch|accumulation/i);
   // Alta's NWS 4-8" Sunday is not clearly above our 8": no line.

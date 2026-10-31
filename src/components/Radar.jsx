@@ -9,7 +9,7 @@ import { readoutMatches } from "../lib/readout.js";
  *  At six days this reads as "the shape of this week" rather than the
  *  storm-spotting it did over Open-Meteo's sixteen. Whether it still earns a
  *  tab is an open question — see claude/RESUME-HERE.md. */
-export default function Radar({ resorts, dates, metric, onJump, onPlace, editorial, generatedAt }) {
+export default function Radar({ resorts, dates, metric, onJump, onPlace, editorial, generatedAt, weather }) {
   const rows = useMemo(
     () =>
       [...resorts]
@@ -27,7 +27,7 @@ export default function Radar({ resorts, dates, metric, onJump, onPlace, editori
   const max = Math.max(0.5, ...rows.flatMap((r) => r.days.map((d) => d.snow ?? 0)));
   /* Read over every resort, not just the twelve on the grid: a storm in the
      Northeast still belongs in the paragraph. */
-  const said = useMemo(() => outlook(resorts, { metric }), [resorts, metric]);
+  const said = useMemo(() => outlook(resorts, { metric, weather }), [resorts, metric, weather]);
 
   return (
     <div className="radar">

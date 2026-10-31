@@ -25,59 +25,104 @@ import { cmToIn } from "./units.js";
    the "moving through" list stays at range level.
    Revelstoke and Kicking Horse sit in the Columbia Mountains, strictly, but
    skiers file them with Lake Louise and so does he. */
+/* `warnIn`: the snowfall, in inches, at which the forecaster for that
+   mountain issues a winter storm warning (Brian, 2026-10-30: "6\" on the
+   east coast is a big day, but in Tahoe that's a moderate day"). US values
+   are the NWS's own heavy-snow criteria for the forecast zone each resort's
+   `nws` point falls in, read from weather.gov/snow-criteria (layer
+   HeavySnowCriteria2026, field SnowCriter) on 2026-10-30: Wasatch UT110/111
+   18; Sierra CA072/073/133/136 and NV002 12; Colorado CO004/010/012/018/
+   034/068 12; Cascades WA301/302/304 12, OR509 12 above 5,000 ft; Tetons
+   WY012 12; Sun Valley ID073 12; Taos NM213 10; Big Sky MT330 9; Vermont
+   VT003/006/019 and Whiteface NY034 7. Snowbird and Solitude sit between
+   Alta and Brighton, both read as UT111. Canada publishes no amounts any
+   more (impact-based alerts since 2025), so Brian set them: 10" in the
+   west, and 7" in the east to match the US Northeast. */
 export const RANGES = {
-  palisades: { range: "the Sierra", sub: "Tahoe", state: "California" },
-  heavenly: { range: "the Sierra", sub: "Tahoe", state: "California" },
-  kirkwood: { range: "the Sierra", sub: "Tahoe", state: "California" },
-  mammoth: { range: "the Sierra", sub: "the Eastern Sierra", state: "California" },
-  "sugar-bowl": { range: "the Sierra", sub: "Tahoe", state: "California" },
-  northstar: { range: "the Sierra", sub: "Tahoe", state: "California" },
-  "mt-rose": { range: "the Sierra", sub: "Tahoe", state: "Nevada" },
-  "sierra-at-tahoe": { range: "the Sierra", sub: "Tahoe", state: "California" },
-  homewood: { range: "the Sierra", sub: "Tahoe", state: "California" },
-  brighton: { range: "the Wasatch", state: "Utah" },
-  solitude: { range: "the Wasatch", state: "Utah" },
-  snowbasin: { range: "the Wasatch", state: "Utah" },
-  "powder-mountain": { range: "the Wasatch", state: "Utah" },
-  vail: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  breckenridge: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  "arapahoe-basin": { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  "wolf-creek": { range: "the Rockies", sub: "the southern Rockies", state: "Colorado" },
-  "mt-baker": { range: "the Cascades", state: "Washington" },
-  crystal: { range: "the Cascades", state: "Washington" },
-  "stevens-pass": { range: "the Cascades", state: "Washington" },
-  "mt-bachelor": { range: "the Cascades", state: "Oregon" },
-  whistler: { range: "the Coast Mountains", state: "British Columbia" },
-  snowbird: { range: "the Wasatch", state: "Utah" },
-  alta: { range: "the Wasatch", state: "Utah" },
-  "big-sky": { range: "the Rockies", sub: "the northern Rockies", state: "Montana" },
-  "jackson-hole": { range: "the Rockies", sub: "the northern Rockies", state: "Wyoming" },
-  "grand-targhee": { range: "the Rockies", sub: "the northern Rockies", state: "Wyoming" },
-  "sun-valley": { range: "the Rockies", sub: "the northern Rockies", state: "Idaho" },
-  telluride: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  "crested-butte": { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  "aspen-highlands": { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  steamboat: { range: "the Rockies", sub: "the central Rockies", state: "Colorado" },
-  taos: { range: "the Rockies", sub: "the southern Rockies", state: "New Mexico" },
-  revelstoke: { range: "the Canadian Rockies", state: "British Columbia" },
-  "kicking-horse": { range: "the Canadian Rockies", state: "British Columbia" },
-  "lake-louise": { range: "the Canadian Rockies", state: "Alberta" },
-  whiteface: { range: "the Northeast", state: "New York" },
-  stowe: { range: "the Northeast", state: "Vermont" },
-  killington: { range: "the Northeast", state: "Vermont" },
-  "jay-peak": { range: "the Northeast", state: "Vermont" },
+  palisades: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  heavenly: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  kirkwood: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  mammoth: { range: "the Sierra", sub: "the Eastern Sierra", state: "California", warnIn: 12 },
+  "sugar-bowl": { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  northstar: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  "mt-rose": { range: "the Sierra", sub: "Tahoe", state: "Nevada", warnIn: 12 },
+  "sierra-at-tahoe": { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  homewood: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
+  brighton: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  solitude: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  snowbasin: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  "powder-mountain": { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  vail: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  breckenridge: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  "arapahoe-basin": { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  "wolf-creek": { range: "the Rockies", sub: "the southern Rockies", state: "Colorado", warnIn: 12 },
+  "mt-baker": { range: "the Cascades", state: "Washington", warnIn: 12 },
+  crystal: { range: "the Cascades", state: "Washington", warnIn: 12 },
+  "stevens-pass": { range: "the Cascades", state: "Washington", warnIn: 12 },
+  "mt-bachelor": { range: "the Cascades", state: "Oregon", warnIn: 12 },
+  whistler: { range: "the Coast Mountains", state: "British Columbia", warnIn: 10 },
+  snowbird: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  alta: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  "big-sky": { range: "the Rockies", sub: "the northern Rockies", state: "Montana", warnIn: 9 },
+  "jackson-hole": { range: "the Rockies", sub: "the northern Rockies", state: "Wyoming", warnIn: 12 },
+  "grand-targhee": { range: "the Rockies", sub: "the northern Rockies", state: "Wyoming", warnIn: 12 },
+  "sun-valley": { range: "the Rockies", sub: "the northern Rockies", state: "Idaho", warnIn: 12 },
+  telluride: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  "crested-butte": { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  "aspen-highlands": { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  steamboat: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },
+  taos: { range: "the Rockies", sub: "the southern Rockies", state: "New Mexico", warnIn: 10 },
+  revelstoke: { range: "the Canadian Rockies", state: "British Columbia", warnIn: 10 },
+  "kicking-horse": { range: "the Canadian Rockies", state: "British Columbia", warnIn: 10 },
+  "lake-louise": { range: "the Canadian Rockies", state: "Alberta", warnIn: 10 },
+  whiteface: { range: "the Northeast", state: "New York", warnIn: 7 },
+  stowe: { range: "the Northeast", state: "Vermont", warnIn: 7 },
+  killington: { range: "the Northeast", state: "Vermont", warnIn: 7 },
+  "jay-peak": { range: "the Northeast", state: "Vermont", warnIn: 7 },
 };
 
 /* Below QUIET (inches, biggest total anywhere) there is nothing worth a
    paragraph. A range joins the "moving through" list when its best resort
    gets at least a quarter of the biggest total.
 
-   The storm's strength is read off its heaviest single DAY, not its total:
-   Brian's own example calls 17" over five days "moderate", and it is — that
-   is a steady few inches a day. A foot in one day is what reads as strong. */
+   The storm's strength — Brian, 2026-10-30, after "a strong storm" sat
+   beside "up to 16\" over 5 days": let the forecasters decide, but only
+   when the snow is really there.
+     strong    a winter storm, blizzard or snowfall WARNING (NWS or
+               Environment Canada) is in effect at a resort the storm is
+               crossing, AND our table has that resort at or above its own
+               region's warning amount (`warnIn`) over the window;
+     moderate  a watch or advisory, a warning without the snow to back it,
+               or 3"+ in a day with no alert;
+     light     no alert and under 3" on the heaviest day.
+   A feed with no weather at all (the demo, the tests) falls back to the
+   old reading of the heaviest single day: under 3" light, over 8" strong.
+   Brian's own example calls 17" over five days "moderate", and by either
+   rule it is. */
 export const QUIET_IN = 1;
 const LIGHT_BELOW_IN_DAY = 3;
 const STRONG_ABOVE_IN_DAY = 8;
+/* Warnings and watches as either agency names them: NWS "Winter Storm
+   Warning"; Environment Canada "Snowfall Warning", "Winter Storm Warning",
+   "Blizzard Warning", "Snow Squall Warning". */
+const WARNING = /^(Winter Storm|Blizzard|Lake Effect Snow|Heavy Snow|Snowfall|Snow Squall) Warning$/i;
+const WATCH_OR_ADVISORY = /^(Winter Storm|Blizzard|Lake Effect Snow|Snowfall|Snow Squall) Watch$|^(Winter Weather|Lake Effect Snow) Advisory$/i;
+
+/** "light" | "moderate" | "strong".
+ *  rows     snowRows() for the resorts the storm is crossing
+ *  weather  weather.json `resorts` map (NWS + Environment Canada)
+ *  peakDayIn the storm's heaviest single day, inches */
+export function stormWord(rows, weather, peakDayIn) {
+  const covered = rows.filter((r) => weather?.[r.id]);
+  if (!covered.length) {
+    return peakDayIn < LIGHT_BELOW_IN_DAY ? "light" : peakDayIn > STRONG_ABOVE_IN_DAY ? "strong" : "moderate";
+  }
+  const events = (r) => (weather[r.id].alerts ?? []).map((a) => a.event ?? "");
+  const warned = covered.filter((r) => events(r).some((e) => WARNING.test(e)));
+  if (warned.some((r) => cmToIn(r.total) >= (RANGES[r.id]?.warnIn ?? Infinity))) return "strong";
+  if (warned.length || covered.some((r) => events(r).some((e) => WATCH_OR_ADVISORY.test(e)))) return "moderate";
+  return peakDayIn < LIGHT_BELOW_IN_DAY ? "light" : "moderate";
+}
 const JOIN_SHARE = 0.25;
 const MAX_RANGES = 3;
 const WET_DAY_CM = 1; // a day counts toward "over the next N days" from here
@@ -127,9 +172,11 @@ export function unitsOf(rows) {
  * @param resorts  forecast.json resorts (cm)
  * @param opts.now     defaults to now; days before today are ignored
  * @param opts.metric  amount in cm rather than inches
+ * @param opts.weather weather.json `resorts` map — its alerts decide how
+ *                     strong the storm is (see stormWord)
  * @returns segments [{ t, hot }] — never null
  */
-export function outlook(resorts, { now = new Date(), metric = false } = {}) {
+export function outlook(resorts, { now = new Date(), metric = false, weather = null } = {}) {
   const rows = snowRows(resorts, now);
 
   const nDays = Math.max(0, ...rows.map((r) => r.snow.length));
@@ -184,7 +231,7 @@ export function outlook(resorts, { now = new Date(), metric = false } = {}) {
 
   const inches = cmToIn(biggest.total);
   const peakDay = cmToIn(Math.max(...rows.filter((r) => crossingNames.has(r.range)).flatMap((r) => r.snow)));
-  const word = peakDay < LIGHT_BELOW_IN_DAY ? "light" : peakDay > STRONG_ABOVE_IN_DAY ? "strong" : "moderate";
+  const word = stormWord(rows.filter((r) => crossingNames.has(r.range)), weather, peakDay);
   const amount = metric
     ? `${Math.max(1, Math.round(biggest.total))}cm`
     : `${Math.max(1, Math.round(inches))}"`;

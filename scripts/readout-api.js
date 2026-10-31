@@ -19,8 +19,8 @@ Voice: a knowledgeable skier who has read the forecasts so the reader doesn't ha
 
 You get a JSON fact sheet. Write one paragraph per region in "regions", in exactly that order, copying each "key" exactly. About 40 words each:
 1. The top resort, its total ("totalIn") and its big day ("peak").
-2. One conditions note from the NWS wording ("short", "detail"): heavy snow, rain mixing in, snow level, strong wind or wind chill. Pick the one that matters most.
-3. If a resort has "nwsHigher", say so in one clause, e.g. "The NWS is calling for more, 21 to 32 inches Saturday night through Monday." Never otherwise quote NWS amounts.
+2. One conditions note from the forecaster's wording ("short", "detail"): heavy snow, rain mixing in, snow level, strong wind or wind chill. Pick the one that matters most. The forecaster is named in "forecaster": the NWS for US resorts, Environment Canada for Canadian ones.
+3. If a resort has "nwsHigher", say so in one clause, naming the agency in its "by" field, e.g. "The NWS is calling for more, 21 to 32 inches Saturday night through Monday." Never otherwise quote a forecaster's amounts.
 4. If a resort has "alerts", name the alert and when ("from"/"to").
 5. Other resorts in a few words, only if there is room.
 
