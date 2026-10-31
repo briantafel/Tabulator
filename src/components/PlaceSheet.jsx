@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Table from "./Table.jsx";
 import { shortDate } from "../lib/dates.js";
+import { holdsPlace } from "../lib/trips.js";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 
 /** A range, part of a range or a state, opened from the radar's paragraph.
@@ -18,8 +19,8 @@ import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./trip
  *  Brian, 2026-10-31: the resort sheet's add-to / remove-from-trip button,
  *  beside Close. Here it acts on the whole place: Add puts every resort in it
  *  into the trip, and the button turns to the red X once some trip holds all
- *  of them, where Remove takes them all back out. A trip holding only some of
- *  them still shows the plus, and adding fills in the rest. */
+ *  of them, where Remove takes back out what the place added — resorts added
+ *  from their own sheets stay (lib/trips.js). */
 export default function PlaceSheet({
   place, metric, favs, onClose, onOpen, trips = [], onAddToTrip, onNewTrip, onRemoveFromTrip,
 }) {
@@ -68,7 +69,9 @@ export default function PlaceSheet({
 
   const resorts = place.rows.map((r) => ({ name: r.name, total: r.total }));
   const names = resorts.map((r) => r.name);
-  const holdsAll = (t) => names.every((nm) => t.resorts?.some((x) => x.name === nm));
+  // Held AS this place — a trip that only has some of them, or has them from
+  // their own sheets, still shows the plus.
+  const holdsAll = (t) => holdsPlace(t.resorts ?? [], names, place.title);
   const inTrips = trips.filter(holdsAll);
   const booked = inTrips.length > 0;
 

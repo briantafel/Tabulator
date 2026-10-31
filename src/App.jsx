@@ -18,6 +18,7 @@ import { score } from "./lib/scoring.js";
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { bySnow } from "./lib/rank.js";
+import { addResort, addPlace, removeResort, removePlace } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { fromIso, monthName, shortDate } from "./lib/dates.js";
@@ -145,7 +146,7 @@ export default function Tabulator() {
      in it — "VSC trip 2027 · Jan 21–Jan 24", per the Add-to-trip design. It is
      not a bare saved window any more, which is what it was before.
      { id, name, label, resorts: [{ name, total }] } */
-  const newTrip = (resort, named) =>
+  const newTrip = (resort, named, place) =>
     setTrips((t) => {
       /* Brian names his own trips — the design shows "VSC trip 2027". Nothing
          in it says how he types that, so new trips get a neutral placeholder
@@ -160,7 +161,8 @@ export default function Tabulator() {
       return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
                       start: dates?.[wa], end: dates?.[wb],
                       // One resort from its sheet, or a whole place from the radar.
-                      resorts: Array.isArray(resort) ? resort : resort ? [resort] : [] }];
+                      resorts: place ? addPlace([], resort, place)
+                        : resort ? addResort([], resort) : [] }];
     });
 
   const removeTrip = (id) => setTrips((t) => t.filter((x) => x.id !== id));
@@ -176,27 +178,20 @@ export default function Tabulator() {
   const renameTrip = (id, name) =>
     setTrips((t) => t.map((x) => (x.id === id ? { ...x, name } : x)));
 
-  /* One resort, or a whole place's worth from the radar — the ones already
-     in the trip are skipped, so adding a place fills in the rest. */
-  const addToTrip = (id, resort) =>
-    setTrips((t) =>
-      t.map((x) => {
-        if (x.id !== id) return x;
-        const add = (Array.isArray(resort) ? resort : [resort])
-          .filter((r) => !x.resorts.some((y) => y.name === r.name));
-        return add.length ? { ...x, resorts: [...x.resorts, ...add] } : x;
-      })
-    );
+  /* One resort from its sheet, or a whole place from the radar. lib/trips.js
+     keeps track of which way each resort came in, so taking a place back out
+     leaves the resorts that were added on their own. */
+  const addToTrip = (id, resort, place) =>
+    setTrips((t) => t.map((x) => (x.id !== id ? x
+      : { ...x, resorts: place ? addPlace(x.resorts, resort, place) : addResort(x.resorts, resort) })));
 
   /* The mirror of addToTrip. Removing the last resort leaves an empty trip
      rather than deleting it — a trip is a named container with its own dates,
      and dropping it because its last resort went would throw away the part
      the user actually typed. */
-  const removeFromTrip = (id, name) => {
-    const drop = new Set(Array.isArray(name) ? name : [name]);
-    setTrips((all) => all.map((x) =>
-      (x.id === id ? { ...x, resorts: x.resorts.filter((r) => !drop.has(r.name)) } : x)));
-  };
+  const removeFromTrip = (id, name, place) =>
+    setTrips((all) => all.map((x) => (x.id !== id ? x
+      : { ...x, resorts: place ? removePlace(x.resorts, place) : removeResort(x.resorts, name) })));
 
   /* The star favourites a resort; the calendar-plus saves the window. Two
      different actions, which is why the sheet carries both icons.
@@ -505,9 +500,9 @@ export default function Tabulator() {
         onClose={() => setPlace(null)}
         onOpen={(r) => { setPlace(null); setOpen(r); }}
         trips={trips}
-        onAddToTrip={addToTrip}
-        onNewTrip={(list, named) => newTrip(list, named)}
-        onRemoveFromTrip={removeFromTrip}
+        onAddToTrip={(id, list) => place && addToTrip(id, list, place.title)}
+        onNewTrip={(list, named) => place && newTrip(list, named, place.title)}
+        onRemoveFromTrip={(id) => place && removeFromTrip(id, null, place.title)}
       />
 
       <Detail
