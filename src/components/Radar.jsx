@@ -9,7 +9,7 @@ import { readoutMatches } from "../lib/readout.js";
  *  At six days this reads as "the shape of this week" rather than the
  *  storm-spotting it did over Open-Meteo's sixteen. Whether it still earns a
  *  tab is an open question — see claude/RESUME-HERE.md. */
-export default function Radar({ resorts, dates, metric, onJump, onPlace, editorial, generatedAt, weather }) {
+export default function Radar({ resorts, dates, metric, onPlace, editorial, generatedAt, weather }) {
   const rows = useMemo(
     () =>
       [...resorts]
@@ -33,7 +33,7 @@ export default function Radar({ resorts, dates, metric, onJump, onPlace, editori
     <div className="radar">
       <h2 className="screen-h">Where it's snowing</h2>
       <p className="screen-p">
-        Next {dates.length} days. Darker means deeper. Tap a column to start a trip there.
+        Next {dates.length} days. Darker means deeper.
       </p>
 
       {/* Brian's revised radar (Figma 2142:535): a 164 name column, the six
@@ -44,10 +44,10 @@ export default function Radar({ resorts, dates, metric, onJump, onPlace, editori
         style={{ gridTemplateColumns: `164px repeat(${dates.length}, minmax(0, 1fr))` }}
       >
         <span />
-        {dates.map((d, i) => (
-          <button key={d} className="rd-col" onClick={() => onJump(i)}>
-            {fromIso(d).getDate()}
-          </button>
+        {/* Plain labels. They used to start a trip on tap; Brian, 2026-10-31:
+            "A trip where? The column is a date." */}
+        {dates.map((d) => (
+          <span key={d} className="rd-col">{fromIso(d).getDate()}</span>
         ))}
 
         {rows.map((r) => (

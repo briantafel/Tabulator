@@ -217,14 +217,6 @@ export default function Tabulator() {
     else setPlace({ title: titleOf(link), rows });
   };
 
-  const jumpToDate = (i) => {
-    setMode("calendar");
-    setA(i);
-    setB(Math.min(i + 3, last));
-    setTab("mountains");
-    setShown(true);
-  };
-
   return (
     <div className="app">
       <div className="phone">
@@ -390,7 +382,7 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feed.resorts} dates={dates} metric={metric} onJump={jumpToDate} onPlace={openPlace}
+            <Radar resorts={feed.resorts} dates={dates} metric={metric} onPlace={openPlace}
               editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts} />
           )}
 
