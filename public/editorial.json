@@ -1,84 +1,40 @@
 {
- "generatedAt": "2026-11-01T00:12:49.192Z",
- "forecastGeneratedAt": "2026-11-01T00:06:23.649Z",
+ "generatedAt": "2026-11-01T13:27:03.540Z",
+ "forecastGeneratedAt": "2026-11-01T13:20:27.746Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-01",
-  "to": "2026-11-05",
-  "days": 5,
-  "toLabel": "Thursday Nov 5"
+  "to": "2026-11-06",
+  "days": 6,
+  "toLabel": "Friday Nov 6"
  },
  "regions": [
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride leads with 20\" over the window, 15\" of it Sunday. A Winter Storm Warning runs Sunday into Monday, and rain and snow mix in Sunday before turning to snow Monday. Crested Butte gets 8\" and Vail 6\". Winds gust to 30 mph Monday night."
-  },
-  {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Snowbird and Alta each project 10\" through Wednesday, 4\" of it Sunday. Alta has an NWS forecast raised to 21\" over Sunday through Tuesday night, and a Winter Weather Advisory covers Saturday night into Monday. Brighton totals 9\". Snow is light and steady Monday."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Whistler projects 9\" through Thursday, with 6\" on Thursday itself. Environment Canada calls for a mix of sun and cloud through Thursday daytime, then a 60 percent chance of showers Thursday night. Cypress Mountain sees 5\" Thursday, with periods of rain that night."
+   "text": "Telluride leads with 17\" over six days, 10\" of it Sunday. A Winter Storm Warning runs Sunday through Monday, with an avalanche advisory from Saturday night to Monday. Crested Butte is at 4\", Aspen Highlands at 4\"."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Taos projects 7\", 6\" of it Sunday, with rain showers turning to rain and snow Sunday night. Winds gust to 40 mph Sunday night. Wolf Creek has 7\" and an NWS forecast raised to 14\" over Sunday through Wednesday, under a Winter Storm Warning from Sunday night into Monday with gusts to 45 mph."
+   "text": "Wolf Creek leads with 8\", 6\" of it Sunday, with strong southwest wind and gusts to 50 mph Sunday night. The NWS is calling for more, 8\" to 17\" over Sunday through Wednesday. Taos is at 6\"."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center expects a slowly moving storm to bring heavy rain across the central and eastern US around Monday Nov 9 to Friday Nov 13. Confidence in its timing and strength is low.",
-  "sources": [
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-10-31T23:11:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-10-31T20:15:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
-   },
-   {
-    "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-10-31T23:48:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
-   },
-   {
-    "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-10-31T23:31:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-10-31T19:28:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-10-31T19:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-01T00:06:23.649Z"
+   "issuedAt": "2026-11-01T13:20:27.746Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-01T00:12:48.873Z"
+   "issuedAt": "2026-11-01T13:27:03.216Z"
   }
  ],
  "api": {
   "day": "2026-11-01",
-  "calls": 3
+  "calls": 6
  }
 }
