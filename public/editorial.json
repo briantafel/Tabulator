@@ -1,78 +1,68 @@
 {
- "generatedAt": "2026-10-31T12:31:42.244Z",
- "forecastGeneratedAt": "2026-10-31T12:25:10.341Z",
+ "generatedAt": "2026-11-01T00:12:49.192Z",
+ "forecastGeneratedAt": "2026-11-01T00:06:23.649Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-10-31",
-  "to": "2026-11-04",
+  "from": "2026-11-01",
+  "to": "2026-11-05",
   "days": 5,
-  "toLabel": "Wednesday Nov 4"
+  "toLabel": "Thursday Nov 5"
  },
  "regions": [
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride leads with 16\" through Monday, with 13\" on Sunday. Rain and snow mix Sunday, and a Winter Storm Watch runs from Sunday to Monday. Crested Butte has 9\" and a Winter Weather Advisory from Sunday to Monday night. Aspen Highlands has 4\"."
-  },
-  {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek leads with 16\", including 14\" on Sunday, under a Winter Storm Watch from Sunday night into Monday. Winds could gust to 45 mph Sunday night. Taos has 9\" and a Monday peak of 3\". Expect rain at times Sunday, with flooding a concern."
+   "text": "Telluride leads with 20\" over the window, 15\" of it Sunday. A Winter Storm Warning runs Sunday into Monday, and rain and snow mix in Sunday before turning to snow Monday. Crested Butte gets 8\" and Vail 6\". Winds gust to 30 mph Monday night."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Snowbird and Alta each have 7\" through Wednesday, with 6\" on Sunday. The NWS is calling for more, 21 to 35 inches at Alta, Saturday night through Wednesday, and 11 to 21 inches at Snowbird, Sunday through Tuesday night. Brighton has 7\"."
+   "text": "Snowbird and Alta each project 10\" through Wednesday, 4\" of it Sunday. Alta has an NWS forecast raised to 21\" over Sunday through Tuesday night, and a Winter Weather Advisory covers Saturday night into Monday. Brighton totals 9\". Snow is light and steady Monday."
   },
   {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Kirkwood has 8\" on Saturday, with the NWS calling for 13 to 22 inches Saturday night. A Winter Weather Advisory runs from Saturday to Sunday. Heavenly has 5\" Saturday, with 3 to 8 inches more expected Saturday night. Sierra-at-Tahoe has 4\" on Saturday."
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Whistler projects 9\" through Thursday, with 6\" on Thursday itself. Environment Canada calls for a mix of sun and cloud through Thursday daytime, then a 60 percent chance of showers Thursday night. Cypress Mountain sees 5\" Thursday, with periods of rain that night."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Taos projects 7\", 6\" of it Sunday, with rain showers turning to rain and snow Sunday night. Winds gust to 40 mph Sunday night. Wolf Creek has 7\" and an NWS forecast raised to 14\" over Sunday through Wednesday, under a Winter Storm Warning from Sunday night into Monday with gusts to 45 mph."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a storm system may bring more snow to western mountains around Friday Nov 6, with its confidence low in the details.",
+  "text": "The Weather Prediction Center expects a slowly moving storm to bring heavy rain across the central and eastern US around Monday Nov 9 to Friday Nov 13. Confidence in its timing and strength is low.",
   "sources": [
    {
     "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-10-31T11:37:00+00:00",
+    "issuedAt": "2026-10-31T23:11:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
    },
    {
-    "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-10-31T11:23:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
-   },
-   {
-    "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-10-31T11:35:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
-   },
-   {
     "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-10-31T12:17:00+00:00",
+    "issuedAt": "2026-10-31T20:15:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
    },
    {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-10-30T20:02:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
+    "name": "NWS ABQ Area Forecast Discussion",
+    "issuedAt": "2026-10-31T23:48:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
    },
    {
-    "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-10-31T08:49:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
+    "name": "NWS PUB Area Forecast Discussion",
+    "issuedAt": "2026-10-31T23:31:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-10-31T05:51:00.000Z",
+    "issuedAt": "2026-10-31T19:28:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
     "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-10-30T19:00:00.000Z",
+    "issuedAt": "2026-10-31T19:00:00.000Z",
     "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
    }
   ]
@@ -80,15 +70,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-10-31T12:25:10.341Z"
+   "issuedAt": "2026-11-01T00:06:23.649Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-10-31T12:31:41.972Z"
+   "issuedAt": "2026-11-01T00:12:48.873Z"
   }
  ],
  "api": {
-  "day": "2026-10-31",
-  "calls": 6
+  "day": "2026-11-01",
+  "calls": 3
  }
 }
