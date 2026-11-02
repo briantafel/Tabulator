@@ -1,40 +1,39 @@
 {
- "generatedAt": "2026-11-02T00:47:30.341Z",
- "forecastGeneratedAt": "2026-11-02T00:40:52.289Z",
+ "generatedAt": "2026-11-02T15:54:34.558Z",
+ "forecastGeneratedAt": "2026-11-02T15:47:51.290Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-02",
-  "to": "2026-11-06",
-  "days": 5,
-  "toLabel": "Friday Nov 6"
+  "to": "2026-11-07",
+  "days": 6,
+  "toLabel": "Saturday Nov 7"
  },
  "regions": [
   {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Breckenridge leads with 7\" over the window, with 6\" on Wednesday. Snow arrives Monday with gusty northwest wind, and the NWS has a Winter Weather Advisory from Monday through Tuesday. Vail has 7\" and Arapahoe Basin 5\". Wednesday brings snow showers at all three."
-  },
-  {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads the Coast Mountains with 10\" over the window, with 5\" on Thursday. Environment Canada expects a mix of sun and cloud early in the week, then showers and periods of rain. Cypress Mountain sees rain for much of the week, with 2\" on Thursday."
+   "text": "Whistler is forecast for about 11\". Cypress Mountain about 3\"."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride is forecast for about 7\", 5\" of it Monday. Aspen Highlands about 5\" and Crested Butte about 4\". Winter Storm Warning at Telluride from Sunday night to Monday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-02T00:40:52.289Z"
+   "issuedAt": "2026-11-02T15:47:51.290Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-02T00:47:30.015Z"
+   "issuedAt": "2026-11-02T15:54:34.255Z"
   }
  ],
  "api": {
   "day": "2026-11-02",
-  "calls": 2
+  "calls": 5
  }
 }
