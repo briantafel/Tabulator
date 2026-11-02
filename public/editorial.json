@@ -1,40 +1,40 @@
 {
- "generatedAt": "2026-11-01T13:27:03.540Z",
- "forecastGeneratedAt": "2026-11-01T13:20:27.746Z",
+ "generatedAt": "2026-11-02T00:47:30.341Z",
+ "forecastGeneratedAt": "2026-11-02T00:40:52.289Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-01",
+  "from": "2026-11-02",
   "to": "2026-11-06",
-  "days": 6,
+  "days": 5,
   "toLabel": "Friday Nov 6"
  },
  "regions": [
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride leads with 17\" over six days, 10\" of it Sunday. A Winter Storm Warning runs Sunday through Monday, with an avalanche advisory from Saturday night to Monday. Crested Butte is at 4\", Aspen Highlands at 4\"."
+   "text": "Breckenridge leads with 7\" over the window, with 6\" on Wednesday. Snow arrives Monday with gusty northwest wind, and the NWS has a Winter Weather Advisory from Monday through Tuesday. Vail has 7\" and Arapahoe Basin 5\". Wednesday brings snow showers at all three."
   },
   {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek leads with 8\", 6\" of it Sunday, with strong southwest wind and gusts to 50 mph Sunday night. The NWS is calling for more, 8\" to 17\" over Sunday through Wednesday. Taos is at 6\"."
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Whistler leads the Coast Mountains with 10\" over the window, with 5\" on Thursday. Environment Canada expects a mix of sun and cloud early in the week, then showers and periods of rain. Cypress Mountain sees rain for much of the week, with 2\" on Thursday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-01T13:20:27.746Z"
+   "issuedAt": "2026-11-02T00:40:52.289Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-01T13:27:03.216Z"
+   "issuedAt": "2026-11-02T00:47:30.015Z"
   }
  ],
  "api": {
-  "day": "2026-11-01",
-  "calls": 6
+  "day": "2026-11-02",
+  "calls": 2
  }
 }
