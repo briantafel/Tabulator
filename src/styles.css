@@ -419,6 +419,9 @@ body { background: #F2F2F2; }
 .rd-read-g + .rd-read-g { margin-top: 14px; }
 .rd-read-h { margin: 0 0 3px; font-size: 13px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
 .rd-read-p { margin: 0; font-size: 15px; line-height: 1.35; letter-spacing: -.01em; color: var(--ink); }
+/* "Looking ahead" in the app's one red — Brian, 2026-11-03: "when there's a
+   'looking forward' section let's put that section in red." Heading and text. */
+.rd-ahead .rd-read-h, .rd-ahead .rd-read-p { color: var(--red); }
 .rd-read-src { margin: 16px 0 0; font-size: 11px; line-height: 1.35; color: #8A8A8A; }
 /* The region card: the resort sheet's shell around the results table. */
 .place-sheet .table { margin-top: calc(17 * var(--u)); }

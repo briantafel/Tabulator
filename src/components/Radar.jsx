@@ -148,7 +148,7 @@ export default function Radar({
             </div>
           ))}
           {editorial.ahead && (
-            <div className="rd-read-g">
+            <div className="rd-read-g rd-ahead">
               <h3 className="rd-read-h">Looking ahead</h3>
               <p className="rd-read-p">{editorial.ahead.text}</p>
             </div>
