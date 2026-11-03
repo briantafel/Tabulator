@@ -1,39 +1,35 @@
 {
- "generatedAt": "2026-11-02T15:54:34.558Z",
- "forecastGeneratedAt": "2026-11-02T15:47:51.290Z",
+ "generatedAt": "2026-11-03T03:02:12.660Z",
+ "forecastGeneratedAt": "2026-11-03T02:54:41.117Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-02",
+  "from": "2026-11-03",
   "to": "2026-11-07",
-  "days": 6,
+  "days": 5,
   "toLabel": "Saturday Nov 7"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 11\". Cypress Mountain about 3\"."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Telluride is forecast for about 7\", 5\" of it Monday. Aspen Highlands about 5\" and Crested Butte about 4\". Winter Storm Warning at Telluride from Sunday night to Monday."
+   "text": "Whistler is the top resort here, with 11\" expected through Saturday Nov 7, peaking at 4\" on Friday. Expect rain more than snow: periods of rain are forecast Thursday, Friday and Saturday, with Environment Canada keeping the mix wet. Most of this is low-elevation rain, so plan for heavy, wet snow higher up."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-02T15:47:51.290Z"
+   "issuedAt": "2026-11-03T02:54:41.117Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-02T15:54:34.255Z"
+   "issuedAt": "2026-11-03T03:02:12.330Z"
   }
  ],
  "api": {
-  "day": "2026-11-02",
-  "calls": 5
+  "day": "2026-11-03",
+  "calls": 2
  }
 }
