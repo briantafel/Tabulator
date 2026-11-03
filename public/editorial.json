@@ -1,35 +1,35 @@
 {
- "generatedAt": "2026-11-03T03:02:12.660Z",
- "forecastGeneratedAt": "2026-11-03T02:54:41.117Z",
+ "generatedAt": "2026-11-03T14:17:36.159Z",
+ "forecastGeneratedAt": "2026-11-03T14:11:00.010Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-03",
-  "to": "2026-11-07",
-  "days": 5,
-  "toLabel": "Saturday Nov 7"
+  "to": "2026-11-08",
+  "days": 6,
+  "toLabel": "Sunday Nov 8"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is the top resort here, with 11\" expected through Saturday Nov 7, peaking at 4\" on Friday. Expect rain more than snow: periods of rain are forecast Thursday, Friday and Saturday, with Environment Canada keeping the mix wet. Most of this is low-elevation rain, so plan for heavy, wet snow higher up."
+   "text": "Whistler leads the region with 14\" over the window, with its biggest day Saturday at 6\". Expect rain mixing in through much of the period, with periods of rain Friday and Saturday, so the snow line will matter. Cypress Mountain sees 3\" total, mostly Thursday and Friday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-03T02:54:41.117Z"
+   "issuedAt": "2026-11-03T14:11:00.010Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-03T03:02:12.330Z"
+   "issuedAt": "2026-11-03T14:17:35.846Z"
   }
  ],
  "api": {
   "day": "2026-11-03",
-  "calls": 2
+  "calls": 4
  }
 }
