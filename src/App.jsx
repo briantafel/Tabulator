@@ -420,7 +420,7 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feed.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
+            <Radar resorts={feedRaw.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
               editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}
