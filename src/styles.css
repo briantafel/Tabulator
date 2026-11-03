@@ -179,7 +179,11 @@ body { background: #F2F2F2; }
   line-height: calc(200 * var(--u));
   color: var(--ghost);
   transition: color .2s;
-  width: calc(177 * var(--u)); padding: 0; text-align: center;
+  /* min-width, not width: one digit sits in the same 177 slot as always, and
+     a two-digit "10" (Brian's wheel-to-10 frame) takes the double width he
+     drew instead of spilling into its neighbour. The centring code reads
+     each item's own width, so mixed widths snap correctly. */
+  min-width: calc(177 * var(--u)); padding: 0; text-align: center;
 }
 .wheel-n.on { color: var(--ink); }
 

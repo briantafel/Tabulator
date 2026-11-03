@@ -26,3 +26,48 @@ export function copyVoice() {
   const v = load("copy", "next");
   return COPY.includes(v) ? v : "next";
 }
+
+/* Site-wide switches, added 2026-11-03.
+ *
+ * Brian: "I want to be able to easily undo these projection changes and
+ * toggle the currently live forecast-only site back on."
+ *
+ * Two layers, deliberately:
+ *
+ *  - public/flags.json is the SITE-WIDE switch. It decides what everyone sees.
+ *    Brian can flip it from the GitHub app; the next deploy picks it up. A
+ *    missing or broken file means every switch is off — the live app as it
+ *    was — never a crash.
+ *  - Settings holds a PER-DEVICE override, stored like Units and Weather. It
+ *    lets Brian try the new thing (or get the old one back) on his own phone
+ *    without changing it for anyone else. Choosing the same value as the site
+ *    clears the override, so the device goes back to following the site.
+ *
+ * Unlike ?copy= above, these are visible in Settings rather than URL-only.
+ */
+
+export const FLAG_DEFAULTS = Object.freeze({ projections: false });
+
+/** Only known keys, only booleans. Anything else falls back to the default,
+ *  so a typo in the JSON can never switch something on by accident. */
+export function parseFlags(raw) {
+  const out = { ...FLAG_DEFAULTS };
+  if (!raw || typeof raw !== "object") return out;
+  for (const k of Object.keys(FLAG_DEFAULTS)) {
+    if (typeof raw[k] === "boolean") out[k] = raw[k];
+  }
+  return out;
+}
+
+/** The value in force on this device: its own override if it has one,
+ *  otherwise the site's. */
+export function effectiveFlag(siteValue, override) {
+  return typeof override === "boolean" ? override : !!siteValue;
+}
+
+/** What to store after a tap in Settings. Picking the site's own value
+ *  stores nothing (null), so a later site-wide change still reaches this
+ *  device. */
+export function nextOverride(choice, siteValue) {
+  return choice === !!siteValue ? null : choice;
+}

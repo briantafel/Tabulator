@@ -17,6 +17,7 @@ import { score } from "./lib/scoring.js";
    unaliased import silently resolved to that instead — the storage
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
+import { effectiveFlag, nextOverride } from "./lib/flags.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -59,6 +60,9 @@ export default function Tabulator() {
   /* Where the resort sheet's daily weather row comes from: "nws" (the
      National Weather Service, US only) or "sf" (Snow-Forecast, every resort). */
   const [wxSource, setWxSource] = useState(() => loadSaved("wxSource", "nws"));
+  /* This device's projections override: true / false, or null to follow the
+     site-wide switch in public/flags.json. See lib/flags.js. */
+  const [projOverride, setProjOverride] = useState(() => loadSaved("projections", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -98,6 +102,11 @@ export default function Tabulator() {
   useEffect(() => { load(); }, [load]);
 
   const dates = feed?.dates ?? [];
+  const siteProjections = !!feed?.flags?.projections;
+  /* Nothing reads this yet beyond Settings: the projection chart, radar
+     columns and wheel-to-10 land behind it. Off is the live app exactly. */
+  const projections = effectiveFlag(siteProjections, projOverride);
+  const chooseProjections = (on) => setProjOverride(nextOverride(on, siteProjections));
   /* The month on screen, which is what the question line names. */
   const calAnchor = dates.length ? fromIso(dates[0]) : new Date();
   const shownMonth = new Date(calAnchor.getFullYear(), calAnchor.getMonth() + mOff, 1);
@@ -115,6 +124,7 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("favs", favs); }, [favs]);
   useEffect(() => { saveLocal("metric", metric); }, [metric]);
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
+  useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -262,6 +272,13 @@ export default function Tabulator() {
                 </span>
                 <button className="link" onClick={load}>Reload forecast</button>
               </div>
+            </div>
+            <div className="set">
+              <span className="set-label">Forecast</span>
+              <span className="pill sm">
+                <button className={!projections ? "on" : ""} onClick={() => chooseProjections(false)}>Forecast only</button>
+                <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>With projections</button>
+              </span>
             </div>
             <div className="stamps">
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}

@@ -1,4 +1,5 @@
 import resortData from "../data/resorts.json" with { type: "json" };
+import { parseFlags } from "./flags.js";
 
 /* Reads the static forecast.json that the scheduled scrape commits. No live
  * API call from the browser — Snow-Forecast blocks cross-origin requests,
@@ -142,6 +143,10 @@ export async function loadForecast() {
      dates are shifted, so a real read-out would describe a different week. */
   const editorial = preset ? null : await getJson("editorial.json", null);
 
+  /* Site-wide switches (see lib/flags.js). Optional like the rest: no file,
+     a 404 or bad JSON all mean "everything off", i.e. the app as it was. */
+  const flags = parseFlags(preset ? null : await getJson("flags.json", null));
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -157,6 +162,7 @@ export async function loadForecast() {
     reports,
     weather: rolled.weather,
     editorial,
+    flags,
   };
 }
 
