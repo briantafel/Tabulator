@@ -399,6 +399,7 @@ body { background: #F2F2F2; }
   font-size: 8px; line-height: 13px; color: #000; font-variant-numeric: tabular-nums;
 }
 .rd-cell.ko { color: #FFF; }
+.rd-proj { color: #9B59D0; }
 /* Brian's Figma 2142:872: a full-width #DCDCDC rule 28 under the last row,
    the paragraph's box 17 under that, 362 wide. 23 bold at -3%, grey with the
    computed clauses in the one red. */

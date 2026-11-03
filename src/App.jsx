@@ -18,7 +18,7 @@ import { score } from "./lib/scoring.js";
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
-import { extendFeed } from "./lib/projections.js";
+import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -421,6 +421,8 @@ export default function Tabulator() {
 
           {feed && tab === "radar" && (
             <Radar resorts={feedRaw.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
+              gridResorts={projections ? feed.resorts : feedRaw.resorts}
+              gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
               editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}

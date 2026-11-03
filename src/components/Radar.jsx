@@ -1,6 +1,6 @@
 import { Fragment, useMemo, useRef, useState } from "react";
 import { fromIso } from "../lib/dates.js";
-import { snowWithUnit, cellSnowTxt, CELL_KO_FROM } from "../lib/units.js";
+import { snowWithUnit, cellSnowTxt, farCellSnowTxt, purpleAlpha, CELL_KO_FROM } from "../lib/units.js";
 import { outlook } from "../lib/outlook.js";
 import { readoutMatches } from "../lib/readout.js";
 import { GLASS, STAR } from "./tripIcons.js";
@@ -15,6 +15,10 @@ import { useResortSearch } from "../lib/useResortSearch.js";
 export default function Radar({
   resorts, dates, metric, onPlace, editorial, generatedAt, weather,
   favs = [], onOpen, onToggleFav,
+  /* With projections on, the grid alone reaches past Snow-Forecast's six
+     days (purple, lightness-matched). The paragraph, the ranking and the
+     search stay on the forecast. */
+  gridResorts = resorts, gridDates = dates,
 }) {
   /* Resort search — "if I just want to know how much it's going to snow at
      a specific resort." The grid shows the top twelve; this finds the rest.
@@ -30,17 +34,22 @@ export default function Radar({
 
   const rows = useMemo(
     () =>
-      [...resorts]
-        .map((r) => ({
-          id: r.id,
-          name: r.name,
-          days: r.days,
-          total: r.days.reduce((s, d) => s + (d.snow ?? 0), 0),
-        }))
+      [...gridResorts]
+        .map((r) => {
+          const byDate = new Map(r.days.map((d) => [d.date, d]));
+          return {
+            id: r.id,
+            name: r.name,
+            days: gridDates.map((date) => byDate.get(date) ?? { date, snow: null }),
+            // Ranked on the forecast only — projected snow is never scored.
+            total: r.days.reduce((s, d) => s + (d.projected ? 0 : d.snow ?? 0), 0),
+          };
+        })
         .sort((a, b) => b.total - a.total)
         .slice(0, 12),
-    [resorts]
+    [gridResorts, gridDates]
   );
+  const far = gridDates.length - dates.length;
 
   const max = Math.max(0.5, ...rows.flatMap((r) => r.days.map((d) => d.snow ?? 0)));
   /* Read over every resort, not just the twelve on the grid: a storm in the
@@ -80,20 +89,22 @@ export default function Radar({
         </button>
       </div>
       <p className="screen-p">
-        Next {dates.length} days. Darker means deeper.
+        {far > 0
+          ? <>Next {gridDates.length} days, the last {far} <span className="rd-proj">projected</span>. Darker means deeper.</>
+          : <>Next {dates.length} days. Darker means deeper.</>}
       </p>
 
       {/* Brian's revised radar (Figma 2142:535): a 164 name column, the six
           days sharing what is left, and each day's amount printed in its
           cell — black on the lighter reds, white on the darkest. */}
       <div
-        className="rd-grid"
-        style={{ gridTemplateColumns: `164px repeat(${dates.length}, minmax(0, 1fr))` }}
+        className={`rd-grid${gridDates.length > 6 ? " rd-wide" : ""}`}
+        style={{ gridTemplateColumns: `${gridDates.length > 6 ? 118 : 164}px repeat(${gridDates.length}, minmax(0, 1fr))` }}
       >
         <span />
         {/* Plain labels. They used to start a trip on tap; Brian, 2026-10-31:
             "A trip where? The column is a date." */}
-        {dates.map((d) => (
+        {gridDates.map((d) => (
           <span key={d} className="rd-col">{fromIso(d).getDate()}</span>
         ))}
 
@@ -101,14 +112,17 @@ export default function Radar({
           <Fragment key={r.id}>
             <span className="rd-name">{r.name}</span>
             {r.days.map((d) => {
-              const amount = cellSnowTxt(d.snow, metric);
+              const amount = d.projected ? farCellSnowTxt(d.snow, metric) : cellSnowTxt(d.snow, metric);
               const alpha = amount ? 0.12 + ((d.snow ?? 0) / max) * 0.88 : 0;
+              const fill = !amount ? "transparent"
+                : d.projected ? `rgba(155,89,208,${purpleAlpha(alpha).toFixed(3)})`
+                  : `rgba(239,74,56,${alpha})`;
               return (
                 <span
                   key={d.date}
                   className={`rd-cell${alpha >= CELL_KO_FROM ? " ko" : ""}`}
-                  style={{ background: amount ? `rgba(239,74,56,${alpha})` : "transparent" }}
-                  title={`${r.name} · ${snowWithUnit(d.snow, metric)}`}
+                  style={{ background: fill }}
+                  title={`${r.name} · ${d.projected ? "~" : ""}${snowWithUnit(d.snow, metric)}${d.projected ? " projected" : ""}`}
                 >
                   {amount}
                 </span>

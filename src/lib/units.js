@@ -58,3 +58,36 @@ export function cellSnowTxt(cm, metric) {
  *  rule. Was 0.8; Brian moved it down a step on 2026-11-03 because black on
  *  the step below full ("16" when the max is 22) was tough to read at 8px. */
 export const CELL_KO_FROM = 0.7;
+
+/** A projected day's radar cell (days 7+): whole numbers, and nothing under
+ *  half a unit — the ensemble median does not earn a decimal
+ *  (claude/range-chart-spec.md, "Rules"). */
+export function farCellSnowTxt(cm, metric) {
+  if (cm == null) return null;
+  const v = metric ? cm : cmToIn(cm);
+  return v < 0.5 ? null : Math.round(v).toString();
+}
+
+/* Purple cells are lightness-matched to coral, so equal amounts look equally
+   deep: for a coral fill at opacity a (over white), the purple opacity whose
+   blend has the same OKLab lightness. Tops out near 0.87. */
+const CORAL = [239, 74, 56];
+const PURPLE = [155, 89, 208];
+const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+function okL([r, g, b]) {
+  const [R, G, B] = [lin(r), lin(g), lin(b)];
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  return 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+}
+const over = (c, a) => c.map((v) => v * a + 255 * (1 - a));
+export function purpleAlpha(coralA) {
+  const target = okL(over(CORAL, coralA));
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2;
+    if (okL(over(PURPLE, mid)) > target) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
