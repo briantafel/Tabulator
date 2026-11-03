@@ -80,8 +80,18 @@ for (const resort of resorts) {
     }));
   }
 
+  /* The ensemble's snow spread on Snow-Forecast's own days, so the app can
+     draw likely/possible bands around SF's number for days 1–6. Spread only:
+     the app centres it on SF's value, never on the ensemble median. */
+  const spread = {};
+  for (const date of sfDates) {
+    const s = summary.get(date)?.snow;
+    if (s) spread[date] = s;
+  }
+
   projections.resorts[resort.id] = {
     days: dates.map((date) => ({ date, ...correct(summary.get(date), cal) })),
+    spread,
     members,
   };
   built++;
