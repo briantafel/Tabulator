@@ -53,7 +53,8 @@ export function cellSnowTxt(cm, metric) {
 }
 
 /** White text from this fill opacity up; black below. Brian's SnowKO variant
- *  is the full-strength red. 0.8 is where the red reads as dark — black still
- *  has the higher contrast mathematically all the way up, so this is a design
- *  call, not a contrast rule. */
-export const CELL_KO_FROM = 0.8;
+ *  is the full-strength red. Black still has the higher contrast
+ *  mathematically all the way up, so this is a design call, not a contrast
+ *  rule. Was 0.8; Brian moved it down a step on 2026-11-03 because black on
+ *  the step below full ("16" when the max is 22) was tough to read at 8px. */
+export const CELL_KO_FROM = 0.7;
