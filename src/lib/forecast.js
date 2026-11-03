@@ -147,6 +147,10 @@ export async function loadForecast() {
      a 404 or bad JSON all mean "everything off", i.e. the app as it was. */
   const flags = parseFlags(preset ? null : await getJson("flags.json", null));
 
+  /* Days 7–10 (scripts/projections). Only fetched when the switch could be
+     on for someone, and only ever used through lib/projections.js. */
+  const projections = flags.projections === "off" || preset ? null : await getJson("projections.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -163,6 +167,7 @@ export async function loadForecast() {
     weather: rolled.weather,
     editorial,
     flags,
+    projections,
   };
 }
 

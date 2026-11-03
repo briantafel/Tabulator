@@ -17,7 +17,8 @@ import { score } from "./lib/scoring.js";
    unaliased import silently resolved to that instead — the storage
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
-import { effectiveFlag, nextOverride } from "./lib/flags.js";
+import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
+import { extendFeed } from "./lib/projections.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -53,7 +54,7 @@ const MONTH_MIN = -1;
 const MONTH_MAX = 1;
 
 export default function Tabulator() {
-  const [feed, setFeed] = useState(null);
+  const [feedRaw, setFeed] = useState(null);
   const [err, setErr] = useState(null);
 
   const [metric, setMetric] = useState(() => loadSaved("metric", false));
@@ -101,12 +102,22 @@ export default function Tabulator() {
 
   useEffect(() => { load(); }, [load]);
 
+  const projMode = feedRaw?.flags?.projections ?? "off";
+  const projections = effectiveFlag(projMode, projOverride);
+  const chooseProjections = (on) => setProjOverride(nextOverride(on, projMode));
+  /* With projections on, days 7–10 are appended to every resort (flagged, and
+     never scored — see lib/scoring.js). Off: the feed exactly as loaded. */
+  const feed = useMemo(
+    () => (projections && feedRaw ? extendFeed(feedRaw) : feedRaw),
+    [projections, feedRaw],
+  );
   const dates = feed?.dates ?? [];
-  const siteProjections = !!feed?.flags?.projections;
-  /* Nothing reads this yet beyond Settings: the projection chart, radar
-     columns and wheel-to-10 land behind it. Off is the live app exactly. */
-  const projections = effectiveFlag(siteProjections, projOverride);
-  const chooseProjections = (on) => setProjOverride(nextOverride(on, siteProjections));
+  const sfDates = feed?.sfDates ?? dates;
+  /* Switching projections off with a 7–10 day window picked: back to six,
+     the most the forecast-only app offers. */
+  useEffect(() => {
+    if (!projections && days > HORIZON_DAYS) setDays(HORIZON_DAYS);
+  }, [projections, days]);
   /* The month on screen, which is what the question line names. */
   const calAnchor = dates.length ? fromIso(dates[0]) : new Date();
   const shownMonth = new Date(calAnchor.getFullYear(), calAnchor.getMonth() + mOff, 1);
@@ -273,13 +284,13 @@ export default function Tabulator() {
                 <button className="link" onClick={load}>Reload forecast</button>
               </div>
             </div>
-            <div className="set">
+            {canChoose(projMode) && <div className="set">
               <span className="set-label">Forecast</span>
               <span className="pill sm">
                 <button className={!projections ? "on" : ""} onClick={() => chooseProjections(false)}>Forecast only</button>
                 <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>With projections</button>
               </span>
-            </div>
+            </div>}
             <div className="stamps">
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {/* Was a pink banner over the results; Brian asked for it here
@@ -351,7 +362,7 @@ export default function Tabulator() {
                   moment you switched to the calendar. */}
               <div className="slot">
                 {mode === "days" ? (
-                  <DaysWheel value={days} onChange={(n) => { setDays(n); setShown(false); }} />
+                  <DaysWheel key={projections ? "p" : "f"} value={days} horizon={projections ? Math.max(HORIZON_DAYS, Math.min(10, dates.length)) : HORIZON_DAYS} onChange={(n) => { setDays(n); setShown(false); }} />
                 ) : (
                   <MonthGrid dates={dates} a={wa} b={wb} offset={mOff}
                              onPick={(i) => { pick(i); setShown(false); }} />
@@ -409,7 +420,7 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feed.resorts} dates={dates} metric={metric} onPlace={openPlace}
+            <Radar resorts={feed.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
               editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}
@@ -541,6 +552,7 @@ export default function Tabulator() {
         weather={feed?.weather}
         wxSource={wxSource}
         history={feed?.history}
+        projections={projections}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

@@ -32,10 +32,17 @@ export function score(resort, a, b, history) {
   const win = resort.days.slice(a, b + 1);
   const nums = (arr) => arr.filter((x) => typeof x === "number" && Number.isFinite(x));
 
-  const tempMax = nums(win.map((d) => d.tempMax));
-  const tempMin = nums(win.map((d) => d.tempMin));
-  const windMax = nums(win.map((d) => d.windMax));
-  const freeze = nums(win.map((d) => d.freezeMin));
+  /* Projected days (lib/projections.js) are shown but never scored: the total,
+     the markers, the rank and the verdict all stand on Snow-Forecast's own
+     days. Their snow is reported separately as `projected`. With the switch
+     off there are no projected days and this is exactly the old behaviour. */
+  const fc = win.filter((d) => !d.projected);
+  const pj = win.filter((d) => d.projected);
+
+  const tempMax = nums(fc.map((d) => d.tempMax));
+  const tempMin = nums(fc.map((d) => d.tempMin));
+  const windMax = nums(fc.map((d) => d.windMax));
+  const freeze = nums(fc.map((d) => d.freezeMin));
 
   let cum = 0;
   const out = {
@@ -43,7 +50,8 @@ export function score(resort, a, b, history) {
     win,
     cumulative: win.map((d) => (cum += d.snow ?? 0)),
     before: before(history, resort.id, win[0]?.date),
-    total: Number(win.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
+    total: Number(fc.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
+    projected: pj.length ? Number(pj.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)) : null,
     hi: tempMax.length ? Math.max(...tempMax) : null,
     lo: tempMin.length ? Math.min(...tempMin) : null,
     wind: windMax.length ? Math.max(...windMax) : null,

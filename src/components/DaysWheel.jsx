@@ -7,11 +7,11 @@ import { HORIZON_DAYS } from "../lib/constants.js";
  *
  *  The range now stops at Snow-Forecast's 6-day horizon. It used to run to 14
  *  on Open-Meteo's 16-day window, most of which the app then had to disclaim. */
-export default function DaysWheel({ value, onChange }) {
+export default function DaysWheel({ value, onChange, horizon = HORIZON_DAYS }) {
   const ref = useRef(null);
   const settle = useRef(null);
   const mounted = useRef(false);
-  const opts = Array.from({ length: HORIZON_DAYS }, (_, i) => i + 1); // 1…6
+  const opts = Array.from({ length: horizon }, (_, i) => i + 1); // 1…6, or 1…10 with projections
 
   useEffect(() => {
     const el = ref.current;

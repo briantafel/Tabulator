@@ -10,6 +10,7 @@ import { toDays, sfDays, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import { snowpack } from "../lib/depths.js";
 import Dot from "./Dot.jsx";
+import RangeChart from "./RangeChart.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 
 /* Brian's exports. Filled paths; the clipPath wrapper Figma emits is dropped
@@ -27,9 +28,12 @@ function localToday(now = new Date()) {
 
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
-  reports, weather, wxSource = "nws", history,
+  reports, weather, wxSource = "nws", history, projections = false,
 }) {
   const [adding, setAdding] = useState(false);
+  /* Which total the headline shows (projections only): it rests on the
+     forecast and a tap cycles forecast → projected → total. */
+  const [sel, setSel] = useState("forecast");
   const [removing, setRemoving] = useState(false);
   const [naming, setNaming] = useState(false);
   const [draft, setDraft] = useState("");
@@ -293,7 +297,25 @@ export default function Detail({
               {r.elevation?.mid != null && <> · mid {elevTxt(r.elevation.mid, metric)}</>}
             </p>
           </div>
-          <span className="sheet-total">{snowWithUnit(r.total, metric)}</span>
+          {projections && r.projected != null ? (
+            /* Brian, 2026-11-03: the hero number is the one we stand behind
+               (coral forecast); projected and total are a tap away. The
+               intro roll and odometer come next — this is the tap only. */
+            <button
+              className={`sheet-total sheet-total-tap is-${sel}`}
+              onClick={() => setSel((v) => (v === "forecast" ? "projected" : v === "projected" ? "total" : "forecast"))}
+              aria-label={`Showing ${sel} snowfall. Tap to switch between forecast, projected and total.`}
+            >
+              <span className="st-n">
+                {sel === "forecast" && snowWithUnit(r.total, metric)}
+                {sel === "projected" && `${Math.round(metric ? r.projected : cmToIn(r.projected))}${snowUnit(metric)}`}
+                {sel === "total" && snowWithUnit(r.total + r.projected, metric)}
+              </span>
+              <span className="st-l">{sel}</span>
+            </button>
+          ) : (
+            <span className="sheet-total">{snowWithUnit(r.total, metric)}</span>
+          )}
           <button
             className={`sheet-star${fav ? " on" : ""}`}
             onClick={onFav}
@@ -342,6 +364,11 @@ export default function Detail({
             </p>
           )}
 
+          {projections ? (
+            <div className="rc-wrap">
+              <RangeChart days={r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers} />
+            </div>
+          ) : (
           <div className="sd-list">
             {/* Same labels, same 9pt, same order as the results table's head —
                 Brian: "The labels follow the design of the table view of
@@ -372,6 +399,7 @@ export default function Detail({
               </div>
             ))}
           </div>
+          )}
 
           {/* Only in the tall sheet, like the reports below it — the resting
               height is a measured design and the extra room is what these

@@ -1440,3 +1440,31 @@ body { background: #F2F2F2; }
 .td-cal.booked { color: var(--mark-red); }
 .td-cal svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 .td-cal svg path { fill: currentColor; }
+
+/* ------------------------------------------------------------------
+ * Projections (behind the switch; claude/range-chart-spec.md).
+ * ------------------------------------------------------------------ */
+.rc-wrap { margin-top: calc(14 * var(--u)); }
+.rc { display: block; font-family: inherit; }
+.sheet-total-tap {
+  all: unset; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center;
+  font-size: calc(30 * var(--u)); font-weight: 700; letter-spacing: -.03em;
+  margin-top: calc(2.1 * var(--u));
+  /* The visible number is 30pt; the tap target reaches 44 with the label. */
+  min-height: 44px; min-width: 44px;
+}
+.sheet-total-tap .st-n { line-height: calc(28 * var(--u)); }
+.sheet-total-tap .st-l {
+  font-size: calc(11 * var(--u)); font-weight: 400; letter-spacing: 0; color: #8A8A8A;
+  line-height: calc(12.5 * var(--u)); margin-top: calc(6 * var(--u));
+}
+.sheet-total-tap.is-forecast .st-n { color: var(--red); }
+.sheet-total-tap.is-projected .st-n { color: #9B59D0; }
+.sheet-total-tap.is-total .st-n {
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(90deg, #EF4A38 0%, #9B59D0 50%, #EF4A38 100%);
+  background-size: 3em 100%; background-repeat: repeat-x;
+  animation: st-drift 1.5s linear infinite;
+}
+@keyframes st-drift { from { background-position-x: 0; } to { background-position-x: 3em; } }
+@media (prefers-reduced-motion: reduce) { .sheet-total-tap.is-total .st-n { animation: none; } }

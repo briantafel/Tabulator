@@ -46,28 +46,40 @@ export function copyVoice() {
  * Unlike ?copy= above, these are visible in Settings rather than URL-only.
  */
 
-export const FLAG_DEFAULTS = Object.freeze({ projections: false });
+/* Each switch has three site-wide states (Brian, 2026-11-03):
+ *   "off"      nobody sees it, whatever their phone says — the emergency stop.
+ *   "preview"  off by default; a phone can switch it on in Settings.
+ *   "on"       on by default; a phone can switch it off in Settings.
+ * Legacy booleans are read as true → "on", false → "off". */
+export const MODES = Object.freeze(["off", "preview", "on"]);
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off" });
 
-/** Only known keys, only booleans. Anything else falls back to the default,
- *  so a typo in the JSON can never switch something on by accident. */
+/** Only known keys and known modes. Anything else is "off", so a typo in the
+ *  JSON can never switch something on by accident. */
 export function parseFlags(raw) {
   const out = { ...FLAG_DEFAULTS };
   if (!raw || typeof raw !== "object") return out;
   for (const k of Object.keys(FLAG_DEFAULTS)) {
-    if (typeof raw[k] === "boolean") out[k] = raw[k];
+    const v = raw[k];
+    if (v === true) out[k] = "on";
+    else if (v === false) out[k] = "off";
+    else if (MODES.includes(v)) out[k] = v;
   }
   return out;
 }
 
-/** The value in force on this device: its own override if it has one,
- *  otherwise the site's. */
-export function effectiveFlag(siteValue, override) {
-  return typeof override === "boolean" ? override : !!siteValue;
+/** What a phone is allowed to choose under a site mode. */
+export const canChoose = (mode) => mode === "preview" || mode === "on";
+
+/** The value in force on this device. "off" beats any override. */
+export function effectiveFlag(mode, override) {
+  if (!canChoose(mode)) return false;
+  return typeof override === "boolean" ? override : mode === "on";
 }
 
-/** What to store after a tap in Settings. Picking the site's own value
+/** What to store after a tap in Settings. Picking the site's own default
  *  stores nothing (null), so a later site-wide change still reaches this
  *  device. */
-export function nextOverride(choice, siteValue) {
-  return choice === !!siteValue ? null : choice;
+export function nextOverride(choice, mode) {
+  return choice === (mode === "on") ? null : choice;
 }
