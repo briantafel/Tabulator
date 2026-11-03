@@ -47,8 +47,12 @@ export function score(resort, a, b, history) {
   let cum = 0;
   const out = {
     ...resort,
-    win,
-    cumulative: win.map((d) => (cum += d.snow ?? 0)),
+    /* `win` stays Snow-Forecast's days, so every existing reader — rank,
+       voice, verdict, table, chart — is unchanged by projections. The range
+       chart and the sheet's date line read `winAll`. */
+    win: fc,
+    winAll: win,
+    cumulative: fc.map((d) => (cum += d.snow ?? 0)),
     before: before(history, resort.id, win[0]?.date),
     total: Number(fc.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
     projected: pj.length ? Number(pj.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)) : null,

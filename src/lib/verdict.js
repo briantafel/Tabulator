@@ -204,8 +204,12 @@ export function closingWord({ total, days, hi, lo, wind, rain = false, spring = 
  *  row carrying a window, rather than silently reading "good and calm" off a
  *  row that happens not to have been scored. Wrong prose that looks right is
  *  the worst failure this file has available to it. */
+/* Projected days (lib/projections.js) never speak in the verdict: it reads
+   Snow-Forecast's days only, like the totals and markers. */
+const forecastDays = (win) => (win ?? []).filter((d) => !d.projected);
+
 function extremes(win) {
-  const nums = (k) => win.map((d) => d[k]).filter((x) => typeof x === "number" && Number.isFinite(x));
+  const nums = (k) => forecastDays(win).map((d) => d[k]).filter((x) => typeof x === "number" && Number.isFinite(x));
   const hi = nums("tempMax");
   const lo = nums("tempMin");
   const w = nums("windMax");
@@ -231,7 +235,7 @@ export function tripVerdict(rows, metric) {
      sentence name the same resort by construction rather than by two files
      agreeing to. They did not, once. */
   const best = bestOf(ranked);
-  const days = best.win.length;
+  const days = forecastDays(best.win).length;
   const { hi, lo, wind } = extremes(best.win);
   const spring = inSpring(best);
   const temp = tempClause({ hi, lo, wind, spring });
@@ -270,7 +274,7 @@ export function tripVerdict(rows, metric) {
  */
 export function resortVerdict(r, metric) {
   if (!r?.win?.length) return null;
-  const days = r.win.length;
+  const days = forecastDays(r.win).length;
   const { hi, lo, wind } = extremes(r.win);
   const spring = inSpring(r);
   const temp = tempClause({ hi, lo, wind, spring });

@@ -48,7 +48,7 @@ export default function Detail({
   /* Whether the sheet is actually on screen. Declared up here because the
      body-scroll lock below is an effect and cannot sit after the early
      return that uses the same test. */
-  const shown = !!r && !!r.win?.length;
+  const shown = !!r && !!(r.winAll ?? r.win)?.length;
   useEffect(() => { setAdding(false); setNaming(false); setDraft(""); setMax(false); }, [r]);
 
   /* Brian: "the grabber on the resort sheet is fussy. When trying to use it,
@@ -293,7 +293,7 @@ export default function Detail({
           <div className="sheet-id">
             <h2>{r.name}</h2>
             <p>
-              {r.region} · {shortDate(r.win[0].date)}–{shortDate(r.win[r.win.length - 1].date)}
+              {r.region} · {shortDate((r.winAll ?? r.win)[0].date)}–{shortDate((r.winAll ?? r.win)[(r.winAll ?? r.win).length - 1].date)}
               {r.elevation?.mid != null && <> · mid {elevTxt(r.elevation.mid, metric)}</>}
             </p>
           </div>
@@ -366,7 +366,7 @@ export default function Detail({
 
           {projections ? (
             <div className="rc-wrap">
-              <RangeChart days={r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers} />
+              <RangeChart days={r.winAll ?? r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers} />
             </div>
           ) : (
           <div className="sd-list">
