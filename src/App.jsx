@@ -540,6 +540,7 @@ export default function Tabulator() {
         reports={feed?.reports}
         weather={feed?.weather}
         wxSource={wxSource}
+        history={feed?.history}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

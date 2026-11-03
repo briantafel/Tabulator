@@ -879,7 +879,8 @@ body { background: #F2F2F2; }
    own under the header rule, closed by a second rule; same 12.5 grey as the
    subtitle, values at 600. */
 .sheet-pack {
-  display: flex; flex-wrap: wrap; gap: 0 calc(17.5 * var(--u));
+  /* 17.5 → 12 to make room for "-3 days" (Brian, 2026-11-03). */
+  display: flex; flex-wrap: wrap; gap: 0 calc(12 * var(--u));
   margin: 0; padding: calc(16.4 * var(--u)) 0 calc(15.1 * var(--u));
   border-bottom: 1px solid var(--line);
   font-size: calc(12.5 * var(--u)); line-height: calc(12.5 * var(--u)); color: #8A8A8A;

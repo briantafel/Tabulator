@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import TripWhen from "./TripWhen.jsx";
 import { snowWithUnit, tempTxt, windTxt, elevTxt, cmToIn, snowUnit } from "../lib/units.js";
 import { shortDate, weekdayShort } from "../lib/dates.js";
-import { rainRisk, windSeverity, tempSeverity } from "../lib/scoring.js";
+import { rainRisk, windSeverity, tempSeverity, before } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
 import { resortVoice } from "../lib/voice.js";
 import { copyVoice } from "../lib/flags.js";
@@ -17,9 +17,17 @@ import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./trip
 const STAR =
   "M8.83977 0.693242C9.1378 -0.230842 10.4452 -0.230841 10.7432 0.693242L12.3595 5.7047C12.4929 6.11855 12.8785 6.39871 13.3134 6.39776L18.579 6.38625C19.5499 6.38413 19.954 7.62756 19.1672 8.19655L14.9005 11.2823C14.5481 11.5371 14.4008 11.9904 14.5361 12.4037L16.1742 17.408C16.4763 18.3308 15.4185 19.0993 14.6343 18.5269L10.3811 15.4225C10.0298 15.1661 9.55318 15.1661 9.20195 15.4225L4.94874 18.5269C4.16447 19.0993 3.10675 18.3308 3.40881 17.408L5.04692 12.4037C5.1822 11.9904 5.03491 11.5371 4.68256 11.2823L0.415816 8.19655C-0.370946 7.62756 0.033069 6.38413 1.00402 6.38625L6.26964 6.39776C6.70448 6.39871 7.09009 6.11855 7.22355 5.7047L8.83977 0.693242Z";
 
+/** Today's date in the phone's own time zone, as YYYY-MM-DD — the key format
+ *  history.json uses. toISOString() would give tomorrow's date to anyone west
+ *  of UTC in the evening. */
+function localToday(now = new Date()) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
-  reports, weather, wxSource = "nws",
+  reports, weather, wxSource = "nws", history,
 }) {
   const [adding, setAdding] = useState(false);
   const [removing, setRemoving] = useState(false);
@@ -105,6 +113,12 @@ export default function Detail({
   /* Depths are whole numbers in the design — 5", 15" — not the forecast's
      one decimal place. */
   const depth = (cm) => `${Math.round(metric ? cm : cmToIn(cm))}${snowUnit(metric)}`;
+  /* Snow on the mountain over the three days before TODAY — not before the
+     trip window, which is what the results table's "-3 days" means. The band
+     describes the resort as it is now. Fixed at 3 (Brian, 2026-11-03), and
+     null when any of those days is missing from history: shown as a dash,
+     never a zero that would read as a dry spell. */
+  const recent = r ? before(history, r.id, localToday()) : null;
 
   const wx = wxSource === "sf"
     ? sfDays(r.days)
@@ -304,10 +318,13 @@ export default function Detail({
               ground, in its own band between the header rule and the day
               rows. A value we do not have is left out rather than shown as a
               dash or a zero; with none at all the band is not drawn. */}
-          {(pack.base != null || pack.top != null || pack.last) && (
-            <p className="sheet-pack">
+          {/* Brian, 2026-11-03: "-3 days" joins the band, and unlike the other
+              three it is always shown — a dash when history is missing. "Top
+              depth" became "Top" so the worst case ('Last: 5.5" Nov 28')
+              still fits on one line with it. */}
+          <p className="sheet-pack">
               {pack.base != null && <span>Base: <b>{depth(pack.base)}</b></span>}
-              {pack.top != null && <span>Top depth: <b>{depth(pack.top)}</b></span>}
+              {pack.top != null && <span>Top: <b>{depth(pack.top)}</b></span>}
               {/* Brian, 2026-10-31: the amount goes just before the date,
                   same bold as Base and Top depth — 'Last: 5.5" Oct 29'. */}
               {pack.last && (
@@ -316,8 +333,8 @@ export default function Detail({
                   {shortDate(pack.last)}
                 </b></span>
               )}
-            </p>
-          )}
+              <span>-3 days: <b>{recent != null ? snowWithUnit(recent, metric) : "—"}</b></span>
+          </p>
 
           {rainRisk(r) && (
             <p className="sheet-warn">
