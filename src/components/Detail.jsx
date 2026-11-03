@@ -11,6 +11,7 @@ import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import { snowpack } from "../lib/depths.js";
 import Dot from "./Dot.jsx";
 import RangeChart from "./RangeChart.jsx";
+import RollNumber from "./RollNumber.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 
 /* Brian's exports. Filled paths; the clipPath wrapper Figma emits is dropped
@@ -26,6 +27,10 @@ function localToday(now = new Date()) {
   return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
 }
 
+const INTRO_SEEN = new Set();
+const reducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
   reports, weather, wxSource = "nws", history, projections = false,
@@ -34,6 +39,34 @@ export default function Detail({
   /* Which total the headline shows (projections only): it rests on the
      forecast and a tap cycles forecast → projected → total. */
   const [sel, setSel] = useState("forecast");
+  /* The intro (spec "Headline number"): forecast rolls up from 0 in coral,
+     then projected in purple (held a beat longer), then the gradient total,
+     and it comes to rest on the forecast. Taps wait until it is done. Once
+     per resort per new numbers; never under reduced motion. */
+  const [intro, setIntro] = useState(false);
+  const [rolling, setRolling] = useState(false);
+  const canProject = !!projections && r?.projected != null;
+  const introKey = r ? `${r.id}|${r.total}|${r.projected}` : "";
+  useEffect(() => {
+    setSel("forecast");
+    if (!canProject || INTRO_SEEN.has(introKey) || reducedMotion()) { setIntro(false); return undefined; }
+    setIntro(true);
+    const t = [
+      setTimeout(() => setSel("projected"), 1300),
+      setTimeout(() => setSel("total"), 3800),
+      setTimeout(() => setSel("forecast"), 5600),
+      setTimeout(() => { INTRO_SEEN.add(introKey); setIntro(false); }, 6300),
+    ];
+    return () => t.forEach(clearTimeout);
+  }, [introKey, canProject]);
+  /* While digits are moving the total shows in a solid blend; the drifting
+     gradient takes over once they settle (clip-to-text gradients over moving
+     strips are unreliable in Safari). */
+  useEffect(() => {
+    setRolling(true);
+    const t = setTimeout(() => setRolling(false), 1000);
+    return () => clearTimeout(t);
+  }, [sel]);
   const [removing, setRemoving] = useState(false);
   const [naming, setNaming] = useState(false);
   const [draft, setDraft] = useState("");
@@ -297,19 +330,28 @@ export default function Detail({
               {r.elevation?.mid != null && <> · mid {elevTxt(r.elevation.mid, metric)}</>}
             </p>
           </div>
-          {projections && r.projected != null ? (
+          {canProject ? (
             /* Brian, 2026-11-03: the hero number is the one we stand behind
-               (coral forecast); projected and total are a tap away. The
-               intro roll and odometer come next — this is the tap only. */
+               (coral forecast); projected and total are a tap away. */
             <button
-              className={`sheet-total sheet-total-tap is-${sel}`}
-              onClick={() => setSel((v) => (v === "forecast" ? "projected" : v === "projected" ? "total" : "forecast"))}
+              className={`sheet-total sheet-total-tap is-${sel}${rolling ? " is-rolling" : ""}`}
+              onClick={() => {
+                if (intro) return;
+                setSel((v) => (v === "forecast" ? "projected" : v === "projected" ? "total" : "forecast"));
+              }}
               aria-label={`Showing ${sel} snowfall. Tap to switch between forecast, projected and total.`}
             >
               <span className="st-n">
-                {sel === "forecast" && snowWithUnit(r.total, metric)}
-                {sel === "projected" && `${Math.round(metric ? r.projected : cmToIn(r.projected))}${snowUnit(metric)}`}
-                {sel === "total" && snowWithUnit(r.total + r.projected, metric)}
+                {/* Keyed so the intro mounts it fresh, rolling up from 0;
+                    opening a sheet without the intro shows the value still. */}
+                <RollNumber key={`${r.id}${intro ? "-intro" : ""}`} fromZero={intro} text={
+                  sel === "forecast" ? snowWithUnit(r.total, metric)
+                    : sel === "projected" ? `${Math.round(metric ? r.projected : cmToIn(r.projected))}${snowUnit(metric)}`
+                      : snowWithUnit(r.total + r.projected, metric)
+                } />
+                {sel === "total" && !rolling && (
+                  <span className="st-grad" aria-hidden="true">{snowWithUnit(r.total + r.projected, metric)}</span>
+                )}
               </span>
               <span className="st-l">{sel}</span>
             </button>
