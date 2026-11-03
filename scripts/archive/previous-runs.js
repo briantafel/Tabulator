@@ -19,8 +19,11 @@ export const URL_BASE = "https://previous-runs-api.open-meteo.com/v1/forecast";
    and the archive's `model` column keep the canonical name either way. */
 export const MODELS = ["ecmwf_ifs025", "gfs_seamless", "gem_seamless"];
 export const MODEL_IDS = { gem_seamless: ["gem_seamless", "cmc_gem_seamless"] };
-/** A 400 that complains about the model name, not about anything else. */
-export const unknownModel = (status, text) => status === 400 && /model/i.test(text ?? "");
+/** A 400 that complains about the model name, not about anything else.
+ *  Open-Meteo words this as "Cannot initialize MultiDomains from invalid
+ *  String value <name>" — it never says "model" — so match both. */
+export const unknownModel = (status, text) =>
+  status === 400 && /model|MultiDomains|invalid String value/i.test(text ?? "");
 export const VARS = ["snowfall", "precipitation", "temperature_2m"];
 export const LEADS = [0, 1, 2, 3, 4, 5, 6, 7];
 export const HOURLY = VARS.flatMap((v) => LEADS.map((l) => (l ? `${v}_previous_day${l}` : v)));

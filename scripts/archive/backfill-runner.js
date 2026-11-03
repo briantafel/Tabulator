@@ -32,13 +32,14 @@
  * ------------------------------------------------------------------ */
 
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { coordsOf, fetchText, rowSink, saveRaw, sleep } from "./common.js";
 import { dataToRows, pickStations } from "./snotel.js";
 import { historyToRows } from "./onthesnow.js";
 import * as om from "./previous-runs.js";
+import { groupOf, makeBreakers } from "./breakers.js";
 
 const root = new URL("../..", import.meta.url).pathname;
 const work = process.argv[2];
@@ -185,6 +186,11 @@ async function runPiece(p) {
     if (!om.unknownModel(res.status, res.text)) break;
     log(`  · ${p.key}: Open-Meteo does not know the model name "${id}"`);
   }
+  if (om.unknownModel(res.status, res.text)) {
+    const err = new Error(`Open-Meteo knows none of the names ${ids.map((i) => `"${i}"`).join(", ")}: ${res.text.slice(0, 200)}`);
+    err.unknownModel = true;
+    throw err;
+  }
   if (res.status !== 200) {
     const err = new Error(`HTTP ${res.status}: ${res.text.slice(0, 200)}`);
     if (/limit exceeded/i.test(res.text)) err.rateLimited = true;
@@ -196,10 +202,16 @@ async function runPiece(p) {
 }
 
 // ---- the run ------------------------------------------------------------------
-let spent = 0, omStop = null, ok = 0, rowsOut = 0, inARow = 0;
+// Each source has its own breaker (scripts/archive/breakers.js): a source
+// that keeps failing is skipped for the rest of the run, and the others go on.
+let spent = 0, omStop = null, ok = 0, rowsOut = 0;
+const breakers = makeBreakers();
 const failed = [];
+const skipped = new Map(); // group → pieces not tried this run
 for (const p of pending) {
   if (Date.now() - started > TIME_LIMIT_MS) { log("time limit for this run reached — the rest continues next run"); break; }
+  const g = groupOf(p);
+  if (breakers.isOpen(g)) { skipped.set(g, (skipped.get(g) ?? 0) + 1); continue; }
   if (p.kind === "om") {
     if (omStop) continue;
     if (spent + p.weight > OM_DAILY_BUDGET) { omStop = `today's budget of ${OM_DAILY_BUDGET} calls is spent`; continue; }
@@ -207,25 +219,46 @@ for (const p of pending) {
   }
   try {
     const n = await runPiece(p);
-    ok++; rowsOut += n; inARow = 0;
+    ok++; rowsOut += n;
+    breakers.success(g);
     log(`  ✓ ${p.key}: ${n} rows`);
   } catch (e) {
     const rateLimited = e.rateLimited || /HTTP 429/.test(e.message);
     if (p.kind === "om" && rateLimited) { omStop = "Open-Meteo answered with a rate limit"; log(`  · ${p.key}: rate limited — Open-Meteo paused until the next run`); continue; }
     failed.push(`${p.key}: ${e.message}`);
     log(`  ✗ ${p.key} — ${e.message}`);
-    if (++inARow >= 5) { log("5 failures in a row — stopping this run"); break; }
+    if (e.unknownModel) {
+      breakers.trip(g, `Open-Meteo does not know this model (${e.message.slice(0, 120)})`);
+      log(`  ⏸ ${g}: switched off for this run — the model name is wrong; other sources carry on`);
+    } else if (breakers.failure(g, e.message)) {
+      log(`  ⏸ ${g}: switched off for this run after repeated failures; other sources carry on`);
+    }
   }
   if (p.kind === "om") await sleep(OM_SPACING_MS);
 }
 
 const nowDone = done.size + ok;
-log(`\nthis run: ${ok} pieces, ${rowsOut} rows, ~${Math.round(spent)} Open-Meteo calls${omStop ? ` (Open-Meteo stopped: ${omStop})` : ""}`);
-log(nowDone >= pieces.length
+const lines = [];
+lines.push(`this run: ${ok} pieces, ${rowsOut} rows, ~${Math.round(spent)} Open-Meteo calls${omStop ? ` (Open-Meteo stopped: ${omStop})` : ""}`);
+lines.push(nowDone >= pieces.length
   ? `BACKFILL COMPLETE — all ${pieces.length} pieces are in the bucket.`
   : `backfill: ${nowDone}/${pieces.length} pieces done; the rest continue on the next scheduled run.`);
-if (failed.length) {
-  log(`\n${failed.length} piece(s) failed and will be retried next run:`);
-  failed.forEach((f) => log(`  - ${f}`));
-  process.exit(1);
+const off = breakers.opened();
+if (off.length) {
+  lines.push("", "Sources switched off for this run (retried next run):");
+  for (const [g, why] of off) lines.push(`  - ${g}: ${why}; ${skipped.get(g) ?? 0} piece(s) not tried`);
 }
+if (failed.length) {
+  lines.push("", `${failed.length} piece(s) failed and will be retried next run:`);
+  failed.forEach((f) => lines.push(`  - ${f}`));
+}
+log("\n" + lines.join("\n"));
+
+// The same report where it is easy to read: the run's summary page, and a
+// file the "open an issue" step quotes, so the reason shows without the log.
+const report = ["```", ...lines, "```"].join("\n") + "\n";
+mkdirSync(work, { recursive: true });
+writeFileSync(join(work, "report.md"), report);
+if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Backfill\n\n${report}`);
+
+if (failed.length) process.exit(1);

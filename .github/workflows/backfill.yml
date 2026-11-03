@@ -70,12 +70,19 @@ jobs:
               "actions/runs",
               context.runId,
             ].join("/");
+            const fs = require("fs");
+            const report = fs.existsSync("work/report.md")
+              ? fs.readFileSync("work/report.md", "utf8")
+              : "(no report — the run stopped before the backfill finished; see the step log)";
             const body = [
               "Run: " + runUrl,
               "",
               "Some backfill pieces failed. Everything that succeeded is in the",
               "bucket and marked done; the failed pieces are retried on the next",
-              "run. The step log lists which pieces and why.",
+              "run. A source that keeps failing is skipped for the rest of a run",
+              "without stopping the others.",
+              "",
+              report,
             ].join("\n");
             const { data: existing } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
