@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { tempSeverity, windSeverity } from "../lib/scoring.js";
 import { cmToIn, snowTxt, snowUnit, tempTxt, windTxt } from "../lib/units.js";
 import { weekdayShort } from "../lib/dates.js";
@@ -43,7 +44,7 @@ function Marker({ kind, x, y }) {
   return null;
 }
 
-export default function RangeChart({ days, metric, sel = "forecast", projMembers = null }) {
+export default function RangeChart({ days, metric, sel = "forecast", projMembers = null, onSelect = null }) {
   const n = days.length;
   if (!n) return null;
   const hasProj = days.some((d) => d.projected);
@@ -80,15 +81,17 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
   // Panel behind the days the headline adds up (Brian's option A).
   const idx = days.map((d, i) => ({ d, i }));
   const panelCols = !hasProj || sel === "total" ? [] : idx.filter(({ d }) => (sel === "projected" ? d.projected : !d.projected));
-  const panel = panelCols.length
+  const target = panelCols.length
     ? { x0: pitch * panelCols[0].i + 1, x1: pitch * (panelCols[panelCols.length - 1].i + 1) - 1 }
     : null;
+  // Slides between positions and fades in/out (Brian, 2026-11-03).
+  const panel = usePanelMotion(target);
   const PANEL_TOP = 42.5, PANEL_BOT = 277.5;
 
   const line = (y0, key, stroke) => (
     <g key={key}>
       <line x1="0" x2={W} y1={y0} y2={y0} stroke={stroke} />
-      {panel && <line x1={panel.x0} x2={panel.x1} y1={y0} y2={y0} stroke="#FFFFFF" />}
+      {panel && <line x1={panel.x0} x2={panel.x1} y1={y0} y2={y0} stroke="#FFFFFF" strokeOpacity={panel.o} />}
     </g>
   );
 
@@ -113,7 +116,7 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
         <text x={lgHasRange ? 245 : 17} y="11">{sel === "projected" ? "projection" : "forecast"}</text>
       </g>
 
-      {panel && <rect x={panel.x0} y={PANEL_TOP} width={panel.x1 - panel.x0} height={PANEL_BOT - PANEL_TOP} rx="6" fill={PANEL} />}
+      {panel && <rect x={panel.x0} y={PANEL_TOP} width={panel.x1 - panel.x0} height={PANEL_BOT - PANEL_TOP} rx="6" fill={PANEL} fillOpacity={panel.o} />}
 
       {guides.map((g) => (
         <g key={g}>
@@ -151,6 +154,55 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
         );
       })}
       <text x="0" y="288" fontSize="10" fill="#AAAAAA">{`↑ temp ${metric ? "°C" : "°F"}  ·  ↑ wind ${metric ? "km/h" : "mph"}`}</text>
+      {/* Tap areas (Brian, 2026-11-03): the forecast days and the projected
+          days are buttons, like the headline number. Tapping one selects it;
+          tapping the selected one again shows the total. Drawn last, clear. */}
+      {onSelect && hasProj && ["forecast", "projected"].map((which) => {
+        const cols = idx.filter(({ d }) => (which === "projected" ? d.projected : !d.projected));
+        if (!cols.length) return null;
+        const x0 = pitch * cols[0].i, x1 = pitch * (cols[cols.length - 1].i + 1);
+        return (
+          <rect key={which} className="rc-hit" x={x0} y={PANEL_TOP} width={x1 - x0} height={PANEL_BOT - PANEL_TOP}
+            fill="transparent" role="button" tabIndex={0}
+            aria-label={sel === which ? `Show the total` : `Show the ${which} total`}
+            onClick={() => onSelect(which)}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(which); } }} />
+        );
+      })}
     </svg>
   );
+}
+
+/* The selection panel's motion: slides to its new columns over the same
+   0.5s as the number roll; fades in where it appears and out where it goes.
+   Tweened in JS because SVG x/width transitions are not reliable on iOS. */
+const DUR = 500;
+const ease = (t) => 1 - (1 - t) ** 3;
+function usePanelMotion(target) {
+  const [cur, setCur] = useState(() => (target ? { ...target, o: 1 } : null));
+  const from = useRef(cur);
+  const key = target ? `${target.x0}|${target.x1}` : "none";
+  useEffect(() => {
+    const start = from.current;
+    // Appearing: start in place, transparent. Leaving: stay in place, fade.
+    const a = start ?? (target ? { ...target, o: 0 } : null);
+    const b = target ? { ...target, o: 1 } : a ? { ...a, o: 0 } : null;
+    if (!a || !b) return undefined;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      from.current = target ? b : null; setCur(from.current); return undefined;
+    }
+    const t0 = performance.now();
+    let id;
+    const step = (now) => {
+      const k = ease(Math.min(1, (now - t0) / DUR));
+      const v = { x0: a.x0 + (b.x0 - a.x0) * k, x1: a.x1 + (b.x1 - a.x1) * k, o: a.o + (b.o - a.o) * k };
+      from.current = v;
+      setCur(v);
+      if (k < 1) id = requestAnimationFrame(step);
+      else if (!target) { from.current = null; setCur(null); }
+    };
+    id = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(id);
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return cur;
 }

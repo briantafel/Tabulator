@@ -408,7 +408,8 @@ export default function Detail({
 
           {projections ? (
             <div className="rc-wrap">
-              <RangeChart days={r.winAll ?? r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers} />
+              <RangeChart days={r.winAll ?? r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers}
+                onSelect={canProject ? (which) => { if (!intro) setSel((v) => (v === which ? "total" : which)); } : null} />
             </div>
           ) : (
           <div className="sd-list">
