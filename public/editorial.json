@@ -1,35 +1,59 @@
 {
- "generatedAt": "2026-11-03T14:17:36.159Z",
- "forecastGeneratedAt": "2026-11-03T14:11:00.010Z",
+ "generatedAt": "2026-11-04T01:25:22.432Z",
+ "forecastGeneratedAt": "2026-11-04T01:18:57.555Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-03",
+  "from": "2026-11-04",
   "to": "2026-11-08",
-  "days": 6,
+  "days": 5,
   "toLabel": "Sunday Nov 8"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads the region with 14\" over the window, with its biggest day Saturday at 6\". Expect rain mixing in through much of the period, with periods of rain Friday and Saturday, so the snow line will matter. Cypress Mountain sees 3\" total, mostly Thursday and Friday."
+   "text": "Whistler leads with 20\" over the window, peaking at 11\" Saturday. Expect rain at the base most of the week, with the snow mostly up high. Environment Canada calls for periods of rain through Sunday. Cypress Mountain adds 4\", with 2\" Saturday."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Mt. Baker leads with 11\", peaking at 8\" Saturday. Expect rain and snow mixing through the window, with snow levels high, mostly 5000 to 8000 feet. Stevens Pass adds 6\" and Crystal Mountain 5\". Wind is a concern on Friday."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says an atmospheric river may begin around Monday Nov 9, bringing a long period of Pacific Northwest precipitation. Its confidence is lower on the timing of later systems.",
+  "sources": [
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-03T22:28:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-03T20:00:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-03T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-03T14:11:00.010Z"
+   "issuedAt": "2026-11-04T01:18:57.555Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-03T14:17:35.846Z"
+   "issuedAt": "2026-11-04T01:25:22.248Z"
   }
  ],
  "api": {
-  "day": "2026-11-03",
-  "calls": 4
+  "day": "2026-11-04",
+  "calls": 3
  }
 }
