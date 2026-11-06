@@ -1,35 +1,40 @@
 {
- "generatedAt": "2026-11-05T14:44:08.624Z",
- "forecastGeneratedAt": "2026-11-05T14:37:30.608Z",
+ "generatedAt": "2026-11-06T01:38:32.388Z",
+ "forecastGeneratedAt": "2026-11-06T01:31:51.222Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-05",
+  "from": "2026-11-06",
   "to": "2026-11-10",
-  "days": 6,
+  "days": 5,
   "toLabel": "Tuesday Nov 10"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is the top resort here, with 13\" expected this week. The biggest day is Saturday at 6\". Environment Canada expects rain at times through Friday and Saturday, with strong south winds gusting to 50 km/h Friday, so expect wet, heavy snow and a snow line that climbs high."
+   "text": "Whistler is the top resort at 26\" over the window, with its big day Saturday at 17\". Environment Canada expects rain at times, with wind gusting to 50 km/h Friday, so expect a wet, windy start before the snow arrives."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Mt. Baker leads at 8\" with 5\" on Saturday. The NWS forecasts rain and snow through the weekend, with snow levels dropping Saturday night and a chance of snow Monday. Crystal Mountain and Stevens Pass each see 4\" or less."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-05T14:37:30.608Z"
+   "issuedAt": "2026-11-06T01:31:51.222Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-05T14:44:08.380Z"
+   "issuedAt": "2026-11-06T01:38:32.127Z"
   }
  ],
  "api": {
-  "day": "2026-11-05",
-  "calls": 4
+  "day": "2026-11-06",
+  "calls": 3
  }
 }
