@@ -1,40 +1,49 @@
 {
- "generatedAt": "2026-11-06T01:38:32.388Z",
- "forecastGeneratedAt": "2026-11-06T01:31:51.222Z",
+ "generatedAt": "2026-11-06T14:21:41.809Z",
+ "forecastGeneratedAt": "2026-11-06T14:15:15.505Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-06",
-  "to": "2026-11-10",
-  "days": 5,
-  "toLabel": "Tuesday Nov 10"
+  "to": "2026-11-11",
+  "days": 6,
+  "toLabel": "Wednesday Nov 11"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is the top resort at 26\" over the window, with its big day Saturday at 17\". Environment Canada expects rain at times, with wind gusting to 50 km/h Friday, so expect a wet, windy start before the snow arrives."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Mt. Baker leads at 8\" with 5\" on Saturday. The NWS forecasts rain and snow through the weekend, with snow levels dropping Saturday night and a chance of snow Monday. Crystal Mountain and Stevens Pass each see 4\" or less."
+   "text": "Whistler, British Columbia, has 28\" over the window, with the big day on Saturday at 16\". Environment Canada calls for rain on Friday and Saturday, with strong south wind gusting to 50 km/h. Sunday is showers, and Monday brings a mix of sun and cloud before rain returns Tuesday."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says the Pacific Northwest and West Coast will see repeated rounds of rain and mountain snow at higher elevations, with a possible moisture surge around Friday Nov 13. Confidence is low, as the timing and reach of the trough are still uncertain.",
+  "sources": [
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-06T07:37:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-05T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-06T01:31:51.222Z"
+   "issuedAt": "2026-11-06T14:15:15.505Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-06T01:38:32.127Z"
+   "issuedAt": "2026-11-06T14:21:41.500Z"
   }
  ],
  "api": {
   "day": "2026-11-06",
-  "calls": 3
+  "calls": 5
  }
 }
