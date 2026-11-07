@@ -502,13 +502,13 @@
    "big-sky": 0,
    "taos": 0,
    "wolf-creek": 0,
-   "revelstoke": 2,
-   "whistler": 9,
-   "lake-louise": 1,
-   "kicking-horse": 3,
+   "revelstoke": 0,
+   "whistler": 0,
+   "lake-louise": 2,
+   "kicking-horse": 1,
    "fernie": 0,
    "red-mountain": 0,
-   "whitewater": 1,
+   "whitewater": 0,
    "panorama": 0,
    "kimberley": 0,
    "big-white": 0,
@@ -516,7 +516,7 @@
    "sun-peaks": 0,
    "sunshine": 0,
    "norquay": 0,
-   "marmot": 2,
+   "marmot": 3,
    "cypress": 0,
    "whiteface": 0,
    "stowe": 0,
@@ -528,5 +528,5 @@
    "blue-mountain": 0
   }
  },
- "updatedAt": "2026-11-07T00:53:45.157Z"
+ "updatedAt": "2026-11-07T12:58:03.327Z"
 }

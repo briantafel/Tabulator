@@ -1,8 +1,9 @@
 {
- "generatedAt": "2026-11-07T01:00:11.061Z",
- "forecastGeneratedAt": "2026-11-07T00:53:45.157Z",
+ "generatedAt": "2026-11-07T13:04:45.479Z",
+ "forecastGeneratedAt": "2026-11-07T12:58:03.327Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-07",
   "to": "2026-11-11",
@@ -13,27 +14,36 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 24\", 15\" of it Saturday."
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Jay Peak is forecast for about 6\". Stowe about 4\" and Tremblant about 2\". The National Weather Service has rain mixed in at Stowe Monday."
+   "text": "Whistler is the top resort here, with 26\" over the next five days and its big day on Saturday, 14\". Expect rain at lower elevations and strong southerly wind gusting to 60 km/h on Saturday night and Sunday, so ski the upper mountain and watch for lifts running on hold. Cypress Mountain gets about 1\" on Monday."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says an active Pacific storm track will keep bringing mountain snow to the West, with another moisture surge possible around Friday Nov 13 into the weekend. It has low confidence in exact timing and amounts.",
+  "sources": [
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-07T07:31:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-06T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-07T00:53:45.157Z"
+   "issuedAt": "2026-11-07T12:58:03.327Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-07T01:00:10.880Z"
+   "issuedAt": "2026-11-07T13:04:45.160Z"
   }
  ],
  "api": {
   "day": "2026-11-07",
-  "calls": 3
+  "calls": 6
  }
 }
