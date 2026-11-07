@@ -1,49 +1,39 @@
 {
- "generatedAt": "2026-11-06T14:21:41.809Z",
- "forecastGeneratedAt": "2026-11-06T14:15:15.505Z",
+ "generatedAt": "2026-11-07T01:00:11.061Z",
+ "forecastGeneratedAt": "2026-11-07T00:53:45.157Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
-  "from": "2026-11-06",
+  "from": "2026-11-07",
   "to": "2026-11-11",
-  "days": 6,
+  "days": 5,
   "toLabel": "Wednesday Nov 11"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler, British Columbia, has 28\" over the window, with the big day on Saturday at 16\". Environment Canada calls for rain on Friday and Saturday, with strong south wind gusting to 50 km/h. Sunday is showers, and Monday brings a mix of sun and cloud before rain returns Tuesday."
+   "text": "Whistler is forecast for about 24\", 15\" of it Saturday."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Jay Peak is forecast for about 6\". Stowe about 4\" and Tremblant about 2\". The National Weather Service has rain mixed in at Stowe Monday."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says the Pacific Northwest and West Coast will see repeated rounds of rain and mountain snow at higher elevations, with a possible moisture surge around Friday Nov 13. Confidence is low, as the timing and reach of the trough are still uncertain.",
-  "sources": [
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-06T07:37:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-05T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-06T14:15:15.505Z"
+   "issuedAt": "2026-11-07T00:53:45.157Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-06T14:21:41.500Z"
+   "issuedAt": "2026-11-07T01:00:10.880Z"
   }
  ],
  "api": {
-  "day": "2026-11-06",
-  "calls": 5
+  "day": "2026-11-07",
+  "calls": 3
  }
 }
