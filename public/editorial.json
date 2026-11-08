@@ -1,38 +1,38 @@
 {
- "generatedAt": "2026-11-08T00:39:12.038Z",
- "forecastGeneratedAt": "2026-11-08T00:32:47.877Z",
+ "generatedAt": "2026-11-08T13:28:50.928Z",
+ "forecastGeneratedAt": "2026-11-08T13:22:22.067Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-08",
-  "to": "2026-11-12",
-  "days": 5,
-  "toLabel": "Thursday Nov 12"
+  "to": "2026-11-13",
+  "days": 6,
+  "toLabel": "Friday Nov 13"
  },
  "regions": [
   {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Killington leads with 7\" on Thursday, the only day of its forecast with a measured total. Whiteface follows at 5\" and Stowe at 4\". Forecasters expect cold, showery conditions through midweek, with gusty west winds Monday night, up to 46 mph at Whiteface."
-  },
-  {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads with 7\" total, peaking at 3\" Tuesday. Cypress Mountain has 2\" total, mostly Sunday and Monday. Expect rain more often than snow here. Sunday brings strong southwest winds, gusting to 70 km/h at Whistler and 90 km/h near the Strait of Georgia at Cypress."
+   "text": "Whistler leads with 28\" over the window, and its biggest day is Friday with 14\". Expect rain for much of the early week, so the good snow comes at the end. Cypress Mountain sees only 1\" on Tuesday."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Killington tops the region at 11\", with 8\" on Friday, and the snow is expected Thursday and Friday. Stowe follows at 9\" with 8\" on Friday. Whiteface is at 8\", and most of the week before Thursday brings a mix of rain and snow showers."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a series of Pacific disturbances and moisture plumes will keep the Pacific Northwest unsettled, with mountain snow at higher elevations, through the week of Friday Nov 13. Its confidence in the timing of individual systems is moderate.",
+  "text": "The Weather Prediction Center says a more organized storm is likely to reach the West Coast around Saturday Nov 14 into Sunday Nov 15, with heavier rain and high mountain snow pushing farther south. Confidence is moderate, and the track may still shift.",
   "sources": [
    {
     "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-07T23:43:00+00:00",
+    "issuedAt": "2026-11-08T12:08:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-07T20:00:00.000Z",
+    "issuedAt": "2026-11-08T07:51:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
@@ -45,15 +45,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-08T00:32:47.877Z"
+   "issuedAt": "2026-11-08T13:22:22.067Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-08T00:39:11.852Z"
+   "issuedAt": "2026-11-08T13:28:50.683Z"
   }
  ],
  "api": {
   "day": "2026-11-08",
-  "calls": 2
+  "calls": 4
  }
 }
