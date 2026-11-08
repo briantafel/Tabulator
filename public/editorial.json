@@ -1,33 +1,43 @@
 {
- "generatedAt": "2026-11-07T13:04:45.479Z",
- "forecastGeneratedAt": "2026-11-07T12:58:03.327Z",
+ "generatedAt": "2026-11-08T00:39:12.038Z",
+ "forecastGeneratedAt": "2026-11-08T00:32:47.877Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-07",
-  "to": "2026-11-11",
+  "from": "2026-11-08",
+  "to": "2026-11-12",
   "days": 5,
-  "toLabel": "Wednesday Nov 11"
+  "toLabel": "Thursday Nov 12"
  },
  "regions": [
   {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Killington leads with 7\" on Thursday, the only day of its forecast with a measured total. Whiteface follows at 5\" and Stowe at 4\". Forecasters expect cold, showery conditions through midweek, with gusty west winds Monday night, up to 46 mph at Whiteface."
+  },
+  {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is the top resort here, with 26\" over the next five days and its big day on Saturday, 14\". Expect rain at lower elevations and strong southerly wind gusting to 60 km/h on Saturday night and Sunday, so ski the upper mountain and watch for lifts running on hold. Cypress Mountain gets about 1\" on Monday."
+   "text": "Whistler leads with 7\" total, peaking at 3\" Tuesday. Cypress Mountain has 2\" total, mostly Sunday and Monday. Expect rain more often than snow here. Sunday brings strong southwest winds, gusting to 70 km/h at Whistler and 90 km/h near the Strait of Georgia at Cypress."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says an active Pacific storm track will keep bringing mountain snow to the West, with another moisture surge possible around Friday Nov 13 into the weekend. It has low confidence in exact timing and amounts.",
+  "text": "The Weather Prediction Center says a series of Pacific disturbances and moisture plumes will keep the Pacific Northwest unsettled, with mountain snow at higher elevations, through the week of Friday Nov 13. Its confidence in the timing of individual systems is moderate.",
   "sources": [
    {
+    "name": "NWS BTV Area Forecast Discussion",
+    "issuedAt": "2026-11-07T23:43:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
+   },
+   {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-07T07:31:00.000Z",
+    "issuedAt": "2026-11-07T20:00:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
     "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-06T20:00:00.000Z",
+    "issuedAt": "2026-11-07T20:00:00.000Z",
     "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
    }
   ]
@@ -35,15 +45,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-07T12:58:03.327Z"
+   "issuedAt": "2026-11-08T00:32:47.877Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-07T13:04:45.160Z"
+   "issuedAt": "2026-11-08T00:39:11.852Z"
   }
  ],
  "api": {
-  "day": "2026-11-07",
-  "calls": 6
+  "day": "2026-11-08",
+  "calls": 2
  }
 }
