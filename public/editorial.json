@@ -1,48 +1,53 @@
 {
- "generatedAt": "2026-11-09T00:57:43.465Z",
- "forecastGeneratedAt": "2026-11-09T00:51:01.190Z",
+ "generatedAt": "2026-11-09T16:21:36.769Z",
+ "forecastGeneratedAt": "2026-11-09T16:15:12.573Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-09",
-  "to": "2026-11-13",
-  "days": 5,
-  "toLabel": "Friday Nov 13"
+  "to": "2026-11-14",
+  "days": 6,
+  "toLabel": "Saturday Nov 14"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads with 34\" over the window, peaking at 17\" on Friday. Expect rain through most of the week, with a Special Weather Statement from Tuesday to Thursday night. Snow arrives mostly Friday."
+   "text": "Whistler is the top resort here, with 45\" over the window. The big day is Friday, with 19\". Rain is the main concern early in the week, and Environment Canada has a special weather statement from Tuesday through Thursday night. Cypress Mountain has 11\" total, mostly on Saturday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain has 10\" through Friday, with 7\" on Friday alone, though most of that falls as rain and snow mixed. Stevens Pass totals 9\", with 6\" Friday. Mt. Baker has 4\". Expect wet, gusty conditions most days."
+   "text": "Crystal Mountain leads with 14\" total, and Friday brings the biggest day at 6\". The NWS expects rain and snow mixing Friday and Friday night, with strong southwest winds at times earlier in the week. Mt. Baker is at 13\", with 7\" possible on Saturday. Stevens Pass has 9\"."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Whiteface totals 7\", peaking at 5\" Friday, and Killington has 6\" with 5\" Friday. Friday brings light snow with northeast wind gusting to 23 mph. Blue Mountain in Ontario has 6\", with 4\" on Thursday."
+   "text": "Jay Peak tops the region at 14\" over the window, with 8\" on Thursday. Whiteface and Stowe are close behind at 11\" and 10\", both with their biggest day on Thursday. Snow showers and wind are the main story early in the week, with cold temperatures in the 20s overnight Tuesday."
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Whitewater is the top resort here at 7\", with 3\" on Saturday. Revelstoke has 6\" total, with 3\" expected Saturday. Snow levels sit high at times, so expect rain at lower elevations on Monday and Tuesday. RED Mountain has 4\" total."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says an organized storm may reach the West Coast around Saturday Nov 14 into Sunday Nov 15, with heavier rain and high mountain snow. Its confidence is moderate, given the uncertainty in the storm's track.",
+  "text": "The Weather Prediction Center expects an atmospheric river to bring more rain and high mountain snow to the West Coast around Sunday Nov 15 into early the following week. Confidence in the exact track and snow levels is moderate.",
   "sources": [
    {
     "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-08T23:05:00+00:00",
+    "issuedAt": "2026-11-09T10:15:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
    },
    {
     "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-08T23:57:00+00:00",
+    "issuedAt": "2026-11-09T11:38:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-08T20:00:00.000Z",
+    "issuedAt": "2026-11-09T07:34:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
@@ -55,15 +60,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-09T00:51:01.190Z"
+   "issuedAt": "2026-11-09T16:15:12.573Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-09T00:57:43.223Z"
+   "issuedAt": "2026-11-09T16:21:36.470Z"
   }
  ],
  "api": {
   "day": "2026-11-09",
-  "calls": 1
+  "calls": 3
  }
 }
