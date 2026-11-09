@@ -1,43 +1,53 @@
 {
- "generatedAt": "2026-11-08T13:28:50.928Z",
- "forecastGeneratedAt": "2026-11-08T13:22:22.067Z",
+ "generatedAt": "2026-11-09T00:57:43.465Z",
+ "forecastGeneratedAt": "2026-11-09T00:51:01.190Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-08",
+  "from": "2026-11-09",
   "to": "2026-11-13",
-  "days": 6,
+  "days": 5,
   "toLabel": "Friday Nov 13"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads with 28\" over the window, and its biggest day is Friday with 14\". Expect rain for much of the early week, so the good snow comes at the end. Cypress Mountain sees only 1\" on Tuesday."
+   "text": "Whistler leads with 34\" over the window, peaking at 17\" on Friday. Expect rain through most of the week, with a Special Weather Statement from Tuesday to Thursday night. Snow arrives mostly Friday."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Crystal Mountain has 10\" through Friday, with 7\" on Friday alone, though most of that falls as rain and snow mixed. Stevens Pass totals 9\", with 6\" Friday. Mt. Baker has 4\". Expect wet, gusty conditions most days."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Killington tops the region at 11\", with 8\" on Friday, and the snow is expected Thursday and Friday. Stowe follows at 9\" with 8\" on Friday. Whiteface is at 8\", and most of the week before Thursday brings a mix of rain and snow showers."
+   "text": "Whiteface totals 7\", peaking at 5\" Friday, and Killington has 6\" with 5\" Friday. Friday brings light snow with northeast wind gusting to 23 mph. Blue Mountain in Ontario has 6\", with 4\" on Thursday."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a more organized storm is likely to reach the West Coast around Saturday Nov 14 into Sunday Nov 15, with heavier rain and high mountain snow pushing farther south. Confidence is moderate, and the track may still shift.",
+  "text": "The Weather Prediction Center says an organized storm may reach the West Coast around Saturday Nov 14 into Sunday Nov 15, with heavier rain and high mountain snow. Its confidence is moderate, given the uncertainty in the storm's track.",
   "sources": [
    {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-08T23:05:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
     "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-08T12:08:00+00:00",
+    "issuedAt": "2026-11-08T23:57:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-08T07:51:00.000Z",
+    "issuedAt": "2026-11-08T20:00:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
     "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-07T20:00:00.000Z",
+    "issuedAt": "2026-11-08T20:00:00.000Z",
     "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
    }
   ]
@@ -45,15 +55,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-08T13:22:22.067Z"
+   "issuedAt": "2026-11-09T00:51:01.190Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-08T13:28:50.683Z"
+   "issuedAt": "2026-11-09T00:57:43.223Z"
   }
  ],
  "api": {
-  "day": "2026-11-08",
-  "calls": 4
+  "day": "2026-11-09",
+  "calls": 1
  }
 }
