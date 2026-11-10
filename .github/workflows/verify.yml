@@ -62,6 +62,7 @@ jobs:
           cat out/log.txt >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save to the bucket
+        if: success()
         run: |
           ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
           DAY=$(date -u +%Y-%m-%d)
@@ -69,10 +70,13 @@ jobs:
           aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           echo "saved to verify/$DAY/ and verify/latest/"
 
+      # Always, so a failed build still hands Claude its diagnostics (sealed).
       - name: Encrypt the report
+        if: always()
         run: |
-          mkdir -p sealed
-          tar czf report.tgz -C out report.md scores.csv station_pairs.csv log.txt
+          mkdir -p sealed out
+          find out -maxdepth 1 -type f ! -name '*.parquet' -printf '%f\n' > files.txt
+          tar czf report.tgz -C out -T files.txt
           KEY=$(openssl rand -hex 32)
           export KEY
           openssl enc -aes-256-cbc -pbkdf2 -salt -pass env:KEY -in report.tgz -out sealed/report.tgz.enc
@@ -81,6 +85,7 @@ jobs:
           rm report.tgz
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: verify-report-sealed
           path: sealed/

@@ -129,7 +129,22 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     """)
     over = con.execute("SELECT count(*) FROM fday WHERE cov_h > day_h + 0.01").fetchone()[0]
     if over:
-        raise SystemExit(f"{over} forecast days are covered more than once — overlapping periods within one issue")
+        # Details (may name paid sources) go to the sealed report; the public log gets counts only.
+        con.execute(f"""COPY (
+          SELECT d.source, d.resort_id, d.tier, d.model, d.member, d.space, d.issue_key, d.local_date, d.cov_h, d.day_h,
+                 (SELECT string_agg(strftime(f.valid_start, '%m-%d %H:%M') || '→' || strftime(f.valid_end, '%m-%d %H:%M')
+                                    || '=' || CAST(f.value AS VARCHAR), '; ' ORDER BY f.valid_start)
+                  FROM f1 f WHERE f.source = d.source AND f.resort_id = d.resort_id AND f.tier = d.tier
+                    AND f.model = d.model AND f.member = d.member AND f.space = d.space AND f.issue_key = d.issue_key
+                    AND f.valid_end > d.day_start AND f.valid_start < d.day_start + INTERVAL 1 DAY) AS periods
+          FROM fday d WHERE d.cov_h > d.day_h + 0.01 ORDER BY d.source, d.resort_id, d.local_date LIMIT 300
+        ) TO '{out / 'diagnostics.csv'}' (HEADER)""")
+        by = con.execute(f"""SELECT CASE WHEN source IN {PAID} THEN 'a paid source' ELSE source END, count(*)
+                             FROM fday WHERE cov_h > day_h + 0.01 GROUP BY 1 ORDER BY 1""").fetchall()
+        msg = f"{over} forecast days are covered more than once (overlapping periods within one issue): " + \
+              ", ".join(f"{s} {n}" for s, n in by) + ". Details in the sealed report's diagnostics.csv."
+        (out / "log.txt").write_text(msg + "\n")
+        raise SystemExit(msg)
     con.execute("DELETE FROM fday WHERE cov_h < day_h - 0.01")  # partial day: not zero, just not scorable
 
     con.execute("""
