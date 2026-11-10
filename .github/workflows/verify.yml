@@ -1,0 +1,87 @@
+name: Verify forecasts
+
+# Builds the verification table: every archived forecast paired with what
+# fell (SNOTEL), plus scores by source, lead day and region.
+# See scripts/verify/build.py and claude/verification-table-plan.md.
+#
+# The repo and its Action logs are PUBLIC; the table includes paid-source
+# rows. So: the table and scores go only to the private bucket (verify/), the
+# log shows public-safe counts only, and the readable report is uploaded as
+# an artifact ENCRYPTED to scripts/verify/report-key.pub.pem (the private
+# key lives only in Claude's workspace).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["scripts/verify/**", ".github/workflows/verify.yml"]
+  schedule:
+    - cron: "40 9 * * *"   # daily, after the morning archive run
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DuckDB
+        run: pip install duckdb==2.0.0
+
+      - name: Test the builder
+        run: python3 scripts/verify/test_build.py
+
+      - name: Download the archive
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/" archive/ --endpoint-url "$ENDPOINT" --only-show-errors
+          echo "archive: $(find archive -name '*.parquet' | wc -l) files, $(du -sh archive | cut -f1)"
+
+      - name: Build the table
+        run: |
+          python3 scripts/verify/build.py archive out
+          cat out/log.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save to the bucket
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          DAY=$(date -u +%Y-%m-%d)
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/$DAY/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
+          echo "saved to verify/$DAY/ and verify/latest/"
+
+      - name: Encrypt the report
+        run: |
+          mkdir -p sealed
+          tar czf report.tgz -C out report.md scores.csv station_pairs.csv log.txt
+          KEY=$(openssl rand -hex 32)
+          export KEY
+          openssl enc -aes-256-cbc -pbkdf2 -salt -pass env:KEY -in report.tgz -out sealed/report.tgz.enc
+          printf '%s' "$KEY" | openssl pkeyutl -encrypt -pubin -inkey scripts/verify/report-key.pub.pem \
+            -pkeyopt rsa_padding_mode:oaep -out sealed/key.enc
+          rm report.tgz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verify-report-sealed
+          path: sealed/
+          retention-days: 7
