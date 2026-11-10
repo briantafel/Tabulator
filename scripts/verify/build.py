@@ -67,6 +67,16 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     con.executemany("INSERT INTO resorts VALUES (?, ?, ?, ?)", resorts)
 
     # ---------------------------------------------------------------- forecasts
+    # Archived Snow-Forecast rows before parser sf-archive-3 / sf-hindcast-2 end
+    # "night" 12 real hours after 18:00, which overlaps (spring) or leaves a gap
+    # (autumn) across DST. Snow-Forecast's night is 18:00 → 06:00 local.
+    con.execute("""
+    CREATE VIEW fsrc AS
+    SELECT r.* REPLACE (
+      CASE WHEN r.source IN ('snow-forecast', 'snow-forecast-hindcast') AND r.period_label = 'night'
+           THEN timezone(z.tz, CAST(CAST(timezone(z.tz, r.valid_start) AS DATE) + 1 AS TIMESTAMP) + INTERVAL 6 HOUR)
+           ELSE r.valid_end END AS valid_end)
+    FROM raw r LEFT JOIN resorts z USING (resort_id)""")
     con.execute(f"""
     CREATE TABLE f0 AS
     SELECT source, kind, resort_id, coalesce(tier, 'mid') AS tier, coalesce(station_id, '') AS station_id,
@@ -76,7 +86,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
                 ELSE strftime(coalesce(issued_at, fetched_at), '%Y-%m-%dT%H:%M:%SZ') END AS issue_key,
            CASE WHEN source = 'open-meteo-previous-runs' THEN NULL ELSE coalesce(issued_at, fetched_at) END AS issue_ts,
            valid_start, valid_end, value, fetched_at
-    FROM raw
+    FROM fsrc
     WHERE kind IN ('forecast', 'hindcast') AND source IN {FORECAST_SOURCES}
       AND variable IN ('snow', 'precip') AND value IS NOT NULL AND resort_id IS NOT NULL
       AND valid_end > valid_start

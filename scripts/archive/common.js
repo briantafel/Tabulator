@@ -103,6 +103,16 @@ export function zonedToUtc(date, hour, tz) {
 
 export const addHours = (iso, h) => new Date(Date.parse(iso) + h * 3600e3).toISOString();
 
+/** End of a period that starts at `hour` local on `date` and runs `hours`
+ *  of WALL-CLOCK time. Snow-Forecast's night is 18:00 → 06:00 local; adding
+ *  12 real hours instead ends it at 07:00 on the spring-forward night
+ *  (overlapping the next morning) and 05:00 on the fall-back night (a gap). */
+export function zonedWallEnd(date, hour, hours, tz) {
+  const end = hour + hours;
+  const day = new Date(Date.parse(`${date}T00:00:00Z`) + Math.floor(end / 24) * 86400e3).toISOString().slice(0, 10);
+  return zonedToUtc(day, end % 24, tz);
+}
+
 /** Resort coordinates: the NWS mid-slope point for US resorts, `latlon` for
  *  the rest. Both are points on the mountain, not the base town. */
 export const coordsOf = (r) => r.nws ?? r.latlon ?? null;

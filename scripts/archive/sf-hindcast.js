@@ -22,9 +22,9 @@
 
 import * as cheerio from "cheerio";
 import { parseNumber, parseSnow } from "../parse.js";
-import { addHours, zonedToUtc } from "./common.js";
+import { zonedToUtc, zonedWallEnd } from "./common.js";
 
-export const PARSER_VERSION = "sf-hindcast-1";
+export const PARSER_VERSION = "sf-hindcast-2"; // 2: night ends 06:00 wall clock across DST
 const WINDOW = { am: [6, 6], pm: [12, 6], night: [18, 12] };
 const IMPERIAL = /°F|mph|\bin\b|\bft\b/;
 
@@ -63,7 +63,7 @@ export function hindcastToRows(rec, { resort, runId }) {
       const date = shift(rec.from, d);
       const w = WINDOW[label];
       const start = w ? zonedToUtc(date, w[0], resort.tz) : null;
-      periods.push({ label, start, end: start ? addHours(start, w[1]) : null });
+      periods.push({ label, start, end: start ? zonedWallEnd(date, w[0], w[1], resort.tz) : null });
     }
   });
 

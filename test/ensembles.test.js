@@ -53,3 +53,13 @@ test("a wrong unit for a new variable still fails loudly", () => {
   assert.throws(() => responseToRows({ hourly, hourly_units: { temperature_700hPa: "°F" } },
     { resort: { id: "alta" }, model: "gfs025", fetchedAt: "x", runId: "r" }), /°F/);
 });
+
+import { zonedWallEnd } from "../scripts/archive/common.js";
+
+test("a night period ends at 06:00 local across both DST changes", () => {
+  // Spring forward 2025-03-09 (Denver): 18:00 MST → 06:00 MDT is 11 real hours.
+  assert.equal(zonedWallEnd("2025-03-08", 18, 12, "America/Denver"), "2025-03-09T12:00:00.000Z");
+  // Fall back 2025-11-02: 18:00 MDT → 06:00 MST is 13 real hours.
+  assert.equal(zonedWallEnd("2025-11-01", 18, 12, "America/Denver"), "2025-11-02T13:00:00.000Z");
+  assert.equal(zonedWallEnd("2025-01-10", 6, 6, "America/Denver"), "2025-01-10T19:00:00.000Z");
+});

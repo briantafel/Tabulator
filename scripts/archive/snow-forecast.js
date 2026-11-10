@@ -13,9 +13,9 @@
 
 import * as cheerio from "cheerio";
 import { daySpans, parseNumber, parseSnow, parseWind, resolveDates } from "../parse.js";
-import { addHours, fetchText, saveRaw, sleep, zonedToUtc } from "./common.js";
+import { fetchText, saveRaw, sleep, zonedToUtc, zonedWallEnd } from "./common.js";
 
-export const PARSER_VERSION = "sf-archive-2";
+export const PARSER_VERSION = "sf-archive-3"; // 3: night ends 06:00 wall clock across DST
 const BASE = "https://www.snow-forecast.com/resorts";
 const TIERS = ["top", "mid", "bot"];
 const N_PERIODS = 18;
@@ -92,7 +92,7 @@ export function pageToRows(html, { resort, slug, tier, fetchedAt, runId }) {
     const w = WINDOW[p.label];
     if (!p.date || !w) { p.start = p.end = null; continue; }
     p.start = zonedToUtc(p.date, w[0], resort.tz);
-    p.end = addHours(p.start, w[1]);
+    p.end = zonedWallEnd(p.date, w[0], w[1], resort.tz);
   }
 
   const base = {

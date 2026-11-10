@@ -69,6 +69,15 @@ def main():
                             elevation_m=2900, station_id="Alta", fetched_at=fetched, valid_start=vs,
                             valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow",
                             value=25.0 if (d == 3 and lab == "pm") else 0.0))
+    # Spring-forward night written the old way (18:00 MST + 12 real hours = 07:00 MDT):
+    # the builder must end it at 06:00 local, not double-cover 06–07 on Mar 9.
+    for d, lab, h, n in ((8, "am", 6, 6), (8, "pm", 12, 6), (8, "night", 18, 12), (9, "am", 6, 6),
+                         (9, "pm", 12, 6), (9, "night", 18, 12)):
+        off = MST if (d == 8) else timedelta(hours=-6)
+        vs = (datetime(2025, 3, d, h, tzinfo=UTC) - off).replace(tzinfo=UTC)
+        rows.append(row(source="snow-forecast-hindcast", kind="hindcast", resort_id="alta", tier="mid",
+                        elevation_m=2900, station_id="Alta", fetched_at=fetched, valid_start=vs,
+                        valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow", value=1.0))
     # Palisades: two slugs, one hindcast period each; max must win (30, not 40).
     for slug, v in (("Squaw-Valley", 30.0), ("Alpine-Meadows", 10.0)):
         for d in range(2, 4):
@@ -125,6 +134,9 @@ def main():
                    "AND resort_id = 'alta' AND local_date = DATE '2025-01-03'") == (25.0, 0, True)
         assert one("SELECT count(*) FROM p WHERE source = 'snow-forecast-hindcast' AND resort_id = 'alta' "
                    "AND local_date = DATE '2025-01-02'")[0] == 0
+        # DST: Mar 9 is fully covered exactly once (23 h day), so it is a scorable day.
+        assert one("SELECT count(*) FROM p WHERE source = 'snow-forecast-hindcast' AND resort_id = 'alta' "
+                   "AND local_date = DATE '2025-03-09'")[0] == 1
         # Palisades: max of the two faces.
         assert one("SELECT fc_amount FROM p WHERE resort_id = 'palisades' AND local_date = DATE '2025-01-03'")[0] == 30
         # Live issue: its only day is partial → no rows at all.
