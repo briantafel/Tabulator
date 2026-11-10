@@ -56,7 +56,8 @@ def main():
         vs = start + timedelta(hours=6 * i)
         wet = vs == datetime(2025, 1, 3, 12, tzinfo=UTC)
         for lead in (0, 1):
-            for var, v in (("precip", 20.0 if wet else 0.0), ("snow", 14.0 if wet else 0.0)):
+            for var, v in (("precip", 20.0 if wet else 0.0), ("snow", 14.0 if wet else 0.0),
+                           ("temp_min", -10.0 if wet else 0.0), ("temp_max", -6.0 if wet else 2.0)):
                 rows.append(row(source="open-meteo-previous-runs", kind="forecast", resort_id="alta", tier="mid",
                                 elevation_m=2900, issued_at=vs - timedelta(days=lead), fetched_at=fetched,
                                 valid_start=vs, valid_end=vs + timedelta(hours=6), period_label=f"previous_day{lead}",
@@ -125,6 +126,12 @@ def main():
         fc, obs = one("SELECT fc_amount, obs FROM p WHERE source_label = 'open-meteo-previous-runs:ecmwf_ifs025' "
                       "AND space = 'liquid' AND issue_key = 'previous_day0' AND local_date = DATE '2025-01-03'")
         assert abs(fc - 20) < 1e-9 and obs == 20, (fc, obs)
+        # Precip-weighted temperature: the storm block's −8 °C, not the day's mean.
+        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid' "
+                   "AND local_date = DATE '2025-01-03'")[0] == -8
+        # Dry day: plain mean of block mid-temperatures (1 °C).
+        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid' "
+                   "AND local_date = DATE '2025-01-05'")[0] == 1
         # A dry day is a real zero, not missing.
         assert one("SELECT obs FROM p WHERE space = 'liquid' AND issue_key = 'previous_day0' "
                    "AND local_date = DATE '2025-01-02'")[0] == 0

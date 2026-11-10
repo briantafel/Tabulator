@@ -169,6 +169,32 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     FROM fday""")
     con.execute("DELETE FROM fc WHERE lead_day < 0")
 
+    # ---------------------------------------------------------------- forecast temperature
+    # Snow-to-liquid ratio depends on the temperature WHILE it precipitates, so
+    # each forecast day gets the 2 m temperature weighted by each 6 h block's
+    # precipitation (plain mean when the day is dry). Open-Meteo sources only.
+    con.execute("""
+    CREATE TABLE ft AS
+    WITH b AS (
+      SELECT source, resort_id, coalesce(tier, 'mid') AS tier, coalesce(model, '') AS model,
+             coalesce(member, -1) AS member,
+             CASE WHEN source = 'open-meteo-previous-runs' THEN period_label
+                  ELSE strftime(coalesce(issued_at, fetched_at), '%Y-%m-%dT%H:%M:%SZ') END AS issue_key,
+             valid_start,
+             avg(CASE WHEN variable IN ('temp_min', 'temp_max') THEN value END) AS t_mid,
+             max(CASE WHEN variable = 'precip' THEN value END) AS p
+      FROM raw
+      WHERE source IN ('open-meteo-previous-runs', 'open-meteo-ensemble')
+        AND variable IN ('temp_min', 'temp_max', 'precip') AND value IS NOT NULL
+      GROUP BY ALL
+    )
+    SELECT b.source, b.resort_id, b.tier, b.model, b.member, b.issue_key,
+           CAST(timezone(r.tz, b.valid_start + INTERVAL 3 HOUR) AS DATE) AS local_date,
+           coalesce(sum(b.p * b.t_mid) / nullif(sum(CASE WHEN b.t_mid IS NOT NULL THEN b.p END), 0),
+                    avg(b.t_mid)) AS fc_temp_c
+    FROM b JOIN resorts r USING (resort_id)
+    GROUP BY ALL""")
+
     # ---------------------------------------------------------------- truth: SNOTEL
     con.execute("""
     CREATE TABLE cand AS
@@ -263,7 +289,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     SELECT f.source, f.kind, f.source IN ({paid_list}) AS paid,
            f.source || CASE WHEN f.model <> '' THEN ':' || f.model ELSE '' END AS source_label,
            f.resort_id, f.region, f.tier, f.model, f.member, f.space, f.issue_key, f.issue_ts,
-           f.lead_day, f.lead_hours, f.local_date, f.fc_amount,
+           f.lead_day, f.lead_hours, f.local_date, f.fc_amount, ft.fc_temp_c,
            p.station_id, p.pair_quality, p.km AS station_km, p.delev AS station_delev_m,
            t.obs_swe_gain_mm, t.obs_depth_gain_cm, t.obs_precip_gain_mm, t.sensor_flag,
            CASE WHEN t.obs_swe_gain_mm >= 5 THEN t.obs_depth_gain_cm * 10 / t.obs_swe_gain_mm END AS obs_slr,
@@ -271,6 +297,8 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
            o.ots_reported_cm, o.ots_next_day,
            CASE WHEN month(f.local_date) >= 7 THEN year(f.local_date) ELSE year(f.local_date) - 1 END AS winter
     FROM fc f
+    LEFT JOIN ft ON ft.source = f.source AND ft.resort_id = f.resort_id AND ft.tier = f.tier
+      AND ft.model = f.model AND ft.member = f.member AND ft.issue_key = f.issue_key AND ft.local_date = f.local_date
     LEFT JOIN station_pairs p ON p.resort_id = f.resort_id AND p.tier = f.tier
     LEFT JOIN truth2 t ON t.resort_id = f.resort_id AND t.tier = f.tier AND t.local_date = f.local_date
     LEFT JOIN ots o ON o.resort_id = f.resort_id AND o.local_date = f.local_date""")

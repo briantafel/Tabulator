@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/verify/**", ".github/workflows/verify.yml"]
+    paths: ["scripts/verify/**", "scripts/model/**", ".github/workflows/verify.yml"]
   schedule:
     - cron: "40 9 * * *"   # daily, after the morning archive run
 
@@ -45,10 +45,12 @@ jobs:
           python-version: "3.12"
 
       - name: Install DuckDB
-        run: pip install duckdb==2.0.0
+        run: pip install duckdb==2.0.0 "numpy>=2,<3"
 
-      - name: Test the builder
-        run: python3 scripts/verify/test_build.py
+      - name: Test the builder and the SLR fit
+        run: |
+          python3 scripts/verify/test_build.py
+          python3 scripts/model/test_slr.py
 
       - name: Download the archive
         run: |
@@ -60,6 +62,10 @@ jobs:
         run: |
           python3 scripts/verify/build.py archive out
           cat out/log.txt >> "$GITHUB_STEP_SUMMARY"
+
+      # Fit on 2024-25, judge on 2025-26. Results go only into the sealed report.
+      - name: Fit and judge SLR v1
+        run: python3 scripts/model/slr.py out/pairs.parquet out
 
       - name: Save to the bucket
         if: success()
