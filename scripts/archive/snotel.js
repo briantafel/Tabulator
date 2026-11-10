@@ -130,7 +130,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
   }
   const stationsById = new Map(picks.map((p) => [p.station.stationTriplet, p.station]));
   const ids = [...stationsById.keys()];
-  const usResorts = resorts.filter((r) => coordsOf(r) && r.region !== "Canada");
+  const usResorts = resorts.filter((r) => coordsOf(r) && !r.country && r.region !== "Canada"); // `country` marks the non-US/Canada set
   const covered = new Set(picks.map((p) => p.resort));
   usResorts.filter((r) => !covered.has(r.id)).forEach((r) => log(`  · snotel: no station within ${RADIUS_KM} km of ${r.id}`));
   if (!ids.length) throw new Error("no SNOTEL stations near any resort");

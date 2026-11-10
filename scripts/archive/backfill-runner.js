@@ -46,6 +46,11 @@ const work = process.argv[2];
 if (!work) { console.error("usage: backfill-runner.js <workDir>"); process.exit(2); }
 
 const WINTERS = [["2024-11-01", "2025-04-30"], ["2025-11-01", "2026-04-30"]];
+/* Chile and Argentina ski May–October. Their Open-Meteo pieces cover those
+   months instead (added 2026-11-10); the key's year is the winter's start
+   year, so om-portillo-ecmwf_ifs025-2024 is the 2024 austral winter. */
+const SOUTH_WINTERS = [["2024-05-01", "2024-10-31"], ["2025-05-01", "2025-10-31"]];
+const wintersFor = (r) => (coordsOf(r)?.[0] < 0 ? SOUTH_WINTERS : WINTERS);
 const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 3000);
 const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
 const TIME_LIMIT_MS = 95 * 60e3;
@@ -126,7 +131,7 @@ const pieces = [
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
   // resorts included) is fetched before the first GEM piece, so a GEM model
   // name Open-Meteo rejects can only ever stop GEM.
-  ...om.MODELS.flatMap((model) => resorts.filter(coordsOf).flatMap((r) => WINTERS.map((w) => ({
+  ...om.MODELS.flatMap((model) => resorts.filter(coordsOf).flatMap((r) => wintersFor(r).map((w) => ({
     key: `om-${r.id}-${model}-${year(w)}`, kind: "om", resort: r, model, winter: w,
     weight: om.callWeight(om.HOURLY.length, (Date.parse(w[1]) - Date.parse(w[0])) / 864e5 + 1),
   })))),

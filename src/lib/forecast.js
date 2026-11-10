@@ -6,7 +6,9 @@ import { parseFlags } from "./flags.js";
  * which is exactly why the original spreadsheet approach could never have been
  * ported to a web app. See docs/SCRAPING.md. */
 
-export const RESORT_META = resortData.resorts;
+/* archiveOnly resorts are collected into the forecast archive but not shown
+   in the app yet (resorts.json, 2026-11-10). */
+export const RESORT_META = resortData.resorts.filter((r) => !r.archiveOnly);
 
 const base = () => (typeof import.meta !== "undefined" && import.meta.env?.BASE_URL) || "/";
 

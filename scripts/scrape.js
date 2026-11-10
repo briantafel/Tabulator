@@ -69,6 +69,8 @@ async function readJson(path, fallback) {
 
 async function main() {
   const cfg = await readJson(`${root}src/data/resorts.json`);
+  // archiveOnly resorts are the archive's business (scripts/archive), not the app's.
+  cfg.resorts = cfg.resorts.filter((r) => !r.archiveOnly);
   const tier = cfg.tier || "mid";
   const rule = cfg.combine?.rule || "max";
   const now = new Date();

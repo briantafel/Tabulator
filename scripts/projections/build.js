@@ -27,7 +27,8 @@ const log = (s) => console.error(s);
 const exists = (p) => access(p).then(() => true, () => false);
 const readJson = async (p, fallback) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return fallback; } };
 
-const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
+const resorts = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8")).resorts
+  .filter((r) => !r.archiveOnly); // projections feed the app; archiveOnly resorts are not in it
 const forecast = await readJson(`${pub}/forecast.json`, null);
 if (!forecast?.resorts?.length) { log("no public/forecast.json — nothing to calibrate against"); process.exit(1); }
 if (forecast.synthetic) { log("forecast.json is sample data — refusing to learn from it"); process.exit(1); }

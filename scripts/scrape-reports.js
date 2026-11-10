@@ -46,7 +46,8 @@ async function page(r) {
   throw new Error(`${r.id}: ${last.message}`);
 }
 
-const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
+const resorts = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8")).resorts
+  .filter((r) => !r.archiveOnly); // app-only output; archiveOnly resorts have no otsPath
 const only = FROM
   ? new Set((await readdir(FROM)).filter((f) => f.endsWith(".html")).map((f) => f.slice(0, -5)))
   : null;

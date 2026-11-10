@@ -13,7 +13,8 @@
       "Thirteen more added 2026-10-29 at Brian's pick — Tahoe (Sugar Bowl, Northstar, Mt. Rose, Sierra-at-Tahoe, Homewood), the Wasatch (Brighton, Solitude, Snowbasin, Powder Mountain) and Colorado (Vail, Breckenridge, Arapahoe Basin, Wolf Creek). Addresses from search results, checked by check-new-resorts.sh on his Mac before the first scrape. Snowbasin's Snow-Forecast slug is Snow-Basin; Wolf Creek's is Wolf-Creek-Ski-Area (Wolf-Creek-Utah is a different hill).",
       "`tz` (every resort) and `latlon` (the four Canadian resorts, which have no `nws` point) were added 2026-10-29 for the forecast archive: tz turns Snow-Forecast's local AM/PM/night periods into UTC, latlon is where the Open-Meteo ensembles are requested. The Canadian points are approximate mid-mountain coordinates from memory, not fetched; Open-Meteo is also given the Snow-Forecast mid elevation, so a few hundred metres of error in position matters little.",
       "`eccc` (the four Canadian resorts, added 2026-10-31) names the Environment and Climate Change Canada city-page forecast nearest the resort — a town, so a valley forecast: Revelstoke bc-65, Whistler bc-86, Banff ab-49 for Lake Louise, Golden bc-34 for Kicking Horse. Site ids read from the API on Brian's Mac. Alerts are looked up at the resort's own `latlon`; ECCC alert areas are forecast regions tens of kilometres across, so the approximate coordinates are close enough.",
-      "Sixteen Canadian resorts added 2026-10-31 at Brian's pick (Fernie, RED Mountain, Whitewater, Panorama, Kimberley, Big White, SilverStar, Sun Peaks, Sunshine Village, Norquay, Marmot Basin, Cypress, Tremblant, Le Massif, Mont-Sainte-Anne, Blue Mountain). Every Snow-Forecast slug was fetched (WebFetch reaches the site; curl does not) and its mid page's title and location checked. Sunshine Village is `Sunshine`, Norquay is `Banff-Norquay`, Le Massif is `Le-Massif-Ski-Area` — the obvious guesses 404. OnTheSnow paths are read off each province's ski-resorts index; Sunshine has two OnTheSnow entries and `sunshine-village` is the one still updated (banff-sunshine last updated in July). `eccc` sites are the nearest town with a city-page forecast: s-codes from dd.weather.gc.ca site_list_en.csv mapped to city codes by ECCC-MSC/msc-pygeoapi resources/wxo_lookup.json — the same lookup reproduces the original four exactly. Fernie uses Sparwood (Cranbrook is ~95 km away), RED uses Trail, Le Massif uses Baie-Saint-Paul, Mont-Sainte-Anne uses Québec, Blue Mountain uses Collingwood. `latlon` is Snow-Forecast's own resort point where its page shows one; Fernie, RED, Panorama and Kimberley are approximate, from memory. Fernie, Panorama and Kimberley keep Mountain time (America/Edmonton) like Kicking Horse; the Quebec and Ontario resorts are America/Toronto."
+      "Sixteen Canadian resorts added 2026-10-31 at Brian's pick (Fernie, RED Mountain, Whitewater, Panorama, Kimberley, Big White, SilverStar, Sun Peaks, Sunshine Village, Norquay, Marmot Basin, Cypress, Tremblant, Le Massif, Mont-Sainte-Anne, Blue Mountain). Every Snow-Forecast slug was fetched (WebFetch reaches the site; curl does not) and its mid page's title and location checked. Sunshine Village is `Sunshine`, Norquay is `Banff-Norquay`, Le Massif is `Le-Massif-Ski-Area` — the obvious guesses 404. OnTheSnow paths are read off each province's ski-resorts index; Sunshine has two OnTheSnow entries and `sunshine-village` is the one still updated (banff-sunshine last updated in July). `eccc` sites are the nearest town with a city-page forecast: s-codes from dd.weather.gc.ca site_list_en.csv mapped to city codes by ECCC-MSC/msc-pygeoapi resources/wxo_lookup.json — the same lookup reproduces the original four exactly. Fernie uses Sparwood (Cranbrook is ~95 km away), RED uses Trail, Le Massif uses Baie-Saint-Paul, Mont-Sainte-Anne uses Québec, Blue Mountain uses Collingwood. `latlon` is Snow-Forecast's own resort point where its page shows one; Fernie, RED, Panorama and Kimberley are approximate, from memory. Fernie, Panorama and Kimberley keep Mountain time (America/Edmonton) like Kicking Horse; the Quebec and Ontario resorts are America/Toronto.",
+      "2026-11-10: 51 resorts outside the US and Canada added with `archiveOnly: true` (Europe, Japan, Chile/Argentina, Georgia, Norway/Sweden). They are ARCHIVED (Snow-Forecast all tiers, Open-Meteo ensembles, Previous Runs backfill) but NOT shown in the app: forecast.js, scrape.js, scrape-reports.js, projections and the dev fixture skip them. Slugs found via snow-forecast.com country pages and search results, not fetched from the sandbox (it cannot reach the site); a wrong one shows as a loud 404 in the archive run. `latlon` is an approximate mid-mountain point (Open-Meteo is given Snow-Forecast's mid elevation). `country` is ISO-3166 alpha-2; resorts without it are the original US/Canada set. Plan: claude/europe-plan.md in the Tabulator project."
     ]
   },
   "tier": "mid",
@@ -886,6 +887,772 @@
         "site": "on-150",
         "name": "Collingwood"
       }
+    },
+    {
+      "id": "verbier",
+      "name": "Verbier",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "Verbier"
+      ],
+      "latlon": [
+        46.096,
+        7.228
+      ]
+    },
+    {
+      "id": "zermatt",
+      "name": "Zermatt",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "Zermatt"
+      ],
+      "latlon": [
+        46.0,
+        7.73
+      ]
+    },
+    {
+      "id": "engelberg",
+      "name": "Engelberg",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "Engelberg"
+      ],
+      "latlon": [
+        46.79,
+        8.42
+      ]
+    },
+    {
+      "id": "laax",
+      "name": "Laax",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "Flims-Laax"
+      ],
+      "latlon": [
+        46.84,
+        9.23
+      ]
+    },
+    {
+      "id": "andermatt",
+      "name": "Andermatt",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "Andermatt"
+      ],
+      "latlon": [
+        46.63,
+        8.59
+      ]
+    },
+    {
+      "id": "st-moritz",
+      "name": "St. Moritz",
+      "region": "Switzerland",
+      "country": "CH",
+      "tz": "Europe/Zurich",
+      "archiveOnly": true,
+      "slugs": [
+        "St-Moritz"
+      ],
+      "latlon": [
+        46.49,
+        9.84
+      ]
+    },
+    {
+      "id": "st-anton",
+      "name": "St. Anton",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "St-Anton"
+      ],
+      "latlon": [
+        47.13,
+        10.25
+      ]
+    },
+    {
+      "id": "lech-zurs",
+      "name": "Lech-Zürs",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "Lech"
+      ],
+      "latlon": [
+        47.21,
+        10.14
+      ]
+    },
+    {
+      "id": "ischgl",
+      "name": "Ischgl",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "Ischgl"
+      ],
+      "latlon": [
+        46.98,
+        10.29
+      ]
+    },
+    {
+      "id": "solden",
+      "name": "Sölden",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "Solden"
+      ],
+      "latlon": [
+        46.95,
+        10.98
+      ]
+    },
+    {
+      "id": "obergurgl",
+      "name": "Obergurgl",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "Obergurgl"
+      ],
+      "latlon": [
+        46.86,
+        11.03
+      ]
+    },
+    {
+      "id": "kitzbuhel",
+      "name": "Kitzbühel",
+      "region": "Austria",
+      "country": "AT",
+      "tz": "Europe/Vienna",
+      "archiveOnly": true,
+      "slugs": [
+        "Kitzbuhel"
+      ],
+      "latlon": [
+        47.43,
+        12.37
+      ]
+    },
+    {
+      "id": "chamonix",
+      "name": "Chamonix",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "Chamonix"
+      ],
+      "latlon": [
+        45.92,
+        6.87
+      ]
+    },
+    {
+      "id": "val-disere-tignes",
+      "name": "Val d'Isère–Tignes",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "Val-d-Isere",
+        "Tignes"
+      ],
+      "latlon": [
+        45.45,
+        6.98
+      ]
+    },
+    {
+      "id": "val-thorens",
+      "name": "Val Thorens",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "Val-Thorens"
+      ],
+      "latlon": [
+        45.3,
+        6.58
+      ]
+    },
+    {
+      "id": "la-grave",
+      "name": "La Grave",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "LaGrave"
+      ],
+      "latlon": [
+        45.05,
+        6.3
+      ]
+    },
+    {
+      "id": "les-arcs",
+      "name": "Les Arcs",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "Les-Arcs"
+      ],
+      "latlon": [
+        45.57,
+        6.8
+      ]
+    },
+    {
+      "id": "alpe-dhuez",
+      "name": "Alpe d'Huez",
+      "region": "France",
+      "country": "FR",
+      "tz": "Europe/Paris",
+      "archiveOnly": true,
+      "slugs": [
+        "Alpe-d-Huez"
+      ],
+      "latlon": [
+        45.09,
+        6.07
+      ]
+    },
+    {
+      "id": "cervinia",
+      "name": "Cervinia",
+      "region": "Italy",
+      "country": "IT",
+      "tz": "Europe/Rome",
+      "archiveOnly": true,
+      "slugs": [
+        "Cervinia"
+      ],
+      "latlon": [
+        45.93,
+        7.63
+      ]
+    },
+    {
+      "id": "courmayeur",
+      "name": "Courmayeur",
+      "region": "Italy",
+      "country": "IT",
+      "tz": "Europe/Rome",
+      "archiveOnly": true,
+      "slugs": [
+        "Courmayeur"
+      ],
+      "latlon": [
+        45.8,
+        6.95
+      ]
+    },
+    {
+      "id": "livigno",
+      "name": "Livigno",
+      "region": "Italy",
+      "country": "IT",
+      "tz": "Europe/Rome",
+      "archiveOnly": true,
+      "slugs": [
+        "Livigno"
+      ],
+      "latlon": [
+        46.54,
+        10.14
+      ]
+    },
+    {
+      "id": "val-gardena",
+      "name": "Val Gardena",
+      "region": "Italy",
+      "country": "IT",
+      "tz": "Europe/Rome",
+      "archiveOnly": true,
+      "slugs": [
+        "Selva-Gardena"
+      ],
+      "latlon": [
+        46.56,
+        11.73
+      ]
+    },
+    {
+      "id": "niseko",
+      "name": "Niseko",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Niseko"
+      ],
+      "latlon": [
+        42.86,
+        140.69
+      ]
+    },
+    {
+      "id": "rusutsu",
+      "name": "Rusutsu",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "RusutsuResort"
+      ],
+      "latlon": [
+        42.75,
+        140.9
+      ]
+    },
+    {
+      "id": "kiroro",
+      "name": "Kiroro",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "KiroroSnowWorld"
+      ],
+      "latlon": [
+        43.05,
+        141.0
+      ]
+    },
+    {
+      "id": "furano",
+      "name": "Furano",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Furano"
+      ],
+      "latlon": [
+        43.33,
+        142.35
+      ]
+    },
+    {
+      "id": "asahidake",
+      "name": "Asahidake",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Asahidake"
+      ],
+      "latlon": [
+        43.66,
+        142.8
+      ]
+    },
+    {
+      "id": "hakuba-happo",
+      "name": "Hakuba Happo-one",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Happo-One"
+      ],
+      "latlon": [
+        36.7,
+        137.83
+      ]
+    },
+    {
+      "id": "myoko-akakura",
+      "name": "Myoko Akakura",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Akakura-Shin-Akakura"
+      ],
+      "latlon": [
+        36.88,
+        138.17
+      ]
+    },
+    {
+      "id": "nozawa-onsen",
+      "name": "Nozawa Onsen",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Nozawa-Onsen"
+      ],
+      "latlon": [
+        36.92,
+        138.45
+      ]
+    },
+    {
+      "id": "shiga-kogen",
+      "name": "Shiga Kogen",
+      "region": "Japan",
+      "country": "JP",
+      "tz": "Asia/Tokyo",
+      "archiveOnly": true,
+      "slugs": [
+        "Shiga-Kogen-Yakebitaiyama"
+      ],
+      "latlon": [
+        36.75,
+        138.51
+      ]
+    },
+    {
+      "id": "portillo",
+      "name": "Portillo",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "Portillo"
+      ],
+      "latlon": [
+        -32.84,
+        -70.13
+      ]
+    },
+    {
+      "id": "valle-nevado",
+      "name": "Valle Nevado",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "Valle-Nevado"
+      ],
+      "latlon": [
+        -33.36,
+        -70.25
+      ]
+    },
+    {
+      "id": "la-parva",
+      "name": "La Parva",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "La-Parva"
+      ],
+      "latlon": [
+        -33.33,
+        -70.29
+      ]
+    },
+    {
+      "id": "el-colorado",
+      "name": "El Colorado",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "El-Colorado"
+      ],
+      "latlon": [
+        -33.35,
+        -70.29
+      ]
+    },
+    {
+      "id": "nevados-de-chillan",
+      "name": "Nevados de Chillán",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "Chillan"
+      ],
+      "latlon": [
+        -36.9,
+        -71.41
+      ]
+    },
+    {
+      "id": "corralco",
+      "name": "Corralco",
+      "region": "Chile",
+      "country": "CL",
+      "tz": "America/Santiago",
+      "archiveOnly": true,
+      "slugs": [
+        "Lonquimay"
+      ],
+      "latlon": [
+        -38.4,
+        -71.55
+      ]
+    },
+    {
+      "id": "las-lenas",
+      "name": "Las Leñas",
+      "region": "Argentina",
+      "country": "AR",
+      "tz": "America/Argentina/Mendoza",
+      "archiveOnly": true,
+      "slugs": [
+        "Las-Lenas"
+      ],
+      "latlon": [
+        -35.15,
+        -70.08
+      ]
+    },
+    {
+      "id": "cerro-catedral",
+      "name": "Cerro Catedral",
+      "region": "Argentina",
+      "country": "AR",
+      "tz": "America/Argentina/Salta",
+      "archiveOnly": true,
+      "slugs": [
+        "Catedral"
+      ],
+      "latlon": [
+        -41.17,
+        -71.44
+      ]
+    },
+    {
+      "id": "chapelco",
+      "name": "Chapelco",
+      "region": "Argentina",
+      "country": "AR",
+      "tz": "America/Argentina/Salta",
+      "archiveOnly": true,
+      "slugs": [
+        "Chapelco"
+      ],
+      "latlon": [
+        -40.16,
+        -71.21
+      ]
+    },
+    {
+      "id": "cerro-castor",
+      "name": "Cerro Castor",
+      "region": "Argentina",
+      "country": "AR",
+      "tz": "America/Argentina/Ushuaia",
+      "archiveOnly": true,
+      "slugs": [
+        "Cerro-Castor"
+      ],
+      "latlon": [
+        -54.72,
+        -68.0
+      ]
+    },
+    {
+      "id": "gudauri",
+      "name": "Gudauri",
+      "region": "Georgia",
+      "country": "GE",
+      "tz": "Asia/Tbilisi",
+      "archiveOnly": true,
+      "slugs": [
+        "Gudauri"
+      ],
+      "latlon": [
+        42.5,
+        44.49
+      ]
+    },
+    {
+      "id": "bakuriani",
+      "name": "Bakuriani",
+      "region": "Georgia",
+      "country": "GE",
+      "tz": "Asia/Tbilisi",
+      "archiveOnly": true,
+      "slugs": [
+        "Bakuriani"
+      ],
+      "latlon": [
+        41.75,
+        43.53
+      ]
+    },
+    {
+      "id": "goderdzi",
+      "name": "Goderdzi",
+      "region": "Georgia",
+      "country": "GE",
+      "tz": "Asia/Tbilisi",
+      "archiveOnly": true,
+      "slugs": [
+        "Goderdzi"
+      ],
+      "latlon": [
+        41.63,
+        42.51
+      ]
+    },
+    {
+      "id": "tetnuldi",
+      "name": "Tetnuldi",
+      "region": "Georgia",
+      "country": "GE",
+      "tz": "Asia/Tbilisi",
+      "archiveOnly": true,
+      "slugs": [
+        "Tetnuldi"
+      ],
+      "latlon": [
+        43.02,
+        42.8
+      ]
+    },
+    {
+      "id": "hatsvali",
+      "name": "Hatsvali (Mestia)",
+      "region": "Georgia",
+      "country": "GE",
+      "tz": "Asia/Tbilisi",
+      "archiveOnly": true,
+      "slugs": [
+        "Mestia"
+      ],
+      "latlon": [
+        43.03,
+        42.71
+      ]
+    },
+    {
+      "id": "hemsedal",
+      "name": "Hemsedal",
+      "region": "Norway",
+      "country": "NO",
+      "tz": "Europe/Oslo",
+      "archiveOnly": true,
+      "slugs": [
+        "Hemsedal"
+      ],
+      "latlon": [
+        60.86,
+        8.4
+      ]
+    },
+    {
+      "id": "trysil",
+      "name": "Trysil",
+      "region": "Norway",
+      "country": "NO",
+      "tz": "Europe/Oslo",
+      "archiveOnly": true,
+      "slugs": [
+        "Trysill"
+      ],
+      "latlon": [
+        61.3,
+        12.2
+      ]
+    },
+    {
+      "id": "narvik",
+      "name": "Narvik",
+      "region": "Norway",
+      "country": "NO",
+      "tz": "Europe/Oslo",
+      "archiveOnly": true,
+      "slugs": [
+        "Narvik"
+      ],
+      "latlon": [
+        68.43,
+        17.4
+      ]
+    },
+    {
+      "id": "are",
+      "name": "Åre",
+      "region": "Sweden",
+      "country": "SE",
+      "tz": "Europe/Stockholm",
+      "archiveOnly": true,
+      "slugs": [
+        "Are-Duved"
+      ],
+      "latlon": [
+        63.43,
+        13.08
+      ]
+    },
+    {
+      "id": "riksgransen",
+      "name": "Riksgränsen",
+      "region": "Sweden",
+      "country": "SE",
+      "tz": "Europe/Stockholm",
+      "archiveOnly": true,
+      "slugs": [
+        "Riksgransen"
+      ],
+      "latlon": [
+        68.43,
+        18.12
+      ]
     }
   ]
 }

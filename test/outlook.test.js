@@ -20,7 +20,7 @@ const feed = (snowById) => resortData.resorts.map((r) => ({
 }));
 
 test("every resort has a range", () => {
-  for (const r of resortData.resorts) assert.ok(RANGES[r.id], `${r.id} has no range`);
+  for (const r of resortData.resorts.filter((x) => !x.archiveOnly)) assert.ok(RANGES[r.id], `${r.id} has no range`);
 });
 
 test("Brian's own example comes out as he wrote it", () => {

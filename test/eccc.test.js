@@ -81,7 +81,7 @@ const feed = (snowIn) => resortData.resorts.map((r) => ({
 const rowsFor = (snowIn) => snowRows(feed(snowIn), NOW).filter((r) => snowIn[r.id]);
 
 test("every resort has a regional warning threshold", () => {
-  for (const r of resortData.resorts) assert.ok(RANGES[r.id]?.warnIn > 0, `${r.id} has no warnIn`);
+  for (const r of resortData.resorts.filter((x) => !x.archiveOnly)) assert.ok(RANGES[r.id]?.warnIn > 0, `${r.id} has no warnIn`);
   assert.equal(RANGES.alta.warnIn, 18);
   assert.equal(RANGES.stowe.warnIn, 7);
   assert.equal(RANGES.revelstoke.warnIn, 10);

@@ -23,7 +23,7 @@ const headers = Array.from({ length: 6 }, (_, i) => {
 // Deterministic pseudo-variation so the table has something to rank.
 const seeded = (n) => { let x = Math.sin(n) * 10000; return x - Math.floor(x); };
 
-const resorts = cfg.resorts.map((r, ri) => {
+const resorts = cfg.resorts.filter((r) => !r.archiveOnly).map((r, ri) => {
   const snow = Array.from({ length: 18 }, (_, i) => {
     const v = seeded(ri * 31 + i) * (ri % 3 === 0 ? 14 : 5);
     return v < 1.2 ? "—" : v.toFixed(1);

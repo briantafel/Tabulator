@@ -86,3 +86,22 @@ test("the scrape workflow can be triggered by hand", () => {
       "purpose, or the next person reads it as a bug and 'fixes' it");
   }
 });
+
+/* 2026-11-10: resorts outside the US and Canada are archive-only. They must
+   be collected (every one has a slug, a point and a time zone) but must not
+   leak into the app's resort list. */
+import intlData from "../src/data/resorts.json" with { type: "json" };
+import { RESORT_META } from "../src/lib/forecast.js";
+test("archiveOnly resorts are complete for the archive and absent from the app", () => {
+  const intl = intlData.resorts.filter((r) => r.archiveOnly);
+  assert.ok(intl.length >= 50, `expected the international set, got ${intl.length}`);
+  for (const r of intl) {
+    assert.ok(r.slugs?.length && r.tz && r.country, `${r.id} is missing slugs/tz/country`);
+    assert.ok(Array.isArray(r.latlon) && r.latlon.length === 2, `${r.id} has no latlon`);
+    assert.ok(!r.nws && !r.otsPath, `${r.id} should not carry US-only fields`);
+  }
+  const shown = new Set(RESORT_META.map((r) => r.id));
+  for (const r of intl) assert.ok(!shown.has(r.id), `${r.id} leaked into RESORT_META`);
+  const ids = intlData.resorts.map((r) => r.id);
+  assert.equal(new Set(ids).size, ids.length, "duplicate resort id");
+});
