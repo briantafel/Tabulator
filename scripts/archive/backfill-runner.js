@@ -24,6 +24,7 @@
  *
  * Pieces:
  *   snotel-<year>          SNOTEL daily history, one winter      (no quota)
+ *   snotel-temp-<year>     SNOTEL daily TMAX/TMIN, one winter    (no quota)
  *   bc-asws-history        BC snow pillows, hourly, both winters (no quota)
  *   ots-history-<resort>   OnTheSnow monthly history             (no quota)
  *   om-<resort>-<model>-<year>  Open-Meteo previous runs         (~31 calls)
@@ -37,7 +38,7 @@ import { appendFileSync, cpSync, existsSync, mkdirSync, readdirSync, rmSync, wri
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { coordsOf, fetchText, rowSink, saveRaw, sleep } from "./common.js";
-import { dataToRows, pickStations } from "./snotel.js";
+import { DAILY_TEMP_ELEMENTS, dataToRows, pickStations } from "./snotel.js";
 import * as bc from "./bc-asws.js";
 import { historyToRows } from "./onthesnow.js";
 import * as om from "./previous-runs.js";
@@ -129,6 +130,8 @@ const year = (w) => w[0].slice(0, 4);
 
 const pieces = [
   ...WINTERS.map((w) => ({ key: `snotel-${year(w)}`, kind: "snotel", winter: w })),
+  // Added 2026-11-10: daily highs/lows, the truth for scoring forecast temperatures.
+  ...WINTERS.map((w) => ({ key: `snotel-temp-${year(w)}`, kind: "snotel", winter: w, elements: DAILY_TEMP_ELEMENTS })),
   { key: "bc-asws-history", kind: "bcasws" },
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
@@ -161,7 +164,8 @@ async function runPiece(p) {
     const rows = [], raws = [];
     for (let i = 0; i < ids.length; i += 20) {
       const q = new URLSearchParams({ stationTriplets: ids.slice(i, i + 20).join(","),
-        elements: "SNWD,WTEQ,TOBS,PREC", duration: "DAILY", beginDate: p.winter[0], endDate: p.winter[1] });
+        elements: (p.elements ?? ["SNWD", "WTEQ", "TOBS", "PREC"]).join(","), duration: "DAILY",
+        beginDate: p.winter[0], endDate: p.winter[1] });
       const res = await fetchText(`${SNOTEL}/data?${q}`, { retries: 3 });
       if (res.status !== 200) throw new Error(`data HTTP ${res.status}: ${res.text.slice(0, 200)}`);
       raws.push([`${p.key}-${i / 20}.json.gz`, res.text]);
@@ -170,6 +174,12 @@ async function runPiece(p) {
       await sleep(2000);
     }
     if (!rows.length) throw new Error("no SNOTEL readings");
+    if (p.elements) {
+      // Loud: a station set that returns no highs at all means AWDB renamed or dropped the element.
+      for (const want of p.elements.map((e) => ({ TMAX: "temp_max", TMIN: "temp_min" })[e] ?? e)) {
+        if (!rows.some((r) => r.variable === want)) throw new Error(`no ${want} in ${p.key} — check the AWDB element code`);
+      }
+    }
     return finish(p, "snotel", rows, raws);
   }
   if (p.kind === "bcasws") {

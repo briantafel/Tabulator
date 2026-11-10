@@ -44,6 +44,14 @@ THRESHOLDS = {"liquid": (2.5, 10.0, 20.0), "snow": (2.5, 15.0, 30.0)}  # mm / cm
 STRICT_KM, STRICT_DELEV_M = 25.0, 300.0
 MAX_SWE_GAIN_MM, MAX_DEPTH_GAIN_CM = 150.0, 150.0  # above this a daily gain is a sensor fault
 TRUTH_SOURCES = ("snotel", "bc-asws")  # station networks used as truth
+# Temperature: every archived source that forecasts 2 m temperature. Daily
+# high / low are scored against SNOTEL's daily TMAX / TMIN at the resort's
+# strict station pair, after moving each forecast to the station's elevation
+# at the standard lapse rate (the raw error is reported beside it).
+TEMP_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecast",
+                "snow-forecast-hindcast", "nws")
+LAPSE_C_PER_M = 0.0065
+TEMP_MIN_COVER_H = 20  # a forecast day needs ≥ this many hours covered to have a high and a low
 THIN_EVENTS = 20  # fewer observed events than this → the score is flagged thin
 
 
@@ -395,6 +403,9 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     con.execute(f"COPY (SELECT * FROM scores ORDER BY ALL) TO '{out / 'scores.csv'}' (HEADER)")
     con.execute(f"COPY (SELECT * FROM station_pairs ORDER BY resort_id, tier) TO '{out / 'station_pairs.csv'}' (HEADER)")
 
+    # ---------------------------------------------------------------- temperature
+    temp_stats = temperature(con, out, paid_list)
+
     # ---------------------------------------------------------------- checks + logs
     stats = {}
     for name, q in {
@@ -412,6 +423,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     if stats["pairs_with_truth"] == 0:
         raise SystemExit("no forecast day found its truth — check station pairs and day alignment")
     stats["alignment"] = {"used": align, "r_start": c_start, "r_end": c_end, "n": n_corr}
+    stats.update(temp_stats)
     for k, v in stats.items():
         if k != "alignment":
             log(public_log, f"{k}: {v}")
@@ -421,6 +433,171 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     (out / "log.txt").write_text("\n".join(public_log) + "\n")
     (out / "report.md").write_text(report(con, stats))
     return stats
+
+
+def temperature(con, out: Path, paid_list: str) -> dict:
+    """Daily high / low from every temperature source vs SNOTEL TMAX / TMIN.
+
+    Missing is NULL: a day a source doesn't cover for TEMP_MIN_COVER_H hours
+    has no high or low, and a station day without TMAX / TMIN has no truth.
+    Multi-slug resorts average their faces (a temperature, unlike snow, is not
+    "wherever it fell most"). Ensembles score their member median.
+    """
+    src = ", ".join(f"'{x}'" for x in TEMP_SOURCES)
+    con.execute(f"""
+    CREATE TABLE tb AS
+    WITH r0 AS (
+      SELECT source, kind, resort_id, coalesce(tier, 'mid') AS tier, coalesce(station_id, '') AS station_id,
+             coalesce(model, '') AS model, coalesce(member, -1) AS member,
+             CASE WHEN source = 'open-meteo-previous-runs' THEN period_label
+                  ELSE strftime(coalesce(issued_at, fetched_at), '%Y-%m-%dT%H:%M:%SZ') END AS issue_key,
+             CASE WHEN source = 'open-meteo-previous-runs' THEN NULL ELSE coalesce(issued_at, fetched_at) END AS issue_ts,
+             valid_start, valid_end, variable, value, elevation_m
+      FROM fsrc
+      WHERE kind IN ('forecast', 'hindcast') AND source IN ({src}) AND resort_id IS NOT NULL
+        AND variable IN ('temp', 'temp_max', 'temp_min') AND value IS NOT NULL AND valid_end > valid_start
+      QUALIFY row_number() OVER (
+        PARTITION BY source, resort_id, tier, station_id, model, member, issue_key, valid_start, valid_end, variable
+        ORDER BY fetched_at DESC) = 1
+    ), per_slug AS (
+      SELECT source, kind, resort_id, tier, station_id, model, member, issue_key, min(issue_ts) AS issue_ts,
+             valid_start, valid_end,
+             max(CASE WHEN variable IN ('temp', 'temp_max') THEN value END) AS hi,
+             min(CASE WHEN variable IN ('temp', 'temp_min') THEN value END) AS lo,
+             avg(elevation_m) AS elev
+      FROM r0 GROUP BY ALL
+    )
+    SELECT source, kind, resort_id, tier, model, member, issue_key, min(issue_ts) AS issue_ts,
+           valid_start, valid_end, avg(hi) AS hi, avg(lo) AS lo, avg(elev) AS elev
+    FROM per_slug GROUP BY source, kind, resort_id, tier, model, member, issue_key, valid_start, valid_end""")
+    con.execute(f"""
+    CREATE TABLE tday AS
+    WITH x AS (
+      SELECT b.*, r.tz, r.region,
+             CAST(timezone(r.tz, b.valid_start) AS DATE) AS d0,
+             CAST(timezone(r.tz, b.valid_end - INTERVAL 1 SECOND) AS DATE) AS d1
+      FROM tb b JOIN resorts r USING (resort_id)
+    ), y AS (
+      SELECT x.*, CAST(unnest(generate_series(CAST(d0 AS TIMESTAMP), CAST(d1 AS TIMESTAMP), INTERVAL 1 DAY)) AS DATE) AS local_date
+      FROM x
+    ), z AS (
+      SELECT y.*, timezone(tz, CAST(local_date AS TIMESTAMP)) AS day_start,
+             timezone(tz, CAST(local_date AS TIMESTAMP) + INTERVAL 1 DAY) AS day_end
+      FROM y
+    ), m AS (
+      SELECT source, kind, resort_id, region, tz, tier, model, member, issue_key, min(issue_ts) AS issue_ts, local_date,
+             any_value(day_start) AS day_start, max(hi) AS hi, min(lo) AS lo, avg(elev) AS elev,
+             sum(epoch(least(valid_end, day_end) - greatest(valid_start, day_start))) / 3600 AS cov_h
+      FROM z GROUP BY source, kind, resort_id, region, tz, tier, model, member, issue_key, local_date
+    )
+    SELECT source, kind, resort_id, region, tz, tier, model, issue_key, min(issue_ts) AS issue_ts, local_date,
+           any_value(day_start) AS day_start, median(hi) AS hi, median(lo) AS lo, avg(elev) AS elev,
+           count(*) AS n_members
+    FROM m WHERE cov_h >= {TEMP_MIN_COVER_H}
+    GROUP BY source, kind, resort_id, region, tz, tier, model, issue_key, local_date""")
+    con.execute("""
+    ALTER TABLE tday ADD COLUMN lead_day INTEGER;
+    UPDATE tday SET lead_day =
+      CASE WHEN source = 'open-meteo-previous-runs' THEN CAST(regexp_extract(issue_key, '(\\d+)$', 1) AS INTEGER)
+           WHEN kind = 'hindcast' THEN 0
+           ELSE datediff('day', CAST(timezone(tz, issue_ts) AS DATE), local_date) END;
+    DELETE FROM tday WHERE lead_day < 0""")
+
+    # SNOTEL daily TMAX / TMIN: the station-local day the reading starts.
+    con.execute("""
+    CREATE TABLE tobs AS
+    WITH s AS (
+      SELECT station_id, variable, valid_start, value FROM raw
+      WHERE source = 'snotel' AND kind = 'observation' AND period_label = 'daily'
+        AND variable IN ('temp_max', 'temp_min') AND value IS NOT NULL
+      QUALIFY row_number() OVER (PARTITION BY station_id, variable, valid_start ORDER BY fetched_at DESC) = 1
+    )
+    SELECT p.resort_id, p.tier, p.station_id, p.st_elev, p.pair_quality,
+           CAST(timezone(r.tz, s.valid_start + INTERVAL 1 HOUR) AS DATE) AS local_date,
+           max(CASE WHEN s.variable = 'temp_max' THEN s.value END) AS obs_hi,
+           max(CASE WHEN s.variable = 'temp_min' THEN s.value END) AS obs_lo
+    FROM s JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)
+    WHERE p.truth_source = 'snotel'
+    GROUP BY ALL""")
+    # Sensor faults: out of range, or a low above the high. Dropped, counted.
+    bad = con.execute("""SELECT count(*) FROM tobs WHERE obs_hi NOT BETWEEN -45 AND 35 OR obs_lo NOT BETWEEN -50 AND 30
+                         OR obs_lo > obs_hi""").fetchone()[0]
+    con.execute("""UPDATE tobs SET obs_hi = NULL, obs_lo = NULL WHERE obs_hi NOT BETWEEN -45 AND 35
+                   OR obs_lo NOT BETWEEN -50 AND 30 OR obs_lo > obs_hi""")
+
+    con.execute(f"""
+    CREATE TABLE tpairs AS
+    WITH l AS (
+      SELECT d.*, d.source IN ({paid_list}) AS paid,
+             d.source || CASE WHEN d.model <> '' THEN ':' || d.model ELSE '' END AS source_label,
+             o.station_id, o.st_elev, o.pair_quality, o.obs_hi, o.obs_lo,
+             CASE WHEN month(d.local_date) >= 7 THEN year(d.local_date) ELSE year(d.local_date) - 1 END AS winter
+      FROM tday d JOIN tobs o USING (resort_id, tier, local_date)
+    ), v AS (
+      SELECT *, 'hi' AS var, hi AS fc_raw, obs_hi AS obs FROM l
+      UNION ALL
+      SELECT *, 'lo', lo, obs_lo FROM l
+    )
+    SELECT source, paid, source_label, resort_id, region, tier, issue_key, lead_day, local_date, winter,
+           CASE winter WHEN 2024 THEN 'train' WHEN 2025 THEN 'test' ELSE 'live' END AS split,
+           station_id, st_elev, pair_quality, elev AS fc_elev, n_members, var, fc_raw,
+           fc_raw + {LAPSE_C_PER_M} * (elev - st_elev) AS fc_adj, obs
+    FROM v WHERE fc_raw IS NOT NULL AND obs IS NOT NULL""")
+    con.execute(f"COPY tpairs TO '{out / 'temp_pairs.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
+
+    # One forecast per source × resort × day × lead (twice-daily issues averaged).
+    con.execute("""
+    CREATE TABLE tdet AS
+    SELECT source_label, any_value(paid) AS paid, var, split, resort_id, local_date, lead_day,
+           avg(fc_adj) AS fc_adj, avg(fc_raw) AS fc_raw, any_value(obs) AS obs
+    FROM tpairs WHERE pair_quality = 'strict' AND tier = 'mid'
+    GROUP BY source_label, var, split, resort_id, local_date, lead_day""")
+    # Preview of Brian's idea (2026-11-10, "treat temps like snowfall"): an
+    # EQUAL-weight mean of the public sources. Skill weights and per-resort bias
+    # correction come once these scores exist; this row shows whether even the
+    # naive blend beats its members.
+    con.execute(f"""
+    INSERT INTO tdet
+    SELECT 'blend:public-equal', false, var, split, resort_id, local_date, lead_day,
+           avg(fc_adj), avg(fc_raw), any_value(obs)
+    FROM tdet WHERE NOT paid AND source_label NOT LIKE 'blend:%'
+    GROUP BY var, split, resort_id, local_date, lead_day HAVING count(*) >= 2""")
+    F = 9 / 5
+    con.execute(f"""
+    CREATE TABLE temp_scores AS
+    SELECT source_label, any_value(paid) AS paid, var, split, lead_day, count(*) AS n,
+           count(DISTINCT resort_id) AS resorts,
+           avg(fc_adj - obs) * {F} AS bias_f, avg(abs(fc_adj - obs)) * {F} AS mae_f,
+           avg(abs(fc_raw - obs)) * {F} AS mae_raw_f,
+           avg(CASE WHEN abs(fc_adj - obs) * {F} <= 3 THEN 1.0 ELSE 0.0 END) AS within_3f
+    FROM tdet WHERE fc_adj IS NOT NULL
+    GROUP BY source_label, var, split, lead_day""")
+    con.execute(f"COPY (SELECT * FROM temp_scores ORDER BY ALL) TO '{out / 'temp_scores.csv'}' (HEADER)")
+
+    # Head-to-head on the SAME resort-days: only days NWS and the app's
+    # Snow-Forecast row both forecast (live period), so the sources are judged
+    # on identical weather, not on whichever winter each happens to cover.
+    con.execute(f"""
+    CREATE TABLE temp_matched AS
+    WITH k AS (
+      SELECT var, resort_id, local_date, lead_day FROM tdet
+      WHERE fc_adj IS NOT NULL GROUP BY ALL
+      HAVING bool_or(source_label = 'nws') AND bool_or(source_label = 'snow-forecast')
+    )
+    SELECT t.source_label, t.var, t.lead_day, count(*) AS n, count(DISTINCT t.resort_id) AS resorts,
+           avg(t.fc_adj - t.obs) * {F} AS bias_f, avg(abs(t.fc_adj - t.obs)) * {F} AS mae_f,
+           avg(CASE WHEN abs(t.fc_adj - t.obs) * {F} <= 3 THEN 1.0 ELSE 0.0 END) AS within_3f
+    FROM tdet t JOIN k USING (var, resort_id, local_date, lead_day)
+    WHERE t.fc_adj IS NOT NULL GROUP BY ALL""")
+    con.execute(f"COPY (SELECT * FROM temp_matched ORDER BY ALL) TO '{out / 'temp_matched.csv'}' (HEADER)")
+
+    return {
+        "temp_obs_days": con.execute("SELECT count(*) FROM tobs WHERE obs_hi IS NOT NULL").fetchone()[0],
+        "temp_obs_faults": bad,
+        "temp_pairs": con.execute("SELECT count(*) FROM tpairs").fetchone()[0],
+        "temp_fc_no_elev": con.execute("SELECT count(*) FROM tpairs WHERE fc_adj IS NULL").fetchone()[0],
+        "temp_matched_days": con.execute("SELECT coalesce(max(n), 0) FROM temp_matched WHERE source_label = 'nws'").fetchone()[0],
+    }
 
 
 def table(con, sql: str) -> str:
@@ -468,6 +645,27 @@ def report(con, stats: dict) -> str:
         table(con, """SELECT source_label, space, threshold, n, events, round(pod, 2) pod, round(far, 2) far,
                       round(csi, 2) csi, round(freq_bias, 2) bias, round(mae, 2) mae, thin FROM scores
                       WHERE lead_day = 0 AND region = 'ALL' AND split IN ('test') ORDER BY space, threshold, source_label"""),
+        "\n## Temperature: which source is closest at ski elevation\n",
+        f"Truth: SNOTEL daily TMAX/TMIN at strict mid pairs. Forecasts moved to the station's elevation at "
+        f"{LAPSE_C_PER_M * 1000:.1f} °C/km. °F. Station days with TMAX: {stats['temp_obs_days']:,} "
+        f"(faults dropped: {stats['temp_obs_faults']}); forecast pairs: {stats['temp_pairs']:,} "
+        f"(no forecast elevation, unadjusted: {stats['temp_fc_no_elev']:,}).\n",
+        "SNOTEL thermometers read warm in deep cold (extended-range sensor), so trust the RANKING of sources more than "
+        "the absolute bias of the lows.\n",
+        "\n### Head-to-head: identical resort-days where NWS and Snow-Forecast both forecast (daily high, MAE °F)\n",
+        table(con, """PIVOT (SELECT source_label, lead_day, round(mae_f, 1) AS mae FROM temp_matched
+                      WHERE var = 'hi' AND lead_day <= 6) ON lead_day USING any_value(mae) GROUP BY source_label ORDER BY source_label"""),
+        "\nSame days, n and bias (+ = forecast too warm), lead 1:\n",
+        table(con, """SELECT source_label, var, n, resorts, round(bias_f, 1) AS bias_f, round(mae_f, 1) AS mae_f,
+                      round(within_3f, 2) AS within_3f FROM temp_matched WHERE lead_day = 1 ORDER BY var, mae_f"""),
+        "\n### Past winters (no NWS archive then): daily high MAE °F by lead, 2025-26 test winter\n",
+        table(con, """PIVOT (SELECT source_label, lead_day, round(mae_f, 1) AS mae FROM temp_scores
+                      WHERE var = 'hi' AND split = 'test' AND lead_day <= 7) ON lead_day USING any_value(mae)
+                      GROUP BY source_label ORDER BY source_label"""),
+        "\nBias °F, daily high and low, lead 1, test winter (elevation-adjusted; raw MAE beside it):\n",
+        table(con, """SELECT source_label, var, n, round(bias_f, 1) AS bias_f, round(mae_f, 1) AS mae_f,
+                      round(mae_raw_f, 1) AS mae_raw_f FROM temp_scores
+                      WHERE split = 'test' AND lead_day = 1 ORDER BY var, mae_f"""),
     ]
     return "\n".join(parts) + "\n"
 

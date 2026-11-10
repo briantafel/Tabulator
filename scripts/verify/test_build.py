@@ -95,6 +95,28 @@ def main():
         rows.append(row(source="snow-forecast", kind="forecast", resort_id="alta", tier="mid", elevation_m=2900,
                         station_id="Alta", issued_at=issued, fetched_at=issued, valid_start=vs,
                         valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow", value=5.0))
+    # Temperature truth: SNOTEL daily TMAX 0 °C / TMIN −8 °C at the 2,920 m station, Jan 1–10.
+    for d in range(1, 11):
+        t = local(d, 0, MST)
+        for var, v in (("temp_max", 0.0), ("temp_min", -8.0)):
+            rows.append(row(source="snotel", kind="observation", station_id="766:UT:SNTL", fetched_at=fetched,
+                            valid_start=t, valid_end=t + timedelta(days=1), period_label="daily", variable=var, value=v))
+    # NWS hourly temperature, 5 °C all day Jan 7, grid cell at 2,520 m, issued Jan 6 → lead 1.
+    nws_issued = local(6, 12, MST)
+    for h in range(0, 48):
+        vs = local(7, 0, MST) + timedelta(hours=h)
+        rows.append(row(source="nws", kind="forecast", resort_id="alta", elevation_m=2520, station_id="SLC/1,1",
+                        issued_at=nws_issued, fetched_at=nws_issued, valid_start=vs, valid_end=vs + timedelta(hours=1),
+                        variable="temp", value=5.0))
+    # Snow-Forecast temperatures, issued Jan 6 11:00, covering Jan 7 fully (night of the 6th → 06:00 the 7th).
+    sf_issued = local(6, 11, MST)
+    for d, lab, h, n, tx, tn in ((6, "night", 18, 12, -2.0, -6.0), (7, "am", 6, 6, 1.0, -1.0), (7, "pm", 12, 6, 3.0, 0.0),
+                                 (7, "night", 18, 12, -2.0, -6.0)):
+        vs = local(d, h, MST)
+        for var, v in (("temp_max", tx), ("temp_min", tn)):
+            rows.append(row(source="snow-forecast", kind="forecast", resort_id="alta", tier="mid", elevation_m=2900,
+                            station_id="Alta", issued_at=sf_issued, fetched_at=sf_issued, valid_start=vs,
+                            valid_end=vs + timedelta(hours=n), period_label=lab, variable=var, value=v))
     # Resort report for Jan 3: same-day capture (ignored), next-day capture (used), later (fallback, unused).
     day3 = local(3, 0, MST)
     for when, v in ((local(3, 20, MST), 12.0), (local(4, 10, MST), 30.0), (local(5, 10, MST), 28.0)):
@@ -200,6 +222,27 @@ def main():
         log = (tmp / "out" / "log.txt").read_text()
         assert "snow-forecast" not in log, "paid source named in the public log"
         assert "report" and "PRIVATE" in (tmp / "out" / "report.md").read_text()
+        # Temperature: forecasts moved to the station's 2,920 m at 6.5 °C/km.
+        q.execute(f"CREATE VIEW tp AS SELECT * FROM read_parquet('{tmp / 'out' / 'temp_pairs.parquet'}')")
+        fa, fr, ob = one("SELECT fc_adj, fc_raw, obs FROM tp WHERE source = 'open-meteo-previous-runs' AND var = 'hi' "
+                         "AND issue_key = 'previous_day0' AND local_date = DATE '2025-01-05'")
+        assert fr == 2.0 and abs(fa - (2.0 - 0.13)) < 1e-9 and ob == 0, (fa, fr, ob)
+        fa, ld = one("SELECT fc_adj, lead_day FROM tp WHERE source = 'nws' AND var = 'hi' AND local_date = DATE '2025-01-07'")
+        assert abs(fa - (5.0 - 2.6)) < 1e-9 and ld == 1, (fa, ld)
+        # Snow-Forecast: high from the periods, low includes the night that ends 06:00 on the 7th.
+        assert one("SELECT fc_raw FROM tp WHERE source = 'snow-forecast' AND var = 'hi' AND local_date = DATE '2025-01-07'")[0] == 3
+        assert one("SELECT fc_raw FROM tp WHERE source = 'snow-forecast' AND var = 'lo' AND local_date = DATE '2025-01-07'")[0] == -6
+        # Jan 6 is only 18 h covered by Snow-Forecast → no high, not a wrong high.
+        assert one("SELECT count(*) FROM tp WHERE source = 'snow-forecast' AND local_date = DATE '2025-01-06'")[0] == 0
+        m = {r[0]: r[1] for r in q.execute(f"SELECT source_label, mae_f FROM read_csv_auto('{tmp / 'out' / 'temp_matched.csv'}') "
+                                             "WHERE var = 'hi' AND lead_day = 1").fetchall()}
+        assert abs(m["nws"] - 2.4 * 1.8) < 1e-6, m
+        assert abs(m["snow-forecast"] - 2.87 * 1.8) < 1e-6, m
+        # Equal-weight public blend = mean of NWS (2.4) and ECMWF lead 1 (1.87).
+        assert abs(m["blend:public-equal"] - (2.4 + 1.87) / 2 * 1.8) < 1e-6, m
+        assert stats["temp_obs_days"] == 10, stats
+        assert "Temperature" in (tmp / "out" / "report.md").read_text()
+        assert "snow-forecast" not in (tmp / "out" / "log.txt").read_text()
         del s
     print("verify build: all checks passed")
 

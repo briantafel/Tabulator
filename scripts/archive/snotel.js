@@ -22,18 +22,23 @@ import { coordsOf, fetchText, saveRaw } from "./common.js";
 export const PARSER_VERSION = "snotel-1";
 const API = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
 const ELEMENTS = ["SNWD", "WTEQ", "TOBS", "PREC"];
+/* Daily high / low: the truth for scoring forecast temperatures at ski
+   elevation (TOBS is one reading at the observation hour, not a high). Daily
+   only — AWDB has no hourly TMAX / TMIN. */
+export const DAILY_TEMP_ELEMENTS = ["TMAX", "TMIN"];
 const RADIUS_KM = 30;
 const PER_RESORT = 3;
 const CHUNK = 20;
 
-const VARIABLE = { SNWD: "snow_depth", WTEQ: "swe", TOBS: "temp", PREC: "precip_accum" };
+const VARIABLE = { SNWD: "snow_depth", WTEQ: "swe", TOBS: "temp", PREC: "precip_accum", TMAX: "temp_max", TMIN: "temp_min" };
+const TEMP = new Set(["TOBS", "TMAX", "TMIN"]);
 
 /** Convert one value to the archive's metric unit, by the unit AWDB says it
  *  sent. An unknown unit throws rather than storing a number in the wrong one. */
 export function toMetric(element, value, unit = "in") {
   if (value == null || !Number.isFinite(value)) return null;
   const u = String(unit).toLowerCase();
-  if (element === "TOBS") {
+  if (TEMP.has(element)) {
     if (u === "degf") return { value: Number(((value - 32) * 5 / 9).toFixed(2)), unit: "C" };
     if (u === "degc") return { value, unit: "C" };
   } else if (element === "SNWD") {
@@ -82,7 +87,7 @@ export function dataToRows(json, { stationsById, duration, fetchedAt, runId }) {
     for (const el of st.data ?? []) {
       const code = el.stationElement?.elementCode;
       if (!VARIABLE[code]) continue;
-      const unit = el.stationElement?.storedUnitCode ?? el.stationElement?.unitCode ?? (code === "TOBS" ? "degF" : "in");
+      const unit = el.stationElement?.storedUnitCode ?? el.stationElement?.unitCode ?? (TEMP.has(code) ? "degF" : "in");
       for (const v of el.values ?? []) {
         const m = toMetric(code, v.value, unit);
         if (!m) continue;
@@ -141,7 +146,8 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       tried++;
       const chunk = ids.slice(i, i + CHUNK);
       const q = new URLSearchParams({
-        stationTriplets: chunk.join(","), elements: ELEMENTS.join(","), duration,
+        stationTriplets: chunk.join(","), duration,
+        elements: (duration === "DAILY" ? [...ELEMENTS, ...DAILY_TEMP_ELEMENTS] : ELEMENTS).join(","),
         beginDate: fmt(new Date(now - hoursBack * 3600e3), duration === "HOURLY"),
         endDate: fmt(now, duration === "HOURLY"),
       });
