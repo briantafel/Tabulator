@@ -24,6 +24,7 @@
  *
  * Pieces:
  *   snotel-<year>          SNOTEL daily history, one winter      (no quota)
+ *   bc-asws-history        BC snow pillows, hourly, both winters (no quota)
  *   ots-history-<resort>   OnTheSnow monthly history             (no quota)
  *   om-<resort>-<model>-<year>  Open-Meteo previous runs         (~31 calls)
  *
@@ -37,6 +38,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { coordsOf, fetchText, rowSink, saveRaw, sleep } from "./common.js";
 import { dataToRows, pickStations } from "./snotel.js";
+import * as bc from "./bc-asws.js";
 import { historyToRows } from "./onthesnow.js";
 import * as om from "./previous-runs.js";
 import { groupOf, makeBreakers } from "./breakers.js";
@@ -93,7 +95,7 @@ async function finish(piece, source, rows, raws) {
   rmSync(dir, { recursive: true, force: true });
   const sinks = new Map();
   for (const r of rows) {
-    const m = r.valid_start.slice(0, 7);
+    const m = (r.valid_start ?? r.fetched_at).slice(0, 7); // mapping rows have no valid time
     if (!sinks.has(m)) sinks.set(m, await rowSink(join(dir, "rows", m, `${source}.ndjson.gz`)));
     sinks.get(m).write(r);
   }
@@ -127,6 +129,7 @@ const year = (w) => w[0].slice(0, 4);
 
 const pieces = [
   ...WINTERS.map((w) => ({ key: `snotel-${year(w)}`, kind: "snotel", winter: w })),
+  { key: "bc-asws-history", kind: "bcasws" },
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
   // resorts included) is fetched before the first GEM piece, so a GEM model
@@ -168,6 +171,35 @@ async function runPiece(p) {
     }
     if (!rows.length) throw new Error("no SNOTEL readings");
     return finish(p, "snotel", rows, raws);
+  }
+  if (p.kind === "bcasws") {
+    // Hourly, both winters, from the four _Archive files (every water year
+    // before this one) — large, so streamed from disk. A few days of padding
+    // either side so the first and last days still get a daily gain.
+    const runId = `bf-${p.key}`;
+    const dl = join(work, "bc-asws-download");
+    rmSync(dl, { recursive: true, force: true });
+    const stations = await bc.fetchStations(join(dl, "stations.json.gz"));
+    const picks = bc.pickStations(stations, resorts);
+    if (!picks.length) throw new Error("no BC ASWS station near any Canadian resort");
+    const wanted = new Map(picks.map((x) => [x.station.id, x.station]));
+    const rows = bc.mappingRows(picks, { fetchedAt, runId, parserVersion: "bc-asws-history-1" });
+    const from = "2024-10-25T00:00:00.000Z", to = "2026-05-03T00:00:00.000Z";
+    for (const code of Object.keys(bc.FILES)) {
+      const gz = await bc.download(bc.archiveUrl(code), join(dl, `${code}_Archive.csv.gz`));
+      const values = [];
+      const res = await bc.parseWide(bc.gzLines(gz), code, { wanted, from, to, fetchedAt, runId,
+        parserVersion: "bc-asws-history-1", onRow: (r) => { rows.push(r); values.push(r.value); } });
+      bc.checkUnits(code, values);
+      log(`  · ${p.key} ${code}: ${res.kept} readings in the two winters (${res.faults} out-of-range dropped); ` +
+          `file ${res.first} → ${res.last}${res.missingStations.length ? `; not in file: ${res.missingStations.join(", ")}` : ""}`);
+      if (!res.last || res.last < "2026-04-30") throw new Error(`${code}_Archive ends ${res.last} — it does not reach the end of 2025-26`);
+      if (res.kept === 0) throw new Error(`${code}_Archive has no readings for our stations in 2024-26`);
+    }
+    for (const f of readdirSync(dl)) upload(join(dl, f), `raw/source=bc-asws/backfill/${f}`);
+    rmSync(dl, { recursive: true, force: true });
+    log(`  · ${p.key}: ${wanted.size} stations for ${new Set(picks.map((x) => x.resort)).size} resorts`);
+    return finish(p, "bc-asws", rows, []);
   }
   if (p.kind === "ots") {
     const res = await fetchText(`https://www.onthesnow.com/${p.resort.otsPath}/historical-snowfall`, { delayMs: 1500 });

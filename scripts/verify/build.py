@@ -7,7 +7,7 @@
 Writes to <outDir>:
   pairs.parquet          one row per forecast × resort × tier × resort-local day × space
   scores.parquet/.csv    hit rates, errors and volume ratios by source, lead day, region
-  station_pairs.csv      which SNOTEL station stands in for each resort and tier
+  station_pairs.csv      which SNOTEL / BC ASWS station stands in for each resort and tier
   report.md              the readable summary (contains paid-source scores: PRIVATE)
   log.txt                public-safe counts only (printed to the Action log)
 
@@ -17,7 +17,10 @@ Rules (project instructions + claude/verification-table-plan.md):
 - Precipitation ("liquid", mm) and snowfall ("snow", cm) are scored
   separately. Open-Meteo's snowfall is precip × 0.7, so its liquid score is
   the one that means something.
-- Truth is SNOTEL: liquid = daily SWE gain, snow = daily depth gain. Resort
+- Truth is SNOTEL (US) and BC ASWS snow pillows (BC + border Rockies):
+  liquid = daily SWE gain, snow = daily depth gain. BC pillows are hourly;
+  a day's reading is the median of the three hours around local midnight,
+  so the gain over local day D is reading(D+1) − reading(D). Resort
   reports (OnTheSnow, "reported the following day") sit beside them as a
   flagged column and are never scored as truth. The Snow-Forecast hindcast is
   a forecast (its model at 0–6 h lead), never truth.
@@ -40,6 +43,7 @@ FORECAST_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-for
 THRESHOLDS = {"liquid": (2.5, 10.0, 20.0), "snow": (2.5, 15.0, 30.0)}  # mm / cm per 24 h
 STRICT_KM, STRICT_DELEV_M = 25.0, 300.0
 MAX_SWE_GAIN_MM, MAX_DEPTH_GAIN_CM = 150.0, 150.0  # above this a daily gain is a sensor fault
+TRUTH_SOURCES = ("snotel", "bc-asws")  # station networks used as truth
 THIN_EVENTS = 20  # fewer observed events than this → the score is flagged thin
 
 
@@ -195,12 +199,12 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     FROM b JOIN resorts r USING (resort_id)
     GROUP BY ALL""")
 
-    # ---------------------------------------------------------------- truth: SNOTEL
-    con.execute("""
+    # ---------------------------------------------------------------- truth: SNOTEL + BC ASWS
+    con.execute(f"""
     CREATE TABLE cand AS
-    SELECT resort_id, station_id, arg_max(value, fetched_at) AS km, arg_max(elevation_m, fetched_at) AS st_elev,
-           arg_max(value_text, fetched_at) AS station_name
-    FROM raw WHERE source = 'snotel' AND kind = 'mapping' GROUP BY resort_id, station_id""")
+    SELECT resort_id, station_id, source AS truth_source, arg_max(value, fetched_at) AS km,
+           arg_max(elevation_m, fetched_at) AS st_elev, arg_max(value_text, fetched_at) AS station_name
+    FROM raw WHERE source IN {TRUTH_SOURCES} AND kind = 'mapping' GROUP BY resort_id, station_id, source""")
     con.execute("""
     CREATE TABLE tier_elev AS
     SELECT resort_id, tier, mode(elevation_m) AS tier_elev FROM raw
@@ -209,13 +213,13 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     con.execute(f"""
     CREATE TABLE station_pairs AS
     WITH c AS (
-      SELECT t.resort_id, t.tier, t.tier_elev, c.station_id, c.station_name, c.km, c.st_elev,
+      SELECT t.resort_id, t.tier, t.tier_elev, c.station_id, c.truth_source, c.station_name, c.km, c.st_elev,
              c.st_elev - t.tier_elev AS delev,
              c.km / {STRICT_KM} + abs(c.st_elev - t.tier_elev) / {STRICT_DELEV_M} AS score,
              c.km <= {STRICT_KM} AND abs(c.st_elev - t.tier_elev) <= {STRICT_DELEV_M} AS strict
       FROM tier_elev t JOIN cand c USING (resort_id)
     )
-    SELECT resort_id, tier, tier_elev, station_id, station_name, km, st_elev, delev,
+    SELECT resort_id, tier, tier_elev, station_id, truth_source, station_name, km, st_elev, delev,
            CASE WHEN strict THEN 'strict' ELSE 'loose' END AS pair_quality
     FROM c QUALIFY row_number() OVER (PARTITION BY resort_id, tier ORDER BY strict DESC, score) = 1""")
 
@@ -232,7 +236,8 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     CREATE TABLE sn_day AS
     SELECT p.resort_id, p.tier, s.station_id, s.variable,
            CAST(timezone(r.tz, s.valid_start + INTERVAL 1 HOUR) AS DATE) AS obs_date, s.value
-    FROM sn s JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)""")
+    FROM sn s JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)
+    WHERE p.truth_source = 'snotel'""")
     con.execute("""
     CREATE TABLE sn_gain AS
     SELECT *,
@@ -251,16 +256,63 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     log(public_log, f"SNOTEL day alignment: start-of-day r={c_start:.3f}, end-of-day r={c_end:.3f} "
                     f"(n={n_corr}) → using {align}-of-day readings")
 
+    # BC ASWS pillows report hourly in UTC. A day's reading is the median of
+    # the readings at 23:00, 00:00 and 01:00 local around its midnight (two of
+    # three needed; one hour alone is too noisy on a pillow), so the gain over
+    # local day D is reading(D+1) − reading(D): start-of-day by construction.
+    con.execute("""
+    CREATE TABLE bc_day AS
+    WITH h AS (
+      SELECT station_id, variable, valid_start, value FROM raw
+      WHERE source = 'bc-asws' AND kind = 'observation' AND period_label = 'hourly'
+        AND variable IN ('swe', 'snow_depth', 'precip_accum') AND value IS NOT NULL
+      QUALIFY row_number() OVER (PARTITION BY station_id, variable, valid_start ORDER BY fetched_at DESC) = 1
+    ), p AS (
+      SELECT DISTINCT p.resort_id, p.tier, p.station_id, r.tz
+      FROM station_pairs p JOIN resorts r USING (resort_id) WHERE p.truth_source = 'bc-asws'
+    ), x AS (
+      SELECT p.resort_id, p.tier, h.station_id, h.variable, h.value,
+             timezone(p.tz, h.valid_start) AS local_ts,
+             CAST(timezone(p.tz, h.valid_start + INTERVAL 90 MINUTE) AS DATE) AS obs_date
+      FROM h JOIN p USING (station_id)
+    )
+    SELECT resort_id, tier, station_id, variable, obs_date, median(value) AS value
+    FROM x WHERE hour(local_ts) IN (23, 0, 1)
+    GROUP BY ALL HAVING count(*) >= 2""")
+    con.execute("""
+    CREATE TABLE bc_gain AS
+    SELECT *,
+      CASE WHEN datediff('day', obs_date, lead(obs_date) OVER w) = 1 THEN lead(value) OVER w - value END AS gain
+    FROM bc_day WINDOW w AS (PARTITION BY resort_id, tier, station_id, variable ORDER BY obs_date)""")
+
     con.execute(f"""
     CREATE TABLE truth AS
-    SELECT resort_id, tier, obs_date AS local_date, any_value(station_id) AS station_id,
+    SELECT resort_id, tier, obs_date AS local_date, any_value(station_id) AS station_id, 'snotel' AS truth_source,
       max(CASE WHEN variable = 'swe' THEN gain_{align} END) AS d_swe,
       max(CASE WHEN variable = 'snow_depth' THEN gain_{align} END) AS d_depth,
       max(CASE WHEN variable = 'precip_accum' THEN gain_{align} END) AS d_precip
-    FROM sn_gain GROUP BY resort_id, tier, obs_date""")
+    FROM sn_gain GROUP BY resort_id, tier, obs_date
+    UNION ALL
+    SELECT resort_id, tier, obs_date, any_value(station_id), 'bc-asws',
+      max(CASE WHEN variable = 'swe' THEN gain END),
+      max(CASE WHEN variable = 'snow_depth' THEN gain END),
+      max(CASE WHEN variable = 'precip_accum' THEN gain END)
+    FROM bc_gain GROUP BY resort_id, tier, obs_date""")
+    dup = con.execute("SELECT count(*) FROM (SELECT 1 FROM truth GROUP BY resort_id, tier, local_date HAVING count(*) > 1)").fetchone()[0]
+    if dup:
+        raise SystemExit(f"{dup} resort-tier-days have truth from two sources — station_pairs should give one")
+    bc = con.execute("""
+      SELECT corr(f.fc_amount, t.d_swe), count(*) FROM fc f
+      JOIN truth t ON t.resort_id = f.resort_id AND t.tier = f.tier AND t.local_date = f.local_date
+      WHERE t.truth_source = 'bc-asws' AND f.source = 'open-meteo-previous-runs' AND f.issue_key = 'previous_day0'
+        AND f.space = 'liquid' AND t.d_swe BETWEEN 0 AND 150""").fetchone()
+    if bc[1]:
+        log(public_log, f"BC ASWS check: model precip vs pillow SWE gain r={bc[0]:.3f} (n={bc[1]})")
+    else:
+        log(public_log, "BC ASWS: no paired days yet (needs the bc-asws backfill or live runs)")
     con.execute(f"""
     CREATE TABLE truth2 AS
-    SELECT resort_id, tier, local_date, station_id,
+    SELECT resort_id, tier, local_date, station_id, truth_source,
       CASE WHEN d_swe IS NULL OR d_swe > {MAX_SWE_GAIN_MM} THEN NULL ELSE greatest(d_swe, 0) END AS obs_swe_gain_mm,
       CASE WHEN d_depth IS NULL OR d_depth > {MAX_DEPTH_GAIN_CM} THEN NULL ELSE greatest(d_depth, 0) END AS obs_depth_gain_cm,
       CASE WHEN d_precip IS NULL OR d_precip < 0 OR d_precip > {MAX_SWE_GAIN_MM} THEN NULL ELSE d_precip END AS obs_precip_gain_mm,
@@ -290,7 +342,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
            f.source || CASE WHEN f.model <> '' THEN ':' || f.model ELSE '' END AS source_label,
            f.resort_id, f.region, f.tier, f.model, f.member, f.space, f.issue_key, f.issue_ts,
            f.lead_day, f.lead_hours, f.local_date, f.fc_amount, ft.fc_temp_c,
-           p.station_id, p.pair_quality, p.km AS station_km, p.delev AS station_delev_m,
+           p.station_id, p.truth_source, p.pair_quality, p.km AS station_km, p.delev AS station_delev_m,
            t.obs_swe_gain_mm, t.obs_depth_gain_cm, t.obs_precip_gain_mm, t.sensor_flag,
            CASE WHEN t.obs_swe_gain_mm >= 5 THEN t.obs_depth_gain_cm * 10 / t.obs_swe_gain_mm END AS obs_slr,
            CASE f.space WHEN 'liquid' THEN t.obs_swe_gain_mm ELSE t.obs_depth_gain_cm END AS obs,
@@ -349,6 +401,8 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
         "forecast_days": "SELECT count(*) FROM fc",
         "pairs_with_truth": "SELECT count(*) FROM pairs WHERE obs IS NOT NULL",
         "resorts_with_strict_pair": "SELECT count(DISTINCT resort_id) FROM station_pairs WHERE pair_quality = 'strict' AND tier = 'mid'",
+        "resorts_with_strict_pair_bc": "SELECT count(DISTINCT resort_id) FROM station_pairs WHERE pair_quality = 'strict' AND tier = 'mid' AND truth_source = 'bc-asws'",
+        "pairs_with_bc_truth": "SELECT count(*) FROM pairs WHERE obs IS NOT NULL AND truth_source = 'bc-asws'",
         "resorts_with_any_pair": "SELECT count(DISTINCT resort_id) FROM station_pairs WHERE tier = 'mid'",
         "resorts_total": "SELECT count(*) FROM resorts",
         "sensor_flags": "SELECT count(*) FROM truth2 WHERE sensor_flag",
@@ -388,12 +442,12 @@ def report(con, stats: dict) -> str:
         "PRIVATE: contains paid-source scores. Mid tier, strict station pairs only.\n",
         "## Coverage\n",
         f"- Forecast days: {stats['forecast_days']:,}; with truth: {stats['pairs_with_truth']:,}",
-        f"- Resorts with a strict SNOTEL pair (mid): {stats['resorts_with_strict_pair']} of {stats['resorts_total']} "
+        f"- Resorts with a strict station pair (mid; BC ASWS {stats['resorts_with_strict_pair_bc']}): {stats['resorts_with_strict_pair']} of {stats['resorts_total']} "
         f"(any pair: {stats['resorts_with_any_pair']})",
         f"- SNOTEL day alignment used: {a['used']}-of-day (r start {a['r_start']:.3f} vs end {a['r_end']:.3f}, n {a['n']:,})",
         f"- Daily gains dropped as sensor faults: {stats['sensor_flags']}; resort-report days: {stats['ots_days']}\n",
         "## Station pairs (mid tier)\n",
-        table(con, "SELECT resort_id, station_name, round(km, 1) AS km, delev AS delev_m, pair_quality FROM station_pairs WHERE tier = 'mid' ORDER BY pair_quality DESC, resort_id"),
+        table(con, "SELECT resort_id, truth_source, station_name, round(km, 1) AS km, delev AS delev_m, pair_quality FROM station_pairs WHERE tier = 'mid' ORDER BY pair_quality DESC, resort_id"),
         "\n## Liquid ≥ 10 mm/day, judged on 2025-26 (test), all regions: CSI by lead day\n",
         table(con, """PIVOT (SELECT source_label, lead_day, round(csi, 2) AS csi FROM scores
                       WHERE space = 'liquid' AND threshold = 10 AND split = 'test' AND region = 'ALL' AND lead_day <= 7)

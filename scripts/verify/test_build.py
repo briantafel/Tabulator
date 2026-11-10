@@ -102,6 +102,33 @@ def main():
                         valid_start=day3, valid_end=day3 + timedelta(days=1), period_label="daily",
                         variable="reported_daily_snow", value=v))
 
+    # BC ASWS (Revelstoke, America/Vancouver): hourly pillow, 20 mm / 25 cm gained 04:00–08:00 PST on Jan 3.
+    rows.append(row(source="bc-asws", kind="mapping", resort_id="revelstoke", station_id="2A06P", elevation_m=1850,
+                    fetched_at=fetched, variable="candidate_distance", value=8.0, value_text="Mount Revelstoke"))
+    storm_start, storm_end = local(3, 4, PST), local(3, 8, PST)
+    t = local(1, 0, PST) - timedelta(hours=2)
+    while t < local(11, 3, PST):
+        frac = min(max((t - storm_start) / (storm_end - storm_start), 0), 1)
+        jitter = 0.4 if t.hour % 2 else -0.4  # pillow noise the midnight median must ride over
+        for var, base, gain in (("swe", 400.0, 20.0), ("snow_depth", 200.0, 25.0)):
+            rows.append(row(source="bc-asws", kind="observation", station_id="2A06P", fetched_at=fetched,
+                            valid_start=t, valid_end=t, period_label="hourly", variable=var,
+                            value=base + gain * frac + (jitter if var == "swe" else 0)))
+        t += timedelta(hours=1)
+    for i in range(4 * 10):
+        vs = start + timedelta(hours=6 * i)
+        wet = vs == datetime(2025, 1, 3, 12, tzinfo=UTC)  # 04–10 PST Jan 3
+        rows.append(row(source="open-meteo-previous-runs", kind="forecast", resort_id="revelstoke", tier="mid",
+                        elevation_m=1900, issued_at=vs, fetched_at=fetched, valid_start=vs,
+                        valid_end=vs + timedelta(hours=6), period_label="previous_day0", variable="precip",
+                        value=20.0 if wet else 0.0, model="ecmwf_ifs025"))
+    for d in range(2, 6):
+        for lab, h, n in (("am", 6, 6), ("pm", 12, 6), ("night", 18, 12)):
+            vs = local(d, h, PST)
+            rows.append(row(source="snow-forecast-hindcast", kind="hindcast", resort_id="revelstoke", tier="mid",
+                            elevation_m=1900, station_id="Revelstoke", fetched_at=fetched, valid_start=vs,
+                            valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow", value=0.0))
+
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         arch = tmp / "archive" / "source=x" / "month=2025-01"
@@ -127,13 +154,13 @@ def main():
                       "AND space = 'liquid' AND issue_key = 'previous_day0' AND local_date = DATE '2025-01-03'")
         assert abs(fc - 20) < 1e-9 and obs == 20, (fc, obs)
         # Precip-weighted temperature: the storm block's −8 °C, not the day's mean.
-        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid' "
+        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid'AND resort_id = 'alta' "
                    "AND local_date = DATE '2025-01-03'")[0] == -8
         # Dry day: plain mean of block mid-temperatures (1 °C).
-        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid' "
+        assert one("SELECT fc_temp_c FROM p WHERE issue_key = 'previous_day0' AND space = 'liquid'AND resort_id = 'alta' "
                    "AND local_date = DATE '2025-01-05'")[0] == 1
         # A dry day is a real zero, not missing.
-        assert one("SELECT obs FROM p WHERE space = 'liquid' AND issue_key = 'previous_day0' "
+        assert one("SELECT obs FROM p WHERE space = 'liquid' AND issue_key = 'previous_day0'AND resort_id = 'alta' "
                    "AND local_date = DATE '2025-01-02'")[0] == 0
         assert one("SELECT lead_day FROM p WHERE issue_key = 'previous_day1' LIMIT 1")[0] == 1
         # Hindcast: lead 0, 25 cm on Jan 3; Jan 2 starts at 06:00 → partial → absent (not zero).
@@ -154,12 +181,22 @@ def main():
         # Station pair: the near-elevation station wins over the closer valley one.
         pairs = (tmp / "out" / "station_pairs.csv").read_text()
         assert "766:UT:SNTL" in pairs and "999:UT:SNTL" not in pairs, pairs
-        # Scores: one 10 mm event, hit at lead 0.
+        # Scores: one 10 mm event at each resort, both hit at lead 0.
         s = duckdb.read_parquet(str(tmp / "out" / "scores.parquet"))
         hit = q.execute(f"SELECT hits, misses, false_alarms FROM read_parquet('{tmp / 'out' / 'scores.parquet'}') "
                         "WHERE source_label LIKE 'open-meteo-previous%' AND space = 'liquid' AND threshold = 10 "
                         "AND lead_day = 0 AND region = 'ALL'").fetchone()
-        assert hit == (1, 0, 0), hit
+        assert hit == (2, 0, 0), hit  # Alta (SNOTEL) and Revelstoke (BC pillow)
+        # BC pillow: the storm day gets the full 20 mm, the days either side get 0 despite ±0.4 mm noise.
+        bc = q.execute("SELECT local_date, obs, truth_source FROM p WHERE resort_id = 'revelstoke' AND space = 'liquid' "
+                       "AND source = 'open-meteo-previous-runs' AND local_date BETWEEN DATE '2025-01-02' AND DATE '2025-01-04' "
+                       "ORDER BY local_date").fetchall()
+        assert [(str(d), o, src) for d, o, src in bc] == [("2025-01-02", 0, "bc-asws"), ("2025-01-03", 20, "bc-asws"),
+                                                            ("2025-01-04", 0, "bc-asws")], bc
+        assert one("SELECT obs FROM p WHERE resort_id = 'revelstoke' AND space = 'snow' "
+                   "AND local_date = DATE '2025-01-03' LIMIT 1")[0] == 25
+        assert stats["resorts_with_strict_pair_bc"] == 1, stats
+        assert "BC ASWS check" in (tmp / "out" / "log.txt").read_text()
         log = (tmp / "out" / "log.txt").read_text()
         assert "snow-forecast" not in log, "paid source named in the public log"
         assert "report" and "PRIVATE" in (tmp / "out" / "report.md").read_text()

@@ -84,7 +84,22 @@ sources:
         stations within 30 km of each US resort (kind mapping, variable
         candidate_distance). Which one stands in for a resort is decided in the views.
       - AWDB reports English units in station-local standard time; rows are converted to metric and UTC.
-      - No Canadian coverage. Revelstoke, Whistler, Lake Louise and Kicking Horse need another source.
+      - No Canadian coverage; BC and the border Rockies use bc-asws below.
+
+  bc-asws:
+    name: BC Automated Snow Weather Stations (BC River Forecast Centre snow pillows)
+    kind: observation (ground truth for BC and border-Rockies resorts) and mapping
+    url: https://www.env.gov.bc.ca/wsd/data_searches/snow/asws/data/{SW,SD,PC,TA}.csv (current water year) and {code}_Archive.csv (earlier years); stations from the BC WFS layer WHSE_WATER_MANAGEMENT.SSL_SNOW_ASWS_STNS_SP
+    cadence: twice daily, the last 72 hours hourly. A one-time backfill (piece bc-asws-history, run_id bf-bc-asws-history, parser_version bc-asws-history-1, workflow backfill.yml) adds hourly readings 2024-10-25 → 2026-05-02.
+    since: 2026-11-10
+    raw: the station layer (GeoJSON) and each CSV as fetched, gzipped
+    variables: swe (mm), snow_depth (cm), precip_accum (mm, cumulative gauge), temp (°C); period_label hourly, valid_start = valid_end = the reading's UTC hour
+    licence: Open Government Licence – British Columbia (attribution)
+    notes:
+      - Same mapping pattern as snotel - up to three active stations within 30 km of each Canadian resort (kind mapping, variable candidate_distance); the views pick one per tier.
+      - Wide CSVs, one column per station, hours in UTC. Blank cells are missing (no row). Values outside a per-variable sensor range are dropped and counted; a shift in the overall range (a unit change) fails the run.
+      - The verification build turns hours into days - a day's reading is the median of 23:00, 00:00 and 01:00 local around its midnight, so a day's gain is reading(next day) minus reading(day).
+      - Snow pillows are noisy hour to hour (a few mm); daily gains below ~3 mm are within that noise.
 
   nws:
     name: US National Weather Service gridpoint forecast
