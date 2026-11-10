@@ -46,9 +46,20 @@ function Marker({ kind, x, y }) {
 
 export default function RangeChart({ days, metric, sel = "forecast", projMembers = null, onSelect = null }) {
   const n = days.length;
-  if (!n) return null;
   const hasProj = days.some((d) => d.projected);
-  const pitch = W / n;
+  const pitch = W / Math.max(n, 1);
+
+  // Panel behind the days the headline adds up (Brian's option A).
+  const idx = days.map((d, i) => ({ d, i }));
+  const panelCols = !hasProj || sel === "total" ? [] : idx.filter(({ d }) => (sel === "projected" ? d.projected : !d.projected));
+  const target = panelCols.length
+    ? { x0: pitch * panelCols[0].i + 1, x1: pitch * (panelCols[panelCols.length - 1].i + 1) - 1 }
+    : null;
+  /* Slides between positions and fades in/out (Brian, 2026-11-03). Called
+     before any early return: hooks must run in the same order every render,
+     or a sheet that goes from some days to none crashes. */
+  const panel = usePanelMotion(target);
+  if (!n) return null;
   const x = (i) => pitch * i + pitch / 2;
   const barW = n > 6 ? 16 : 18;
   const tickW = n > 6 ? 20 : 22;
@@ -78,14 +89,6 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
   // Only guides inside the plot: never up into the legend.
   for (let g = step; g <= top; g += step) if (y(g) >= PLOT_TOP) guides.push(g);
 
-  // Panel behind the days the headline adds up (Brian's option A).
-  const idx = days.map((d, i) => ({ d, i }));
-  const panelCols = !hasProj || sel === "total" ? [] : idx.filter(({ d }) => (sel === "projected" ? d.projected : !d.projected));
-  const target = panelCols.length
-    ? { x0: pitch * panelCols[0].i + 1, x1: pitch * (panelCols[panelCols.length - 1].i + 1) - 1 }
-    : null;
-  // Slides between positions and fades in/out (Brian, 2026-11-03).
-  const panel = usePanelMotion(target);
   const PANEL_TOP = 42.5, PANEL_BOT = 277.5;
 
   const line = (y0, key, stroke) => (

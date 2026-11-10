@@ -24,6 +24,7 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - run: npm run lint   # catches hook-order mistakes (react-hooks/rules-of-hooks) before deploy
       - run: npm test
       - run: npm run build
         env:
