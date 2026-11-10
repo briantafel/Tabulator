@@ -1,58 +1,63 @@
 {
- "generatedAt": "2026-11-09T16:21:36.769Z",
- "forecastGeneratedAt": "2026-11-09T16:15:12.573Z",
+ "generatedAt": "2026-11-10T03:39:22.718Z",
+ "forecastGeneratedAt": "2026-11-10T03:33:08.044Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-09",
+  "from": "2026-11-10",
   "to": "2026-11-14",
-  "days": 6,
+  "days": 5,
   "toLabel": "Saturday Nov 14"
  },
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is the top resort here, with 45\" over the window. The big day is Friday, with 19\". Rain is the main concern early in the week, and Environment Canada has a special weather statement from Tuesday through Thursday night. Cypress Mountain has 11\" total, mostly on Saturday."
+   "text": "Whistler leads with 31\" over the window, and its big day is Tuesday at 19\". Expect rain for most of the week, with periods of rain Thursday and Friday nights. Cypress Mountain sees 1\" by Saturday, mostly rain."
   },
   {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Crystal Mountain leads with 14\" total, and Friday brings the biggest day at 6\". The NWS expects rain and snow mixing Friday and Friday night, with strong southwest winds at times earlier in the week. Mt. Baker is at 13\", with 7\" possible on Saturday. Stevens Pass has 9\"."
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Kirkwood tops the Tahoe group at 16\", with 14\" falling Friday. Sugar Bowl sees 15\" and Palisades 15\", both peaking Friday at 13\". The forecast shows a chance of rain and snow Friday, with mixed precipitation likely Friday night."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak tops the region at 14\" over the window, with 8\" on Thursday. Whiteface and Stowe are close behind at 11\" and 10\", both with their biggest day on Thursday. Snow showers and wind are the main story early in the week, with cold temperatures in the 20s overnight Tuesday."
+   "text": "Stowe leads the Northeast at 9\", with 6\" on Thursday. Whiteface sees 9\" and Jay Peak 9\", both also peaking Thursday. Wind is the main concern for Stowe early in the week, with gusts up to 32 mph Tuesday night."
   },
   {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Whitewater is the top resort here at 7\", with 3\" on Saturday. Revelstoke has 6\" total, with 3\" expected Saturday. Snow levels sit high at times, so expect rain at lower elevations on Monday and Tuesday. RED Mountain has 4\" total."
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth gets 9\", all of it on Friday. Southwest winds are the main concern, with gusts as high as 60 mph Friday night. Snow chances continue through Saturday night, with gusts as high as 55 mph."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center expects an atmospheric river to bring more rain and high mountain snow to the West Coast around Sunday Nov 15 into early the following week. Confidence in the exact track and snow levels is moderate.",
+  "text": "The Weather Prediction Center says a more organized storm may reach the West Coast and the Sierra around Sunday Nov 15, with heavier rain and high mountain snow. The Reno NWS office says confidence in its timing and amounts is low.",
   "sources": [
    {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-09T10:15:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+    "name": "NWS STO Area Forecast Discussion",
+    "issuedAt": "2026-11-09T22:45:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
    },
    {
     "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-09T11:38:00+00:00",
+    "issuedAt": "2026-11-09T23:56:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
    },
    {
+    "name": "NWS REV Area Forecast Discussion",
+    "issuedAt": "2026-11-09T20:04:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
+   },
+   {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-09T07:34:00.000Z",
+    "issuedAt": "2026-11-09T20:00:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
     "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-08T20:00:00.000Z",
+    "issuedAt": "2026-11-09T20:00:00.000Z",
     "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
    }
   ]
@@ -60,15 +65,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-09T16:15:12.573Z"
+   "issuedAt": "2026-11-10T03:33:08.044Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-09T16:21:36.470Z"
+   "issuedAt": "2026-11-10T03:39:22.468Z"
   }
  ],
  "api": {
-  "day": "2026-11-09",
-  "calls": 3
+  "day": "2026-11-10",
+  "calls": 1
  }
 }
