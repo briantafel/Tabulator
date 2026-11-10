@@ -216,10 +216,13 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
   for (const code of Object.keys(FILES)) {
     try {
       const gz = await download(currentUrl(code), `${rawDir}/${code}.csv.gz`);
-      const values = [];
-      const res = await parseWide(gzLines(gz), code, { wanted, from, fetchedAt, runId,
-        onRow: (r) => { sink.write(r); values.push(r.value); } });
-      checkUnits(code, values);
+      // Hold this file's rows until its unit check passes: a file in the
+      // wrong unit must not reach the archive. Each file stands alone, so
+      // one bad file costs only that variable for this run.
+      const held = [];
+      const res = await parseWide(gzLines(gz), code, { wanted, from, fetchedAt, runId, onRow: (r) => held.push(r) });
+      checkUnits(code, held.map((r) => r.value));
+      held.forEach((r) => sink.write(r));
       if (res.last && Date.parse(fetchedAt) - Date.parse(res.last) > 48 * 3600e3) {
         throw new Error(`newest row is ${res.last} — the file has not updated in 2+ days`);
       }
