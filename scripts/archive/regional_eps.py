@@ -89,7 +89,7 @@ def log(msg: str) -> None:
     print(msg, file=sys.stderr, flush=True)
 
 
-def http(url: str, data: bytes | None = None, retries: int = 3, timeout: int = 120) -> bytes:
+def http(url: str, data: bytes | None = None, retries: int = 3, timeout: int = 60) -> bytes:
     last = None
     for attempt in range(retries + 1):
         if attempt:
@@ -206,7 +206,12 @@ def ch_items(collection: str, ref: datetime, variable: str, perturbed: bool) -> 
     body = {"collections": [collection], "forecast:reference_datetime": ref.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "forecast:variable": variable, "forecast:perturbed": perturbed, "limit": 200}
     out, url, data = {}, STAC, json.dumps(body).encode()
+    t = time.time()
+    pages = 0
     while url:
+        pages += 1
+        if pages > 50:
+            raise RuntimeError(f"STAC search for {variable} paged past 50 pages — the filter is not being applied")
         page = json.loads(http(url, data=data))
         for f in page.get("features", []):
             h = f.get("properties", {}).get("forecast:horizon", "")
@@ -214,14 +219,17 @@ def ch_items(collection: str, ref: datetime, variable: str, perturbed: bool) -> 
             if not m:
                 continue
             lead = int(m.group(1)) * 24 + int(m.group(2))
-            for a in f.get("assets", {}).values():
-                if a.get("href", "").endswith(".grib2"):
+            # hrefs are pre-signed (…grib2?AWSAccessKeyId=…): match the asset
+            # name / path, not the end of the URL.
+            for name, a in f.get("assets", {}).items():
+                if name.endswith(".grib2") or a.get("href", "").split("?")[0].endswith(".grib2"):
                     out[lead] = a["href"]
         nxt = [l for l in page.get("links", []) if l.get("rel") == "next"]
         if nxt:
             url, data = nxt[0]["href"], (json.dumps(nxt[0]["body"]).encode() if nxt[0].get("body") else data)
         else:
             url = None
+    log(f"    STAC {variable} {'perturbed' if perturbed else 'ctrl'}: {len(out)} leads, {pages} page(s), {time.time() - t:.1f} s")
     return out
 
 
@@ -262,7 +270,7 @@ def collect_run(model: str, cfg: dict, run_time: datetime, resorts: list[dict], 
 
     def fetch(url: str) -> bytes:  # network and bz2 release the GIL: run these in parallel
         raw = http(url)
-        return bz2.decompress(raw) if url.endswith(".bz2") else raw
+        return bz2.decompress(raw) if url.split("?")[0].endswith(".bz2") else raw
 
     for var, leads in files_by_var.items():
         s = series.setdefault(var, {})
@@ -273,7 +281,7 @@ def collect_run(model: str, cfg: dict, run_time: datetime, resorts: list[dict], 
                 for keys, vals in grib_messages(raw):
                     n = keys.get("perturbationNumber")
                     member = 0 if n is None or keys.get("typeOfEnsembleForecast") in (0, 1) and n == 0 else int(n)
-                    if "ctrl" in url.split("/")[-1].lower():
+                    if "ctrl" in url.split("?")[0].split("/")[-1].lower():
                         member = 0
                     s.setdefault(member, {})[lead] = np.asarray(vals)[idx]
         log(f"    {var}: {len(leads)} leads, {len(s)} members ({time.time() - T0:.0f} s)")
