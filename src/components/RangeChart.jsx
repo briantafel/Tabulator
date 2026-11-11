@@ -121,11 +121,11 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
 
       {guides.map((g) => (
         <g key={g}>
-          {line(y(g), `g${g}`, "#F2F2F2")}
-          <text x={W} y={y(g) - 3} textAnchor="end" fontSize="9" fill="#C6C6C6">{`${g}${u}`}</text>
+          {line(y(g), `g${g}`, "#E6E6E6")}
+          <text x={W} y={y(g) - 3} textAnchor="end" fontSize="9" fill="#A8A8A8">{`${g}${u}`}</text>
         </g>
       ))}
-      {line(BASE + 0.5, "base", "#ECECEC")}
+      {line(BASE + 0.5, "base", "#DADADA")}
 
       {days.map((d, i) => {
         const c = d.projected ? PUR : RED;
