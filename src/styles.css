@@ -120,7 +120,13 @@ body { background: #F2F2F2; }
 .bar.open {
   background: var(--line); height: calc(56 * var(--u)); margin-bottom: 0;
 }
+/* Open, the gear turns white (Brian, 2026-11-11). */
+.bar.open .gear { color: #fff; }
+/* Pinned under the header like the header itself, so it opens over whatever
+   is on screen. In flow it opened at the top of the page — off-screen above
+   anyone scrolled down, leaving just the grey header (Brian, 2026-11-11). */
 .settings {
+  position: sticky; top: calc(56 * var(--u)); z-index: 19;
   display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
   padding: 12px 22px 11px; background: var(--line);
   font-size: 13px; color: #666;
