@@ -599,6 +599,20 @@ def temperature(con, out: Path, paid_list: str) -> dict:
     WHERE t.fc_adj IS NOT NULL GROUP BY ALL""")
     con.execute(f"COPY (SELECT * FROM temp_matched ORDER BY ALL) TO '{out / 'temp_matched.csv'}' (HEADER)")
 
+    # Each resort's bias (Brian, 2026-11-11): leads 1–3 pooled, highs and lows
+    # separately, per source and winter. A steady per-resort bias is the first
+    # thing a per-resort correction would remove; a noisy one says leave it.
+    con.execute(f"""
+    CREATE TABLE temp_by_resort AS
+    SELECT t.resort_id, any_value(r.region) AS region, t.source_label, any_value(t.paid) AS paid, t.var, t.split,
+           count(*) AS n, avg(t.fc_adj - t.obs) * {F} AS bias_f, avg(abs(t.fc_adj - t.obs)) * {F} AS mae_f,
+           stddev_samp(t.fc_adj - t.obs) * {F} AS sd_f,
+           avg(CASE WHEN abs(t.fc_adj - t.obs) * {F} <= 3 THEN 1.0 ELSE 0.0 END) AS within_3f
+    FROM tdet t JOIN resorts r USING (resort_id)
+    WHERE t.fc_adj IS NOT NULL AND t.lead_day BETWEEN 1 AND 3
+    GROUP BY t.resort_id, t.source_label, t.var, t.split""")
+    con.execute(f"COPY (SELECT * FROM temp_by_resort ORDER BY ALL) TO '{out / 'temp_by_resort.csv'}' (HEADER)")
+
     return {
         "temp_obs_days": con.execute("SELECT count(*) FROM tobs WHERE obs_hi IS NOT NULL").fetchone()[0],
         "temp_obs_faults": bad,
@@ -666,6 +680,17 @@ def report(con, stats: dict) -> str:
         "\nSame days, n and bias (+ = forecast too warm), lead 1:\n",
         table(con, """SELECT source_label, var, n, resorts, round(bias_f, 1) AS bias_f, round(mae_f, 1) AS mae_f,
                       round(within_3f, 2) AS within_3f FROM temp_matched WHERE lead_day = 1 ORDER BY var, mae_f"""),
+        "\n### Each resort's bias, °F (+ = forecast too warm), leads 1–3 pooled, 2025-26 test winter\n",
+        "Elevation-adjusted to the station. The equal-weight public blend and the three backfilled models.\n",
+        table(con, """PIVOT (SELECT resort_id, region, source_label || ' ' || var AS col, round(bias_f, 1) AS b
+                      FROM temp_by_resort WHERE split = 'test' AND (source_label LIKE 'blend:%'
+                        OR source_label LIKE 'open-meteo-previous-runs:%'))
+                      ON col USING any_value(b) GROUP BY resort_id, region ORDER BY region, resort_id"""),
+        "\n### Each resort's bias this season, NWS vs Snow-Forecast, °F, leads 1–3 (few days per resort — indicative only)\n",
+        table(con, """PIVOT (SELECT resort_id, region, source_label || ' ' || var || ' (n)' AS col,
+                             printf('%+.1f (%d)', bias_f, n) AS b
+                      FROM temp_by_resort WHERE split = 'live' AND source_label IN ('nws', 'snow-forecast'))
+                      ON col USING any_value(b) GROUP BY resort_id, region ORDER BY region, resort_id"""),
         "\n### Past winters (no NWS archive then): daily high MAE °F by lead, 2025-26 test winter\n",
         table(con, """PIVOT (SELECT source_label, lead_day, round(mae_f, 1) AS mae FROM temp_scores
                       WHERE var = 'hi' AND split = 'test' AND lead_day <= 7) ON lead_day USING any_value(mae)
