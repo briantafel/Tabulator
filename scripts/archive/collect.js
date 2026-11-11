@@ -22,6 +22,7 @@ import * as ens from "./ensembles.js";
 import * as snotel from "./snotel.js";
 import * as bcasws from "./bc-asws.js";
 import * as slf from "./slf.js";
+import * as amedas from "./amedas.js";
 import * as nws from "./nws.js";
 import * as ots from "./onthesnow.js";
 
@@ -69,6 +70,10 @@ await run("bc-asws", (sink, rawDir) =>
 // Swiss / Alpine ground truth (2026-11-11).
 await run("slf", (sink, rawDir) =>
   slf.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+// Japanese ground truth (2026-11-11).
+await run("amedas", (sink, rawDir) =>
+  amedas.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
 await run("nws", (sink, rawDir) =>
   nws.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));

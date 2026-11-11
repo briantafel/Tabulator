@@ -281,3 +281,17 @@ variables:
   reported_month_base_depth: { unit: cm, meaning: Average base depth for the month (OnTheSnow history). }
   reported_month_summit_depth: { unit: cm, meaning: Average summit depth for the month (OnTheSnow history). }
   reported_month_max_base_depth: { unit: cm, meaning: Maximum base depth in the month (OnTheSnow history). }
+
+amedas:
+  kind: observation
+  paid: false
+  licence: "Government of Japan Standard Terms of Use (CC BY 4.0 compatible). Attribution: Japan Meteorological Agency website."
+  added: 2026-11-11
+  module: scripts/archive/amedas.js
+  notes: "JMA AMeDAS snapshots at 03/09/15/21 JST (= 18/00/06/12 UTC), last 3 days each run. Only quality flag 0 kept. Stations within 30 km that report snow depth; up to 3 per resort as mapping rows. Stations are in valleys/towns, often far below the slopes."
+  variables:
+    snow_depth: "cm, instant"
+    new_snow_6h: "cm, depth increase over 6 h ending valid_end (JMA snow6h)"
+    new_snow_24h: "cm, depth increase over 24 h ending valid_end (JMA snow24h)"
+    precip_24h: "mm, 24 h ending valid_end (heated gauge; undercatches snow)"
+    temp: "C, instant"
