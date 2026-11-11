@@ -1,0 +1,16 @@
+# Tabulator scheduler: a Cloudflare Worker cron that starts the archive
+# workflows on time. Added 2026-11-11: GitHub starts this repo's scheduled runs
+# 3–8 h late, and the hourly / 3-hourly workflows added that day never fired
+# at all in their first 6 hours. The DWD / MeteoSwiss files are deleted after
+# ~24 h, so a missed schedule there is data lost for good.
+#
+# Setup (Brian, once): see README.md in this folder.
+name = "tabulator-scheduler"
+main = "index.js"
+compatibility_date = "2026-11-01"
+
+[triggers]
+crons = ["7 * * * *"]   # hourly; index.js decides which workflows are due
+
+[vars]
+REPO = "briantafel/Tabulator"
