@@ -21,7 +21,7 @@
 
 import { coordsOf, fetchText, saveRaw } from "./common.js";
 
-export const PARSER_VERSION = "slf-1";
+export const PARSER_VERSION = "slf-2";
 const API = "https://measurement-api.slf.ch/public/api";
 const RADIUS_KM = 30;
 const PER_RESORT = 3;
@@ -39,7 +39,8 @@ export function pickStations(stations, resorts, network) {
     const c = coordsOf(r);
     if (!c) continue;
     const near = stations
-      .filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon) && (network !== "imis" || s.type === "SNOW_FLAT"))
+      .filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon) && (network !== "imis" || s.type === "SNOW_FLAT")
+        && (network !== "imis-wind" || s.type === "WIND"))
       .map((s) => ({ s, km: Number(km(c, [s.lat, s.lon]).toFixed(2)) }))
       .filter((x) => x.km <= RADIUS_KM)
       .sort((a, b) => a.km - b.km)
@@ -75,6 +76,35 @@ export function measurementRows(m, station, network, { fetchedAt, runId }) {
   return rows;
 }
 
+/* IMIS half-hourly weather (added 2026-11-11 for wind verification by altitude,
+   claude/temp-wind-plan.md W1, and slope temperatures, T1). Snow stations
+   (SNOW_FLAT, ~2000-2800 m) and ridge wind stations (WIND, often 2500-3200 m)
+   both report it. m/s -> km/h like every other wind row in the archive.
+   VW_30MIN_MAX is the highest wind in the half hour: a gust measure. */
+const MET = {
+  VW_30MIN_MEAN: ["wind_speed_mean", "km/h", 3.6],
+  VW_30MIN_MAX: ["wind_gust_max", "km/h", 3.6],
+  DW_30MIN_MEAN: ["wind_dir_mean", "deg", 1],
+  TA_30MIN_MEAN: ["temp_mean", "C", 1],
+};
+export function imisMetRows(m, station, { fetchedAt, runId }) {
+  const end = new Date(m.measure_date);
+  if (Number.isNaN(end.getTime())) throw new Error(`bad measure_date ${m.measure_date}`);
+  const rows = [];
+  for (const [field, [variable, unit, k]] of Object.entries(MET)) {
+    const v = m[field];
+    if (v == null || !Number.isFinite(v)) continue;
+    rows.push({
+      source: "slf", kind: "observation", resort_id: null, tier: null, station_id: `imis:${station.code}`,
+      lat: station.lat, lon: station.lon, elevation_m: Number.isFinite(station.elevation) ? Math.round(station.elevation) : null,
+      fetched_at: fetchedAt, valid_start: new Date(end.getTime() - 30 * 60e3).toISOString(), valid_end: end.toISOString(),
+      period_label: "30min", variable, value: Number((v * k).toFixed(2)), unit, model: "imis", value_text: station.type ?? null,
+      run_id: runId, parser_version: PARSER_VERSION,
+    });
+  }
+  return rows;
+}
+
 export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) {
   const failures = [];
   let picks = [];
@@ -87,24 +117,27 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
     if (!Array.isArray(stations) || !stations.length) throw new Error(`${network} station list is empty — the API may have changed`);
     stationsBy[network] = stations;
     picks = picks.concat(pickStations(stations, resorts, network));
+    if (network === "imis") picks = picks.concat(pickStations(stations, resorts, "imis-wind"));
   }
   for (const p of picks) {
     sink.write({
-      source: "slf", kind: "mapping", resort_id: p.resort, station_id: `${p.network}:${p.station.code}`,
+      source: "slf", kind: "mapping", resort_id: p.resort, station_id: `${p.network === "imis-wind" ? "imis" : p.network}:${p.station.code}`,
       lat: p.station.lat, lon: p.station.lon,
       elevation_m: Number.isFinite(p.station.elevation) ? Math.round(p.station.elevation) : null,
       fetched_at: fetchedAt, variable: "candidate_distance", value: p.km, unit: "km",
-      value_text: p.station.label ?? null, model: p.network, run_id: runId, parser_version: PARSER_VERSION,
+      value_text: [p.station.type, p.station.label].filter(Boolean).join(" · ") || null, model: p.network,
+      run_id: runId, parser_version: PARSER_VERSION,
     });
   }
-  const wanted = new Map(picks.map((p) => [`${p.network}:${p.station.code}`, p]));
+  const keyOf = (p) => `${p.network === "imis-wind" ? "imis" : p.network}:${p.station.code}`;
+  const wanted = new Map(picks.map((p) => [keyOf(p), p]));
   log(`  slf: ${wanted.size} stations within ${RADIUS_KM} km of ${new Set(picks.map((p) => p.resort)).size} resorts`);
 
   let ok = 0, tried = 0, rows = 0;
   const noData = [];
   for (const [key, p] of wanted) {
     tried++;
-    const path = p.network === "imis" ? `imis/station/${p.station.code}/measurements` : `study-plot/station/${p.station.code}/measurements`;
+    const path = p.network !== "study-plot" ? `imis/station/${p.station.code}/measurements` : `study-plot/station/${p.station.code}/measurements`;
     try {
       const res = await fetchText(`${API}/${path}?period_in_days=${DAYS}`, { retries: 2 });
       // A station with nothing in the window answers 404 NO_DATA (study plots
@@ -115,8 +148,11 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       const list = JSON.parse(res.text);
       // IMIS is every 30 min: keep snow depth at whole hours only (enough for daily truth, 2x smaller).
       for (const m of list) {
-        if (p.network === "imis" && !/T\d\d:00:00/.test(m.measure_date)) continue;
-        for (const r of measurementRows(m, p.station, p.network, { fetchedAt, runId })) { sink.write(r); rows++; }
+        if (p.network !== "study-plot") {
+          for (const r of imisMetRows(m, p.station, { fetchedAt, runId })) { sink.write(r); rows++; }
+          if (!/T\d\d:00:00/.test(m.measure_date)) continue; // snow depth at whole hours only
+        }
+        for (const r of measurementRows(m, p.station, p.network === "study-plot" ? "study-plot" : "imis", { fetchedAt, runId })) { sink.write(r); rows++; }
       }
       ok++;
     } catch (e) {

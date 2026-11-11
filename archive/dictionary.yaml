@@ -212,6 +212,45 @@ sources:
       - 24 h values have valid_start = measure_date − 24 h and valid_end = measure_date (UTC). Null fields write no row. A study plot answering 404 NO_DATA has no readings yet (early season), which is not a fault.
       - "Licence: CC BY 4.0. Cite: Source: WSL Institute for Snow and Avalanche Research SLF (IMIS DOI 10.16904/envidat.406)."
       - History older than 7 days comes from SLF file downloads (separate job, not built yet).
+      - "From 2026-11-11 (parser slf-2): IMIS half-hourly weather from snow stations (SNOW_FLAT) and ridge wind stations (WIND, up to 3 more per resort; mapping value_text gives the station type). Variables wind_speed_mean and wind_gust_max (km/h, converted from m/s; the gust is the highest wind in the half hour), wind_dir_mean (deg), temp_mean (°C), period_label 30min, value_text = station type. For wind and slope-temperature verification by altitude (claude/temp-wind-plan.md W1/T1)."
+  amedas:
+    name: JMA AMeDAS (Japan Meteorological Agency automated stations)
+    kind: observation (ground truth for Japanese resorts) and mapping
+    url: https://www.jma.go.jp/bosai/amedas/ (const/amedastable.json, data/map/<YYYYMMDDHHmmss>.json)
+    cadence: every archive run; snapshots at 03/09/15/21 JST (= 18/00/06/12 UTC) for the last 3 days
+    since: 2026-11-11
+    raw: the station table and each snapshot, gzipped JSON
+    variables: snow_depth (cm, instant), new_snow_6h and new_snow_24h (cm, depth increase over the window ending valid_end; JMA snow6h/snow24h), precip_24h (mm; heated gauge, undercatches snow), temp (°C, instant)
+    licence: "Government of Japan Standard Terms of Use (CC BY 4.0 compatible). Credit: Japan Meteorological Agency website."
+    notes:
+      - Only quality flag 0 is kept. Stations within 30 km that report snow depth; up to 3 per resort as mapping rows.
+      - Stations are in valleys and towns, often far below the slopes; elevation_m is the station's.
+  cocorahs:
+    name: CoCoRaHS (Community Collaborative Rain, Hail and Snow Network)
+    kind: observation (volunteer daily reports, US and Canada) and mapping
+    url: https://data.cocorahs.org/export/exportreports.aspx and exportstations.aspx (CSV, times in GMT)
+    cadence: every archive run, the last 3 report dates
+    since: 2026-11-11
+    raw: each station list and report CSV, gzipped
+    variables: precip_24h (mm), new_snow_24h (cm), new_snow_water_24h (mm), snow_depth (cm, instant), swe (mm, instant)
+    licence: "Free for non-commercial use with credit: Community Collaborative Rain, Hail and Snow Network (CoCoRaHS)."
+    notes:
+      - A report covers ~24 h ending at its observation time (often ~7 am local); valid_end is that time in UTC.
+      - T (trace) is stored as 0 with value_text T. NA writes no row. Inches are converted to metric.
+      - Up to 5 stations within 30 km per resort as mapping rows. Volunteers live in towns and valleys, below the slopes.
+  snodas:
+    name: NOAA NOHRSC SNODAS (Snow Data Assimilation System), NSIDC G02158 unmasked
+    kind: analysis (gridded ~1 km snowpack analysis; second-tier truth)
+    url: https://noaadata.apps.nsidc.org/NOAA/G02158/unmasked/YYYY/MM_Mon/SNODAS_unmasked_YYYYMMDD.tar
+    cadence: every archive run, the last 3 days
+    since: 2026-11-11
+    raw: each product's text header, gzipped (the grids are not kept)
+    variables: snow_depth (cm), swe (mm), snowfall_water_24h (mm water, solid precipitation), rain_24h (mm); each also as <name>_max_5x5 (max of the 5x5 cells, ~4 km, around the resort)
+    licence: Public domain (US Government). Cite NOAA NOHRSC SNODAS, NSIDC G02158.
+    notes:
+      - A model analysis blended with observations, not a measurement. Weaker outside the US (the unmasked grid reaches southern Canada).
+      - Snapshot 06 UTC on the file date; precipitation products are 24 h ending then.
+      - Grid size, corners and scale come from each file's header ("Meters / 1000", "Kilograms per square meter / 10"); a plausibility gate fails the run on bad scaling.
   bc-asws:
     name: BC Automated Snow Weather Stations (BC River Forecast Centre snow pillows)
     kind: observation (ground truth for BC and border-Rockies resorts) and mapping
@@ -334,44 +373,3 @@ variables:
   reported_month_base_depth: { unit: cm, meaning: Average base depth for the month (OnTheSnow history). }
   reported_month_summit_depth: { unit: cm, meaning: Average summit depth for the month (OnTheSnow history). }
   reported_month_max_base_depth: { unit: cm, meaning: Maximum base depth in the month (OnTheSnow history). }
-
-amedas:
-  kind: observation
-  paid: false
-  licence: "Government of Japan Standard Terms of Use (CC BY 4.0 compatible). Attribution: Japan Meteorological Agency website."
-  added: 2026-11-11
-  module: scripts/archive/amedas.js
-  notes: "JMA AMeDAS snapshots at 03/09/15/21 JST (= 18/00/06/12 UTC), last 3 days each run. Only quality flag 0 kept. Stations within 30 km that report snow depth; up to 3 per resort as mapping rows. Stations are in valleys/towns, often far below the slopes."
-  variables:
-    snow_depth: "cm, instant"
-    new_snow_6h: "cm, depth increase over 6 h ending valid_end (JMA snow6h)"
-    new_snow_24h: "cm, depth increase over 24 h ending valid_end (JMA snow24h)"
-    precip_24h: "mm, 24 h ending valid_end (heated gauge; undercatches snow)"
-    temp: "C, instant"
-
-cocorahs:
-  kind: observation
-  paid: false
-  licence: "Free for non-commercial use with credit: Community Collaborative Rain, Hail and Snow Network (CoCoRaHS)."
-  added: 2026-11-11
-  module: scripts/archive/cocorahs.js
-  notes: "Official CoCoRaHS CSV exports, times in GMT, last 3 report dates each run. A report covers ~24 h ending at its observation time. T (trace) stored as 0 with value_text T; NA writes no row. Up to 5 stations within 30 km per resort as mapping rows. Volunteers are in towns/valleys below the slopes."
-  variables:
-    precip_24h: "mm, 24 h ending valid_end"
-    new_snow_24h: "cm, new snowfall, 24 h ending valid_end"
-    new_snow_water_24h: "mm, water in the new snow (core sample)"
-    snow_depth: "cm, instant"
-    swe: "mm, water in the snowpack, instant"
-
-snodas:
-  kind: analysis
-  paid: false
-  licence: "Public domain (US Government). Cite NOAA NOHRSC SNODAS, NSIDC G02158."
-  added: 2026-11-11
-  module: scripts/archive/snodas.js
-  notes: "Daily ~1 km gridded snowpack analysis (model + observations), unmasked grid incl. southern Canada. Snapshot 06 UTC on the file date; precip products are 24 h ending then. Last 3 days each run. Per resort: the cell at its coordinates and the max over the surrounding 5x5 cells (~4 km) as a rough upper-mountain value. A model analysis, not a measurement: second-tier truth. Weaker outside the US."
-  variables:
-    snow_depth: "cm, instant; snow_depth_max_5x5 = max of 5x5 cells"
-    swe: "mm, instant; swe_max_5x5 likewise"
-    snowfall_water_24h: "mm water, solid precipitation, 24 h ending 06 UTC"
-    rain_24h: "mm, liquid precipitation, 24 h ending 06 UTC"
