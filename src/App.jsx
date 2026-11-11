@@ -306,7 +306,7 @@ export default function Tabulator() {
               <span className="set-label">Temperature</span>
               <span className="pill sm">
                 <button className={!tempsOn ? "on" : ""} onClick={() => chooseTemps(false)}>Snow-Forecast</button>
-                <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Our model</button>
+                <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Tabulator model</button>
               </span>
             </div>}
             <div className="stamps">
