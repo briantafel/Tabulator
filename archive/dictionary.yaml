@@ -295,3 +295,17 @@ amedas:
     new_snow_24h: "cm, depth increase over 24 h ending valid_end (JMA snow24h)"
     precip_24h: "mm, 24 h ending valid_end (heated gauge; undercatches snow)"
     temp: "C, instant"
+
+cocorahs:
+  kind: observation
+  paid: false
+  licence: "Free for non-commercial use with credit: Community Collaborative Rain, Hail and Snow Network (CoCoRaHS)."
+  added: 2026-11-11
+  module: scripts/archive/cocorahs.js
+  notes: "Official CoCoRaHS CSV exports, times in GMT, last 3 report dates each run. A report covers ~24 h ending at its observation time. T (trace) stored as 0 with value_text T; NA writes no row. Up to 5 stations within 30 km per resort as mapping rows. Volunteers are in towns/valleys below the slopes."
+  variables:
+    precip_24h: "mm, 24 h ending valid_end"
+    new_snow_24h: "cm, new snowfall, 24 h ending valid_end"
+    new_snow_water_24h: "mm, water in the new snow (core sample)"
+    snow_depth: "cm, instant"
+    swe: "mm, water in the snowpack, instant"

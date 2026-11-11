@@ -23,6 +23,7 @@ import * as snotel from "./snotel.js";
 import * as bcasws from "./bc-asws.js";
 import * as slf from "./slf.js";
 import * as amedas from "./amedas.js";
+import * as cocorahs from "./cocorahs.js";
 import * as nws from "./nws.js";
 import * as ots from "./onthesnow.js";
 
@@ -74,6 +75,10 @@ await run("slf", (sink, rawDir) =>
 // Japanese ground truth (2026-11-11).
 await run("amedas", (sink, rawDir) =>
   amedas.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+// US/Canada volunteer snowfall reports (2026-11-11).
+await run("cocorahs", (sink, rawDir) =>
+  cocorahs.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
 await run("nws", (sink, rawDir) =>
   nws.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
