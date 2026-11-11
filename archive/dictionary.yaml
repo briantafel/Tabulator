@@ -124,6 +124,7 @@ sources:
       - Nearest 0.25° grid cell to the resort. lat/lon are the cell's. elevation_m is the cell's APPROXIMATE height from surface vs sea-level pressure (hypsometric, roughly ±50 m). Temperatures are at the model's height, not downscaled.
       - precipitation_surface is a mean rate over the interval ending at each lead (kg m-2 s-1), so mm = rate × seconds. 6-hour blocks aligned to 00/06/12/18 UTC. Partial blocks are not written.
       - "Variables: precip, temp_min, temp_max, wind_speed_max; ECMWF also temp_850_mean, temp_925_mean, dewpoint_2m_mean (and gust_max for IFS); GEFS also rh_2m_mean and frozen_pct_mean (NCEP's -50 no-precipitation code dropped, so no precip means no row)."
+      - "From 2026-11-11: temp = 2 m temperature at each lead on a 3-hour boundary out to 240 h (period_label instant, valid_start = valid_end). 3-hourly where the model is (IFS ENS to 144 h, GEFS), 6-hourly where it is not (AIFS ENS, IFS ENS after 144 h). For lift-hours lows (claude/temp-wind-plan.md T2). History inits archived before this change have no temp rows."
       - Treat this as a separate source from open-meteo-ensemble's ecmwf_ifs025 (same model, different processing). Never merge them.
       - "Licence: CC BY 4.0 via dynamical.org; ECMWF data also under ECMWF's terms. Attribution: ECMWF IFS ENS / AIFS ENS / NOAA GEFS from dynamical.org."
   nbm:

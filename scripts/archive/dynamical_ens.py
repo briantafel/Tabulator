@@ -50,6 +50,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PARSER_VERSION = "dynamical-ens-1"
 SOURCE = "dynamical-ens"
 BLOCK_H = 6
+INSTANT_MAX_H = 240  # 3-hourly temperature instants out to day 10 (the app horizon)
 TIME_LIMIT_S = 50 * 60
 RD, G = 287.05, 9.80665
 
@@ -73,7 +74,7 @@ DATASETS = {
 NH_WINTERS = [("2025-11-01", "2026-04-30"), ("2024-11-01", "2025-04-30"), ("2023-11-01", "2024-04-30"),
               ("2022-11-01", "2023-04-30"), ("2021-11-01", "2022-04-30"), ("2020-11-01", "2021-04-30")]
 
-PLAUSIBLE = {"precip": (0, 300), "temp_min": (-60, 45), "temp_max": (-60, 45), "wind_speed_max": (0, 400),
+PLAUSIBLE = {"precip": (0, 300), "temp": (-60, 45), "temp_min": (-60, 45), "temp_max": (-60, 45), "wind_speed_max": (0, 400),
              "gust_max": (0, 500), "temp_850_mean": (-60, 40), "temp_925_mean": (-60, 45),
              "dewpoint_2m_mean": (-70, 40), "rh_2m_mean": (0, 100.5), "frozen_pct_mean": (-0.5, 100.5)}
 
@@ -121,6 +122,17 @@ def build_blocks(model: str, init: datetime, leads_h: list[float], data: dict[st
         return blocks.setdefault(t, {"hours": 0.0, "precip": np.zeros((n_mem, n_res)), "t": [], "w": [], "g": [],
                                      **{k: [] for k in extra}})
 
+    # 3-hourly 2 m temperature instants (2026-11-11, claude/temp-wind-plan.md T2): the 6 h
+    # blocks can't isolate lift hours (08-16 local), so every lead on a 3 h boundary up to
+    # INSTANT_MAX_H is also kept as its own row. Where a model is only 6-hourly, rows are 6-hourly.
+    instants = []
+    for k in range(n_lead):
+        if leads_h[k] > INSTANT_MAX_H:
+            break
+        t = init + timedelta(hours=leads_h[k])
+        if t.minute == 0 and t.hour % 3 == 0 and leads_h[k] > 0:
+            instants.append(("temp", "C", iso(t), iso(t), data["temperature_2m"][k]))
+
     for k in range(1, n_lead):
         h0, h1 = leads_h[k - 1], leads_h[k]
         t0, t1 = init + timedelta(hours=h0), init + timedelta(hours=h1)
@@ -165,7 +177,7 @@ def build_blocks(model: str, init: datetime, leads_h: list[float], data: dict[st
         vs, ve = iso(bstart), iso(bstart + timedelta(hours=BLOCK_H))
         for variable, arr, unit in vals:
             out.append((variable, unit, vs, ve, arr))
-    return out
+    return out + instants
 
 
 def iter_rows(blocks, model, init, resorts, cell_lat, cell_lon, elev, fetched_at, run_id):
@@ -182,7 +194,7 @@ def iter_rows(blocks, model, init, resorts, cell_lat, cell_lon, elev, fetched_at
                     "source": SOURCE, "kind": "forecast", "resort_id": resorts[r]["id"], "tier": "mid",
                     "elevation_m": el[r], "lat": float(cell_lat[r]), "lon": float(cell_lon[r]), "station_id": None,
                     "issued_at": iso(init), "fetched_at": fetched_at, "valid_start": vs, "valid_end": ve,
-                    "period_label": None, "variable": variable, "value": round(v, 2), "value_text": None,
+                    "period_label": "instant" if vs == ve else None, "variable": variable, "value": round(v, 2), "value_text": None,
                     "unit": unit, "model": model, "member": m, "run_id": run_id, "parser_version": PARSER_VERSION,
                 }
 

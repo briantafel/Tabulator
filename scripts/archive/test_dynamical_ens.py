@@ -89,3 +89,17 @@ def test_gefs_frozen_no_precip_code_is_not_averaged():
     arr = by[("frozen_pct_mean", "2026-11-11T00:00:00Z")]
     assert arr[0, 0] == pytest.approx(80.0) and np.isnan(arr[0, 1])
     D.check_plausible([("frozen_pct_mean", "%", "a", "b", arr)])
+
+
+def test_three_hourly_temperature_instants():
+    leads = [0, 3, 6, 9, 12, 18, 24, 246]  # 3-hourly, then 6-hourly, then past day 10
+    init = datetime(2026, 11, 11, 0, tzinfo=timezone.utc)
+    b = D.build_blocks("ecmwf_ifs_ens", init, leads, make(leads), RESORTS, None, None, None, "x", "r", {}, None)
+    inst = [(vs, ve, arr) for v, u, vs, ve, arr in b if v == "temp"]
+    assert [vs for vs, _, _ in inst] == ["2026-11-11T03:00:00Z", "2026-11-11T06:00:00Z", "2026-11-11T09:00:00Z",
+                                         "2026-11-11T12:00:00Z", "2026-11-11T18:00:00Z", "2026-11-12T00:00:00Z"]
+    assert all(vs == ve for vs, ve, _ in inst)  # instants, not windows; lead 0 and >240 h left out
+    assert np.allclose(inst[2][2], -3.0)  # the lead-9 value itself
+    rows = list(D.iter_rows([("temp", "C", inst[0][0], inst[0][1], inst[0][2])], "ecmwf_ifs_ens", init, RESORTS,
+                            np.zeros(2), np.zeros(2), np.zeros(2), "f", "r"))
+    assert rows[0]["period_label"] == "instant" and rows[0]["variable"] == "temp"
