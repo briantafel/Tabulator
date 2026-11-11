@@ -71,6 +71,42 @@ sources:
       - Requested at the resort's Snow-Forecast mid-tier elevation, so temperatures are downscaled to the same height as the spine.
       - A model that does not offer a variable (the ECMWF ensemble has no freezing level) simply has no rows for it; each run's manifest lists what was unavailable.
       - Free tier is for non-commercial use. A commercial Tabulator would need a paid Open-Meteo plan.
+      - >
+        Changes, 2026-11-10/11. Compare sources only on resort-days both have.
+        From 2026-11-11 archiveOnly resorts get no ensembles. gfs025 is paused
+        (claude/lean-data-plan.md Phase 0). Requests went from 5 to 11 variables
+        on 2026-11-10 (9d0510c), then back to 5 on 2026-11-11 (21643bb), so the
+        SLR variables (rh, 700 hPa) exist only for the runs in between. The
+        01:28Z 2026-11-11 run is missing (cancelled, nothing uploaded). The
+        12:22Z run has 10 resorts (rate limited).
+  dwd-icon-eps:
+    name: DWD ICON ensembles from opendata.dwd.de (free; files kept ~24 h)
+    kind: forecast
+    url: https://opendata.dwd.de/weather/nwp/
+    models:
+      icon-eu-eps: ICON-EU-EPS, ~13 km icosahedral, 40 members, 00z+12z to 120 h
+      icon-d2-eps: ICON-D2-EPS, 2.2 km icosahedral, 20 members, 03z+15z to 48 h (no wind archived)
+    cadence: workflow regional-eps.yml every 3 h; collects every complete run not yet archived (markers under regional/done/)
+    since: 2026-11-11
+    raw: not kept (GBs per run); only resort points
+    notes:
+      - Each resort uses the nearest grid cell within the domain (EU 25 km, D2 5 km). elevation_m, lat and lon are that cell's own values, NOT the resort's. Temperatures are at the model's height, not downscaled.
+      - Rows are 6-hour blocks aligned to 00/06/12/18 UTC (precip, snow_we, temp_min, temp_max, wind_speed_max). Blocks only partly covered by the run are not written.
+      - issued_at is the exact model run time. snow_we is the model's snowfall as water equivalent (snow_gsp + snow_con), mm.
+      - "Licence: DWD open data, attribution Deutscher Wetterdienst."
+  meteoswiss-icon-eps:
+    name: MeteoSwiss ICON-CH ensembles, Open Government Data via STAC (free; files kept 24 h)
+    kind: forecast
+    url: https://data.geo.admin.ch/api/stac/v1/search
+    models:
+      icon-ch1-eps: ICON-CH1-EPS, ~1 km, control (member 0) + 10 perturbed, 00z+12z to 33 h
+      icon-ch2-eps: ICON-CH2-EPS, ~2.1 km, control (member 0) + 20 perturbed, 00z+12z to 120 h
+    cadence: workflow regional-eps.yml every 3 h, as above
+    since: 2026-11-11
+    raw: not kept; only resort points
+    notes:
+      - Same row shape as dwd-icon-eps. MeteoSwiss does not publish SNOW_CON, so snow_we is grid-scale snow only.
+      - "Licence: MeteoSwiss Open Government Data. Cite: Source: MeteoSwiss."
   snotel:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
