@@ -1,0 +1,27 @@
+name: Try one archive source (no upload)
+
+# Added 2026-11-11: run a single collector module on GitHub's runners and
+# print what it would archive. Nothing is uploaded. For testing new sources.
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: "Module in scripts/archive, e.g. slf"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  try:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/archive/try-source.js "${{ inputs.module }}"
