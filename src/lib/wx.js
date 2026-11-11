@@ -180,3 +180,42 @@ export function sfDays(days, limit = 6) {
   }
   return out;
 }
+
+/* ── TEMPORARY: the sky row follows the snow chart (Brian, 2026-11-11) ──
+ *
+ * The snow chart's days 1–6 come from Snow-Forecast; the sky row comes from
+ * the government forecast. When they disagree — the chart shows snow, the sky
+ * says "Sunny" — the column contradicts itself. Until our own snow model
+ * drives the chart, a day where the chart shows at least SKY_SNOW_MIN_CM and
+ * the government sky has no snow in it takes Snow-Forecast's sky for that day
+ * (icon and words only; the temperatures stay whatever the strip shows).
+ *
+ * REMOVE when the Tabulator snow model is promoted for days 1–6 — tracked in
+ * claude/watchlist.md ("sky row follows Snow-Forecast"). One call site:
+ * components/Detail.jsx.
+ */
+export const SKY_SNOW_MIN_CM = 1; // ≈0.4", the smallest amount the chart labels as more than a trace
+
+const SNOWY = new Set(["snow--blizzard", "snow--heavy", "wintry-mix", "sleet", "windy--snow", "snow", "snow--scattered"]);
+export const isSnowySky = (short) => SNOWY.has(iconFor(short));
+
+/** Snow-Forecast's snowiest sky for a day, from ALL its periods — snow
+ *  overnight counts, since the chart's number includes it. Null if none of
+ *  its periods mention snow. */
+function sfSnowSky(day) {
+  const skies = (day?.periods ?? []).map((p) => sfSky(p.phrase)).filter((s) => s && isSnowySky(s));
+  return skies.length ? skies.reduce((a, b) => (rankOf(b) < rankOf(a) ? b : a)) : null;
+}
+
+/** The government strip, with each snow-vs-sky mismatch day taking
+ *  Snow-Forecast's sky. Projected days (7+) are not touched: the chart's
+ *  purple numbers are not Snow-Forecast's. */
+export function skyFollowsSnow(govDays, sfSourceDays) {
+  const byDate = Object.fromEntries((sfSourceDays ?? []).filter((d) => d?.date && !d.projected).map((d) => [d.date, d]));
+  return (govDays ?? []).map((w) => {
+    const d = byDate[w.date];
+    if (!d || !(d.snow >= SKY_SNOW_MIN_CM) || isSnowySky(w.short)) return w;
+    const short = sfSnowSky(d);
+    return short ? { ...w, short, icon: iconFor(short), skyFrom: "sf" } : w;
+  });
+}

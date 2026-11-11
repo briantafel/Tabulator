@@ -139,6 +139,7 @@ body { background: #F2F2F2; }
 .settings .set-label { line-height: 16px; }
 .settings .set-row { display: flex; align-items: center; gap: 7px; }
 .settings .pill.sm button { line-height: 15px; }
+.settings .pill .reload { color: var(--red); }
 .settings .link { line-height: 18px; }
 .settings .stamps { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 9px; line-height: 14px; }
 .link { color: var(--red); font-weight: 600; font-size: 13px; }

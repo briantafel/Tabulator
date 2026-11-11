@@ -110,6 +110,10 @@ export default function Tabulator() {
   const chooseProjections = (on) => setProjOverride(nextOverride(on, projMode));
   /* With projections on, days 7–10 are appended to every resort (flagged, and
      never scored — see lib/scoring.js). Off: the feed exactly as loaded. */
+  /* Settings → Weather is hidden unless flags.json shows it; hidden, every
+     phone uses the government sky, whatever it chose before. */
+  const wxMode = feedRaw?.flags?.weatherSource ?? "off";
+  const wxEffective = canChoose(wxMode) ? wxSource : "nws";
   const tempsMode = feedRaw?.flags?.temps ?? "off";
   const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
   const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
@@ -285,16 +289,15 @@ export default function Tabulator() {
                 <button className={metric ? "on" : ""} onClick={() => setMetric(true)}>cm / °C</button>
               </span>
             </div>
-            <div className="set">
+            {canChoose(wxMode) ? <div className="set">
               <span className="set-label">Weather</span>
               <div className="set-row">
                 <span className="pill sm">
                   <button className={wxSource !== "sf" ? "on" : ""} onClick={() => setWxSource("nws")}>NWS</button>
                   <button className={wxSource === "sf" ? "on" : ""} onClick={() => setWxSource("sf")}>Snow-Forecast</button>
                 </span>
-                <button className="link" onClick={load}>Reload forecast</button>
               </div>
-            </div>
+            </div> : null}
             {canChoose(projMode) && <div className="set">
               <span className="set-label">Forecast</span>
               <span className="pill sm">
@@ -309,6 +312,8 @@ export default function Tabulator() {
                 <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Tabulator model</button>
               </span>
             </div>}
+            {/* Brian, 2026-11-11: at the bottom, a grey pill, red text. */}
+            <span className="pill sm"><button className="reload" onClick={load}>Reload forecast</button></span>
             <div className="stamps">
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {/* Was a pink banner over the results; Brian asked for it here
@@ -570,7 +575,7 @@ export default function Tabulator() {
         metric={metric}
         reports={feed?.reports}
         weather={feed?.weather}
-        wxSource={wxSource}
+        wxSource={wxEffective}
         history={feed?.history}
         projections={projections}
         onClose={() => setOpen(null)}

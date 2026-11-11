@@ -6,7 +6,7 @@ import { rainRisk, windSeverity, tempSeverity, before } from "../lib/scoring.js"
 import { resortVerdict } from "../lib/verdict.js";
 import { resortVoice } from "../lib/voice.js";
 import { copyVoice } from "../lib/flags.js";
-import { toDays, sfDays, iconPaths, shortLabel } from "../lib/wx.js";
+import { toDays, sfDays, skyFollowsSnow, iconPaths, shortLabel } from "../lib/wx.js";
 import { reportsFor, reportDate, REPORT_DAYS } from "../lib/reports.js";
 import { snowpack } from "../lib/depths.js";
 import Dot from "./Dot.jsx";
@@ -161,8 +161,13 @@ export default function Detail({
   /* With our temperature model on (lib/temps.js), the strip keeps its sky
      and words but shows our high and lift-hours low, so the sheet shows one
      temperature. Off: no day carries tempSource, and this is unchanged. */
+  /* Government sky (NWS / Environment Canada) by default. Snow-Forecast
+     when chosen (Settings → Weather, if the weatherSource switch shows it)
+     or when there is no government forecast — outside North America, or a
+     failed fetch. Mismatch days follow the snow chart (TEMPORARY, wx.js). */
+  const gov = toDays(weather?.resorts?.[r.id]?.periods ?? []);
   const wx = stripWithOurTemps(
-    wxSource === "sf" ? sfDays(r.days) : toDays(weather?.resorts?.[r.id]?.periods ?? []),
+    wxSource === "sf" || !gov.length ? sfDays(r.days) : skyFollowsSnow(gov, r.days),
     r.days,
     (c) => (typeof c === "number" ? Math.round((c * 9) / 5 + 32) : null),
   );

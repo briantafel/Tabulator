@@ -53,7 +53,9 @@ export function copyVoice() {
  * Legacy booleans are read as true → "on", false → "off". */
 export const MODES = Object.freeze(["off", "preview", "on"]);
 /* temps: our temperature model (lib/temps.js), Brian 2026-11-11. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off" });
+/* weatherSource: the Settings → Weather row (government vs Snow-Forecast
+   sky). Hidden by default since 2026-11-11 (Brian); "preview" brings it back. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */
