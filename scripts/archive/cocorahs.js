@@ -102,50 +102,41 @@ export function reportRows(rep, station, { fetchedAt, runId }) {
 }
 
 const mdY = (d) => `${d.getUTCMonth() + 1}/${d.getUTCDate()}/${d.getUTCFullYear()}`;
+export const reportsUrl = (st, query) =>
+  `${BASE}/exportreports.aspx?ReportType=Daily&dtf=1&Format=CSV&State=${st}&ReportDateType=reportdate&${query}&TimesInGMT=True`;
+export const REPORT_COLUMNS = ["ObservationDate", "ObservationTime", "StationNumber", ...Object.keys(FIELDS)];
 
-export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) {
-  const failures = [];
-  const states = statesFor(resorts);
+/** Station lists for the states. includeClosed: a backfill needs stations that
+ *  reported then but have closed since (claude/verify-truth-contract.md). */
+export async function loadStations(states, { rawDir, includeClosed = false, failures }) {
   const stations = new Map();
   for (const st of states) {
     const r = await fetchText(`${BASE}/exportstations.aspx?State=${st}&Format=CSV`, { retries: 2 });
     if (r.status !== 200) { failures.push(`stations ${st}: HTTP ${r.status}`); continue; }
-    await saveRaw(`${rawDir}/stations-${st}.csv.gz`, r.text);
+    if (rawDir) await saveRaw(`${rawDir}/stations-${st}.csv.gz`, r.text);
     if (!r.text.trim()) continue; // a province with no stations
     for (const s of parseCsv(r.text, ["StationNumber", "Latitude", "Longitude", "Elevation", "StationStatus"])) {
       const lat = Number(s.Latitude), lon = Number(s.Longitude), ft = Number(s.Elevation);
-      if (!Number.isFinite(lat) || !Number.isFinite(lon) || s.StationStatus === "Closed") continue;
+      if (!Number.isFinite(lat) || !Number.isFinite(lon) || (!includeClosed && s.StationStatus === "Closed")) continue;
       stations.set(s.StationNumber, { lat, lon, elevation_m: Number.isFinite(ft) && ft > 0 ? Math.round(ft * 0.3048) : null, name: s.StationName });
     }
     await sleep(300);
   }
   if (!stations.size) throw new Error(`no CoCoRaHS stations loaded for ${states.join(",")}`);
+  return stations;
+}
 
-  const reports = [];
-  let fetched = 0, tried = 0;
-  const today = new Date(fetchedAt);
-  for (let i = 0; i < DAYS; i++) {
-    const d = new Date(today.getTime() - i * 86400e3);
-    for (const st of states) {
-      tried++;
-      const url = `${BASE}/exportreports.aspx?ReportType=Daily&dtf=1&Format=CSV&State=${st}&ReportDateType=reportdate&Date=${mdY(d)}&TimesInGMT=True`;
-      const r = await fetchText(url, { retries: 2 });
-      if (r.status !== 200) { failures.push(`reports ${st} ${mdY(d)}: HTTP ${r.status}`); continue; }
-      fetched++;
-      if (!r.text.trim()) continue;
-      await saveRaw(`${rawDir}/reports-${st}-${d.toISOString().slice(0, 10)}.csv.gz`, r.text);
-      reports.push(...parseCsv(r.text, ["ObservationDate", "ObservationTime", "StationNumber", ...Object.keys(FIELDS)]));
-      await sleep(300);
-    }
-  }
+/** Mapping rows (up to 5 per resort within 30 km, reporting stations first) and
+ *  observation rows for the picked stations. Returns counts. */
+export function writeRows({ resorts, stations, reports, sink, fetchedAt, runId, parserVersion = PARSER_VERSION, onlyReporting = false }) {
   const reporting = new Set(reports.map((r) => r.StationNumber));
-
   const picked = new Set();
-  let mapped = 0;
+  let mapped = 0, rows = 0;
   for (const r of resorts) {
     const c = coordsOf(r);
     if (!c || (r.country && r.country !== "US" && r.country !== "CA")) continue;
-    const near = [...stations].map(([id, s]) => ({ id, s, km: km(c, [s.lat, s.lon]) }))
+    const near = [...stations].filter(([id]) => !onlyReporting || reporting.has(id))
+      .map(([id, s]) => ({ id, s, km: km(c, [s.lat, s.lon]) }))
       .filter((x) => x.km <= RADIUS_KM).sort((a, b) => Number(reporting.has(b.id)) - Number(reporting.has(a.id)) || a.km - b.km)
       .slice(0, PER_RESORT);
     if (near.length) mapped++;
@@ -154,15 +145,40 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       sink.write({
         source: "cocorahs", kind: "mapping", resort_id: r.id, station_id: n.id, lat: n.s.lat, lon: n.s.lon,
         elevation_m: n.s.elevation_m, fetched_at: fetchedAt, variable: "candidate_distance",
-        value: Number(n.km.toFixed(2)), unit: "km", value_text: n.s.name ?? null, run_id: runId, parser_version: PARSER_VERSION,
+        value: Number(n.km.toFixed(2)), unit: "km", value_text: n.s.name ?? null, run_id: runId, parser_version: parserVersion,
       });
     }
   }
-  let rows = 0;
   for (const rep of reports) {
     if (!picked.has(rep.StationNumber)) continue;
-    for (const row of reportRows(rep, stations.get(rep.StationNumber), { fetchedAt, runId })) { sink.write(row); rows++; }
+    for (const row of reportRows(rep, stations.get(rep.StationNumber), { fetchedAt, runId })) {
+      sink.write({ ...row, parser_version: parserVersion }); rows++;
+    }
   }
-  log(`cocorahs: ${states.length} states, ${stations.size} stations, ${picked.size} near ${mapped} resorts, ${fetched}/${tried} report files, ${rows} rows`);
-  return { ok: fetched >= 0.8 * tried && mapped > 0, stations: picked.size, rows, failures };
+  return { picked: picked.size, mapped, rows };
+}
+
+export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) {
+  const failures = [];
+  const states = statesFor(resorts);
+  const stations = await loadStations(states, { rawDir, failures });
+  const reports = [];
+  let fetched = 0, tried = 0;
+  const today = new Date(fetchedAt);
+  for (let i = 0; i < DAYS; i++) {
+    const d = new Date(today.getTime() - i * 86400e3);
+    for (const st of states) {
+      tried++;
+      const r = await fetchText(reportsUrl(st, `Date=${mdY(d)}`), { retries: 2 });
+      if (r.status !== 200) { failures.push(`reports ${st} ${mdY(d)}: HTTP ${r.status}`); continue; }
+      fetched++;
+      if (!r.text.trim()) continue;
+      await saveRaw(`${rawDir}/reports-${st}-${d.toISOString().slice(0, 10)}.csv.gz`, r.text);
+      reports.push(...parseCsv(r.text, REPORT_COLUMNS));
+      await sleep(300);
+    }
+  }
+  const { picked, mapped, rows } = writeRows({ resorts, stations, reports, sink, fetchedAt, runId });
+  log(`cocorahs: ${states.length} states, ${stations.size} stations, ${picked} near ${mapped} resorts, ${fetched}/${tried} report files, ${rows} rows`);
+  return { ok: fetched >= 0.8 * tried && mapped > 0, stations: picked, rows, failures };
 }

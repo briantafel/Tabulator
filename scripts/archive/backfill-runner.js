@@ -43,6 +43,8 @@ import { DAILY_TEMP_ELEMENTS, dataToRows, pickStations } from "./snotel.js";
 import * as bc from "./bc-asws.js";
 import { historyToRows } from "./onthesnow.js";
 import * as om from "./previous-runs.js";
+import * as cocorahs from "./cocorahs.js";
+import * as snodas from "./snodas.js";
 import { groupOf, makeBreakers } from "./breakers.js";
 
 const root = new URL("../..", import.meta.url).pathname;
@@ -157,6 +159,12 @@ const pieces = [
   // piece: a whole winter of hourly values per 20 stations is a very large response.
   ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-temp-${m[0].slice(0, 7)}`, kind: "snotel",
     winter: m, elements: ["TOBS"], duration: "HOURLY" }))),
+  // Added 2026-11-11: CoCoRaHS and SNODAS past winters (claude/verify-truth-contract.md),
+  // one calendar month a piece. SNODAS's first month starts a day early so the
+  // 24 h gain on Nov 1 has its Oct 31 snapshot.
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `cocorahs-${m[0].slice(0, 7)}`, kind: "cocorahs", winter: m }))),
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snodas-${m[0].slice(0, 7)}`, kind: "snodas",
+    winter: [m[0] === w[0] ? new Date(Date.parse(m[0]) - 864e5).toISOString().slice(0, 10) : m[0], m[1]] }))),
   { key: "bc-asws-history", kind: "bcasws" },
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
@@ -241,6 +249,48 @@ async function runPiece(p) {
     rmSync(dl, { recursive: true, force: true });
     log(`  · ${p.key}: ${wanted.size} stations for ${new Set(picks.map((x) => x.resort)).size} resorts`);
     return finish(p, "bc-asws", rows, []);
+  }
+  if (p.kind === "cocorahs") {
+    // One request per state for the whole month (ReportDateType=reportdate with a
+    // StartDate/EndDate range, tested 2026-11-11). Closed stations included.
+    const failures = [], raws = [], rows = [];
+    const states = cocorahs.statesFor(resorts);
+    const stations = await cocorahs.loadStations(states, { includeClosed: true, failures });
+    const mdy = (iso) => { const [y, m, d] = iso.split("-").map(Number); return `${m}/${d}/${y}`; };
+    const reports = [];
+    for (const st of states) {
+      const res = await fetchText(cocorahs.reportsUrl(st, `StartDate=${mdy(p.winter[0])}&EndDate=${mdy(p.winter[1])}`), { retries: 3 });
+      if (res.status !== 200) throw new Error(`reports ${st}: HTTP ${res.status}`);
+      if (res.text.trim()) {
+        raws.push([`${p.key}-${st}.csv.gz`, res.text]);
+        reports.push(...cocorahs.parseCsv(res.text, cocorahs.REPORT_COLUMNS));
+      }
+      await sleep(1000);
+    }
+    if (failures.length) throw new Error(failures.join("; "));
+    if (!reports.length) throw new Error("no CoCoRaHS reports in the whole month");
+    const out = cocorahs.writeRows({ resorts, stations, reports, sink: { write: (r) => rows.push(r) }, fetchedAt,
+      runId: `bf-${p.key}`, parserVersion: "cocorahs-history-1", onlyReporting: true });
+    log(`  · ${p.key}: ${reports.length} reports in ${states.length} states, ${out.picked} stations near ${out.mapped} resorts`);
+    if (!out.rows) throw new Error("no CoCoRaHS rows near any resort");
+    return finish(p, "cocorahs", rows, raws);
+  }
+  if (p.kind === "snodas") {
+    const failures = [], rows = [], missing = [];
+    const targets = snodas.snodasTargets(resorts);
+    let days = 0;
+    for (let t = Date.parse(p.winter[0]); t <= Date.parse(p.winter[1]); t += 864e5) {
+      const r = await snodas.collectDay(new Date(t), { targets, sink: { write: (x) => rows.push(x) }, rawDir: null, fetchedAt,
+        runId: `bf-${p.key}`, log, failures, quiet: true, parserVersion: "snodas-history-1" });
+      if (r.status === "missing") missing.push(new Date(t).toISOString().slice(0, 10));
+      else if (r.complete) days++;
+      await sleep(500);
+    }
+    if (failures.length) throw new Error(failures.slice(0, 5).join("; "));
+    const total = Math.round((Date.parse(p.winter[1]) - Date.parse(p.winter[0])) / 864e5) + 1;
+    if (missing.length) log(`  · ${p.key}: NSIDC has no file for ${missing.join(", ")} (those days get no rows)`);
+    if (days < 0.9 * total) throw new Error(`only ${days}/${total} complete days`);
+    return finish(p, "snodas", rows, []);
   }
   if (p.kind === "ots") {
     const res = await fetchText(`https://www.onthesnow.com/${p.resort.otsPath}/historical-snowfall`, { delayMs: 1500 });

@@ -114,59 +114,72 @@ export function urlFor(d) {
   return `${BASE}/${y}/${String(m + 1).padStart(2, "0")}_${MONTHS[m]}/SNODAS_unmasked_${y}${String(m + 1).padStart(2, "0")}${day}.tar`;
 }
 
+export const snodasTargets = (resorts) => resorts.filter((r) => coordsOf(r) && (!r.country || r.country === "US" || r.country === "CA"));
+
+/** One day's file → rows for every target resort. Returns { status, complete, rows, covered }.
+ *  status "missing" = no file for that day (404). Used by the live run and the backfill. */
+export async function collectDay(d, { targets, sink, rawDir, fetchedAt, runId, log, failures, quiet = false, parserVersion = PARSER_VERSION }) {
+  const url = urlFor(d);
+  let buf;
+  try {
+    const res = await fetch(url, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(120e3) });
+    if (res.status === 404) return { status: "missing", complete: false, rows: 0, covered: new Set() };
+    if (!res.ok) { failures.push(`${url}: HTTP ${res.status}`); return { status: "error", complete: false, rows: 0, covered: new Set() }; }
+    buf = Buffer.from(await res.arrayBuffer());
+  } catch (e) { failures.push(`${url}: ${e.message}`); return { status: "error", complete: false, rows: 0, covered: new Set() }; }
+  const ymd = d.toISOString().slice(0, 10);
+  const validEnd = `${ymd}T06:00:00.000Z`;
+  const validStart = new Date(Date.parse(validEnd) - 24 * 3600e3).toISOString();
+  const entries = tarEntries(buf);
+  const found = new Set(), covered = new Set();
+  let rows = 0;
+  for (const code of Object.keys(PRODUCTS)) {
+    const dat = entries.find((e) => productOf(e.name) === code && /\.dat\.gz$/.test(e.name));
+    const hdr = entries.find((e) => productOf(e.name) === code && /\.(txt|Hdr)\.gz$/i.test(e.name));
+    if (!dat || !hdr) { failures.push(`${ymd}: product ${code} missing from tar`); continue; }
+    const htext = gunzipSync(hdr.data).toString("latin1");
+    if (rawDir) await saveRaw(`${rawDir}/${ymd}-${code}.txt.gz`, htext);
+    const h = parseHeader(htext);
+    const grid = gunzipSync(dat.data);
+    if (grid.length !== 2 * h.cols * h.rows) throw new Error(`SNODAS ${code} ${ymd}: grid is ${grid.length} bytes, header says ${h.cols}x${h.rows}`);
+    if (!quiet) log(`  snodas ${ymd} ${code}: units "${h.units}", slope ${h.slope}, ${h.cols}x${h.rows}`);
+    found.add(code);
+    const [variable, unit, instant] = PRODUCTS[code];
+    for (const r of targets) {
+      const [lat, lon] = coordsOf(r);
+      const s = sample(grid, h, lat, lon);
+      if (!s) continue;
+      for (const [suffix, raw] of [["", s.cell], ["_max_5x5", s.max]]) {
+        const value = raw === null ? null : toUnit(code, raw, h);
+        if (value === null) continue;
+        if ((variable === "snow_depth" && value > 1500) || (variable === "swe" && value > 5000) || (!instant && value > 400))
+          throw new Error(`SNODAS ${code} ${ymd} ${r.id}: implausible ${variable}${suffix} = ${value} ${unit} — check the units ("${h.units}")`);
+        covered.add(r.id);
+        sink.write({
+          source: "snodas", kind: "analysis", resort_id: r.id, tier: null, station_id: `snodas:${s.row}_${s.col}`,
+          lat, lon, elevation_m: null, fetched_at: fetchedAt,
+          valid_start: instant ? validEnd : validStart, valid_end: validEnd, period_label: instant ? "instant" : "24h",
+          variable: variable + suffix, value, unit, run_id: runId, parser_version: parserVersion,
+        });
+        rows++;
+      }
+    }
+  }
+  return { status: "ok", complete: found.size === Object.keys(PRODUCTS).length, rows, covered };
+}
+
 export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) {
   const failures = [];
-  const targets = resorts.filter((r) => coordsOf(r) && (!r.country || r.country === "US" || r.country === "CA"));
+  const targets = snodasTargets(resorts);
   let days = 0, rows = 0;
   const covered = new Set();
   for (let i = 0; i < DAYS; i++) {
     const d = new Date(Date.parse(fetchedAt) - i * 86400e3);
-    const url = urlFor(d);
-    let buf;
-    try {
-      const res = await fetch(url, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(120e3) });
-      if (res.status === 404) { if (i > 0) failures.push(`${url}: 404`); continue; } // today's file may not exist yet
-      if (!res.ok) { failures.push(`${url}: HTTP ${res.status}`); continue; }
-      buf = Buffer.from(await res.arrayBuffer());
-    } catch (e) { failures.push(`${url}: ${e.message}`); continue; }
-    const ymd = d.toISOString().slice(0, 10);
-    const validEnd = `${ymd}T06:00:00.000Z`;
-    const validStart = new Date(Date.parse(validEnd) - 24 * 3600e3).toISOString();
-    const entries = tarEntries(buf);
-    const found = new Set();
-    for (const code of Object.keys(PRODUCTS)) {
-      const dat = entries.find((e) => productOf(e.name) === code && /\.dat\.gz$/.test(e.name));
-      const hdr = entries.find((e) => productOf(e.name) === code && /\.(txt|Hdr)\.gz$/i.test(e.name));
-      if (!dat || !hdr) { failures.push(`${ymd}: product ${code} missing from tar`); continue; }
-      const htext = gunzipSync(hdr.data).toString("latin1");
-      await saveRaw(`${rawDir}/${ymd}-${code}.txt.gz`, htext);
-      const h = parseHeader(htext);
-      if (i === 0 || !found.size) log(`  snodas ${ymd} ${code}: units "${h.units}", slope ${h.slope}, ${h.cols}x${h.rows}`);
-      const grid = gunzipSync(dat.data);
-      if (grid.length !== 2 * h.cols * h.rows) throw new Error(`SNODAS ${code} ${ymd}: grid is ${grid.length} bytes, header says ${h.cols}x${h.rows}`);
-      found.add(code);
-      const [variable, unit, instant] = PRODUCTS[code];
-      for (const r of targets) {
-        const [lat, lon] = coordsOf(r);
-        const s = sample(grid, h, lat, lon);
-        if (!s) continue;
-        for (const [suffix, raw] of [["", s.cell], ["_max_5x5", s.max]]) {
-          const value = raw === null ? null : toUnit(code, raw, h);
-          if (value === null) continue;
-          if ((variable === "snow_depth" && value > 1500) || (variable === "swe" && value > 5000) || (!instant && value > 400))
-            throw new Error(`SNODAS ${code} ${ymd} ${r.id}: implausible ${variable}${suffix} = ${value} ${unit} — check the units ("${h.units}")`);
-          covered.add(r.id);
-          sink.write({
-            source: "snodas", kind: "analysis", resort_id: r.id, tier: null, station_id: `snodas:${s.row}_${s.col}`,
-            lat, lon, elevation_m: null, fetched_at: fetchedAt,
-            valid_start: instant ? validEnd : validStart, valid_end: validEnd, period_label: instant ? "instant" : "24h",
-            variable: variable + suffix, value, unit, run_id: runId, parser_version: PARSER_VERSION,
-          });
-          rows++;
-        }
-      }
-    }
-    if (found.size === Object.keys(PRODUCTS).length) days++;
+    const r = await collectDay(d, { targets, sink, rawDir, fetchedAt, runId, log, failures, quiet: i > 0 });
+    if (r.status === "missing" && i > 0) failures.push(`${urlFor(d)}: 404`); // today's file may not exist yet
+    if (r.complete) days++;
+    rows += r.rows;
+    r.covered.forEach((id) => covered.add(id));
     await sleep(1000);
   }
   log(`snodas: ${days} complete days, ${covered.size}/${targets.length} resorts, ${rows} rows`);
