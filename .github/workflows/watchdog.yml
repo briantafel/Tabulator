@@ -1,0 +1,57 @@
+name: Archive watchdog
+
+# Added 2026-11-11. GitHub starts scheduled runs late (archive runs began
+# 3–8 hours after their cron time on 2026-11-10/11) and may skip them under
+# load. A skipped archive run is lost for good: live-only forecasts
+# (Snow-Forecast, ensembles) cannot be fetched afterwards.
+#
+# Every hour this checks when the last archive run STARTED. If none has
+# started in the last 13 hours and none is queued or running, it starts one.
+# Archive runs are meant to be ~12 h apart, so this only fires when a run is
+# late or missing, and says so in its summary.
+#
+# This watchdog is itself a scheduled run, so it can also start late; hourly
+# gives it many chances. If that proves unreliable, move the trigger to a
+# Cloudflare Worker cron (needs a token Brian adds there).
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Start the archive if it is overdue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          MAX_AGE_HOURS: "13"
+        run: |
+          set -euo pipefail
+          runs=$(gh api "repos/$REPO/actions/workflows/archive.yml/runs?per_page=10")
+          active=$(echo "$runs" | jq '[.workflow_runs[] | select(.status=="queued" or .status=="in_progress" or .status=="waiting" or .status=="pending")] | length')
+          last=$(echo "$runs" | jq -r '[.workflow_runs[] | .run_started_at] | max // empty')
+          now=$(date -u +%s)
+          if [ -n "$last" ]; then age_h=$(( (now - $(date -u -d "$last" +%s)) / 3600 )); else age_h=999; fi
+          echo "last archive run started: ${last:-never} (${age_h} h ago); active now: $active"
+          if [ "$active" -gt 0 ]; then
+            echo "An archive run is queued or running: nothing to do." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$age_h" -lt "$MAX_AGE_HOURS" ]; then
+            echo "Archive is on time (${age_h} h since the last start)." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "::warning::Archive overdue: no run started in ${age_h} h. Starting one."
+          echo "**Archive overdue** (${age_h} h since the last start): started a run." >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run archive.yml -R "$REPO" --ref main
