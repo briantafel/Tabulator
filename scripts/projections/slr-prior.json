@@ -1,0 +1,9 @@
+{
+  "version": "slr-prior-0",
+  "form": "SLR = a + b*T, clamped",
+  "a": 9.0,
+  "b": -0.6,
+  "clamp": [5.0, 25.0],
+  "temperature": "6 h block mean 2 m temperature, moved to the Snow-Forecast mid elevation at 6.5 C/km (C)",
+  "note": "A stated PRIOR, not a fit: about 9:1 at 0 C, 15:1 at -10 C, 21:1 at -20 C, the shape mountain SLR studies report. Replaced by a fitted public/slr.json (same form, scripts/model/slr.py) once one is committed. 2026-11-11."
+}

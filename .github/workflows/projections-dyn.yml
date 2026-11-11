@@ -1,0 +1,62 @@
+name: Shadow projections (dynamical.org + our snow ratio)
+
+# 2026-11-11 (Brian): build days 7–10 a second way — dynamical.org's free
+# ECMWF IFS ENS + GEFS liquid precipitation, converted to snow with our own
+# snow-to-liquid ratio — as a comparison and a backup for the Open-Meteo
+# build. Writes public/projections-dyn.json (same shape as projections.json).
+# The app does not read it yet. See scripts/projections/build_dyn.py and
+# claude/dyn-projections-plan.md.
+#
+# 10:07 UTC: after ensembles-om.yml (08:13) so the two are built from the
+# same day and the run summary compares them.
+on:
+  schedule:
+    - cron: "7 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write  # commits public/projections-dyn.json (only)
+  issues: write
+
+concurrency:
+  group: projections-dyn
+  cancel-in-progress: false
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the dynamical.org reader
+        run: pip install dynamical-catalog numpy
+      - name: Test
+        run: python3 scripts/projections/test_build_dyn.py
+      - name: Build
+        id: build
+        run: python3 scripts/projections/build_dyn.py public
+      - name: Commit
+        if: always() && steps.build.outcome != 'skipped'
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          test -f public/projections-dyn.json || { echo "nothing written"; exit 0; }
+          git add public/projections-dyn.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "projections-dyn: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = "Shadow projections (dynamical.org) failed or fell short";
+            const open = await github.rest.issues.listForRepo({ ...context.repo, state: "open", per_page: 50 });
+            const existing = open.data.find((i) => i.title === title);
+            const body = `Run: ${runUrl}`;
+            if (existing) await github.rest.issues.createComment({ ...context.repo, issue_number: existing.number, body });
+            else await github.rest.issues.create({ ...context.repo, title, body });
