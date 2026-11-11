@@ -226,7 +226,9 @@ def ch_items(collection: str, ref: datetime, variable: str, perturbed: bool) -> 
                     out[lead] = a["href"]
         nxt = [l for l in page.get("links", []) if l.get("rel") == "next"]
         if nxt:
-            url, data = nxt[0]["href"], (json.dumps(nxt[0]["body"]).encode() if nxt[0].get("body") else data)
+            # The next link carries only the cursor: MERGE it into the original
+            # body (as MeteoSwiss's meteodata-lab does), or the filters are lost.
+            url, data = nxt[0]["href"], json.dumps({**body, **(nxt[0].get("body") or {})}).encode()
         else:
             url = None
     log(f"    STAC {variable} {'perturbed' if perturbed else 'ctrl'}: {len(out)} leads, {pages} page(s), {time.time() - t:.1f} s")
