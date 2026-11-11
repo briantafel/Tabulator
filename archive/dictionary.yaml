@@ -138,6 +138,7 @@ sources:
       - "6-hour blocks aligned to 00/06/12/18 UTC: precip = APCP 6 h acc (mm); snow = ASNOW 6 h acc (cm), NBM's own snow-to-liquid; temp_min/max and wind_speed_max from the 2 m TMP / 10 m WIND instants inside the block (3-hourly, so min/max of 2–6 instants)."
       - Only deterministic idx lines are used. Probability, percentile and std-dev messages share the variable names and are skipped by design.
       - "Licence: NOAA open data, no restrictions. Attribution: NOAA National Blend of Models."
+      - "parser nbm-2 (2026-11-11): snow_level_min/max (m above sea level) from NBM's snow level at the block's instants, and slr_mean (ratio) when the inventory has a snow-to-liquid ratio. The idx names are matched by pattern (unverified from the sandbox); a cycle with no snow level is archived but the run fails loudly and prints the related inventory lines."
   snotel:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping

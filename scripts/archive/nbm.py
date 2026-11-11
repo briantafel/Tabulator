@@ -20,6 +20,16 @@ Rows: 6-hour blocks aligned to 00/06/12/18 UTC (source "nbm", model "nbm"):
   snow            ASNOW 6 h accumulation (m → cm), NBM's own snow-to-liquid
   temp_min/max    from 2 m TMP at the block's available instants (°C)
   wind_speed_max  from 10 m WIND at the block's instants (km/h)
+  snow_level_min/max  NBM's calibrated snow level at the block's instants (m
+                  above sea level). Added 2026-11-11 (claude/upper-air-plan.md):
+                  the US bar for our own per-tier snow line.
+  slr_mean        NBM's snow-to-liquid ratio at the block's instants, when the
+                  inventory carries it (benchmark for our SLR model).
+The snow-level and SLR idx names were not checked from the sandbox (NOAA's
+bucket is unreachable there), so they are matched by pattern (SNOW_LEVEL_RE,
+SLR_RE). If a cycle has no snow level, its other rows are still archived, the
+inventory lines that look related are printed, and the run FAILS so it is
+seen (missing is not zero, and failures are loud).
 issued_at is the exact cycle time. A block without its 6 h APCP is not
 written: missing is not zero. Done markers in the bucket (nbm/done/) make
 each run collect only new cycles. NBM history on AWS goes back to 2020, so
@@ -49,7 +59,7 @@ from regional_eps import grib_messages  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 BUCKET_URL = "https://noaa-nbm-grib2-pds.s3.amazonaws.com"
 UA = "tabulator-archive/1.0 (+https://github.com/briantafel/tabulator)"
-PARSER_VERSION = "nbm-1"
+PARSER_VERSION = "nbm-2"  # 2: snow level, SLR
 SOURCE = "nbm"
 # 00z/12z: their 6-hour accumulations end on 00/06/12/18 UTC like every other
 # source. The log reports each cycle's last lead (extended range check).
@@ -58,7 +68,11 @@ MAX_KM = 3.0
 BLOCK_H = 6
 TIME_LIMIT_S = 50 * 60
 PLAUSIBLE = {"precip": (0, 300), "snow": (0, 400), "temp_min": (-60, 45), "temp_max": (-60, 45),
-             "wind_speed_max": (0, 400)}
+             "wind_speed_max": (0, 400), "snow_level_min": (-500, 6500), "snow_level_max": (-500, 6500),
+             "slr_mean": (0, 60)}
+SNOW_LEVEL_RE = re.compile(r"SNOWLVL|SNOLVL|snow level", re.I)
+SLR_RE = re.compile(r"^(SNOWLR|SLR|SNOWLIQR)$", re.I)
+DISCOVER_RE = re.compile(r"SNOW|LVL|SLR|RATIO|WBZ|0C|isotherm", re.I)
 
 
 def log(msg: str) -> None:
@@ -127,6 +141,19 @@ def pick(idx, var: str, level: str, fcst: str):
     return None
 
 
+def pick_like(idx, var_re: re.Pattern, fcst: str):
+    """First deterministic message whose variable or level matches var_re at an
+    instant forecast hour (NBM names for snow level / SLR, unverified)."""
+    for start, end, v, lv, fc in idx:
+        if fc == fcst and (var_re.search(v) or var_re.search(lv)):
+            return start, end
+    return None
+
+
+def related_lines(idx) -> list[str]:
+    return sorted({f"{v}:{lv}" for _, _, v, lv, _ in idx if DISCOVER_RE.search(v) or DISCOVER_RE.search(lv)})
+
+
 def fetch_field(key: str, rng) -> np.ndarray:
     start, end = rng
     hdr = {"Range": f"bytes={start}-{end}" if end is not None else f"bytes={start}-"}
@@ -175,11 +202,18 @@ def collect_cycle(cycle: datetime, resorts: list[dict], fetched_at: str, run_id:
     log(f"  cycle {cycle:%Y-%m-%d %H}z: {len(leads)} lead files, last f{last:03d}")
     # The hours we need: every 3 h (instants for temp/wind) and every 6 h (accumulations).
     want = [l for l in sorted(leads) if l >= 1 and (l % 3 == 0)]
+    discovery: list[str] = []
 
     def job(lead):
         key = leads[lead]
         idx = parse_idx(http(f"{BUCKET_URL}/{key}.idx").decode())
         got = {}
+        for name, rx in (("snowlvl", SNOW_LEVEL_RE), ("slr", SLR_RE)):
+            rng = pick_like(idx, rx, f"{lead} hour fcst")
+            if rng:
+                got[name] = (key, rng)
+        if lead == 24:
+            discovery.extend(related_lines(idx))
         for name, var, level, fc in (("tmp", "TMP", "2 m above ground", f"{lead} hour fcst"),
                                      ("wind", "WIND", "10 m above ground", f"{lead} hour fcst"),
                                      ("apcp", "APCP", "surface", f"{lead - 6}-{lead} hour acc fcst"),
@@ -233,6 +267,15 @@ def collect_cycle(cycle: datetime, resorts: list[dict], fetched_at: str, run_id:
         w = [v["wind"] * 3.6 for v in inst if "wind" in v]
         if w:
             out["wind_speed_max"] = (np.max(w, axis=0), "km/h")
+        sl = [v["snowlvl"] for v in inst if "snowlvl" in v]
+        if sl:
+            sl = np.where(np.asarray(sl) > 1e19, np.nan, np.asarray(sl))  # GRIB missing → NaN, dropped below
+            out["snow_level_min"] = (np.nanmin(sl, axis=0), "m")
+            out["snow_level_max"] = (np.nanmax(sl, axis=0), "m")
+        r = [v["slr"] for v in inst if "slr" in v]
+        if r:
+            r = np.where(np.asarray(r) > 1e19, np.nan, np.asarray(r))
+            out["slr_mean"] = (np.nanmean(r, axis=0), "ratio")
         for variable, (arr, unit) in out.items():
             for k, rid in enumerate(ids):
                 v = float(arr[k])
@@ -245,7 +288,21 @@ def collect_cycle(cycle: datetime, resorts: list[dict], fetched_at: str, run_id:
                     "period_label": None, "variable": variable, "value": round(v, 2), "value_text": None, "unit": unit,
                     "model": "nbm", "member": None, "run_id": run_id, "parser_version": PARSER_VERSION,
                 })
+    have = {r["variable"] for r in rows}
+    if not {"snow_level_min", "snow_level_max"} & have:
+        log("  inventory lines that look related (f024): " + (", ".join(discovery) or "none"))
+        raise MissingSnowLevel(rows)
+    if "slr_mean" not in have:
+        log("  note: no snow-to-liquid ratio in this cycle's inventory (optional)")
     return rows
+
+
+class MissingSnowLevel(Exception):
+    """The cycle's rows are fine but NBM's snow level wasn't found. The rows are
+    archived and the run still fails, so the name can be fixed."""
+    def __init__(self, rows):
+        super().__init__("no snow level in the NBM inventory (see the related lines above); other variables archived")
+        self.rows = rows
 
 
 def check_plausible(rows: list[dict]) -> None:
@@ -304,7 +361,11 @@ def main() -> int:
         t = time.time()
         try:
             run_id = f"{cycle:%Y-%m-%dT%H%M}Z-nbm-{gh}"
-            rows = collect_cycle(cycle, resorts, fetched_at, run_id)
+            soft = None
+            try:
+                rows = collect_cycle(cycle, resorts, fetched_at, run_id)
+            except MissingSnowLevel as e:
+                rows, soft = e.rows, str(e)
             if not rows:
                 raise RuntimeError("no rows built")
             check_plausible(rows)
@@ -325,6 +386,8 @@ def main() -> int:
                 if r.returncode:
                     raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
             ok.append(f"{key}: {len(rows)} rows" + (" (dry run)" if dry else ""))
+            if soft:
+                failures.append(f"{key}: {soft}")
             log(f"  ✓ {key}: {len(rows)} rows in {time.time() - t:.0f} s")
         except FileNotFoundError:
             waiting.append(f"{key}: not on the bucket yet")
