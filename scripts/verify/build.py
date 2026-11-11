@@ -41,7 +41,7 @@ PAID = ("snow-forecast", "snow-forecast-hindcast")
 FORECAST_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecast",
                     "snow-forecast-hindcast", "nws", "onthesnow",
                     # 2026-11-11: regional European ensembles (archive/dictionary.yaml)
-                    "dwd-icon-eps", "meteoswiss-icon-eps")
+                    "dwd-icon-eps", "meteoswiss-icon-eps", "dynamical-ens")
 THRESHOLDS = {"liquid": (2.5, 10.0, 20.0), "snow": (2.5, 15.0, 30.0)}  # mm / cm per 24 h
 STRICT_KM, STRICT_DELEV_M = 25.0, 300.0
 MAX_SWE_GAIN_MM, MAX_DEPTH_GAIN_CM = 150.0, 150.0  # above this a daily gain is a sensor fault
@@ -51,7 +51,7 @@ TRUTH_SOURCES = ("snotel", "bc-asws")  # station networks used as truth
 # strict station pair, after moving each forecast to the station's elevation
 # at the standard lapse rate (the raw error is reported beside it).
 TEMP_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecast",
-                "snow-forecast-hindcast", "nws", "dwd-icon-eps", "meteoswiss-icon-eps")
+                "snow-forecast-hindcast", "nws", "dwd-icon-eps", "meteoswiss-icon-eps", "dynamical-ens")
 LAPSE_C_PER_M = 0.0065
 TEMP_MIN_COVER_H = 20  # a forecast day needs ≥ this many hours covered to have a high and a low
 THIN_EVENTS = 20  # fewer observed events than this → the score is flagged thin

@@ -107,6 +107,23 @@ sources:
     notes:
       - Same row shape as dwd-icon-eps. MeteoSwiss does not publish SNOW_CON, so snow_we is grid-scale snow only.
       - "Licence: MeteoSwiss Open Government Data. Cite: Source: MeteoSwiss."
+  dynamical-ens:
+    name: Global ensembles from dynamical.org (Icechunk/Zarr on AWS; free, no quota)
+    kind: forecast
+    url: https://dynamical.org/catalog/
+    models:
+      ecmwf_ifs_ens: ECMWF IFS ENS 0.25°, 51 members, 00z, to 360 h (dataset ecmwf-ifs-ens-forecast-15-day-0-25-degree; history from 2024-04-01)
+      gefs: NOAA GEFS 0.25°, 31 members, 00z, first 384 h kept (dataset noaa-gefs-forecast-35-day; history from 2020-10-01)
+      ecmwf_aifs_ens: ECMWF AIFS ENS 0.25°, 51 members, 00/06/12/18z, to 360 h (dataset ecmwf-aifs-ens-forecast; history from 2025-07-02)
+    cadence: workflow dynamical-ens.yml every 3 h; collects every init in the last 3 days not yet archived (markers under dynamical/done/)
+    since: 2026-11-11
+    raw: not kept (dynamical.org keeps the history; re-readable)
+    notes:
+      - Nearest 0.25° grid cell to the resort. lat/lon are the cell's. elevation_m is the cell's APPROXIMATE height from surface vs sea-level pressure (hypsometric, roughly ±50 m). Temperatures are at the model's height, not downscaled.
+      - precipitation_surface is a mean rate over the interval ending at each lead (kg m-2 s-1), so mm = rate × seconds. 6-hour blocks aligned to 00/06/12/18 UTC. Partial blocks are not written.
+      - "Variables: precip, temp_min, temp_max, wind_speed_max; ECMWF also temp_850_mean, temp_925_mean, dewpoint_2m_mean (and gust_max for IFS); GEFS also rh_2m_mean and frozen_pct_mean (NCEP's -50 no-precipitation code dropped, so no precip means no row)."
+      - Treat this as a separate source from open-meteo-ensemble's ecmwf_ifs025 (same model, different processing). Never merge them.
+      - "Licence: CC BY 4.0 via dynamical.org; ECMWF data also under ECMWF's terms. Attribution: ECMWF IFS ENS / AIFS ENS / NOAA GEFS from dynamical.org."
   snotel:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
