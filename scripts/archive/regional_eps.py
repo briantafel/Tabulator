@@ -179,15 +179,24 @@ def dwd_files(model: str, hour: int, var: str) -> dict[int, str]:
 
 
 def dwd_constants(model: str, hour: int) -> dict[str, np.ndarray]:
+    """Grid cell centres and surface height. These files are time-invariant
+    (no lead in the name), e.g. ..._time-invariant_2026111100_clat.grib2.bz2."""
     out = {}
     for var in ("clat", "clon", "hsurf"):
-        files = dwd_files(model, hour, var)
-        if not files:
+        url = f"{DWD}/{model}/grib/{hour:02d}/{var}/"
+        try:
+            html = http(url).decode("utf-8", "replace")
+        except urllib.error.HTTPError:
+            log(f"    constants: no {var} directory")
             continue
-        _, url = next(iter(files.values()))
-        for _, vals in grib_messages(bz2.decompress(http(url))):
+        names = re.findall(r'href="([^"]+\.grib2\.bz2)"', html)
+        if not names:
+            log(f"    constants: {var} directory is empty")
+            continue
+        for _, vals in grib_messages(bz2.decompress(http(url + sorted(names)[-1]))):
             out[var] = vals
             break
+        log(f"    constants: {var} from {sorted(names)[-1]} ({len(out.get(var, []))} cells)")
     return out
 
 
