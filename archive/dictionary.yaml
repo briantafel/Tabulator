@@ -153,6 +153,19 @@ sources:
       - AWDB reports English units in station-local standard time; rows are converted to metric and UTC.
       - No Canadian coverage; BC and the border Rockies use bc-asws below.
 
+  slf:
+    name: SLF Measurement API (WSL Institute for Snow and Avalanche Research), Switzerland
+    kind: observation (ground truth for Swiss and nearby Alpine resorts) and mapping
+    url: https://measurement-api.slf.ch/public/api
+    cadence: in every archive run (twice daily); each run takes the last 3 of the 7 days the API serves
+    since: 2026-11-11
+    raw: station lists and every response, gzipped JSON
+    notes:
+      - "Two networks, in the model column. study-plot (manual, read by observers): snow_depth, new_snow_24h (cm, measured on a board), new_snow_water_24h (mm). imis (automatic): snow_depth at whole hours, and hn_1d_model, which is SLF's MODELLED 24 h new snow, never mixed with the measured value."
+      - station_id is <network>:<code>. Up to 3 stations per network within 30 km of each resort are recorded as mapping rows (candidate_distance). The first run covered 12 resorts with 53 stations.
+      - 24 h values have valid_start = measure_date − 24 h and valid_end = measure_date (UTC). Null fields write no row. A study plot answering 404 NO_DATA has no readings yet (early season), which is not a fault.
+      - "Licence: CC BY 4.0. Cite: Source: WSL Institute for Snow and Avalanche Research SLF (IMIS DOI 10.16904/envidat.406)."
+      - History older than 7 days comes from SLF file downloads (separate job, not built yet).
   bc-asws:
     name: BC Automated Snow Weather Stations (BC River Forecast Centre snow pillows)
     kind: observation (ground truth for BC and border-Rockies resorts) and mapping

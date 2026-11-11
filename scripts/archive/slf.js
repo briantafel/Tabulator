@@ -101,11 +101,15 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
   log(`  slf: ${wanted.size} stations within ${RADIUS_KM} km of ${new Set(picks.map((p) => p.resort)).size} resorts`);
 
   let ok = 0, tried = 0, rows = 0;
+  const noData = [];
   for (const [key, p] of wanted) {
     tried++;
     const path = p.network === "imis" ? `imis/station/${p.station.code}/measurements` : `study-plot/station/${p.station.code}/measurements`;
     try {
       const res = await fetchText(`${API}/${path}?period_in_days=${DAYS}`, { retries: 2 });
+      // A station with nothing in the window answers 404 NO_DATA (study plots
+      // before their observers start the season). That is "no reading", not a fault.
+      if (res.status === 404 && /NO_DATA/.test(res.text)) { noData.push(key); ok++; continue; }
       if (res.status !== 200) throw new Error(`HTTP ${res.status}: ${res.text.slice(0, 120)}`);
       await saveRaw(`${rawDir}/${key.replace(":", "-")}.json.gz`, res.text);
       const list = JSON.parse(res.text);
@@ -137,6 +141,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
     } else failures.push(`imis daily-snow: HTTP ${res.status}`);
   } catch (e) { failures.push(`imis daily-snow: ${e.message}`); }
 
-  log(`slf: ${ok}/${tried} stations, ${rows} rows`);
+  if (noData.length) log(`  · slf: no readings yet at ${noData.length} station(s): ${noData.join(", ")}`);
+  log(`slf: ${ok}/${tried} stations (${noData.length} with no readings yet), ${rows} rows`);
   return { ok: tried > 0 && ok / tried >= 0.8, stations: ok, tried, rows, failures };
 }
