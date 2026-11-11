@@ -1,0 +1,81 @@
+name: Upper-air profiles (HRRR, GEFS, ECMWF open data)
+
+# Added 2026-11-11 (claude/upper-air-plan.md). Temperature, humidity and
+# height at pressure levels over every resort, for the per-tier snow line
+# (wet-bulb) and our own snow-to-liquid ratio. NOAA (HRRR, GEFS) and ECMWF
+# open data on AWS, byte ranges from each file's index. Every 3 hours it
+# archives each cycle from the last 3 days not yet archived (markers under
+# upper-air/done/). All three keep history on AWS, so a late or skipped run
+# loses nothing.
+on:
+  schedule:
+    - cron: "50 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: false
+      only:
+        description: "One model only: hrrr, gefs, ifs-hres or ifs-ens (optional)"
+        type: string
+        default: ""
+      cycle:
+        description: "One cycle only, YYYYMMDDHH (optional; for backfill)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: upper-air-${{ inputs.only || 'all' }}-${{ inputs.dry_run && 'dry' || 'live' }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install eccodes eccodeslib numpy duckdb==2.0.0 pytest
+      - name: Test
+        run: python3 -m pytest -q scripts/archive/test_upper_air.py
+      - name: Collect
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          DRY: ${{ inputs.dry_run }}
+          ONLY: ${{ inputs.only }}
+          CYCLE: ${{ inputs.cycle }}
+        run: |
+          args=(work)
+          [ "$DRY" = "true" ] && args+=(--dry-run)
+          [ -n "$ONLY" ] && args+=(--only "$ONLY")
+          [ -n "$CYCLE" ] && args+=(--cycle "$CYCLE")
+          python3 scripts/archive/upper_air.py "${args[@]}"
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\n\nUpper-air profile collection failed. HRRR, GEFS and ECMWF open data stay on AWS, so nothing is lost yet; the next run retries. The summary says which model and cycle failed and why.`;
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "upper-air-failure" });
+            if (existing.length) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing[0].number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo,
+                title: "Upper-air profile collection failed", body, labels: ["upper-air-failure"] });
+            }
