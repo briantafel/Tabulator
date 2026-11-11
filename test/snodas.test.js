@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { parseHeader, toUnit, sample, tarEntries, productOf, urlFor } from "../scripts/archive/snodas.js";
 
 const HDR = `Data units: Meters / 1000.000000
-Data slope: 0.001
+Data slope: 1
 Data intercept: 0
 No data value: -9999
 Number of columns: 4
@@ -19,6 +19,8 @@ test("SNODAS header, units and sampling", () => {
   assert.equal(toUnit("11036", 1234, h), 123.4); // 1.234 m depth -> 123.4 cm
   assert.equal(toUnit("11034", 250, h), 250);   // 0.25 m SWE -> 250 mm
   assert.equal(toUnit("11036", -9999, h), null);
+  assert.equal(toUnit("01025SlL00", 755, { ...h, units: "Kilograms per square meter / 10.000000" }), 75.5);
+  assert.throws(() => toUnit("11036", 5, { ...h, units: "Furlongs" }), /unknown units/);
   const g = Buffer.alloc(24);
   [0, 5, 9, 1, 2, 3, 4, 8, -9999, 6, 7, 1].forEach((v, i) => g.writeInt16BE(v, 2 * i));
   const s = sample(g, h, 40.6, -111.2); // row 0, col 1

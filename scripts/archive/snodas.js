@@ -79,15 +79,20 @@ export function parseHeader(text) {
   };
 }
 
-/** Physical value in the archive unit, from a raw cell. */
+/** Physical value in the archive unit, from a raw cell. SNODAS writes the
+ * scale into the units text, e.g. "Meters / 1000.000000" or
+ * "Kilograms per square meter / 10.000000". */
 export function toUnit(code, raw, h) {
   if (raw === h.noData || raw < 0) return null;
   const [, unit] = PRODUCTS[code];
-  // Header slope turns the raw integer into the header unit (meters, or kg/m^2).
-  const slope = h.slope ?? (code.startsWith("01025") ? 0.1 : 0.001);
-  const v = raw * slope + h.intercept;
-  const metres = /meter/i.test(h.units);
-  const out = unit === "cm" ? (metres ? v * 100 : v / 10) : metres ? v * 1000 : v; // kg/m^2 == mm
+  const [base, div] = h.units.split("/").map((x) => x.trim());
+  const divisor = Number(div) > 0 ? Number(div) : 1;
+  const v = ((h.slope ?? 1) * raw + h.intercept) / divisor;
+  let out;
+  if (/kilogram|kg/i.test(base)) out = unit === "mm" ? v : null;          // kg/m^2 == mm of water
+  else if (/^meter/i.test(base)) out = unit === "cm" ? v * 100 : v * 1000;
+  else throw new Error(`SNODAS ${code}: unknown units "${h.units}"`);
+  if (out === null) throw new Error(`SNODAS ${code}: units "${h.units}" do not fit ${unit}`);
   return Number(out.toFixed(1));
 }
 
@@ -136,6 +141,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       const htext = gunzipSync(hdr.data).toString("latin1");
       await saveRaw(`${rawDir}/${ymd}-${code}.txt.gz`, htext);
       const h = parseHeader(htext);
+      if (i === 0 || !found.size) log(`  snodas ${ymd} ${code}: units "${h.units}", slope ${h.slope}, ${h.cols}x${h.rows}`);
       const grid = gunzipSync(dat.data);
       if (grid.length !== 2 * h.cols * h.rows) throw new Error(`SNODAS ${code} ${ymd}: grid is ${grid.length} bytes, header says ${h.cols}x${h.rows}`);
       found.add(code);
@@ -147,6 +153,8 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
         for (const [suffix, raw] of [["", s.cell], ["_max_5x5", s.max]]) {
           const value = raw === null ? null : toUnit(code, raw, h);
           if (value === null) continue;
+          if ((variable === "snow_depth" && value > 1500) || (variable === "swe" && value > 5000) || (!instant && value > 400))
+            throw new Error(`SNODAS ${code} ${ymd} ${r.id}: implausible ${variable}${suffix} = ${value} ${unit} — check the units ("${h.units}")`);
           covered.add(r.id);
           sink.write({
             source: "snodas", kind: "analysis", resort_id: r.id, tier: null, station_id: `snodas:${s.row}_${s.col}`,
