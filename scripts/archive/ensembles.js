@@ -164,7 +164,14 @@ export async function collect({ resorts: all, elevations, sink, rawDir, fetchedA
         return `${URL_BASE}?${q}`;
       };
       try {
-        let { status, text } = await fetchText(query(HOURLY), { retries: 3, delayMs: 5000, retry429: false });
+        /* 5 variables, not 11 (2026-11-11). On the free tier the snow-to-liquid
+           extras roughly double each ensemble request's weight. The day's
+           allowance ran out after 10 requests (run 43019693123). The SLR
+           predictors come from dynamical.org's ECMWF ensemble instead (850/925 hPa
+           temperature, dew point, geopotential; claude/lean-data-plan.md).
+           Weight measured empirically: 5 variables × 112 requests ran clean for
+           two weeks. */
+        let { status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000, retry429: false });
         if (status === 400) {
           // The SLR extras were refused: keep the run, say so loudly.
           log(`  ✗ open-meteo ${resort.id}/${model} refused the SLR variables (${text.slice(0, 160)}) — retrying without them`);
