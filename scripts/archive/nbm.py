@@ -322,7 +322,7 @@ def check_plausible(rows: list[dict]) -> None:
 
 def bucket(*args: str) -> subprocess.CompletedProcess:
     endpoint = f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com"
-    return subprocess.run(["aws", "s3", *args, "--endpoint-url", endpoint, "--only-show-errors"], capture_output=True, text=True)
+    return subprocess.run(["aws", "s3", *args, "--endpoint-url", endpoint] + ([] if args[:1] == ("ls",) else ["--only-show-errors"]), capture_output=True, text=True)
 
 
 def main() -> int:
@@ -339,6 +339,11 @@ def main() -> int:
     done = set()
     if os.environ.get("R2_BUCKET"):
         r = bucket("ls", f"s3://{os.environ['R2_BUCKET']}/nbm/done/")
+        # 2026-11-11: this listing passed --only-show-errors, which `aws s3 ls` rejects, so it
+        # returned nothing and every run re-collected (and re-archived) everything. `ls` of an
+        # empty prefix exits 1 with no stderr; anything else is a real failure.
+        if r.returncode and (r.returncode != 1 or r.stderr.strip()):
+            raise RuntimeError(f"listing done markers failed (exit {r.returncode}): {r.stderr.strip()[-300:]}")
         done = {l.split()[-1][:-5] for l in r.stdout.splitlines() if l.strip().endswith(".json")}
     now = datetime.now(timezone.utc)
     if "--cycle" in a:

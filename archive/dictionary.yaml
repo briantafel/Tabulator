@@ -94,7 +94,7 @@ sources:
       - Rows are 6-hour blocks aligned to 00/06/12/18 UTC (precip, snow_we, temp_min, temp_max, wind_speed_max). Blocks only partly covered by the run are not written.
       - issued_at is the exact model run time. snow_we is the model's snowfall as water equivalent (snow_gsp + snow_con), mm.
       - "Licence: DWD open data, attribution Deutscher Wetterdienst."
-      - "Upper-air profiles (parser regional-eps-profile-1, from 2026-11-11; run_id contains -prof-): INSTANT rows (valid_start == valid_end, period_label instant) at 00/06/12/18 UTC, EU to 72 h, D2 to 48 h. t_<p>hpa (°C), rh_<p>hpa (%, D2) or q_<p>hpa (g/kg, EU; specific humidity), z_<p>hpa (m, geopotential / 9.80665) at the levels the server publishes among 1000–500 hPa. Raw model values at the cell; per-tier interpolation and wet-bulb are derived later (claude/upper-air-plan.md). Instants are excluded from the verification table (valid_end > valid_start)."
+      - "Upper-air profiles (parser regional-eps-profile-1, from 2026-11-11; run_id contains -prof-): INSTANT rows (valid_start == valid_end, period_label instant) at 00/06/12/18 UTC, EU to 72 h, D2 to 48 h. D2: t/rh/z at 1000/950/850/700/500 hPa. EU: t and z at 850 and 500 hPa only (no humidity on pressure levels). Names t_<p>hpa (°C), rh_<p>hpa (%), z_<p>hpa (m, geopotential / 9.80665). Raw model values at the cell; per-tier interpolation and wet-bulb are derived later (claude/upper-air-plan.md). Instants are excluded from the verification table (valid_end > valid_start)."
   meteoswiss-icon-eps:
     name: MeteoSwiss ICON-CH ensembles, Open Government Data via STAC (free; files kept 24 h)
     kind: forecast
@@ -108,7 +108,7 @@ sources:
     notes:
       - Same row shape as dwd-icon-eps. MeteoSwiss does not publish SNOW_CON, so snow_we is grid-scale snow only.
       - "Licence: MeteoSwiss Open Government Data. Cite: Source: MeteoSwiss."
-      - "Profile pass (parser regional-eps-profile-1, from 2026-11-11): freezing_level (HZEROCL) and snow_limit (SNOWLMT), m above sea level, INSTANT rows at 00/06/12/18 UTC, when the STAC offers them. Fill values (≤ −900) are dropped, not stored. Each run logs every STAC variable offered, to decide on pressure-level T/RELHUM/FI."
+      - "Profile pass (parser regional-eps-profile-1, from 2026-11-11): freezing_level (HZEROCL) and snow_limit (SNOWLMT), m above sea level, INSTANT rows at 00/06/12/18 UTC, when the STAC offers them. Fill values (≤ −900, and 9999 = no 0 °C level / no snow limit) are dropped, not stored. The STAC offers T, QV, P, U, V, W on model levels only (no RELHUM, no FI, no pressure levels; checked 2026-11-11), so a full Swiss profile would need model-level files plus HHL."
   dynamical-ens:
     name: Global ensembles from dynamical.org (Icechunk/Zarr on AWS; free, no quota)
     kind: forecast

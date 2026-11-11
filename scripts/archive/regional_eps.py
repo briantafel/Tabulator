@@ -79,8 +79,11 @@ DWD_PROFILE = {
     "qv": ("qv", "q", "g/kg", lambda a: a * 1000.0),
     "fi": ("fi", "z", "m", lambda a: a / G0),
 }
-# MeteoSwiss single-level heights; −999-style fills (no 0 °C level / below ground) are dropped.
+# MeteoSwiss single-level heights; fills (≤ −900 or ≥ 9000) are dropped.
 CH_PROFILE = {"HZEROCL": ("freezing_level", "m"), "SNOWLMT": ("snow_limit", "m")}
+CH_NAMES = {n for n, _ in CH_PROFILE.values()}
+# MeteoSwiss writes 9999 where there is no 0 °C level / no snow limit (first live
+# run 2026-11-11: up to half of SNOWLMT values); the plausibility gate caught it.
 TIME_LIMIT_S = 50 * 60
 BLOCK_H = 6
 
@@ -138,7 +141,7 @@ def http(url: str, data: bytes | None = None, retries: int = 3, timeout: int = 6
 # ---------------------------------------------------------------- bucket
 def bucket_cmd(*args: str) -> subprocess.CompletedProcess:
     endpoint = f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com"
-    return subprocess.run(["aws", "s3", *args, "--endpoint-url", endpoint, "--only-show-errors"],
+    return subprocess.run(["aws", "s3", *args, "--endpoint-url", endpoint] + ([] if args[:1] == ("ls",) else ["--only-show-errors"]),
                           capture_output=True, text=True)
 
 
@@ -146,6 +149,11 @@ def done_markers() -> set[str]:
     if not os.environ.get("R2_BUCKET"):
         return set()
     r = bucket_cmd("ls", f"s3://{os.environ['R2_BUCKET']}/regional/done/")
+    # 2026-11-11: this listing passed --only-show-errors, which `aws s3 ls` rejects, so it
+    # returned nothing and every run re-collected (and re-archived) everything. `ls` of an
+    # empty prefix exits 1 with no stderr; anything else is a real failure.
+    if r.returncode and (r.returncode != 1 or r.stderr.strip()):
+        raise RuntimeError(f"listing done markers failed (exit {r.returncode}): {r.stderr.strip()[-300:]}")
     return {line.split()[-1][:-5] for line in r.stdout.splitlines() if line.strip().endswith(".json")}
 
 
@@ -457,8 +465,8 @@ def profile_rows(model: str, cfg: dict, run_time: datetime, resorts: list[dict],
                 arr = tf(np.asarray(vals, dtype=float)[idx])
                 for k, rid in enumerate(ids):
                     v = float(arr[k])
-                    if not math.isfinite(v) or abs(v) > 1e19 or (unit == "m" and v <= -900):
-                        continue  # GRIB fill / "no such level": missing, not zero
+                    if not math.isfinite(v) or abs(v) > 1e19 or (variable in CH_NAMES and not -900 < v < 9000):
+                        continue  # GRIB fill / "no such level" (−999, and 9999 = not defined): missing, not zero
                     ci = cells[rid][0]
                     rows.append({
                         "source": cfg["source"], "kind": "forecast", "resort_id": rid, "tier": "mid",

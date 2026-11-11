@@ -98,8 +98,10 @@ def test_profile_rows_are_instants_with_units_converted_and_fills_dropped(monkey
         elif kind == "t":
             yield {"perturbationNumber": 2, "level": 700}, np.array([263.15, 0, 0])
             yield {"perturbationNumber": 2, "level": 500}, np.array([999.0, 0, 0])  # other level: ignored
-        else:  # HZEROCL fill
+        elif kind == "hz":  # HZEROCL fill
             yield {"perturbationNumber": 1}, np.array([-999.0, 0, 0])
+        else:  # SNOWLMT "not defined"
+            yield {"perturbationNumber": 1}, np.array([9999.0, 0, 0])
 
     monkeypatch.setattr(R, "grib_messages", fake_messages)
     monkeypatch.setattr(R, "http", lambda url, **k: url.encode())
@@ -107,10 +109,11 @@ def test_profile_rows_are_instants_with_units_converted_and_fills_dropped(monkey
     rt = datetime(2026, 11, 11, 0, tzinfo=timezone.utc)
     fields = [(6, "fi", "z_700hpa", "m", R.DWD_PROFILE["fi"][3], 700),
               (6, "t", "t_700hpa", "C", R.DWD_PROFILE["t"][3], 700),
-              (6, "hz", "freezing_level", "m", lambda a: a, None)]
+              (6, "hz", "freezing_level", "m", lambda a: a, None),
+              (6, "sl", "snow_limit", "m", lambda a: a, None)]
     rows = R.profile_rows("icon-d2-eps", dict(source="dwd-icon-eps", max_km=5.0), rt, RESORTS, fields, consts, "f", "r")
     by = {r["variable"]: r for r in rows}
-    assert set(by) == {"z_700hpa", "t_700hpa"}  # the −999 freezing level is missing, not a value
+    assert set(by) == {"z_700hpa", "t_700hpa"}  # −999 and 9999 fills are missing, not values
     assert math.isclose(by["z_700hpa"]["value"], 3059.15, abs_tol=0.01)
     assert by["t_700hpa"]["value"] == -10.0
     assert by["t_700hpa"]["valid_start"] == by["t_700hpa"]["valid_end"] == "2026-11-11T06:00:00Z"
