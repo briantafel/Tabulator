@@ -3,6 +3,7 @@ import { tempSeverity, windSeverity } from "../lib/scoring.js";
 import { cmToIn, snowTxt, snowUnit, tempTxt, windTxt } from "../lib/units.js";
 import { weekdayShort } from "../lib/dates.js";
 import { projectedTotalRange } from "../lib/projections.js";
+import { guideValues } from "../lib/guides.js";
 
 /* The resort sheet's per-day range chart — only with projections on.
  * Spec: claude/range-chart-spec.md; Figma 4056:433 / 4063:433.
@@ -77,17 +78,14 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
     return `${v < 10 ? (Math.round(v * 10) / 10).toString() : Math.round(v)}`;
   };
 
-  // Scale: guides every 6 up to 18, else every 10.
+  // Scale: the tallest bar reaches the top of the plot (its value label sits
+  // 16 below the legend). Guides step with the week — see lib/guides.js.
   const maxV = Math.max(1, ...days.map((d) => disp(d.range?.p90 ?? d.snow ?? 0, metric)));
-  const step = maxV <= 18 ? 6 : 10;
-  const top = Math.max(step * 2, Math.ceil(maxV / step) * step);
   const LEG_B = 28.5, BASE = 196, PLOT_TOP = 46;
-  // Tallest value label sits 16 below the legend.
-  const T = BASE - (BASE - (LEG_B + 16 + 16 + 3)) * top / maxV;
-  const y = (v) => BASE - (v / top) * (BASE - T);
-  const guides = [];
+  const BAR_TOP = LEG_B + 16 + 16 + 3;
+  const y = (v) => BASE - (v / maxV) * (BASE - BAR_TOP);
   // Only guides inside the plot: never up into the legend.
-  for (let g = step; g <= top; g += step) if (y(g) >= PLOT_TOP) guides.push(g);
+  const guides = guideValues(maxV * (BASE - PLOT_TOP) / (BASE - BAR_TOP), metric);
 
   const PANEL_TOP = 42.5, PANEL_BOT = 277.5;
 
