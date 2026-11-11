@@ -3,6 +3,7 @@
 
     python3 scripts/archive/dynamical_ens.py <workDir> live     [--dry-run] [--only MODEL]
     python3 scripts/archive/dynamical_ens.py <workDir> backfill  <from> <to> [--dry-run] [--only MODEL]
+    python3 scripts/archive/dynamical_ens.py <workDir> history   [--only MODEL]   (the HISTORY winters below)
 
 Added 2026-11-11 (claude/lean-data-plan.md, Phase 1). Reads dynamical.org's
 Icechunk/Zarr copies on AWS (CC BY 4.0; ECMWF data also under ECMWF's terms;
@@ -63,6 +64,14 @@ DATASETS = {
                            extra={"temperature_850hpa": "temp_850_mean", "temperature_925hpa": "temp_925_mean",
                                   "dew_point_temperature_2m": "dewpoint_2m_mean"}, gust=None),
 }
+
+# History to load (Brian, 2026-11-11: "do what you need to do"): northern
+# winters only, Nov–Apr, for every model's available history. That keeps the
+# bucket near R2's free 10 GB and covers the season that matters for
+# training. Southern winters (May–Oct) can be added if Chile/Argentina get
+# truth data. Newest winter first. The current winter is the live job's.
+NH_WINTERS = [("2025-11-01", "2026-04-30"), ("2024-11-01", "2025-04-30"), ("2023-11-01", "2024-04-30"),
+              ("2022-11-01", "2023-04-30"), ("2021-11-01", "2022-04-30"), ("2020-11-01", "2021-04-30")]
 
 PLAUSIBLE = {"precip": (0, 300), "temp_min": (-60, 45), "temp_max": (-60, 45), "wind_speed_max": (0, 400),
              "gust_max": (0, 500), "temp_850_mean": (-60, 40), "temp_925_mean": (-60, 45),
@@ -257,7 +266,7 @@ def write_and_upload(work: Path, model: str, init: datetime, rows, run_id: str, 
 
 def main() -> int:
     a = sys.argv[1:]
-    if len(a) < 2 or a[1] not in ("live", "backfill"):
+    if len(a) < 2 or a[1] not in ("live", "backfill", "history"):
         print(__doc__)
         return 2
     import dynamical_catalog as dc
@@ -274,9 +283,14 @@ def main() -> int:
     now = datetime.now(timezone.utc)
     fetched_at = iso(now)
     gh = os.environ.get("GITHUB_RUN_ID", "local")
+    windows = None
     if mode == "backfill":
         lo = datetime.fromisoformat(a[2]).replace(tzinfo=timezone.utc)
         hi = datetime.fromisoformat(a[3]).replace(tzinfo=timezone.utc)
+    elif mode == "history":
+        windows = [(datetime.fromisoformat(f).replace(tzinfo=timezone.utc),
+                    datetime.fromisoformat(t).replace(tzinfo=timezone.utc) + timedelta(hours=23)) for f, t in NH_WINTERS]
+        lo, hi = windows[-1][0], windows[0][1]
     else:
         lo, hi = now - timedelta(days=3), now
     ok, failures, left = [], [], 0
@@ -285,9 +299,10 @@ def main() -> int:
             continue
         ds = dc.open(cfg["id"])
         inits = [datetime.fromtimestamp(t.astype("datetime64[s]").astype(int), timezone.utc) for t in ds.init_time.values]
-        todo = [t for t in inits if lo <= t <= hi and f"{model}-{t:%Y%m%d%H}" not in done]
+        todo = [t for t in inits if lo <= t <= hi and f"{model}-{t:%Y%m%d%H}" not in done
+                and (windows is None or any(w0 <= t <= w1 for w0, w1 in windows))]
         log(f"{model}: {len(todo)} init(s) to collect in {iso(lo)} … {iso(hi)}")
-        for init in sorted(todo, reverse=(mode == "live")):
+        for init in sorted(todo, reverse=(mode in ("live", "history"))):
             if time.time() - started > TIME_LIMIT_S:
                 left += 1
                 continue
@@ -314,6 +329,8 @@ def main() -> int:
     lines = [f"dynamical.org ensembles ({mode}):", f"  ✓ {len(ok)} init(s) archived"] + [f"    {o}" for o in ok[-12:]]
     if left:
         lines.append(f"  … {left} init(s) left for the next run (time limit)")
+    elif mode == "history" and not failures:
+        lines.append("  HISTORY COMPLETE: every init in the configured winters is archived")
     lines += [f"  ✗ {f}" for f in failures]
     report = "\n".join(lines)
     log("\n" + report)

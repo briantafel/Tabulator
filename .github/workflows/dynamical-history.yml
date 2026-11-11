@@ -1,0 +1,42 @@
+name: Ensemble history from dynamical.org (one-time, self-paced)
+
+# Added 2026-11-11 (Brian: "do what you need to do"). Loads past northern
+# winters (Nov–Apr) of ECMWF IFS ENS (from 2024), NOAA GEFS (from 2020) and
+# ECMWF AIFS ENS (from 2025) at our resort points. That is ~2,200 inits and
+# ~18 runner-hours, done in 50-minute chunks, one an hour. Done markers make
+# every chunk skip what is already archived, so it simply picks up where the
+# last one stopped. When the summary says HISTORY COMPLETE, each run is a
+# ~1-minute no-op and this workflow can be disabled or deleted.
+on:
+  schedule:
+    - cron: "50 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dynamical-history
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 58
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install dynamical-catalog numpy duckdb==2.0.0
+      - name: Load the next chunk of history
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: python3 scripts/archive/dynamical_ens.py work history
