@@ -32,6 +32,7 @@
 import { rainRisk, tempSeverity, windSeverity } from "./scoring.js";
 import { snowWithUnit, cmToIn, cToF, kmhToMph } from "./units.js";
 import { vetoOf, inSpring, cornDay } from "./rank.js";
+import { coldLow } from "./temps.js";
 import { RANGES } from "./outlook.js";
 
 /* ------------------------------------------------------------------ copy -- */
@@ -493,7 +494,10 @@ export function layering(win) {
  *  written against those numbers, so the logic reads them too. */
 function read(r) {
   const nums = (k) => r.win.map((d) => d[k]).filter((x) => typeof x === "number" && Number.isFinite(x));
-  const hiC = nums("tempMax"), loC = nums("tempMin"), wK = nums("windMax");
+  const hiC = nums("tempMax"), nightC = nums("tempMin"), wK = nums("windMax");
+  // Lift-hours low where our temperature model supplied one (lib/temps.js);
+  // the night low stays for the refreeze (corn) reading.
+  const loC = r.win.map(coldLow).filter((x) => typeof x === "number" && Number.isFinite(x));
   const days = r.win.length;
   const totalIn = cmToIn(r.total ?? 0);
   return {
@@ -502,11 +506,13 @@ function read(r) {
     rate: days ? totalIn / days : 0,
     hi: hiC.length ? cToF(Math.max(...hiC)) : null,
     lo: loC.length ? cToF(Math.min(...loC)) : null,
+    loNight: nightC.length ? cToF(Math.min(...nightC)) : null,
     wind: wK.length ? kmhToMph(Math.max(...wK)) : null,
     // The metric originals, for the shared helpers that speak metric.
     m: {
       hi: hiC.length ? Math.max(...hiC) : null,
       lo: loC.length ? Math.min(...loC) : null,
+      loNight: nightC.length ? Math.min(...nightC) : null,
       wind: wK.length ? Math.max(...wK) : null,
       spring: inSpring(r),
     },
@@ -594,7 +600,7 @@ export function soWhatKey(x, r) {
   if (big && column(band) === "still") return "go";
 
   const thin = snow === "none" || snow === "dusting";
-  if (thin && x.hi != null && x.hi > 32 && x.lo != null && x.lo < 28) return "corn";
+  if (thin && x.hi != null && x.hi > 32 && (x.loNight ?? x.lo) != null && (x.loNight ?? x.lo) < 28) return "corn";
   if (thin && column(band) === "still" && x.hi != null && x.hi < 28) return reg === "east" ? "firmEast" : "firm";
   if (thin && column(band) === "still") return "cruise";
 

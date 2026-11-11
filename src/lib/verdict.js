@@ -30,6 +30,7 @@
 import { tempSeverity, windSeverity, rainRisk } from "./scoring.js";
 import { snowWithUnit } from "./units.js";
 import { rank, bestOf, vetoOf, inSpring, cornDay } from "./rank.js";
+import { coldLow } from "./temps.js";
 import {
   COLD_RED, COLD_DEEP, COLD_AMBER_HI,
   WARM_AMBER_LO, WARM_RED, TOO_WARM, WARM_SPRING, PLEASANT_LO,
@@ -152,15 +153,15 @@ const VETO_LINE = {
   warm: ". Overall, that is spring, not skiing — give it a miss.",
 };
 
-export function closingWord({ total, days, hi, lo, wind, rain = false, spring = false }) {
+export function closingWord({ total, days, hi, lo, loNight, wind, rain = false, spring = false }) {
   // Brian's deal breakers outrank everything, including the snow lines. That
   // is the whole point of a veto: no amount of powder argues with it.
-  const veto = vetoOf({ hi, lo, wind, spring });
+  const veto = vetoOf({ hi, lo, loNight, wind, spring });
   // In spring the warm veto only fires without a refreeze, so say that.
   if (veto === "warm" && spring) return ". Overall, nothing refreezes overnight — that's slush, give it a miss.";
   if (veto) return VETO_LINE[veto];
   // Past March 20 with a refreeze, warm is corn, not a fight.
-  if (hi != null && hi > WARM_SPRING && cornDay({ hi, lo, spring }) && !rain && windSeverity(wind) !== "red") {
+  if (hi != null && hi > WARM_SPRING && cornDay({ hi, lo, loNight, spring }) && !rain && windSeverity(wind) !== "red") {
     return ". Overall, that's spring skiing — let it soften, then go.";
   }
   /* There used to be a "soft snow and sunshine" line here for anything over
@@ -211,11 +212,14 @@ const forecastDays = (win) => (win ?? []).filter((d) => !d.projected);
 function extremes(win) {
   const nums = (k) => forecastDays(win).map((d) => d[k]).filter((x) => typeof x === "number" && Number.isFinite(x));
   const hi = nums("tempMax");
-  const lo = nums("tempMin");
+  const night = nums("tempMin");
+  // Lift-hours low where our temperature model supplied one (lib/temps.js).
+  const lo = forecastDays(win).map(coldLow).filter((x) => typeof x === "number" && Number.isFinite(x));
   const w = nums("windMax");
   return {
     hi: hi.length ? Math.max(...hi) : null,
     lo: lo.length ? Math.min(...lo) : null,
+    loNight: night.length ? Math.min(...night) : null,
     wind: w.length ? Math.max(...w) : null,
   };
 }
@@ -236,9 +240,9 @@ export function tripVerdict(rows, metric) {
      agreeing to. They did not, once. */
   const best = bestOf(ranked);
   const days = forecastDays(best.win).length;
-  const { hi, lo, wind } = extremes(best.win);
+  const { hi, lo, loNight, wind } = extremes(best.win);
   const spring = inSpring(best);
-  const temp = tempClause({ hi, lo, wind, spring });
+  const temp = tempClause({ hi, lo, loNight, wind, spring });
 
   return [
     { t: "Your best bet is looking like " },
@@ -250,7 +254,7 @@ export function tripVerdict(rows, metric) {
     // "It's spring, baby!" has ended the sentence; the wind starts a new one.
     { t: temp.bang ? " " : ", and " },
     { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
-    { t: closingWord({ total: best.total ?? 0, days, hi, lo, wind, rain: rainRisk(best), spring }) },
+    { t: closingWord({ total: best.total ?? 0, days, hi, lo, loNight, wind, rain: rainRisk(best), spring }) },
   ];
 }
 
@@ -275,9 +279,9 @@ export function tripVerdict(rows, metric) {
 export function resortVerdict(r, metric) {
   if (!r?.win?.length) return null;
   const days = forecastDays(r.win).length;
-  const { hi, lo, wind } = extremes(r.win);
+  const { hi, lo, loNight, wind } = extremes(r.win);
   const spring = inSpring(r);
-  const temp = tempClause({ hi, lo, wind, spring });
+  const temp = tempClause({ hi, lo, loNight, wind, spring });
 
   const out = [
     { t: "Looking like " },
@@ -288,7 +292,7 @@ export function resortVerdict(r, metric) {
     { t: `${temp.bang ? "W" : "w"}inds are ${windWord(wind)}`, hot: true },
     { t: "." },
   ];
-  const concern = concernClause({ hi, lo, wind, spring });
+  const concern = concernClause({ hi, lo, loNight, wind, spring });
   if (concern) out.push({ t: ` ${concern}` });
   return out;
 }
@@ -299,8 +303,8 @@ export function resortVerdict(r, metric) {
  *  temps "a bit warm" or the winds "moderate", and a screen that flags every
  *  ordinary winter day teaches you to stop reading it. Red earns a mention,
  *  and one of Brian's deal breakers earns the stronger word. */
-export function concernClause({ hi, lo, wind, spring = false }) {
-  const veto = vetoOf({ hi, lo, wind, spring });
+export function concernClause({ hi, lo, loNight, wind, spring = false }) {
+  const veto = vetoOf({ hi, lo, loNight, wind, spring });
   if (veto === "wind") return "Wind is a deal breaker.";
   if (veto) return "Temps are a deal breaker.";
 

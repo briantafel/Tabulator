@@ -4,6 +4,7 @@ import { cmToIn, snowTxt, snowUnit, tempTxt, windTxt } from "../lib/units.js";
 import { weekdayShort } from "../lib/dates.js";
 import { projectedTotalRange } from "../lib/projections.js";
 import { guideValues } from "../lib/guides.js";
+import { coldLow } from "../lib/temps.js";
 
 /* The resort sheet's per-day range chart — only with projections on.
  * Spec: claude/range-chart-spec.md; Figma 4056:433 / 4063:433.
@@ -136,7 +137,7 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
         const h80 = Math.max(3, y(p10) - y(p90));
         const h50 = y(p25) - y(p75);
         const cx = x(i);
-        const ts = tempSeverity(d.tempMax, d.tempMin), ws = windSeverity(d.windMax);
+        const ts = tempSeverity(d.tempMax, coldLow(d)), ws = windSeverity(d.windMax);
         const cell = (txt, kind, yb) => kind
           ? <g><Marker kind={kind} x={cx - 11} y={yb - 4} /><text x={cx - 5.5} y={yb}>{txt}</text></g>
           : <text x={cx} y={yb} textAnchor="middle">{txt}</text>;

@@ -1,0 +1,56 @@
+name: Build temperatures
+
+# Our temperature model for the app (claude/temp-wind-plan.md): hourly ECMWF,
+# GEM and GFS from Open-Meteo's forecast API at each resort's mid elevation,
+# blended with the weights and high corrections in public/temp-model.json.
+# Writes public/temps.json, commits it, redeploys. The app only reads it
+# behind the `temps` switch (public/flags.json + Settings → Temperature).
+# ~56 Open-Meteo requests a run.
+
+on:
+  schedule:
+    - cron: "20 5,11,17,23 * * *"   # after each main model cycle
+  push:
+    branches: [main]
+    paths: ["scripts/temps/**", "public/temp-model.json", ".github/workflows/temps.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # commits public/temps.json (only)
+  actions: write   # to redeploy the site after that commit
+
+concurrency:
+  group: temps
+  cancel-in-progress: false
+
+jobs:
+  temps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build public/temps.json
+        run: node scripts/temps/build.js public
+
+      - name: Commit temps.json
+        id: commit
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add public/temps.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "temps: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            sleep 10
+          done
+
+      - name: Redeploy the site
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main

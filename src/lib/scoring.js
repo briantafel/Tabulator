@@ -1,4 +1,5 @@
 import { rank } from "./rank.js";
+import { coldLow } from "./temps.js";
 import {
   HISTORY_DAYS,
   COLD_RED, COLD_AMBER_LO, COLD_AMBER_HI,
@@ -41,6 +42,8 @@ export function score(resort, a, b, history) {
 
   const tempMax = nums(fc.map((d) => d.tempMax));
   const tempMin = nums(fc.map((d) => d.tempMin));
+  // Lift-hours low where our temperature model supplied one (lib/temps.js).
+  const coldMin = nums(fc.map(coldLow));
   const windMax = nums(fc.map((d) => d.windMax));
   const freeze = nums(fc.map((d) => d.freezeMin));
 
@@ -57,7 +60,8 @@ export function score(resort, a, b, history) {
     total: Number(fc.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
     projected: pj.length ? Number(pj.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)) : null,
     hi: tempMax.length ? Math.max(...tempMax) : null,
-    lo: tempMin.length ? Math.min(...tempMin) : null,
+    lo: coldMin.length ? Math.min(...coldMin) : null,
+    loNight: tempMin.length ? Math.min(...tempMin) : null,
     wind: windMax.length ? Math.max(...windMax) : null,
     freezeMin: freeze.length ? Math.min(...freeze) : null,
   };

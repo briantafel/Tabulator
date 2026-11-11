@@ -153,6 +153,9 @@ export async function loadForecast() {
      on for someone, and only ever used through lib/projections.js. */
   const projections = flags.projections === "off" || preset ? null : await getJson("projections.json", null);
 
+  /* Our temperature model (scripts/temps → lib/temps.js), same rule. */
+  const temps = flags.temps === "off" || preset ? null : await getJson("temps.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -170,6 +173,7 @@ export async function loadForecast() {
     editorial,
     flags,
     projections,
+    temps,
   };
 }
 

@@ -58,7 +58,13 @@ export function inSpring(r) {
 
 /** Brian, 2026-10-31: from March 20, a warm afternoon is a deal breaker only
  *  when the nights do not freeze. A refreeze makes it corn. */
-export const cornDay = (r) => inSpring(r) && r.lo != null && r.lo <= SPRING_REFREEZE;
+/*  With our temperature model on, `lo` is the LIFT-HOURS low (the cold veto)
+ *  and `loNight` the day's low; a refreeze is about the night, so it reads
+ *  loNight. Switch off: no loNight, so this is exactly the old rule. */
+export const cornDay = (r) => {
+  const night = r.loNight ?? r.lo;
+  return inSpring(r) && night != null && night <= SPRING_REFREEZE;
+};
 
 /** 0 at `lo`, 1 at `hi`, clamped — the one shape every term is built from. */
 const ramp = (v, lo, hi) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));

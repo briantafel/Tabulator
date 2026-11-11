@@ -52,7 +52,8 @@ export function copyVoice() {
  *   "on"       on by default; a phone can switch it off in Settings.
  * Legacy booleans are read as true → "on", false → "off". */
 export const MODES = Object.freeze(["off", "preview", "on"]);
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off" });
+/* temps: our temperature model (lib/temps.js), Brian 2026-11-11. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

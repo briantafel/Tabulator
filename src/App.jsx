@@ -19,6 +19,7 @@ import { score } from "./lib/scoring.js";
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
 import { extendFeed, MAX_DAYS } from "./lib/projections.js";
+import { applyTemps } from "./lib/temps.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -64,6 +65,8 @@ export default function Tabulator() {
   /* This device's projections override: true / false, or null to follow the
      site-wide switch in public/flags.json. See lib/flags.js. */
   const [projOverride, setProjOverride] = useState(() => loadSaved("projections", null));
+  /* Same for our temperature model (lib/temps.js). */
+  const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -107,10 +110,17 @@ export default function Tabulator() {
   const chooseProjections = (on) => setProjOverride(nextOverride(on, projMode));
   /* With projections on, days 7–10 are appended to every resort (flagged, and
      never scored — see lib/scoring.js). Off: the feed exactly as loaded. */
-  const feed = useMemo(
-    () => (projections && feedRaw ? extendFeed(feedRaw) : feedRaw),
-    [projections, feedRaw],
-  );
+  const tempsMode = feedRaw?.flags?.temps ?? "off";
+  const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
+  const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
+  /* Our temperatures go in AFTER the projected days are appended, so days
+     1–10 all carry the same temperature. Off: untouched. */
+  /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
+  const base = useMemo(() => (tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw), [tempsOn, feedRaw]);
+  const feed = useMemo(() => {
+    const f = projections && feedRaw ? extendFeed(feedRaw) : feedRaw;
+    return tempsOn ? applyTemps(f, feedRaw.temps) : f;
+  }, [projections, tempsOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
   /* Switching projections off with a 7–10 day window picked: back to six,
@@ -136,6 +146,7 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("metric", metric); }, [metric]);
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
   useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
+  useEffect(() => { saveLocal("temps", tempsOverride); }, [tempsOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -291,6 +302,13 @@ export default function Tabulator() {
                 <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>With projections</button>
               </span>
             </div>}
+            {canChoose(tempsMode) && feedRaw?.temps && <div className="set">
+              <span className="set-label">Temperature</span>
+              <span className="pill sm">
+                <button className={!tempsOn ? "on" : ""} onClick={() => chooseTemps(false)}>Snow-Forecast</button>
+                <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Our model</button>
+              </span>
+            </div>}
             <div className="stamps">
             {feed?.synthetic && <span className="stamp warn">Sample data, not a real forecast.</span>}
             {/* Was a pink banner over the results; Brian asked for it here
@@ -420,8 +438,8 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={feedRaw.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
-              gridResorts={projections ? feed.resorts : feedRaw.resorts}
+            <Radar resorts={base.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
+              gridResorts={projections ? feed.resorts : base.resorts}
               gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
               editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />

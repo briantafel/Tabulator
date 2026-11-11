@@ -13,6 +13,7 @@ import Dot from "./Dot.jsx";
 import RangeChart from "./RangeChart.jsx";
 import RollNumber from "./RollNumber.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
+import { coldLow, stripWithOurTemps } from "../lib/temps.js";
 
 /* Brian's exports. Filled paths; the clipPath wrapper Figma emits is dropped
    and the fills become currentColor so the button state drives the colour. */
@@ -157,9 +158,14 @@ export default function Detail({
      never a zero that would read as a dry spell. */
   const recent = r ? before(history, r.id, localToday()) : null;
 
-  const wx = wxSource === "sf"
-    ? sfDays(r.days)
-    : toDays(weather?.resorts?.[r.id]?.periods ?? []);
+  /* With our temperature model on (lib/temps.js), the strip keeps its sky
+     and words but shows our high and lift-hours low, so the sheet shows one
+     temperature. Off: no day carries tempSource, and this is unchanged. */
+  const wx = stripWithOurTemps(
+    wxSource === "sf" ? sfDays(r.days) : toDays(weather?.resorts?.[r.id]?.periods ?? []),
+    r.days,
+    (c) => (typeof c === "number" ? Math.round((c * 9) / 5 + 32) : null),
+  );
 
   /* Which trips already carry this resort. The calendar button reads off
      this: a plus while it is in none, a red X once it is in one. */
@@ -432,7 +438,7 @@ export default function Detail({
                 </span>
                 <span className="sd-n">{snowWithUnit(d.snow, metric)}</span>
                 <span className="sd-n sd-f muted">
-                  <Dot kind={tempSeverity(d.tempMax, d.tempMin)} label="Temperature" />
+                  <Dot kind={tempSeverity(d.tempMax, coldLow(d))} label="Temperature" />
                   {tempTxt(d.tempMax, metric)}°
                 </span>
                 <span className="sd-n sd-f muted">
