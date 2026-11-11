@@ -75,3 +75,17 @@ def test_implausible_fails_loudly():
     arr = np.array([[400.0]])
     with pytest.raises(RuntimeError, match="implausible"):
         D.check_plausible([("precip", "mm", "a", "b", arr)])
+
+
+def test_gefs_frozen_no_precip_code_is_not_averaged():
+    leads = [0, 3, 6]
+    d = make(leads)
+    pf = np.full(d["precipitation_surface"].shape, -50.0)  # "no precipitation"
+    pf[2, 0, 0] = 80.0  # one real value
+    d["percent_frozen_precipitation_surface"] = pf
+    init = datetime(2026, 11, 11, 0, tzinfo=timezone.utc)
+    by = blocks_by(D.build_blocks("gefs", init, leads, d, RESORTS, None, None, None, "x", "r",
+                                  {"percent_frozen_precipitation_surface": "frozen_pct_mean"}, None))
+    arr = by[("frozen_pct_mean", "2026-11-11T00:00:00Z")]
+    assert arr[0, 0] == pytest.approx(80.0) and np.isnan(arr[0, 1])
+    D.check_plausible([("frozen_pct_mean", "%", "a", "b", arr)])

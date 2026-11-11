@@ -124,7 +124,11 @@ def build_blocks(model: str, init: datetime, leads_h: list[float], data: dict[st
             b["g"].append(data[gust][k] * 3.6)
         for var in extra:
             if var in data:
-                b[var].append(data[var][k])
+                v = data[var][k]
+                if var == "percent_frozen_precipitation_surface":
+                    # NCEP writes -50 for "no precipitation": a code, not a value.
+                    v = np.where(v < 0, np.nan, v)
+                b[var].append(v)
 
     out = []  # (variable, unit, valid_start, valid_end, array[member, resort])
     for bstart, b in sorted(blocks.items()):
@@ -138,7 +142,12 @@ def build_blocks(model: str, init: datetime, leads_h: list[float], data: dict[st
         for var, name in extra.items():
             if b[var]:
                 unit = "%" if name in ("rh_2m_mean", "frozen_pct_mean") else "C"
-                vals.append((name, np.mean(b[var], axis=0), unit))
+                with np.errstate(all="ignore"):
+                    import warnings
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore", RuntimeWarning)  # all-NaN slice = no precip: no row
+                        mean = np.nanmean(b[var], axis=0) if name == "frozen_pct_mean" else np.mean(b[var], axis=0)
+                vals.append((name, mean, unit))
         vs, ve = iso(bstart), iso(bstart + timedelta(hours=BLOCK_H))
         for variable, arr, unit in vals:
             out.append((variable, unit, vs, ve, arr))
