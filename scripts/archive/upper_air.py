@@ -12,8 +12,9 @@ on AWS long term, so a late or skipped run loses nothing, and each can be
 backfilled later with --cycle.
 
 Models (source / model):
-  noaa-hrrr / hrrr        HRRR 3 km, wrfprs, 00z+12z to 48 h. CONUS + southern
-                          Canada (to ~52.6°N; the log names resorts outside).
+  noaa-hrrr / hrrr        HRRR 3 km, wrfprs, 00/06/12/18z to 48 h. CONUS + southern
+                          Canada (the grid's north edge is ~50.5°N in the BC
+                          interior; the log names North American resorts outside).
   noaa-gefs / gefs        GEFS 0.5° pgrb2a, control + 30 members, 00z+12z to 240 h.
                           Same file layout as the GEFSv12 reforecast (training set).
   ecmwf-opendata / ifs-hres  ECMWF IFS 0.25° deterministic (oper), 00z+12z to 240 h.
@@ -28,7 +29,8 @@ count mismatch fails the run.
 Rows are INSTANTS (valid_start == valid_end, period_label "instant") at
 00/06/12/18 UTC, same shape as the regional-eps profile rows:
   t_<p>hpa   temperature (°C)
-  rh_<p>hpa  relative humidity (%)
+  rh_<p>hpa  relative humidity (%). NOAA: over water. ECMWF: over water above
+             0 °C, over ice below −23 °C, blended between (can exceed 100 %)
   q_<p>hpa   specific humidity (g/kg), only where a model has no RH at that level
   z_<p>hpa   geopotential height (m)
   psfc       surface pressure at the model cell (hPa): tells which levels are
@@ -93,18 +95,23 @@ def leads_6h(last: int, step_after: dict | None = None) -> list[int]:
 
 
 MODELS = {
-    "hrrr": dict(source="noaa-hrrr", kind="noaa", cycles=(0, 12), max_km=3.0, leads=leads_6h(48), ready_h=3),
+    "hrrr": dict(source="noaa-hrrr", kind="noaa", cycles=(0, 6, 12, 18), max_km=3.0, leads=leads_6h(48), ready_h=3),
     "gefs": dict(source="noaa-gefs", kind="noaa", cycles=(0, 12), max_km=40.0, leads=leads_6h(240), ready_h=6),
-    "ifs-hres": dict(source="ecmwf-opendata", kind="ecmwf", stream="oper", cycles=(0, 12), max_km=20.0,
+    "ifs-hres": dict(source="ecmwf-opendata", kind="ecmwf", stream="oper", cycles=(0, 12), max_km=20.0, gap=4_000_000,
                      leads=leads_6h(240, {156: 12}), ready_h=8),
-    "ifs-ens": dict(source="ecmwf-opendata", kind="ecmwf", stream="enfo", cycles=(0,), max_km=20.0,
+    "ifs-ens": dict(source="ecmwf-opendata", kind="ecmwf", stream="enfo", cycles=(0,), max_km=20.0, gap=4_000_000,
                     leads=leads_6h(240, {156: 12}), ready_h=9),
 }
 
 # NOAA idx variable names → our prefix, unit, transform
 NOAA_VARS = {"TMP": ("t", "C", lambda a: a - 273.15), "RH": ("rh", "%", lambda a: a),
              "HGT": ("z", "m", lambda a: a)}
-# ECMWF params → our prefix, unit, transform (q only used where r is missing)
+# ECMWF params → our prefix, unit, transform (q only where a level has no r).
+# ECMWF's r is relative to WATER above 0 °C, to ICE below −23 °C, with IFS's
+# documented quadratic blend between, so it can exceed 100 % in cold air (first
+# live run: 112 % at 500 hPa). That blend is exact and invertible, so wet-bulb
+# code converts r back to vapour pressure with the same formula; q would be a
+# duplicate.
 ECMWF_VARS = {"t": ("t", "C", lambda a: a - 273.15), "r": ("rh", "%", lambda a: a),
               "gh": ("z", "m", lambda a: a), "q": ("q", "g/kg", lambda a: a * 1000.0)}
 
@@ -119,11 +126,13 @@ def iso(t: datetime) -> str:
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def http(url: str, headers: dict | None = None, retries: int = 3, timeout: int = 90) -> bytes:
+def http(url: str, headers: dict | None = None, retries: int = 6, timeout: int = 90) -> bytes:
+    """GET with retries; 503/429 (S3 'slow down') back off up to ~2 min in total."""
+    import random
     last = None
     for attempt in range(retries + 1):
         if attempt:
-            time.sleep(5 * attempt)
+            time.sleep(min(40, 2 ** attempt) + random.random() * 3)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
             with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -196,7 +205,7 @@ def parse_ecmwf_index(text: str) -> list[dict]:
 
 
 def select_ecmwf(idx: list[dict]) -> list[tuple[dict, str, str, object]]:
-    """Pressure-level t/r/gh (q where that level has no r) and surface pressure."""
+    """Pressure-level t/r/gh (q only where that level has no r) and surface pressure."""
     have_r = {(e.get("number"), e.get("levelist")) for e in idx if e.get("param") == "r" and e.get("levtype") == "pl"}
     out = []
     for e in idx:
@@ -215,16 +224,40 @@ def select_ecmwf(idx: list[dict]) -> list[tuple[dict, str, str, object]]:
     return out
 
 
-def merge_ranges(picks: list[tuple[dict, str, str, object]]) -> list[list[tuple]]:
-    """Group picks whose byte ranges are back to back, so one request fetches
-    them all. Messages in a group come back in index order."""
+def merge_ranges(picks: list[tuple[dict, str, str, object]], entries: list[dict] | None = None,
+                 gap: int = 0) -> list[list[tuple]]:
+    """Group wanted messages into byte spans so one request fetches several.
+    With entries (the file's full index) and gap > 0, a span may also cover
+    unwanted messages between wanted ones, up to `gap` bytes in a row; those
+    come back as None placeholders so every decoded message still lines up
+    with its index entry by order."""
     picks = sorted(picks, key=lambda p: p[0]["start"])
-    groups: list[list[tuple]] = []
-    for p in picks:
-        if groups and groups[-1][-1][0]["end"] is not None and groups[-1][-1][0]["end"] + 1 == p[0]["start"]:
-            groups[-1].append(p)
-        else:
-            groups.append([p])
+    if not entries or gap <= 0:
+        groups: list[list[tuple]] = []
+        for p in picks:
+            if groups and groups[-1][-1][0]["end"] is not None and groups[-1][-1][0]["end"] + 1 == p[0]["start"]:
+                groups[-1].append(p)
+            else:
+                groups.append([p])
+        return groups
+    wanted = {p[0]["start"]: p for p in picks}
+    order = sorted(entries, key=lambda e: e["start"])
+    groups, cur, skipped = [], [], []
+    for e in order:
+        p = wanted.get(e["start"])
+        if p is None:
+            if cur:
+                skipped.append(e)
+            continue
+        if cur and (skipped and sum(x["end"] - x["start"] + 1 for x in skipped) > gap):
+            groups.append(cur)
+            cur = []
+        elif cur and skipped:
+            cur.extend((x, None, None, None) for x in skipped)
+        skipped = []
+        cur.append(p)
+    if cur:
+        groups.append(cur)
     return groups
 
 
@@ -316,9 +349,12 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
             raise
         idx = parse_noaa_idx(text) if cfg["kind"] == "noaa" else parse_ecmwf_index(text)
         picks = select_noaa(idx, lead) if cfg["kind"] == "noaa" else select_ecmwf(idx)
+        entries[f[1]] = idx
         return f, picks
 
-    with ThreadPoolExecutor(max_workers=16) as pool:
+    entries: dict[str, list[dict]] = {}
+    workers = 16 if cfg["kind"] == "noaa" else 8
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         indexed = list(pool.map(index_job, files))
     missing = [f"{l}h {u.rsplit('/', 1)[-1]}" for (l, u, _), p in indexed if p is None]
     if missing:
@@ -345,14 +381,15 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
     pts = nearest(lat, lon, resorts, cfg["max_km"])
     if not pts:
         raise RuntimeError("no resort inside the model grid")
-    outside = [r["id"] for r in resorts if r["id"] not in pts]
-    log(f"    {len(pts)} resorts on the grid" + (f"; outside: {', '.join(outside[:12])}" + (" …" if len(outside) > 12 else "")
-                                                 if outside and model == "hrrr" else ""))
+    outside = [r["id"] for r in resorts if r["id"] not in pts and -170 < r["latlon"][1] < -50]
+    log(f"    {len(pts)} resorts on the grid" + (f"; North American resorts outside: {', '.join(outside)}" if outside else ""))
     ids = list(pts)
     cells = np.array([pts[i][0] for i in ids])
     del lat, lon
 
-    jobs = [(lead, url, group) for (lead, url, _), picks in indexed for group in merge_ranges(picks)]
+    jobs = [(lead, url, group) for (lead, url, _), picks in indexed
+            for group in merge_ranges(picks, entries.get(url), cfg.get("gap", 0))]
+    entries.clear()
     log(f"    {sum(len(p) for _, p in indexed)} messages in {len(jobs)} requests from {len(files)} files")
 
     def fetch(job):
@@ -368,10 +405,12 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
     orog: dict[str, float] = {}
     pending: list[tuple] = []
     nbytes = 0
-    with ThreadPoolExecutor(max_workers=16) as pool:
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         for lead, url, group, msgs, n in pool.map(fetch, jobs):
             nbytes += n
             for (entry, variable, unit, tf), arr in zip(group, msgs):
+                if variable is None:
+                    continue  # unwanted message inside a span
                 if variable == "@orog":
                     for k, rid in enumerate(ids):
                         if math.isfinite(arr[k]) and abs(arr[k]) < 1e19:
@@ -412,7 +451,7 @@ def bounds(variable: str):
     if variable.startswith("t_"):
         return (-90, 45)
     if variable.startswith("rh_"):
-        return (0, 105)
+        return (0, 130)  # ECMWF r is over ice in cold air (can exceed 100 %)
     if variable.startswith("q_"):
         return (0, 40)
     if variable.startswith("z_"):
@@ -526,7 +565,7 @@ def main() -> int:
                         raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
                 ok.append(f"{key}: {n} rows in {time.time() - t:.0f} s" + (" (dry run)" if dry else ""))
                 log(f"  ✓ {ok[-1]}")
-                if dry and not only:
+                if dry:
                     break  # a dry run measures one cycle per model
             except FileNotFoundError as e:
                 waiting.append(f"{key}: {e}")

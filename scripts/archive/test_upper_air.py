@@ -98,3 +98,17 @@ def test_plausibility_catches_unit_mistakes():
         ua.check_plausible([(6, 0, "z_500hpa", "m", np.array([560.0, 555.0]))])  # decametres, not metres
     with pytest.raises(RuntimeError):
         ua.check_plausible([(6, 0, "t_850hpa", "C", np.array([268.0]))])  # still Kelvin
+    assert ua.check_plausible([(6, 0, "rh_500hpa", "%", np.array([112.0]))]) == 1  # ECMWF over ice: real
+    with pytest.raises(RuntimeError):
+        ua.check_plausible([(6, 0, "rh_500hpa", "%", np.array([0.9, 1.0]) * 1000)])  # fraction ×1000 mistake
+
+
+def test_spans_cover_small_gaps_with_placeholders():
+    e = [{"start": i * 100, "end": i * 100 + 99} for i in range(8)]
+    picks = [(e[0], "a", "u", None), (e[1], "b", "u", None), (e[3], "c", "u", None), (e[7], "d", "u", None)]
+    groups = ua.merge_ranges(picks, e, gap=150)
+    # e[2] (100 bytes) is bridged; e[4..6] (300 bytes) is not
+    assert [[v for _, v, _, _ in g] for g in groups] == [["a", "b", None, "c"], ["d"]]
+    assert groups[0][0][0]["start"] == 0 and groups[0][-1][0]["end"] == 399
+    # no gap allowed: only back-to-back messages merge
+    assert [[v for _, v, _, _ in g] for g in ua.merge_ranges(picks, e, gap=0)] == [["a", "b"], ["c"], ["d"]]
