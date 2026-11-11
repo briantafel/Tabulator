@@ -112,3 +112,10 @@ def test_spans_cover_small_gaps_with_placeholders():
     assert groups[0][0][0]["start"] == 0 and groups[0][-1][0]["end"] == 399
     # no gap allowed: only back-to-back messages merge
     assert [[v for _, v, _, _ in g] for g in ua.merge_ranges(picks, e, gap=0)] == [["a", "b"], ["c"], ["d"]]
+
+
+def test_ensemble_chunks_cover_every_lead_once():
+    ch = ua.chunks(ua.MODELS["ifs-ens"])
+    assert [l for c in ch for l in c] == ua.MODELS["ifs-ens"]["leads"]
+    assert max(len(c) for c in ch) == 6
+    assert ua.chunks(ua.MODELS["gefs"]) == [ua.MODELS["gefs"]["leads"]]

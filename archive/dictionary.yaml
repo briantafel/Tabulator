@@ -141,6 +141,47 @@ sources:
       - Only deterministic idx lines are used. Probability, percentile and std-dev messages share the variable names and are skipped by design.
       - "Licence: NOAA open data, no restrictions. Attribution: NOAA National Blend of Models."
       - "parser nbm-2 (2026-11-11): snow_level_min/max (m above sea level) from NBM's snow level at the block's instants, and slr_mean (ratio) when the inventory has a snow-to-liquid ratio. The idx names are matched by pattern (unverified from the sandbox); a cycle with no snow level is archived but the run fails loudly and prints the related inventory lines."
+  noaa-hrrr:
+    name: NOAA HRRR 3 km, pressure-level file wrfprs (AWS noaa-hrrr-bdp-pds)
+    kind: forecast (upper-air profiles only; no precipitation rows)
+    url: https://noaa-hrrr-bdp-pds.s3.amazonaws.com
+    models:
+      hrrr: HRRR CONUS, 00/06/12/18z to 48 h, leads every 6 h
+    cadence: workflow upper-air.yml every 3 h; every cycle in the last 3 days not yet archived (markers under upper-air/done/)
+    since: 2026-11-11
+    raw: not kept (NOAA keeps HRRR on AWS from 2014; byte ranges are re-readable, so it can be backfilled with --cycle)
+    notes:
+      - "Profile rows (parser upper-air-1; run_id contains -prof-): INSTANT rows (valid_start == valid_end, period_label instant) at 00/06/12/18 UTC. t_<p>hpa (°C), rh_<p>hpa (% over water), z_<p>hpa (m) at 1000, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500 hPa; psfc (hPa, model surface pressure at the cell; levels with p > psfc are below the model ground); freezing_level (m, HRRR's 0 °C isotherm height). Raw values at the nearest grid point within 3 km; elevation_m is that point's model terrain height. Per-tier interpolation and wet-bulb are derived later (claude/upper-air-plan.md). Instants are excluded from the verification table."
+      - Coverage is the CONUS grid, which reaches southern Canada; its north edge is near 50.5°N in the BC interior, so northern BC/Alberta resorts are outside (the run log names them). Resorts close to the edge sit near the lateral boundary, where HRRR is least reliable.
+      - "Licence: NOAA open data, no restrictions. Attribution: NOAA HRRR."
+  noaa-gefs:
+    name: NOAA GEFS 0.5° pressure-level file pgrb2a (AWS noaa-gefs-pds)
+    kind: forecast (upper-air profiles only; no precipitation rows)
+    url: https://noaa-gefs-pds.s3.amazonaws.com
+    models:
+      gefs: GEFS control (member 0) + 30 perturbed members, 00z+12z to 240 h, leads every 6 h
+    cadence: workflow upper-air.yml every 3 h; every 00z/12z cycle in the last 3 days not yet archived
+    since: 2026-11-11
+    raw: not kept (NOAA keeps GEFSv12 on AWS from 2020-09; backfillable with --cycle). Same file layout as the GEFSv12 reforecast 2000–2019 (training set).
+    notes:
+      - "Same row shape as noaa-hrrr. Levels 1000, 925, 850, 700, 500 hPa (all that pgrb2a carries in 1000–500). rh is over water. psfc and elevation_m (the cell's model orography) per cell. Nearest 0.5° cell within 40 km; global, so all resorts."
+      - Separate from dynamical-ens's GEFS (that one has surface fields and no pressure-level T/RH). Never merge them.
+      - "Licence: NOAA open data, no restrictions. Attribution: NOAA GEFS."
+  ecmwf-opendata:
+    name: ECMWF open data, IFS 0.25° (AWS ecmwf-forecasts)
+    kind: forecast (upper-air profiles only; no precipitation rows)
+    url: https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com
+    models:
+      ifs-hres: IFS deterministic (stream oper), 00z+12z, leads every 6 h to 156 h then every 12 h to 240 h
+      ifs-ens: IFS ENS (stream enfo), control (member 0) + 50 members, 00z, same leads
+    cadence: workflow upper-air.yml every 3 h; every cycle in the last 3 days not yet archived
+    since: 2026-11-11
+    raw: not kept (the AWS bucket keeps open data from 2024; backfillable with --cycle)
+    notes:
+      - "Same row shape as noaa-hrrr. Levels 1000, 925, 850, 700, 600, 500 hPa. psfc per cell; elevation_m is null (the open set has no orography at these steps). Nearest 0.25° cell within 20 km; global."
+      - "rh_<p>hpa is IFS's own r: over WATER above 0 °C, over ICE below −23 °C, with IFS's quadratic blend between (alpha = ((T + 23) / 23)^2). It can exceed 100 % in cold air (112 % seen at 500 hPa). Convert back to vapour pressure with the same blend before computing wet-bulb. q_<p>hpa (g/kg) is stored only for a level that has no r."
+      - Separate from dynamical-ens's IFS ENS (no humidity aloft there). Never merge them.
+      - "Licence: ECMWF open data, CC BY 4.0. Attribution: Source: ECMWF."
   snotel:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
@@ -263,6 +304,11 @@ variables:
   reported_new_snow: { unit: cm, meaning: Snow-Forecast's resort-reported fresh snowfall, as a number. Only written when the page gives a figure in cm; "—" stays text-only in reported_fresh_snowfall_depth. As of fetched_at. }
   reported_top_depth: { unit: cm, meaning: Snow-Forecast's resort-reported upper-mountain snow depth. As of fetched_at. }
   reported_bottom_depth: { unit: cm, meaning: Snow-Forecast's resort-reported lower-mountain snow depth. As of fetched_at. }
+  psfc: { unit: hPa, meaning: Surface pressure at the model's grid cell (upper-air sources). A pressure level with p > psfc lies below the model's ground there. }
+  "t_<p>hpa": { unit: C, meaning: Temperature at pressure level p (instant). }
+  "rh_<p>hpa": { unit: "%", meaning: Relative humidity at pressure level p (instant). Over water, except ecmwf-opendata (see its notes). }
+  "q_<p>hpa": { unit: g/kg, meaning: Specific humidity at pressure level p (instant). }
+  "z_<p>hpa": { unit: m, meaning: Geopotential height of pressure level p (instant). }
   snow_level: { unit: m, meaning: NWS snow level — the height above which precipitation falls as snow. }
   wind_gust: { unit: km/h, meaning: NWS forecast wind gust. }
   precip_probability: { unit: "%", meaning: NWS probability of precipitation for the window. }

@@ -99,7 +99,8 @@ MODELS = {
     "gefs": dict(source="noaa-gefs", kind="noaa", cycles=(0, 12), max_km=40.0, leads=leads_6h(240), ready_h=6),
     "ifs-hres": dict(source="ecmwf-opendata", kind="ecmwf", stream="oper", cycles=(0, 12), max_km=20.0, gap=4_000_000,
                      leads=leads_6h(240, {156: 12}), ready_h=8),
-    "ifs-ens": dict(source="ecmwf-opendata", kind="ecmwf", stream="enfo", cycles=(0,), max_km=20.0, gap=4_000_000,
+    "ifs-ens": dict(source="ecmwf-opendata", kind="ecmwf", stream="enfo", cycles=(0,), max_km=20.0, gap=1_000_000,
+                    chunk=6,
                     leads=leads_6h(240, {156: 12}), ready_h=9),
 }
 
@@ -309,34 +310,44 @@ def get_range(url: str, start: int, end: int | None) -> bytes:
 
 
 # ---------------------------------------------------------------- files per model
-def files_for(model: str, cfg: dict, cycle: datetime) -> list[tuple[int, str, str]]:
-    """(lead, grib url, index url) for every file one cycle needs."""
+def files_for(model: str, cfg: dict, cycle: datetime, leads: list[int] | None = None) -> list[tuple[int, str, str]]:
+    """(lead, grib url, index url) for every file one cycle (or chunk) needs."""
     d, h = f"{cycle:%Y%m%d}", f"{cycle:%H}"
+    leads = cfg["leads"] if leads is None else leads
     out = []
     if model == "hrrr":
-        for l in cfg["leads"]:
+        for l in leads:
             u = f"{HRRR_URL}/hrrr.{d}/conus/hrrr.t{h}z.wrfprsf{l:02d}.grib2"
             out.append((l, u, u + ".idx"))
     elif model == "gefs":
         for mem in ["gec00"] + [f"gep{n:02d}" for n in range(1, 31)]:
-            for l in cfg["leads"]:
+            for l in leads:
                 u = f"{GEFS_URL}/gefs.{d}/{h}/atmos/pgrb2ap5/{mem}.t{h}z.pgrb2a.0p50.f{l:03d}"
                 out.append((l, u, u + ".idx"))
     else:
         typ = "ef" if cfg["stream"] == "enfo" else "fc"
-        for l in cfg["leads"]:
+        for l in leads:
             u = f"{ECMWF_URL}/{d}/{h}z/ifs/0p25/{cfg['stream']}/{d}{h}0000-{l}h-{cfg['stream']}-{typ}.grib2"
             out.append((l, u, u[:-len(".grib2")] + ".index"))
     return out
 
 
+def chunks(cfg: dict) -> list[list[int]]:
+    """Lead groups archived as separate units (own done marker). One unit for
+    most models; the ECMWF ensemble is too big for one job (>45 min)."""
+    n = cfg.get("chunk")
+    leads = cfg["leads"]
+    return [leads] if not n else [leads[i:i + n] for i in range(0, len(leads), n)]
+
+
 def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], fetched_at: str, run_id: str,
-                  deadline: float) -> list[dict]:
-    files = files_for(model, cfg, cycle)
-    last_lead = max(l for l, _, _ in files)
+                  deadline: float, leads: list[int] | None = None):
     # The cycle counts as ready when its LAST file's index is up (the run is complete).
-    if not any(exists(i) for l, _, i in files if l == last_lead):
+    whole = files_for(model, cfg, cycle)
+    last_lead = max(l for l, _, _ in whole)
+    if not any(exists(i) for l, _, i in whole if l == last_lead):
         raise FileNotFoundError("cycle not complete on the bucket yet")
+    files = files_for(model, cfg, cycle, leads)
     t0 = time.time()
 
     def index_job(f):
@@ -381,7 +392,7 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
     pts = nearest(lat, lon, resorts, cfg["max_km"])
     if not pts:
         raise RuntimeError("no resort inside the model grid")
-    outside = [r["id"] for r in resorts if r["id"] not in pts and -170 < r["latlon"][1] < -50]
+    outside = [r["id"] for r in resorts if r["id"] not in pts and r["latlon"][0] > 15 and -170 < r["latlon"][1] < -50]
     log(f"    {len(pts)} resorts on the grid" + (f"; North American resorts outside: {', '.join(outside)}" if outside else ""))
     ids = list(pts)
     cells = np.array([pts[i][0] for i in ids])
@@ -527,18 +538,21 @@ def main() -> int:
             cands = sorted({datetime(d.year, d.month, d.day, h, tzinfo=timezone.utc)
                             for d in (now - timedelta(days=i) for i in range(3)) for h in cfg["cycles"]}, reverse=True)
             cands = [c for c in cands if timedelta(hours=cfg["ready_h"]) < now - c < timedelta(days=3)]
-        for cycle in cands:
-            key = f"{model}-{cycle:%Y%m%d%H}"
+        units = [(cycle, i, ls) for cycle in cands for i, ls in enumerate(chunks(cfg))]
+        for cycle, ci, ls in units:
+            key = f"{model}-{cycle:%Y%m%d%H}" + (f"-c{ci}" if cfg.get("chunk") else "")
             if key in done:
                 continue
+            if any(w.startswith(f"{model}-{cycle:%Y%m%d%H}") for w in waiting + failures):
+                continue  # an earlier chunk of this cycle is waiting or failed
             if time.time() - started > TIME_LIMIT_S - 5 * 60:
                 waiting.append(f"{key}: time limit (next run continues)")
                 continue
             t = time.time()
-            log(f"  {key}:")
+            log(f"  {key}:" + (f" leads {ls[0]}–{ls[-1]} h" if cfg.get("chunk") else ""))
             try:
-                run_id = f"{cycle:%Y-%m-%dT%H%M}Z-{model}-prof-{gh}"
-                pending, meta = collect_cycle(model, cfg, cycle, resorts, fetched_at, run_id, started + TIME_LIMIT_S)
+                run_id = f"{cycle:%Y-%m-%dT%H%M}Z-{model}-prof-" + (f"c{ci}-" if cfg.get("chunk") else "") + gh
+                pending, meta = collect_cycle(model, cfg, cycle, resorts, fetched_at, run_id, started + TIME_LIMIT_S, ls)
                 n = check_plausible(pending)
                 if not n:
                     raise RuntimeError("no rows built")
@@ -559,14 +573,14 @@ def main() -> int:
                     r = bucket("cp", str(d / "up"), f"s3://{b}/", "--recursive")
                     if r.returncode:
                         raise RuntimeError(f"upload failed: {r.stderr[-300:]}")
-                    (d / "done.json").write_text(json.dumps({"cycle": iso(cycle), "rows": n, "run_id": run_id}))
+                    (d / "done.json").write_text(json.dumps({"cycle": iso(cycle), "leads": ls, "rows": n, "run_id": run_id}))
                     r = bucket("cp", str(d / "done.json"), f"s3://{b}/upper-air/done/{key}.json")
                     if r.returncode:
                         raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
                 ok.append(f"{key}: {n} rows in {time.time() - t:.0f} s" + (" (dry run)" if dry else ""))
                 log(f"  ✓ {ok[-1]}")
-                if dry:
-                    break  # a dry run measures one cycle per model
+                if dry and (not cfg.get("chunk") or ci >= 1):
+                    break  # a dry run measures one cycle (two chunks) per model
             except FileNotFoundError as e:
                 waiting.append(f"{key}: {e}")
             except TimeoutError:
