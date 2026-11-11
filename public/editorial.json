@@ -1,73 +1,88 @@
 {
- "generatedAt": "2026-11-10T14:57:23.616Z",
- "forecastGeneratedAt": "2026-11-10T14:51:07.343Z",
+ "generatedAt": "2026-11-11T01:20:14.880Z",
+ "forecastGeneratedAt": "2026-11-11T01:13:59.531Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-10",
+  "from": "2026-11-11",
   "to": "2026-11-15",
-  "days": 6,
+  "days": 5,
   "toLabel": "Sunday Nov 15"
  },
  "regions": [
   {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Stowe leads with 17\" over the week, with the biggest day Friday at 9\". Light snow is expected Thursday through Saturday, with northwest wind gusting to 23 mph Saturday. Killington also totals 17\", peaking Friday at 9\" with north wind gusting to 26 mph. Jay Peak has 11\"."
-  },
-  {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 18\", with 16\" falling Friday, and Palisades and Sugar Bowl each total 15\" with 13\" on Friday. Friday brings a chance of thunderstorms and a change to rain before snow returns Friday night. Snow continues through Sunday night."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Whistler totals 28\", with 13\" on Tuesday, and then rain dominates. Wednesday brings rain at times heavy, with southeast wind gusting to 60 km/h in the morning. Snow returns Sunday, with 11\" expected."
+   "text": "Kirkwood leads with 23\" over the week, 20\" of it on Friday. The NWS is calling for more, 23\" to 38\" from Friday through Sunday night. A Winter Storm Watch runs Friday through Monday. Palisades has 16\" and Sugar Bowl 16\"."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth totals 9\", all falling Friday. Strong southwest wind gusts to 60 mph Friday night and remains gusty through Sunday, so expect difficult lift and visibility conditions. Snow continues Sunday night."
+   "text": "Mammoth gets 11\", mostly Friday, with 10\" expected. Southwest wind 20 to 25 mph with gusts to 65 mph Friday night. The NWS is calling for more, 9\" to 17\" from Friday through Sunday night. A Winter Storm Watch runs Friday through Saturday."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Whiteface leads with 10\", 6\" on Thursday. Killington also totals 10\", 4\" on Thursday, with light snow Friday. Jay Peak gets 7\" with snow showers into the weekend. Expect cold, steady snow most of the period."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek leads with 9\", all on Saturday, with snow showers likely and a slight chance of thunderstorms. Taos gets 4\" Saturday and 1\" Sunday. Expect cold, showery snow, with lows in the 20s."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain totals 6\", with the biggest day Sunday at 4\", and Stevens Pass also gets 6\", all on Sunday. Rain and snow mix Friday through Sunday, with snow levels near pass elevation. Mt. Baker totals 5\", peaking Sunday at 3\"."
+   "text": "Stevens Pass leads with 7\", 6\" on Sunday. Crystal Mountain totals 6\", 5\" of it Sunday. Mt. Baker gets 3\" Sunday. Expect rain at lower elevations Friday and Saturday, with snow mixing in at the top."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Whistler leads with 11\", 9\" on Sunday. Expect rain and showers Thursday through Saturday, with strong southeast wind Wednesday. Snow is mainly a Sunday story."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a second, colder storm could bring snow to the Sierra and northern California ranges around Monday Nov 16, with moderate accumulations possible. Confidence is moderate, given that model timing and amounts still differ.",
+  "text": "The Weather Prediction Center says a Pacific system brings more rain and mountain snow to the West Coast around Monday Nov 16 into Tuesday Nov 17, with confidence in its own words only moderate.",
   "sources": [
    {
-    "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-10T11:34:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
-   },
-   {
     "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-10T11:07:00+00:00",
+    "issuedAt": "2026-11-10T22:18:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
    },
    {
     "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-10T08:55:00+00:00",
+    "issuedAt": "2026-11-10T21:47:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
    },
    {
+    "name": "NWS BTV Area Forecast Discussion",
+    "issuedAt": "2026-11-10T23:58:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
+   },
+   {
+    "name": "NWS PUB Area Forecast Discussion",
+    "issuedAt": "2026-11-10T23:24:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
+   },
+   {
+    "name": "NWS ABQ Area Forecast Discussion",
+    "issuedAt": "2026-11-10T23:01:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
+   },
+   {
     "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-10T11:21:00+00:00",
+    "issuedAt": "2026-11-10T22:47:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-10T07:30:00.000Z",
+    "issuedAt": "2026-11-10T20:04:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
     "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-09T20:00:00.000Z",
+    "issuedAt": "2026-11-10T20:00:00.000Z",
     "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
    }
   ]
@@ -75,15 +90,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-10T14:51:07.343Z"
+   "issuedAt": "2026-11-11T01:13:59.531Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-10T14:57:23.321Z"
+   "issuedAt": "2026-11-11T01:20:14.586Z"
   }
  ],
  "api": {
-  "day": "2026-11-10",
-  "calls": 2
+  "day": "2026-11-11",
+  "calls": 1
  }
 }
