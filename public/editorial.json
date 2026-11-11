@@ -1,83 +1,68 @@
 {
- "generatedAt": "2026-11-11T01:20:14.880Z",
- "forecastGeneratedAt": "2026-11-11T01:13:59.531Z",
+ "generatedAt": "2026-11-11T14:25:36.248Z",
+ "forecastGeneratedAt": "2026-11-11T14:19:01.279Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-11",
-  "to": "2026-11-15",
-  "days": 5,
-  "toLabel": "Sunday Nov 15"
+  "to": "2026-11-16",
+  "days": 6,
+  "toLabel": "Monday Nov 16"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 23\" over the week, 20\" of it on Friday. The NWS is calling for more, 23\" to 38\" from Friday through Sunday night. A Winter Storm Watch runs Friday through Monday. Palisades has 16\" and Sugar Bowl 16\"."
-  },
-  {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mammoth gets 11\", mostly Friday, with 10\" expected. Southwest wind 20 to 25 mph with gusts to 65 mph Friday night. The NWS is calling for more, 9\" to 17\" from Friday through Sunday night. A Winter Storm Watch runs Friday through Saturday."
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Whiteface leads with 10\", 6\" on Thursday. Killington also totals 10\", 4\" on Thursday, with light snow Friday. Jay Peak gets 7\" with snow showers into the weekend. Expect cold, steady snow most of the period."
-  },
-  {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek leads with 9\", all on Saturday, with snow showers likely and a slight chance of thunderstorms. Taos gets 4\" Saturday and 1\" Sunday. Expect cold, showery snow, with lows in the 20s."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Stevens Pass leads with 7\", 6\" on Sunday. Crystal Mountain totals 6\", 5\" of it Sunday. Mt. Baker gets 3\" Sunday. Expect rain at lower elevations Friday and Saturday, with snow mixing in at the top."
+   "text": "Kirkwood leads with 18\" through Monday, and the big day is Friday with 15\". The NWS is calling for more, 29\" to 49\" Friday through Monday night. A Winter Storm Watch runs Friday through Monday. Sugar Bowl and Palisades are close behind."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler leads with 11\", 9\" on Sunday. Expect rain and showers Thursday through Saturday, with strong southeast wind Wednesday. Snow is mainly a Sunday story."
+   "text": "Whistler leads with 21\" through Monday, peaking Sunday at 13\". Expect rain at times heavy and mixed conditions through Thursday, then snow building from Saturday. Cypress Mountain sees only 2\" on Sunday, so Whistler is the better bet."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth totals 10\" through Monday, with 9\" on Friday. The NWS is calling for more, 14\" to 26\" Friday through Monday night. A Winter Storm Watch runs Friday through Saturday. Strong southwest winds with gusts to 55 mph are likely Friday night."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Crystal Mountain leads with 7\" through Sunday, peaking Saturday at 3\". Rain mixes with snow through the weekend, so expect heavy, wet snow at mid elevations. Stevens Pass also totals 7\", and Mt. Baker sees 6\"."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Killington leads with 8\" through Saturday, peaking Thursday at 5\". The NWS is calling for more, 6\" to 13\" Thursday through Friday night. Whiteface follows at 6\", and Stowe at 5\". Light snow and gusty northerly winds are expected."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a Pacific system brings more rain and mountain snow to the West Coast around Monday Nov 16 into Tuesday Nov 17, with confidence in its own words only moderate.",
+  "text": "The Weather Prediction Center says a stronger front brings colder air and lower snow levels to the Sierra and northern California ranges around Monday Nov 23, with moderate accumulations likely. Confidence is in its own words moderate.",
   "sources": [
    {
     "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-10T22:18:00+00:00",
+    "issuedAt": "2026-11-11T10:48:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
    },
    {
     "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-10T21:47:00+00:00",
+    "issuedAt": "2026-11-11T09:35:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
    },
    {
-    "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-10T23:58:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
-   },
-   {
-    "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-11-10T23:24:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
-   },
-   {
-    "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-11-10T23:01:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
-   },
-   {
     "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-10T22:47:00+00:00",
+    "issuedAt": "2026-11-11T09:50:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
    },
    {
+    "name": "NWS BTV Area Forecast Discussion",
+    "issuedAt": "2026-11-11T11:25:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
+   },
+   {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-10T20:04:00.000Z",
+    "issuedAt": "2026-11-11T07:20:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
@@ -90,15 +75,15 @@
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-11T01:13:59.531Z"
+   "issuedAt": "2026-11-11T14:19:01.279Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-11T01:20:14.586Z"
+   "issuedAt": "2026-11-11T14:25:35.936Z"
   }
  ],
  "api": {
   "day": "2026-11-11",
-  "calls": 1
+  "calls": 3
  }
 }
