@@ -454,7 +454,12 @@ export default function Tabulator() {
             <Trips
               trips={trips}
               favs={favs}
-              data={data ?? []}
+              /* Favourites read the whole horizon from today, like the radar
+                 (scoreFull), not the mountains screen's days wheel: that
+                 hidden link opened the sheet at 6 days (Brian, 2026-11-11).
+                 `total` and the ranking stay forecast-days-only; projected
+                 days are carried apart in `projected` (lib/scoring.js). */
+              data={feed ? feed.resorts.map(scoreFull).sort(bySnow) : []}
               metric={metric}
               onOpen={setOpen}
               onNewTrip={(named) => newTrip(null, named)}
