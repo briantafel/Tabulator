@@ -54,7 +54,10 @@ const WINTERS = [["2024-11-01", "2025-04-30"], ["2025-11-01", "2026-04-30"]];
    year, so om-portillo-ecmwf_ifs025-2024 is the 2024 austral winter. */
 const SOUTH_WINTERS = [["2024-05-01", "2024-10-31"], ["2025-05-01", "2025-10-31"]];
 const wintersFor = (r) => (coordsOf(r)?.[0] < 0 ? SOUTH_WINTERS : WINTERS);
-const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 3000);
+/* 2000, down from 3000 on 2026-11-11: the twice-daily ensembles (11
+   variables since 9d0510c) weigh far more than estimated, and they can never
+   be refilled while this can. Raise it again once the budget is measured. */
+const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 2000);
 const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
 const TIME_LIMIT_MS = 95 * 60e3;
 const SNOTEL = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";

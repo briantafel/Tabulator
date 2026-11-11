@@ -131,16 +131,26 @@ export function responseToRows(json, { resort, model, elevation, fetchedAt, runI
   return { rows, members: members.size, unavailable: [...unavailable] };
 }
 
-export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, runId, log }) {
-  let ok = 0, tried = 0;
+export async function collect({ resorts: all, elevations, sink, rawDir, fetchedAt, runId, log }) {
+  /* Open-Meteo weighs ensemble requests far more heavily than one call each
+     (it appears to count members): on 2026-11-11 the first run with the
+     archiveOnly resorts AND the 11-variable request hit HTTP 429 and was
+     cancelled at its 60-min limit, losing every source. Until the budget is
+     settled, archiveOnly resorts get no ensembles (Snow-Forecast and the
+     Previous Runs backfill still cover them). */
+  const resorts = all.filter((r) => !r.archiveOnly);
+  if (resorts.length < all.length) log(`  · open-meteo-ensemble: skipping ${all.length - resorts.length} archiveOnly resorts (budget)`);
+  let ok = 0, tried = 0, rateLimited = false;
   const failures = [];
   const unavailable = {}; // model → variables it does not offer
   const extrasRefused = {}; // model → Open-Meteo's 400 text for the SLR variables
   for (const resort of resorts) {
+    if (rateLimited) break;
     const c = coordsOf(resort);
     if (!c) { failures.push(`${resort.id}: no coordinates`); continue; }
     const elevation = elevations[resort.id] ?? null;
     for (const model of MODELS) {
+      if (rateLimited) break;
       tried++;
       const query = (hourly) => {
         const q = new URLSearchParams({
@@ -151,12 +161,12 @@ export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, ru
         return `${URL_BASE}?${q}`;
       };
       try {
-        let { status, text } = await fetchText(query(HOURLY), { retries: 3, delayMs: 5000 });
+        let { status, text } = await fetchText(query(HOURLY), { retries: 3, delayMs: 5000, retry429: false });
         if (status === 400) {
           // The SLR extras were refused: keep the run, say so loudly.
           log(`  ✗ open-meteo ${resort.id}/${model} refused the SLR variables (${text.slice(0, 160)}) — retrying without them`);
           extrasRefused[model] = text.slice(0, 160);
-          ({ status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000 }));
+          ({ status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000, retry429: false }));
         }
         if (status !== 200) throw new Error(`HTTP ${status}: ${text.slice(0, 200)}`);
         await saveRaw(`${rawDir}/${resort.id}-${model}.json.gz`, text);
@@ -165,14 +175,24 @@ export async function collect({ resorts, elevations, sink, rawDir, fetchedAt, ru
         if (out.unavailable.length) unavailable[model] = out.unavailable;
         ok++;
       } catch (e) {
+        if (e.rateLimited) {
+          // Stop at the first rate-limit answer: waiting it out would run the
+          // job past its time limit and lose every other source's rows.
+          rateLimited = true;
+          const left = resorts.length * MODELS.length - tried + 1;
+          failures.push(`RATE LIMITED at ${resort.id}/${model}: stopped, ${left} requests not made`);
+          log(`  ✗ open-meteo RATE LIMITED at ${resort.id}/${model} — stopping; ${left} requests not made`);
+          tried--;
+          break;
+        }
         failures.push(`${resort.id}/${model}: ${e.message}`);
         log(`  ✗ open-meteo ${resort.id}/${model} — ${e.message}`);
       }
       await sleep(DELAY_MS);
     }
   }
-  log(`open-meteo-ensemble: ${ok}/${tried} requests`);
+  log(`open-meteo-ensemble: ${ok}/${tried} requests${rateLimited ? " (stopped: rate limited)" : ""}`);
   for (const [m, vars] of Object.entries(unavailable)) log(`  · ${m} does not offer: ${vars.join(", ")}`);
   for (const [m, why] of Object.entries(extrasRefused)) failures.push(`${m}: SLR variables refused — ${why}`);
-  return { ok: tried > 0 && ok / tried >= MIN_OK_RATIO, requests: ok, tried, failures, unavailable, extrasRefused };
+  return { ok: !rateLimited && tried > 0 && ok / tried >= MIN_OK_RATIO, rateLimited, requests: ok, tried, failures, unavailable, extrasRefused };
 }

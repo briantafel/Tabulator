@@ -31,7 +31,7 @@ export const COLUMNS = [
  *  A 4xx other than 429 is returned at once, unretried, with its body — the
  *  body is usually the source saying exactly what it rejected. A 429 (rate
  *  limit) waits at least a minute before trying again. */
-export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {} } = {}) {
+export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {}, retry429 = true } = {}) {
   let lastErr, wait = 0;
   for (let attempt = 0; attempt <= retries; attempt++) {
     if (attempt) await sleep(Math.max(wait, delayMs * (attempt + 1)));
@@ -40,10 +40,16 @@ export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {}
       const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "en", ...headers } });
       const text = await res.text();
       if (res.status >= 400 && res.status < 500 && res.status !== 429) return { status: res.status, text };
-      if (res.status === 429) { wait = 60000 * (attempt + 1); throw new Error("HTTP 429 (rate limited)"); }
+      if (res.status === 429) {
+        // retry429: false — the caller stops the whole source instead of
+        // spending minutes per request waiting out a quota (archive run
+        // 2026-11-11, cancelled at its 60-min limit with nothing uploaded).
+        if (!retry429) { const e = new Error("HTTP 429 (rate limited)"); e.rateLimited = true; throw e; }
+        wait = 60000 * (attempt + 1); throw new Error("HTTP 429 (rate limited)");
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return { status: res.status, text };
-    } catch (e) { lastErr = e; }
+    } catch (e) { if (e.rateLimited) throw e; lastErr = e; }
   }
   // Node's fetch reports every network fault as "fetch failed"; the real
   // reason (reset, timeout, DNS) is on .cause. Say it.
