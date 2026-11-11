@@ -37,7 +37,15 @@ const UNITS = { snowfall: "cm", precipitation: "mm", temperature_2m: "°C", free
   relative_humidity_2m: "%", wind_direction_10m: "°", temperature_700hPa: "°C", wind_speed_700hPa: "km/h",
   wind_direction_700hPa: "°", relative_humidity_700hPa: "%" };
 const BLOCK_H = 6;
-const DELAY_MS = 2000;   // responses are large; 0.4s apart dropped connections (2026-10-29)
+/* Spacing between requests. 2 s in a burst (the archive run) hit Open-Meteo's
+   free-tier rate limit partway through every pass on 2026-11-11, always
+   starving the same resorts. ensembles-om.yml runs ONE paced pass a day
+   instead: OM_DELAY_MS ≈ 90 s spreads 56 requests over ~85 minutes. */
+const DELAY_MS = Number(process.env.OM_DELAY_MS) || 2000; // ≥2 s: 0.4 s dropped connections (2026-10-29)
+/* In a paced run a rate limit may only mean "slow down": wait this long and
+   try that request ONCE more before stopping. 0 (the default) = stop at the
+   first 429, as the time-boxed archive run must. */
+const RETRY_429_WAIT_MS = Number(process.env.OM_RETRY_429_WAIT_MS) || 0;
 const MIN_OK_RATIO = 0.8;
 
 /** Hourly series → 6-hour blocks. `time` is ISO in UTC without a zone.
@@ -141,7 +149,12 @@ export async function collect({ resorts: all, elevations, sink, rawDir, fetchedA
      cancelled at its 60-min limit, losing every source. Until the budget is
      settled, archiveOnly resorts get no ensembles (Snow-Forecast and the
      Previous Runs backfill still cover them). */
-  const resorts = all.filter((r) => !r.archiveOnly);
+  const appResorts = all.filter((r) => !r.archiveOnly);
+  /* Start somewhere different each day, so if a pass is cut short it is not
+     always the same resorts (Utah, Canada, the East) that go without. */
+  const day = Math.floor(Date.parse(fetchedAt) / 864e5) || 0;
+  const k = appResorts.length ? day % appResorts.length : 0;
+  const resorts = [...appResorts.slice(k), ...appResorts.slice(0, k)];
   if (resorts.length < all.length) log(`  · open-meteo-ensemble: skipping ${all.length - resorts.length} archiveOnly resorts (budget)`);
   let ok = 0, tried = 0, rateLimited = false;
   const failures = [];
@@ -171,7 +184,15 @@ export async function collect({ resorts: all, elevations, sink, rawDir, fetchedA
            temperature, dew point, geopotential; claude/lean-data-plan.md).
            Weight measured empirically: 5 variables × 112 requests ran clean for
            two weeks. */
-        let { status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000, retry429: false });
+        let status, text;
+        try {
+          ({ status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000, retry429: false }));
+        } catch (e) {
+          if (!e.rateLimited || !RETRY_429_WAIT_MS) throw e;
+          log(`  … open-meteo rate limited at ${resort.id}/${model}; waiting ${Math.round(RETRY_429_WAIT_MS / 60000)} min, then one retry`);
+          await sleep(RETRY_429_WAIT_MS);
+          ({ status, text } = await fetchText(query(BASE_HOURLY), { retries: 3, delayMs: 5000, retry429: false }));
+        }
         if (status === 400) {
           // The SLR extras were refused: keep the run, say so loudly.
           log(`  ✗ open-meteo ${resort.id}/${model} refused the SLR variables (${text.slice(0, 160)}) — retrying without them`);

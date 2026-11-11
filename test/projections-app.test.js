@@ -89,3 +89,21 @@ test("SF rolled forward a day before projections were rebuilt: still 10 days", (
   assert.equal(f.dates.at(-1), "2026-11-20");
   assert.equal(f.resorts[0].days.length, 10);   // the spare 11-21 is trimmed
 });
+
+test("a resort with no projections is flagged, not silently cut to six days", () => {
+  const f = extendFeed(feed(), NOW);
+  const nowhere = f.resorts.find((r) => r.id === "nowhere");
+  assert.equal(nowhere.projMissing, true);
+  assert.equal(nowhere.days.length, 6);
+  assert.equal(f.resorts.find((r) => r.id === "alta").projMissing, undefined);
+});
+
+test("a carried-forward entry older than STALE_HOURS is dropped per resort (2026-11-11)", () => {
+  const x = feed();
+  x.projections.resorts.alta.issuedAt = "2026-11-02T06:00:00Z"; // 38 h before NOW
+  const alta = extendFeed(x, NOW).resorts.find((r) => r.id === "alta");
+  assert.equal(alta.projMissing, true);
+  assert.equal(alta.days.length, 6);
+  x.projections.resorts.alta.issuedAt = "2026-11-02T10:00:00Z"; // 34 h: still fresh
+  assert.equal(extendFeed(x, NOW).resorts.find((r) => r.id === "alta").days.length, 10);
+});

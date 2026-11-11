@@ -417,6 +417,12 @@ export default function Detail({
             </p>
           )}
 
+          {projections && r.projMissing && (
+            <p className="sheet-warn">
+              No projections for this resort right now — showing the forecast days only.
+            </p>
+          )}
+
           {projections ? (
             <div className="rc-wrap">
               <RangeChart days={r.winAll ?? r.win} metric={metric} sel={r.projected != null ? sel : "total"} projMembers={r.projMembers}

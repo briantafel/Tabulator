@@ -91,6 +91,7 @@ for (const resort of resorts) {
   }
 
   projections.resorts[resort.id] = {
+    issuedAt: generatedAt,
     days: dates.map((date) => ({ date, ...correct(summary.get(date), cal) })),
     spread,
     members,
@@ -98,8 +99,39 @@ for (const resort of resorts) {
   built++;
 }
 
+/* CARRY FORWARD (2026-11-11). A resort this run could not build keeps its
+   previous projections while they are fresh, each with its own issuedAt —
+   the app checks that age per resort (src/lib/projections.js STALE_HOURS),
+   so a carried entry is never shown older than a whole file would be.
+   Before this, a rate-limited pass published a file missing 35 of 56
+   resorts and the run stayed green. */
+const STALE_HOURS = 36; // = src/lib/projections.js
+const prevProj = await readJson(`${pub}/projections.json`, { resorts: {} });
+const carried = [], lost = [];
+for (const resort of resorts) {
+  if (projections.resorts[resort.id]) continue;
+  const prev = prevProj.resorts?.[resort.id];
+  const issuedAt = prev?.issuedAt ?? prevProj.generatedAt;
+  const age = (Date.parse(generatedAt) - Date.parse(issuedAt ?? "")) / 3600e3;
+  if (prev && Number.isFinite(age) && age <= STALE_HOURS) {
+    projections.resorts[resort.id] = { ...prev, issuedAt, carried: true };
+    carried.push(`${resort.id} (${Math.round(age)} h old)`);
+  } else lost.push(resort.id);
+}
+
 await writeFile(`${pub}/projections.json`, JSON.stringify(projections));
 await writeFile(`${pub}/calibration.json`, `${JSON.stringify(calibration, null, 1)}\n`);
-log(`projections: ${built}/${resorts.length} resorts`);
+log(`projections: ${built}/${resorts.length} resorts fresh, ${carried.length} carried forward, ${lost.length} without`);
 for (const s of skipped) log(`  · ${s}`);
-if (!built) process.exit(1);
+if (carried.length) log(`  carried: ${carried.join(", ")}`);
+if (lost.length) log(`  WITHOUT projections: ${lost.join(", ")}`);
+
+/* LOUD. Under 90% fresh is a failed build even though the file is written
+   (the workflow still commits it). Annotations show on the run page. */
+const MIN_FRESH = 0.9;
+if (built < MIN_FRESH * resorts.length) {
+  const msg = `only ${built}/${resorts.length} resorts refreshed (${carried.length} carried, ${lost.length} without projections)`;
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=projections coverage short::${msg}`);
+  log(`FAILED: ${msg}`);
+  process.exit(1);
+}

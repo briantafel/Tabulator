@@ -51,7 +51,12 @@ export function extendFeed(feed, now = Date.now()) {
   const extra = new Set();
   const resorts = feed.resorts.map((r) => {
     const p = P.resorts[r.id];
-    if (!p) return r;
+    /* Each resort carries its own issue time since 2026-11-11 (the builder
+       carries a resort's last good entry forward when a pass misses it).
+       Too old, or none at all: no projected days, and say so in the sheet
+       rather than quietly showing six days. */
+    const pAge = p?.issuedAt ? now - Date.parse(p.issuedAt) : 0;
+    if (!p || pAge > STALE_HOURS * 3600e3) return { ...r, projMissing: true };
     const days = r.days.map((d) => {
       const s = p.spread?.[d.date];
       const range = s ? bandAround(d.snow, s) : null;

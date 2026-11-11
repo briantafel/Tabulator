@@ -40,7 +40,16 @@ await mkdir(outDir, { recursive: true });
 
 const manifest = { runId, fetchedAt, resorts: resorts.length, sources: {} };
 
+/* ONLY_SOURCES / SKIP_SOURCES (comma-separated source names) let one source
+   run on its own schedule: the Open-Meteo ensembles run once a day, paced,
+   in ensembles-om.yml (2026-11-11), and archive.yml skips them. A skipped
+   source is left out of the manifest entirely — not counted as a failure. */
+const only = (process.env.ONLY_SOURCES ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+const skip = (process.env.SKIP_SOURCES ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+const wanted = (name) => (!only.length || only.includes(name)) && !skip.includes(name);
+
 async function run(name, fn) {
+  if (!wanted(name)) { log(`  · ${name}: not in this run`); return null; }
   const sink = await rowSink(`${outDir}/rows/${name}.ndjson.gz`);
   const started = Date.now();
   try {
@@ -60,8 +69,13 @@ async function run(name, fn) {
 const sfResult = await run("snow-forecast", (sink, rawDir) =>
   sf.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
+/* Without a Snow-Forecast pass in this run (the paced ensemble job), use the
+   mid elevations earlier runs saved, so Open-Meteo still downscales to the
+   same height. */
+let savedElevations = {};
+try { savedElevations = JSON.parse(await readFile(`${root}src/data/sf-elevations.json`, "utf8")); } catch { /* none yet */ }
 await run("open-meteo-ensemble", (sink, rawDir) =>
-  ens.collect({ resorts, elevations: sfResult?.elevations ?? {}, sink, rawDir, fetchedAt, runId, log }));
+  ens.collect({ resorts, elevations: { ...savedElevations, ...(sfResult?.elevations ?? {}) }, sink, rawDir, fetchedAt, runId, log }));
 
 await run("snotel", (sink, rawDir) =>
   snotel.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));

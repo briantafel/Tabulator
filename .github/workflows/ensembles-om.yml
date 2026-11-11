@@ -1,0 +1,155 @@
+name: Open-Meteo ensembles (one paced pass a day)
+
+# 2026-11-11 (Brian). The Open-Meteo ECMWF ensemble used to be fetched in a
+# 2-second burst inside archive.yml, twice a day. On the free tier that hit
+# the rate limit partway through every pass, and because the order never
+# changed the same ~35 resorts (Utah, Canada, the East) lost their
+# projections. Now: ONE pass a day, requests ~90 s apart (~85 min for the 56
+# app resorts), one 10-minute wait-and-retry on a rate limit, a different
+# starting resort each day. Then the app's projections are built from it
+# and the raw files + rows are archived like any other source.
+#
+# 08:13 UTC: after ECMWF's 00z ensemble is on Open-Meteo, before most of the
+# US wakes up. Projections stay valid 36 h (src/lib/projections.js), so a
+# daily pass leaves room for one missed day.
+on:
+  schedule:
+    - cron: "13 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write  # commits public/projections.json + calibration.json (only)
+  actions: write   # to redeploy the site after that commit
+  issues: write    # to open an issue when a run fails
+
+concurrency:
+  group: ensembles-om
+  cancel-in-progress: false
+
+jobs:
+  ensembles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150   # ~85 min of paced requests + one 10-min wait + build/upload
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DuckDB
+        run: pip install duckdb==2.0.0
+
+      - name: Check the bucket secrets are set
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          missing=""
+          for v in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_BUCKET; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing — add them under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Collect (paced)
+        id: collect
+        continue-on-error: true
+        env:
+          ONLY_SOURCES: open-meteo-ensemble
+          OM_DELAY_MS: "90000"
+          OM_RETRY_429_WAIT_MS: "600000"
+        run: node scripts/archive/collect.js out
+
+      # Fails (red) when coverage is short — see scripts/projections/build.js.
+      # The file is still written, with resorts it could not refresh carried
+      # forward while fresh, so the commit below runs regardless.
+      - name: Build projections
+        id: projections
+        continue-on-error: true
+        run: node scripts/projections/build.js out public
+
+      - name: Commit projections
+        id: projcommit
+        if: always() && steps.collect.outcome != 'skipped'
+        continue-on-error: true
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add public/projections.json public/calibration.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "projections: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            sleep 10
+          done
+
+      - name: Redeploy the site
+        if: steps.projcommit.outputs.pushed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+
+      - name: Package raw files and Parquet
+        run: |
+          test -f out/manifest.json || { echo "::error::collect.js wrote no manifest"; exit 1; }
+          RUN_ID=$(jq -r .runId out/manifest.json)
+          DATE=${RUN_ID:0:10}
+          MONTH=${RUN_ID:0:7}
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          mkdir -p up/runs
+          python3 scripts/archive/to_parquet.py out/rows up/archive "$RUN_ID" "$MONTH"
+          for dir in out/raw/*/; do
+            [ -d "$dir" ] || continue
+            src=$(basename "$dir")
+            mkdir -p "up/raw/source=$src/date=$DATE"
+            tar -cf "up/raw/source=$src/date=$DATE/$RUN_ID.tar" -C "$dir" .
+          done
+          cp out/manifest.json "up/runs/$RUN_ID.json"
+          du -sh up/*
+
+      - name: Upload to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp up "s3://$R2_BUCKET/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 ls "s3://$R2_BUCKET/runs/$RUN_ID.json" --endpoint-url "$ENDPOINT"
+
+      - name: Fail the run if the pass or the projections fell short
+        if: steps.collect.outcome == 'failure' || steps.projections.outcome == 'failure'
+        run: |
+          [ "${{ steps.collect.outcome }}" = "failure" ] && echo "::error::Open-Meteo pass fell short — see the Collect step. What succeeded was still uploaded."
+          [ "${{ steps.projections.outcome }}" = "failure" ] && echo "::error::Projections coverage is short — see the Build projections step."
+          exit 1
+
+      - name: Open an issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = "Open-Meteo ensemble pass or projections fell short";
+            const open = await github.rest.issues.listForRepo({ ...context.repo, state: "open", per_page: 50 });
+            const existing = open.data.find((i) => i.title === title);
+            const body = `Run: ${runUrl}\n\nThe app's days 7–10 come from this pass. Resorts it missed keep their last projections for up to 36 h, then show 6 days with a note.`;
+            if (existing) await github.rest.issues.createComment({ ...context.repo, issue_number: existing.number, body });
+            else await github.rest.issues.create({ ...context.repo, title, body });

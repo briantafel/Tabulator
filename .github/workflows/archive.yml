@@ -5,8 +5,9 @@ name: Archive forecasts
 # at all three tiers, the Open-Meteo ensembles, SNOTEL, NWS gridpoints and
 # OnTheSnow's snow and skier reports — and uploads the
 # raw bytes plus Parquet rows to the private R2 bucket. The only thing it
-# commits is the app's projections (public/projections.json, calibration.json),
-# built from the ensembles it just fetched.
+# commits is src/data/sf-elevations.json. Since 2026-11-11 the Open-Meteo
+# ensembles and the app's projections have their own paced daily job,
+# ensembles-om.yml.
 # See archive/README.md and archive/dictionary.yaml.
 #
 # Needs four repository secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
@@ -115,21 +116,18 @@ jobs:
 
       # Every source runs even if another fails, and whatever succeeded is
       # uploaded. The last step turns the run red if anything fell short.
+      # The Open-Meteo ensembles have their own paced daily job since
+      # 2026-11-11 (ensembles-om.yml): in this run's burst they hit the
+      # free-tier rate limit every time.
       - name: Collect
         id: collect
         continue-on-error: true
+        env:
+          SKIP_SOURCES: open-meteo-ensemble
         run: node scripts/archive/collect.js out
 
-      # Days 7–10 for the app, from the ensembles this run just fetched,
-      # with wind and temperature corrected against Snow-Forecast and the
-      # correction learned run over run (scripts/projections). It never fails
-      # the archive: a missed run only means the app shows yesterday's
-      # projections, which it dates.
-      - name: Build projections
-        id: projections
-        continue-on-error: true
-        run: node scripts/projections/build.js out public
-
+      # Projections are built by ensembles-om.yml now. This commit step only
+      # carries sf-elevations.json (the projections files are unchanged here).
       - name: Commit projections
         id: projcommit
         if: always() && steps.collect.outcome != 'skipped'
