@@ -174,7 +174,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       fetched++;
       if (!r.text.trim()) continue;
       await saveRaw(`${rawDir}/reports-${st}-${d.toISOString().slice(0, 10)}.csv.gz`, r.text);
-      reports.push(...parseCsv(r.text, REPORT_COLUMNS));
+      for (const rep of parseCsv(r.text, REPORT_COLUMNS)) reports.push(rep);
       await sleep(300);
     }
   }

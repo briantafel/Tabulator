@@ -120,13 +120,19 @@ export const snodasTargets = (resorts) => resorts.filter((r) => coordsOf(r) && (
  *  status "missing" = no file for that day (404). Used by the live run and the backfill. */
 export async function collectDay(d, { targets, sink, rawDir, fetchedAt, runId, log, failures, quiet = false, parserVersion = PARSER_VERSION }) {
   const url = urlFor(d);
-  let buf;
-  try {
-    const res = await fetch(url, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(120e3) });
-    if (res.status === 404) return { status: "missing", complete: false, rows: 0, covered: new Set() };
-    if (!res.ok) { failures.push(`${url}: HTTP ${res.status}`); return { status: "error", complete: false, rows: 0, covered: new Set() }; }
-    buf = Buffer.from(await res.arrayBuffer());
-  } catch (e) { failures.push(`${url}: ${e.message}`); return { status: "error", complete: false, rows: 0, covered: new Set() }; }
+  let buf, lastErr;
+  // Up to 4 tries: after a pause (the backfill uploads between pieces) the first
+  // request on a stale connection fails with "fetch failed" (seen 2026-11-11).
+  for (let attempt = 1; attempt <= 4 && !buf; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(120e3) });
+      if (res.status === 404) return { status: "missing", complete: false, rows: 0, covered: new Set() };
+      if (!res.ok) { lastErr = `HTTP ${res.status}`; if (res.status < 500) break; }
+      else buf = Buffer.from(await res.arrayBuffer());
+    } catch (e) { lastErr = e.cause?.code ? `${e.message} (${e.cause.code})` : e.message; }
+    if (!buf && attempt < 4) await new Promise((r) => setTimeout(r, attempt * 5000));
+  }
+  if (!buf) { failures.push(`${url}: ${lastErr}`); return { status: "error", complete: false, rows: 0, covered: new Set() }; }
   const ymd = d.toISOString().slice(0, 10);
   const validEnd = `${ymd}T06:00:00.000Z`;
   const validStart = new Date(Date.parse(validEnd) - 24 * 3600e3).toISOString();
