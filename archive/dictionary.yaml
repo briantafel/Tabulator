@@ -153,6 +153,7 @@ sources:
     raw: not kept (NOAA keeps HRRR on AWS from 2014; byte ranges are re-readable, so it can be backfilled with --cycle)
     notes:
       - "Profile rows (parser upper-air-1; run_id contains -prof-): INSTANT rows (valid_start == valid_end, period_label instant) at 00/06/12/18 UTC. t_<p>hpa (°C), rh_<p>hpa (% over water), z_<p>hpa (m) at 1000, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500 hPa; psfc (hPa, model surface pressure at the cell; levels with p > psfc are below the model ground); freezing_level (m, HRRR's 0 °C isotherm height). Raw values at the nearest grid point within 3 km; elevation_m is that point's model terrain height. Per-tier interpolation and wet-bulb are derived later (claude/upper-air-plan.md). Instants are excluded from the verification table."
+      - "Ridge-level wind (parser upper-air-2, from 2026-11-11; all three upper-air sources): wspd_850hpa / wspd_700hpa (km/h) and wdir_850hpa / wdir_700hpa (degrees the wind blows FROM, 0 = north), instants like the rest. Built from the model's u/v at that level; raw u/v are NOT stored. HRRR u/v are relative to its Lambert grid and are rotated to earth-relative first (angle = sin(38.5°) × (lon + 97.5°)); GEFS and ECMWF are on lat-lon grids, already earth-relative. 850 hPa ≈ 1.5 km and 700 hPa ≈ 3 km above sea level: compare a tier with the level nearest its elevation (z_<p>hpa gives the exact height). Free-air wind, not the wind at the snow surface, which terrain speeds up or shelters. For claude/temp-wind-plan.md W2/W3."
       - Coverage is the CONUS grid, which reaches southern Canada; its north edge is near 50.5°N in the BC interior, so northern BC/Alberta resorts are outside (the run log names them). Resorts close to the edge sit near the lateral boundary, where HRRR is least reliable.
       - "Licence: NOAA open data, no restrictions. Attribution: NOAA HRRR."
   noaa-gefs:
@@ -292,6 +293,8 @@ variables:
   wind_speed: { unit: km/h, meaning: Wind speed for the period (Snow-Forecast). }
   wind_speed_max: { unit: km/h, meaning: Highest hourly 10 m wind speed in the block (ensembles). }
   wind_dir: { unit: null, meaning: Wind direction as a compass point, text. }
+  "wspd_<p>hpa": { unit: km/h, meaning: "Free-air wind speed at pressure level p (850 or 700 hPa) from the model's u/v; upper-air sources, instants." }
+  "wdir_<p>hpa": { unit: deg, meaning: "Direction the wind at pressure level p blows FROM, degrees clockwise from north, earth-relative." }
   phrase: { unit: null, meaning: Snow-Forecast's short forecast phrase for the period, verbatim. }
   summary_next3: { unit: null, meaning: Snow-Forecast's prose forecast for the next three days, verbatim. }
   summary_days4_6: { unit: null, meaning: Snow-Forecast's prose forecast for days 4–6, verbatim. }

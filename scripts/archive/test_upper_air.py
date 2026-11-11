@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import numpy as np  # noqa: E402
 import upper_air as ua  # noqa: E402
 
 GEFS_IDX = """1:0:d=2026111100:HGT:10 mb:6 hour fcst:ENS=+3
@@ -119,3 +120,38 @@ def test_ensemble_chunks_cover_every_lead_once():
     assert [l for c in ch for l in c] == ua.MODELS["ifs-ens"]["leads"]
     assert max(len(c) for c in ch) == 6
     assert ua.chunks(ua.MODELS["gefs"]) == [ua.MODELS["gefs"]["leads"]]
+
+
+# ---------------------------------------------------------------- ridge-level wind (2026-11-11)
+def test_wind_components_selected_only_at_850_and_700():
+    idx = ua.parse_noaa_idx("""1:0:d=2026111100:UGRD:850 mb:6 hour fcst:
+2:100:d=2026111100:VGRD:850 mb:6 hour fcst:
+3:200:d=2026111100:UGRD:500 mb:6 hour fcst:
+4:300:d=2026111100:UGRD:700 mb:6 hour fcst:
+5:400:d=2026111100:TMP:500 mb:6 hour fcst:
+""")
+    got = [v for _, v, _, _ in ua.select_noaa(idx, 6)]
+    assert got == ["u_850hpa", "v_850hpa", "u_700hpa", "t_500hpa"]
+
+
+def test_winds_become_speed_and_direction_and_unpaired_is_reported():
+    pend = [(6, 0, "u_700hpa", "m/s", np.array([10.0, 0.0])), (6, 0, "v_700hpa", "m/s", np.array([0.0, -10.0])),
+            (6, 0, "u_850hpa", "m/s", np.array([1.0, 1.0])), (6, 0, "t_700hpa", "C", np.array([-8.0, -9.0]))]
+    out, problems = ua.winds_from_components(pend, "gefs", np.array([-111.6, -106.0]))
+    by = {v: a for _, _, v, _, a in out}
+    assert np.allclose(by["wspd_700hpa"], [36.0, 36.0])
+    assert np.allclose(by["wdir_700hpa"], [270.0, 0.0])  # westerly; northerly
+    assert "t_700hpa" in by and "u_700hpa" not in by and "wspd_850hpa" not in by
+    assert problems and "850" in problems[0]
+
+
+def test_hrrr_winds_are_rotated_to_earth_relative():
+    # At the HRRR's central meridian the grid is north-aligned: no rotation.
+    out, _ = ua.winds_from_components([(0, 0, "u_700hpa", "m/s", np.array([0.0])), (0, 0, "v_700hpa", "m/s", np.array([-10.0]))],
+                                      "hrrr", np.array([-97.5]))
+    assert np.isclose({v: a for _, _, v, _, a in out}["wdir_700hpa"][0], 0.0)
+    # West of it (Utah, −111.6°) a grid-northerly is rotated by sin(38.5°)·(−14.1°) ≈ −8.8°.
+    out, _ = ua.winds_from_components([(0, 0, "u_700hpa", "m/s", np.array([0.0])), (0, 0, "v_700hpa", "m/s", np.array([-10.0]))],
+                                      "hrrr", np.array([-111.6]))
+    d = {v: a for _, _, v, _, a in out}
+    assert np.isclose(d["wdir_700hpa"][0], 360 - 8.78, atol=0.05) and np.isclose(d["wspd_700hpa"][0], 36.0)

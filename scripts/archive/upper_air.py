@@ -71,10 +71,18 @@ from regional_eps import grib_messages  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 UA = "tabulator-archive/1.0 (+https://github.com/briantafel/tabulator)"
-PARSER_VERSION = "upper-air-1"
+PARSER_VERSION = "upper-air-2"  # 2: ridge-level wind (wspd/wdir at 850 and 700 hPa)
 TIME_LIMIT_S = 50 * 60
 BLOCK_H = 6
 PROFILE_LEVELS = (1000, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500)
+# Ridge-top wind (claude/temp-wind-plan.md W2): 850 hPa ≈ 1.5 km, 700 hPa ≈ 3 km.
+# u/v are fetched at these levels only and archived as speed + direction
+# (earth-relative), never as raw components: HRRR's u/v are relative to its
+# Lambert grid, so raw components from different models would not be comparable.
+WIND_LEVELS = (850, 700)
+# HRRR Lambert conformal: LoV −97.5°, tangent latitude 38.5° (both standard
+# parallels). Grid-relative → earth-relative rotation angle = sin(38.5°)·(lon − LoV).
+HRRR_LOV, HRRR_ROTCON = -97.5, math.sin(math.radians(38.5))
 
 HRRR_URL = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com"
 GEFS_URL = "https://noaa-gefs-pds.s3.amazonaws.com"
@@ -106,7 +114,8 @@ MODELS = {
 
 # NOAA idx variable names → our prefix, unit, transform
 NOAA_VARS = {"TMP": ("t", "C", lambda a: a - 273.15), "RH": ("rh", "%", lambda a: a),
-             "HGT": ("z", "m", lambda a: a)}
+             "HGT": ("z", "m", lambda a: a),
+             "UGRD": ("u", "m/s", lambda a: a), "VGRD": ("v", "m/s", lambda a: a)}
 # ECMWF params → our prefix, unit, transform (q only where a level has no r).
 # ECMWF's r is relative to WATER above 0 °C, to ICE below −23 °C, with IFS's
 # documented quadratic blend between, so it can exceed 100 % in cold air (first
@@ -114,7 +123,9 @@ NOAA_VARS = {"TMP": ("t", "C", lambda a: a - 273.15), "RH": ("rh", "%", lambda a
 # code converts r back to vapour pressure with the same formula; q would be a
 # duplicate.
 ECMWF_VARS = {"t": ("t", "C", lambda a: a - 273.15), "r": ("rh", "%", lambda a: a),
-              "gh": ("z", "m", lambda a: a), "q": ("q", "g/kg", lambda a: a * 1000.0)}
+              "gh": ("z", "m", lambda a: a), "q": ("q", "g/kg", lambda a: a * 1000.0),
+              "u": ("u", "m/s", lambda a: a), "v": ("v", "m/s", lambda a: a)}
+WIND_COMPONENTS = ("u", "v")
 
 PLAUSIBLE = {"psfc": (400, 1100), "freezing_level": (-500, 7000)}
 
@@ -184,6 +195,8 @@ def select_noaa(idx: list[dict], lead: int) -> list[tuple[dict, str, str, object
         m = re.fullmatch(r"(\d+) mb", e["level"])
         if m and e["var"] in NOAA_VARS and int(m.group(1)) in PROFILE_LEVELS:
             p, unit, tf = NOAA_VARS[e["var"]]
+            if p in WIND_COMPONENTS and int(m.group(1)) not in WIND_LEVELS:
+                continue
             out.append((e, f"{p}_{int(m.group(1))}hpa", unit, tf))
         elif e["var"] == "PRES" and e["level"] == "surface":
             out.append((e, "psfc", "hPa", lambda a: a / 100.0))
@@ -219,6 +232,8 @@ def select_ecmwf(idx: list[dict]) -> list[tuple[dict, str, str, object]]:
             if e["param"] == "q" and (e.get("number"), e.get("levelist")) in have_r:
                 continue
             p, unit, tf = ECMWF_VARS[e["param"]]
+            if p in WIND_COMPONENTS and lv not in WIND_LEVELS:
+                continue
             out.append((e, f"{p}_{lv}hpa", unit, tf))
         elif e.get("levtype") == "sfc" and e.get("param") == "sp":
             out.append((e, "psfc", "hPa", lambda a: a / 100.0))
@@ -380,7 +395,7 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
         for _, v, _, _ in picks:
             m = re.match(r"(\w+?)_(\d+)hpa$", v)
             found.setdefault(m.group(1) if m else v, set()).add(int(m.group(2)) if m else 0)
-    log("    levels found: " + "; ".join(f"{k} {sorted(v) if k in ('t', 'rh', 'q', 'z') else ''}".strip()
+    log("    levels found: " + "; ".join(f"{k} {sorted(v) if k in ('t', 'rh', 'q', 'z', 'u', 'v') else ''}".strip()
                                          for k, v in sorted(found.items())))
     if not ({"rh", "q"} & set(found)):
         raise RuntimeError("no humidity (RH or q) at any pressure level — no wet-bulb possible from this model")
@@ -430,9 +445,50 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
                 pending.append((lead, member_of(model, url, entry), variable, unit, tf(arr)))
     log(f"    fetched {nbytes / 1e6:.0f} MB in {time.time() - t0:.0f} s")
 
+    # Ridge-level wind. Missing entirely is archived without it but reported as a
+    # failure (loud), so the profile rows are never lost over a wind problem.
+    lons = np.array([pts[i][2] for i in ids])
+    pending, problems = winds_from_components(pending, model, lons)
+    if not ({"u", "v"} & set(found)):
+        problems.append(f"no u/v at {list(WIND_LEVELS)} hPa in this model's files")
+    elif problems:
+        problems = [f"{len(problems)} unpaired wind components (first: {problems[0]})"]
+
     meta = {"ids": ids, "pts": pts, "orog": orog, "issued": iso(cycle), "source": cfg["source"], "model": model,
-            "fetched_at": fetched_at, "run_id": run_id}
+            "fetched_at": fetched_at, "run_id": run_id, "problems": problems}
     return pending, meta
+
+
+def winds_from_components(pending: list[tuple], model: str, lons: np.ndarray) -> tuple[list[tuple], list[str]]:
+    """Replace each u/v pair (same lead, member, level) with wspd_<p>hpa (km/h)
+    and wdir_<p>hpa (degrees the wind blows FROM, 0 = north). HRRR components
+    are rotated from grid- to earth-relative first. A component without its
+    partner is a failure (returned as a problem, rows for it not written)."""
+    comps: dict[tuple, dict] = {}
+    out = []
+    for lead, member, variable, unit, arr in pending:
+        m = re.fullmatch(r"([uv])_(\d+)hpa", variable)
+        if m:
+            comps.setdefault((lead, member, int(m.group(2))), {})[m.group(1)] = np.asarray(arr, dtype=float)
+        else:
+            out.append((lead, member, variable, unit, arr))
+    problems = []
+    for (lead, member, lv), c in sorted(comps.items(), key=lambda kv: (kv[0][0], -1 if kv[0][1] is None else kv[0][1], kv[0][2])):
+        if set(c) != {"u", "v"}:
+            problems.append(f"{lead}h member {member} {lv} hPa: only {''.join(sorted(c))}")
+            continue
+        u, v = c["u"], c["v"]
+        bad = ~np.isfinite(u) | ~np.isfinite(v) | (np.abs(u) > 1e19) | (np.abs(v) > 1e19)
+        if model == "hrrr":
+            a = np.radians(HRRR_ROTCON * (lons - HRRR_LOV))
+            u, v = np.cos(a) * u + np.sin(a) * v, -np.sin(a) * u + np.cos(a) * v
+        spd = np.hypot(u, v) * 3.6
+        wdir = (np.degrees(np.arctan2(-u, -v)) + 360.0) % 360.0
+        spd[bad] = np.nan
+        wdir[bad] = np.nan
+        out.append((lead, member, f"wspd_{lv}hpa", "km/h", spd))
+        out.append((lead, member, f"wdir_{lv}hpa", "deg", wdir))
+    return out, problems
 
 
 def iter_rows(pending: list[tuple], meta: dict):
@@ -467,6 +523,10 @@ def bounds(variable: str):
         return (0, 40)
     if variable.startswith("z_"):
         return (-1000, 7000)
+    if variable.startswith("wspd_"):
+        return (0, 450)  # km/h; jet-level extremes are ~400 at 250 hPa, far below that at 700/850
+    if variable.startswith("wdir_"):
+        return (0, 360)
     return None
 
 
@@ -584,6 +644,9 @@ def main() -> int:
                         raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
                 ok.append(f"{key}: {n} rows in {time.time() - t:.0f} s" + (" (dry run)" if dry else ""))
                 log(f"  ✓ {ok[-1]}")
+                for prob in meta.get("problems", []):
+                    failures.append(f"{key}: archived, but wind: {prob}")
+                    log(f"  ✗ {failures[-1]}")
                 if dry and (not cfg.get("chunk") or ci >= 1):
                     break  # a dry run measures one cycle (two chunks) per model
             except FileNotFoundError as e:
