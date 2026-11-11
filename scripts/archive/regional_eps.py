@@ -351,6 +351,27 @@ def collect_run(model: str, cfg: dict, run_time: datetime, resorts: list[dict], 
     return rows
 
 
+# A units or decoding mistake must fail loudly, not land in the archive as
+# plausible-looking numbers. Bounds per 6-hour block.
+PLAUSIBLE = {"precip": (0, 300), "snow_we": (0, 300), "temp_min": (-60, 45), "temp_max": (-60, 45),
+             "wind_speed_max": (0, 400)}
+
+
+def check_plausible(rows: list[dict]) -> None:
+    by: dict[str, list[float]] = {}
+    for r in rows:
+        by.setdefault(r["variable"], []).append(r["value"])
+    bad = []
+    for var, vals in sorted(by.items()):
+        lo, hi = min(vals), max(vals)
+        log(f"    {var}: min {lo:.2f}, max {hi:.2f}, mean {sum(vals) / len(vals):.2f} ({len(vals)} values)")
+        b = PLAUSIBLE.get(var)
+        if b and (lo < b[0] or hi > b[1]):
+            bad.append(f"{var} outside {b} (min {lo:.2f}, max {hi:.2f})")
+    if bad:
+        raise RuntimeError("implausible values — not archived: " + "; ".join(bad))
+
+
 def write_and_upload(work: Path, model: str, cfg: dict, run_time: datetime, rows: list[dict], run_id: str, dry: bool) -> None:
     month = run_time.strftime("%Y-%m")
     d = work / run_id
@@ -453,6 +474,7 @@ def main() -> int:
                 rows = collect_run(model, cfg, rt, resorts, files_by_var, consts, fetched_at, run_id)
                 if not rows:
                     raise RuntimeError("no rows built")
+                check_plausible(rows)
                 write_and_upload(work, model, cfg, rt, rows, run_id, dry)
                 collected.append(f"{key}: {len(rows)} rows")
                 log(f"  ✓ {key}: {len(rows)} rows ({time.time() - started:.0f} s elapsed)")

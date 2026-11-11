@@ -63,3 +63,11 @@ def test_d2_run_starting_mid_block_skips_the_partial_first_block(monkeypatch):
     starts = {r["valid_start"] for r in rows}
     assert starts == {"2026-11-11T06:00:00Z"}  # 03–06 partial skipped, 06–12 full
     assert rows[0]["value"] == 6.0 and rows[0]["member"] == 3
+
+
+def test_implausible_values_fail_loudly():
+    import pytest
+    rows = [{"variable": "temp_min", "value": 260.0}]  # Kelvin slipped through
+    with pytest.raises(RuntimeError, match="implausible"):
+        R.check_plausible(rows)
+    R.check_plausible([{"variable": "temp_min", "value": -12.0}, {"variable": "precip", "value": 4.2}])
