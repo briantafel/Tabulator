@@ -606,8 +606,8 @@ def main() -> int:
         units = [(cycle, i, ls) for cycle in cands for i, ls in enumerate(chunks(cfg))]
         for cycle, ci, ls in units:
             key = f"{model}-{cycle:%Y%m%d%H}" + (f"-c{ci}" if cfg.get("chunk") else "")
-            if key in done:
-                continue
+            if key in done and not dry:
+                continue  # a dry run writes nothing, so it may re-measure an archived cycle
             if any(w.startswith(f"{model}-{cycle:%Y%m%d%H}") for w in waiting + failures):
                 continue  # an earlier chunk of this cycle is waiting or failed
             if time.time() - started > TIME_LIMIT_S - 5 * 60:
