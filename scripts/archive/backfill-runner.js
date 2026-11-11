@@ -25,6 +25,7 @@
  * Pieces:
  *   snotel-<year>          SNOTEL daily history, one winter      (no quota)
  *   snotel-temp-<year>     SNOTEL daily TMAX/TMIN, one winter    (no quota)
+ *   snotel-hourly-temp-<yyyy-mm>  SNOTEL hourly TOBS, one month     (no quota)
  *   bc-asws-history        BC snow pillows, hourly, both winters (no quota)
  *   ots-history-<resort>   OnTheSnow monthly history             (no quota)
  *   om-<resort>-<model>-<year>  Open-Meteo previous runs         (~31 calls)
@@ -137,11 +138,25 @@ try {
 } catch { /* not written yet */ }
 const fetchedAt = new Date().toISOString();
 const year = (w) => w[0].slice(0, 4);
+/* [first day, last day] of each calendar month inside a winter. */
+function monthsOf([from, to]) {
+  const out = [];
+  for (let d = new Date(`${from.slice(0, 7)}-01T00:00:00Z`); d <= new Date(`${to}T00:00:00Z`); d.setUTCMonth(d.getUTCMonth() + 1)) {
+    const last = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0));
+    out.push([d.toISOString().slice(0, 10), (last > new Date(`${to}T00:00:00Z`) ? new Date(`${to}T00:00:00Z`) : last).toISOString().slice(0, 10)]);
+  }
+  return out;
+}
 
 const pieces = [
   ...WINTERS.map((w) => ({ key: `snotel-${year(w)}`, kind: "snotel", winter: w })),
   // Added 2026-11-10: daily highs/lows, the truth for scoring forecast temperatures.
   ...WINTERS.map((w) => ({ key: `snotel-temp-${year(w)}`, kind: "snotel", winter: w, elements: DAILY_TEMP_ELEMENTS })),
+  // Added 2026-11-11 (claude/temp-wind-plan.md T1): hourly TOBS for the lift-hours
+  // low (coldest 08–16 local), same rows as the live hourly collector. One month a
+  // piece: a whole winter of hourly values per 20 stations is a very large response.
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-temp-${m[0].slice(0, 7)}`, kind: "snotel",
+    winter: m, elements: ["TOBS"], duration: "HOURLY" }))),
   { key: "bc-asws-history", kind: "bcasws" },
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
@@ -178,19 +193,21 @@ async function runPiece(p) {
     const rows = [], raws = [];
     for (let i = 0; i < ids.length; i += 20) {
       const q = new URLSearchParams({ stationTriplets: ids.slice(i, i + 20).join(","),
-        elements: (p.elements ?? ["SNWD", "WTEQ", "TOBS", "PREC"]).join(","), duration: "DAILY",
-        beginDate: p.winter[0], endDate: p.winter[1] });
+        elements: (p.elements ?? ["SNWD", "WTEQ", "TOBS", "PREC"]).join(","), duration: p.duration ?? "DAILY",
+        // Hourly needs times (as the live collector sends them); the end hour is the last day's 23:00.
+        beginDate: p.duration === "HOURLY" ? `${p.winter[0]} 00:00` : p.winter[0],
+        endDate: p.duration === "HOURLY" ? `${p.winter[1]} 23:00` : p.winter[1] });
       const res = await fetchText(`${SNOTEL}/data?${q}`, { retries: 3 });
       if (res.status !== 200) throw new Error(`data HTTP ${res.status}: ${res.text.slice(0, 200)}`);
       raws.push([`${p.key}-${i / 20}.json.gz`, res.text]);
-      rows.push(...dataToRows(JSON.parse(res.text), { stationsById: byId, duration: "DAILY", fetchedAt, runId: `bf-${p.key}` })
+      rows.push(...dataToRows(JSON.parse(res.text), { stationsById: byId, duration: p.duration ?? "DAILY", fetchedAt, runId: `bf-${p.key}` })
         .map((r) => ({ ...r, parser_version: "snotel-history-1" })));
       await sleep(2000);
     }
     if (!rows.length) throw new Error("no SNOTEL readings");
     if (p.elements) {
       // Loud: a station set that returns no highs at all means AWDB renamed or dropped the element.
-      for (const want of p.elements.map((e) => ({ TMAX: "temp_max", TMIN: "temp_min" })[e] ?? e)) {
+      for (const want of p.elements.map((e) => ({ TMAX: "temp_max", TMIN: "temp_min", TOBS: "temp" })[e] ?? e)) {
         if (!rows.some((r) => r.variable === want)) throw new Error(`no ${want} in ${p.key} — check the AWDB element code`);
       }
     }

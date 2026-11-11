@@ -188,7 +188,7 @@ sources:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
     url: https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1
-    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily. A one-time backfill (run_id bf-snotel-<year>, parser_version snotel-history-1, workflow backfill.yml) adds daily readings for Nov–Apr of 2024-25 and 2025-26.
+    cadence: twice daily; each run takes the last 36 hours hourly and the last 3 days daily. A one-time backfill (run_id bf-snotel-<year>, parser_version snotel-history-1, workflow backfill.yml) adds daily readings for Nov–Apr of 2024-25 and 2025-26. Hourly TOBS for the same winters comes from monthly pieces snotel-hourly-temp-<yyyy-mm> (run_id bf-snotel-hourly-temp-<yyyy-mm>, added 2026-11-11 for lift-hours lows): same rows as the live hourly collector (variable temp, °C, period_label hourly, valid_start = valid_end = the reading hour in UTC).
     since: 2026-10-29
     raw: station list and every data response, gzipped JSON
     notes:
