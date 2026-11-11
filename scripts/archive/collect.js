@@ -24,6 +24,7 @@ import * as bcasws from "./bc-asws.js";
 import * as slf from "./slf.js";
 import * as amedas from "./amedas.js";
 import * as cocorahs from "./cocorahs.js";
+import * as snodas from "./snodas.js";
 import * as nws from "./nws.js";
 import * as ots from "./onthesnow.js";
 
@@ -79,6 +80,10 @@ await run("amedas", (sink, rawDir) =>
 // US/Canada volunteer snowfall reports (2026-11-11).
 await run("cocorahs", (sink, rawDir) =>
   cocorahs.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+// SNODAS gridded snowpack analysis, US + southern Canada (2026-11-11).
+await run("snodas", (sink, rawDir) =>
+  snodas.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
 await run("nws", (sink, rawDir) =>
   nws.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));

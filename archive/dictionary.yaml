@@ -309,3 +309,16 @@ cocorahs:
     new_snow_water_24h: "mm, water in the new snow (core sample)"
     snow_depth: "cm, instant"
     swe: "mm, water in the snowpack, instant"
+
+snodas:
+  kind: analysis
+  paid: false
+  licence: "Public domain (US Government). Cite NOAA NOHRSC SNODAS, NSIDC G02158."
+  added: 2026-11-11
+  module: scripts/archive/snodas.js
+  notes: "Daily ~1 km gridded snowpack analysis (model + observations), unmasked grid incl. southern Canada. Snapshot 06 UTC on the file date; precip products are 24 h ending then. Last 3 days each run. Per resort: the cell at its coordinates and the max over the surrounding 5x5 cells (~4 km) as a rough upper-mountain value. A model analysis, not a measurement: second-tier truth. Weaker outside the US."
+  variables:
+    snow_depth: "cm, instant; snow_depth_max_5x5 = max of 5x5 cells"
+    swe: "mm, instant; swe_max_5x5 likewise"
+    snowfall_water_24h: "mm water, solid precipitation, 24 h ending 06 UTC"
+    rain_24h: "mm, liquid precipitation, 24 h ending 06 UTC"
