@@ -29,7 +29,8 @@ permissions:
   issues: write
 
 concurrency:
-  group: upper-air-${{ inputs.only || 'all' }}-${{ inputs.dry_run && 'dry' || 'live' }}
+  # Every live run (scheduled or dispatched) in one queue, so two never archive the same cycle.
+  group: ${{ inputs.dry_run && format('upper-air-dry-{0}', inputs.only) || 'upper-air-live' }}
   cancel-in-progress: false
 
 jobs:

@@ -97,10 +97,10 @@ def leads_6h(last: int, step_after: dict | None = None) -> list[int]:
 MODELS = {
     "hrrr": dict(source="noaa-hrrr", kind="noaa", cycles=(0, 6, 12, 18), max_km=3.0, leads=leads_6h(48), ready_h=3),
     "gefs": dict(source="noaa-gefs", kind="noaa", cycles=(0, 12), max_km=40.0, leads=leads_6h(240), ready_h=6),
-    "ifs-hres": dict(source="ecmwf-opendata", kind="ecmwf", stream="oper", cycles=(0, 12), max_km=20.0, gap=4_000_000,
+    "ifs-hres": dict(source="ecmwf-opendata", kind="ecmwf", stream="oper", cycles=(0, 12), max_km=20.0, gap=4_000_000, workers=8,
                      leads=leads_6h(240, {156: 12}), ready_h=8),
     "ifs-ens": dict(source="ecmwf-opendata", kind="ecmwf", stream="enfo", cycles=(0,), max_km=20.0, gap=1_000_000,
-                    chunk=6,
+                    chunk=6, workers=6,  # ~3 GB / ~9 min per chunk; S3 throttles (503) above this
                     leads=leads_6h(240, {156: 12}), ready_h=9),
 }
 
@@ -133,7 +133,7 @@ def http(url: str, headers: dict | None = None, retries: int = 6, timeout: int =
     last = None
     for attempt in range(retries + 1):
         if attempt:
-            time.sleep(min(40, 2 ** attempt) + random.random() * 3)
+            time.sleep(min(60, 3 * 2 ** attempt) + random.random() * 5)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
             with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -364,7 +364,7 @@ def collect_cycle(model: str, cfg: dict, cycle: datetime, resorts: list[dict], f
         return f, picks
 
     entries: dict[str, list[dict]] = {}
-    workers = 16 if cfg["kind"] == "noaa" else 8
+    workers = cfg.get("workers", 16)
     with ThreadPoolExecutor(max_workers=workers) as pool:
         indexed = list(pool.map(index_job, files))
     missing = [f"{l}h {u.rsplit('/', 1)[-1]}" for (l, u, _), p in indexed if p is None]
@@ -462,7 +462,7 @@ def bounds(variable: str):
     if variable.startswith("t_"):
         return (-90, 45)
     if variable.startswith("rh_"):
-        return (0, 130)  # ECMWF r is over ice in cold air (can exceed 100 %)
+        return (-2, 130)  # ECMWF r is over ice in cold air (can exceed 100 %); ~−1 % is packing noise in dry air
     if variable.startswith("q_"):
         return (0, 40)
     if variable.startswith("z_"):

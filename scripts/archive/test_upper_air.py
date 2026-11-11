@@ -98,7 +98,7 @@ def test_plausibility_catches_unit_mistakes():
         ua.check_plausible([(6, 0, "z_500hpa", "m", np.array([560.0, 555.0]))])  # decametres, not metres
     with pytest.raises(RuntimeError):
         ua.check_plausible([(6, 0, "t_850hpa", "C", np.array([268.0]))])  # still Kelvin
-    assert ua.check_plausible([(6, 0, "rh_500hpa", "%", np.array([112.0]))]) == 1  # ECMWF over ice: real
+    assert ua.check_plausible([(6, 0, "rh_500hpa", "%", np.array([112.0, -0.98]))]) == 2  # over ice; packing noise
     with pytest.raises(RuntimeError):
         ua.check_plausible([(6, 0, "rh_500hpa", "%", np.array([0.9, 1.0]) * 1000)])  # fraction ×1000 mistake
 
