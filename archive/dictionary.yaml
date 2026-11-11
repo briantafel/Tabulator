@@ -179,7 +179,7 @@ sources:
     raw: not kept (the AWS bucket keeps open data from 2024; backfillable with --cycle)
     notes:
       - "Same row shape as noaa-hrrr. Levels 1000, 925, 850, 700, 600, 500 hPa. psfc per cell; elevation_m is null (the open set has no orography at these steps). Nearest 0.25° cell within 20 km; global."
-      - "rh_<p>hpa is IFS's own r: over WATER above 0 °C, over ICE below −23 °C, with IFS's quadratic blend between (alpha = ((T + 23) / 23)^2). It can exceed 100 % in cold air (126 % seen at 500 hPa), and very dry air can show about −1 % (GRIB packing noise; stored as published). Convert back to vapour pressure with the same blend before computing wet-bulb. q_<p>hpa (g/kg) is stored only for a level that has no r."
+      - "rh_<p>hpa is IFS's own r: over WATER above 0 °C, over ICE below −23 °C, with IFS's quadratic blend between (alpha = ((T + 23) / 23)^2). It can exceed 100 % in cold air (126 % seen at 500 hPa), and very dry air can show small negatives, −2.7 % seen (GRIB packing noise; stored as published; gate at −5 %). Convert back to vapour pressure with the same blend before computing wet-bulb. q_<p>hpa (g/kg) is stored only for a level that has no r."
       - Separate from dynamical-ens's IFS ENS (no humidity aloft there). Never merge them.
       - "Licence: ECMWF open data, CC BY 4.0. Attribution: Source: ECMWF."
   snotel:
