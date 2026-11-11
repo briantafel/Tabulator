@@ -118,15 +118,19 @@ body { background: #F2F2F2; }
    the panel continues it to 240. Labels sit 6 above their controls, the two
    settings 20 apart, the stamps 29 below the last control. */
 .bar.open {
-  background: var(--line); height: calc(56 * var(--u)); margin-bottom: 0;
+  /* Same flow footprint as the closed band (111 − 11.8125 = 99.1875), so
+     opening Settings moves nothing underneath. */
+  background: var(--line); height: calc(56 * var(--u));
+  margin-bottom: calc(43.1875 * var(--u));
 }
 /* Open, the gear turns white (Brian, 2026-11-11). */
 .bar.open .gear { color: #fff; }
-/* Pinned under the header like the header itself, so it opens over whatever
-   is on screen. In flow it opened at the top of the page — off-screen above
-   anyone scrolled down, leaving just the grey header (Brian, 2026-11-11). */
+/* Laid over the page under the header, out of the flow: it opens on top of
+   whatever is on screen and moves nothing (Brian, 2026-11-11). In flow it
+   pushed the page down, and opened off-screen for anyone scrolled down. */
 .settings {
-  position: sticky; top: calc(56 * var(--u)); z-index: 19;
+  position: fixed; top: calc(56 * var(--u)); z-index: 19;
+  left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 402px;
   display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
   padding: 12px 22px 11px; background: var(--line);
   font-size: 13px; color: #666;
