@@ -34,6 +34,19 @@ def local(d, h, off):  # local wall time → UTC
     return (datetime(2025, 1, d, h, tzinfo=UTC) - off).replace(tzinfo=UTC)
 
 
+def write_archive(rows, root: Path) -> None:
+    arch = root / "source=x" / "month=2025-01"
+    arch.mkdir(parents=True)
+    con = duckdb.connect()
+    con.execute("SET TimeZone = 'UTC'")
+    types = {"elevation_m": "INTEGER", "lat": "DOUBLE", "lon": "DOUBLE", "value": "DOUBLE", "member": "SMALLINT",
+             "issued_at": "TIMESTAMPTZ", "fetched_at": "TIMESTAMPTZ", "valid_start": "TIMESTAMPTZ",
+             "valid_end": "TIMESTAMPTZ"}
+    con.execute("CREATE TABLE t(" + ", ".join(f"{c} {types.get(c, 'VARCHAR')}" for c in COLS) + ")")
+    con.executemany(f"INSERT INTO t VALUES ({', '.join('?' * len(COLS))})", [[r[c] for c in COLS] for r in rows])
+    con.execute(f"COPY t TO '{arch / 'test.parquet'}' (FORMAT parquet)")
+
+
 def main():
     rows = []
     fetched = datetime(2025, 2, 1, tzinfo=UTC)
@@ -151,18 +164,26 @@ def main():
                             elevation_m=1900, station_id="Revelstoke", fetched_at=fetched, valid_start=vs,
                             valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow", value=0.0))
 
+    # Window truth (windows.py). CoCoRaHS: a valley observer (1500 m vs Alta's 2900 m mid
+    # tier) reading at 07:00 MST, 24 h windows. 10 mm in the window ending Jan 4 07:00 MST.
+    rows.append(row(source="cocorahs", kind="mapping", resort_id="alta", station_id="UT-SL-1", elevation_m=1500,
+                    fetched_at=fetched, variable="candidate_distance", value=12.0, value_text="Valley observer"))
+    for d in range(2, 11):
+        end = local(d, 7, MST)
+        rows.append(row(source="cocorahs", kind="observation", station_id="UT-SL-1", elevation_m=1500,
+                        fetched_at=fetched, valid_start=end - timedelta(days=1), valid_end=end, period_label="24h",
+                        variable="precip_24h", value=10.0 if d == 4 else 0.0, unit="mm"))
+    # SNODAS: 06 UTC snowpack snapshots at Alta's cell; +18 mm SWE from Jan 3 06Z to Jan 4 06Z.
+    for d in range(1, 7):
+        t6 = datetime(2025, 1, d, 6, tzinfo=UTC)
+        for var, v, u in (("swe", 300.0 + (18 if d >= 4 else 0), "mm"), ("swe_max_5x5", 320.0 + (25 if d >= 4 else 0), "mm")):
+            rows.append(row(source="snodas", kind="analysis", resort_id="alta", station_id="snodas:10_20",
+                            fetched_at=fetched, valid_start=t6, valid_end=t6, period_label="instant",
+                            variable=var, value=v, unit=u))
+
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        arch = tmp / "archive" / "source=x" / "month=2025-01"
-        arch.mkdir(parents=True)
-        con = duckdb.connect()
-        con.execute("SET TimeZone = 'UTC'")
-        types = {"elevation_m": "INTEGER", "lat": "DOUBLE", "lon": "DOUBLE", "value": "DOUBLE", "member": "SMALLINT",
-                 "issued_at": "TIMESTAMPTZ", "fetched_at": "TIMESTAMPTZ", "valid_start": "TIMESTAMPTZ",
-                 "valid_end": "TIMESTAMPTZ"}
-        con.execute("CREATE TABLE t(" + ", ".join(f"{c} {types.get(c, 'VARCHAR')}" for c in COLS) + ")")
-        con.executemany(f"INSERT INTO t VALUES ({', '.join('?' * len(COLS))})", [[r[c] for c in COLS] for r in rows])
-        con.execute(f"COPY t TO '{arch / 'test.parquet'}' (FORMAT parquet)")
+        write_archive(rows, tmp / "archive")
 
         stats = build(tmp / "archive", tmp / "out", ROOT / "src/data/resorts.json")
         q = duckdb.connect()
@@ -219,6 +240,34 @@ def main():
                    "AND local_date = DATE '2025-01-03' LIMIT 1")[0] == 25
         assert stats["resorts_with_strict_pair_bc"] == 1, stats
         assert "BC ASWS check" in (tmp / "out" / "log.txt").read_text()
+        # ---- window truth
+        w = lambda sql: q.execute(sql.replace("{W}", f"read_parquet('{tmp / 'out' / 'wpairs.parquet'}')")).fetchall()
+        # CoCoRaHS window Jan 3 07:00 → Jan 4 07:00 MST (14 UTC → 14 UTC) holds 4 of the storm block's
+        # 6 hours (12–18 UTC Jan 3): 2/3 × 20 mm. The window before holds the other 2 hours.
+        got = w("SELECT fc, obs, elev_class FROM {W} WHERE product = 'cocorahs' AND issue_key = 'previous_day0' "
+                "AND we = TIMESTAMPTZ '2025-01-04 14:00:00+00'")
+        assert len(got) == 1 and abs(got[0][0] - 40 / 3) < 1e-6 and got[0][1] == 10 and got[0][2] == "valley", got
+        got = w("SELECT fc FROM {W} WHERE product = 'cocorahs' AND issue_key = 'previous_day0' "
+                "AND we = TIMESTAMPTZ '2025-01-03 14:00:00+00'")
+        assert abs(got[0][0] - 20 / 3) < 1e-6, got
+        # SNODAS: the 06Z→06Z window takes the whole block; truth is the SWE gain, class grid.
+        got = w("SELECT fc, obs, elev_class FROM {W} WHERE product = 'snodas-swe-gain' AND issue_key = 'previous_day0' "
+                "AND we = TIMESTAMPTZ '2025-01-04 06:00:00+00'")
+        assert got == [(20.0, 18.0, "grid")], got
+        assert w("SELECT obs FROM {W} WHERE product = 'snodas-swe-gain-max5x5' "
+                 "AND we = TIMESTAMPTZ '2025-01-04 06:00:00+00' LIMIT 1") == [(25.0,)]
+        # Valley truth judges only the low thresholds; the grid judges all three.
+        ts = (tmp / "out" / "truth_scores.csv").read_text()
+        thr = lambda prod: sorted({float(l.split(",")[ts.split("\n")[0].split(",").index("threshold")])
+                                   for l in ts.splitlines()[1:] if l.startswith(prod + ",") and ",liquid," in l})
+        assert thr("cocorahs") == [2.5, 10.0], thr("cocorahs")
+        assert thr("snodas-swe-gain") == [2.5, 10.0, 20.0], thr("snodas-swe-gain")
+        # The height gap, learned: the valley got 10 mm on the day the slope pillow got 20.
+        er = q.execute(f"SELECT ratio_to_slope, elev_class FROM read_csv_auto('{tmp / 'out' / 'elevation_ratios.csv'}') "
+                       "WHERE product = 'cocorahs' AND region = 'ALL' AND space = 'liquid'").fetchall()
+        assert er == [(0.5, "valley")], er
+        assert (tmp / "out" / "truth_windows.md").exists() and (tmp / "out" / "matched_scores.csv").exists()
+
         log = (tmp / "out" / "log.txt").read_text()
         assert "snow-forecast" not in log, "paid source named in the public log"
         assert "report" and "PRIVATE" in (tmp / "out" / "report.md").read_text()
@@ -244,6 +293,18 @@ def main():
         assert "Temperature" in (tmp / "out" / "report.md").read_text()
         assert "snow-forecast" not in (tmp / "out" / "log.txt").read_text()
         del s
+    # A truth row in the wrong unit must stop the build, not be scored.
+    rows.append(row(source="cocorahs", kind="observation", station_id="UT-SL-1", elevation_m=1500, fetched_at=fetched,
+                    valid_start=local(4, 7, MST) - timedelta(days=1), valid_end=local(4, 7, MST), period_label="24h",
+                    variable="new_snow_24h", value=4.0, unit="in"))
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        write_archive(rows, tmp / "archive")
+        try:
+            build(tmp / "archive", tmp / "out", ROOT / "src/data/resorts.json")
+            raise AssertionError("a row in inches was accepted")
+        except SystemExit as e:
+            assert "unexpected units" in str(e) and "new_snow_24h" in str(e), e
     print("verify build: all checks passed")
 
 

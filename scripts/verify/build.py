@@ -37,6 +37,9 @@ from pathlib import Path
 
 import duckdb
 
+sys.path.insert(0, str(Path(__file__).parent))
+from windows import window_truth  # noqa: E402
+
 PAID = ("snow-forecast", "snow-forecast-hindcast")
 FORECAST_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecast",
                     "snow-forecast-hindcast", "nws", "onthesnow",
@@ -369,6 +372,9 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     UPDATE pairs SET split = CASE winter WHEN 2024 THEN 'train' WHEN 2025 THEN 'test' ELSE 'live' END""")
     con.execute(f"COPY pairs TO '{out / 'pairs.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
 
+    # CoCoRaHS / SNODAS / AMeDAS / SLF: scored on their own 24 h windows (windows.py).
+    wstats = window_truth(con, out, lambda m: log(public_log, m), THRESHOLDS, paid_list, THIN_EVENTS)
+
     # ---------------------------------------------------------------- scores
     con.execute("CREATE TABLE thr(space VARCHAR, t DOUBLE)")
     con.executemany("INSERT INTO thr VALUES (?, ?)", [(s, t) for s, ts in THRESHOLDS.items() for t in ts])
@@ -409,7 +415,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     temp_stats = temperature(con, out, paid_list)
 
     # ---------------------------------------------------------------- checks + logs
-    stats = {}
+    stats = dict(wstats)
     for name, q in {
         "forecast_days": "SELECT count(*) FROM fc",
         "pairs_with_truth": "SELECT count(*) FROM pairs WHERE obs IS NOT NULL",
