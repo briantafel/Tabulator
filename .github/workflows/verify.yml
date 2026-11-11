@@ -51,6 +51,7 @@ jobs:
         run: |
           python3 scripts/verify/test_build.py
           python3 scripts/model/test_slr.py
+          python3 scripts/model/test_blend.py
 
       - name: Download the archive
         run: |
@@ -66,6 +67,10 @@ jobs:
       # Fit on 2024-25, judge on 2025-26. Results go only into the sealed report.
       - name: Fit and judge SLR v1
         run: python3 scripts/model/slr.py out/pairs.parquet out
+
+      # Corrected, lead-weighted model blend: fit 2024-25, judge 2025-26. Sealed report only.
+      - name: Fit and judge blend v1
+        run: python3 scripts/model/blend.py out/pairs.parquet out
 
       - name: Save to the bucket
         if: success()
