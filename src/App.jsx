@@ -299,7 +299,7 @@ export default function Tabulator() {
               <span className="set-label">Forecast</span>
               <span className="pill sm">
                 <button className={!projections ? "on" : ""} onClick={() => chooseProjections(false)}>Forecast only</button>
-                <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>With projections</button>
+                <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>Tabulator projections</button>
               </span>
             </div>}
             {canChoose(tempsMode) && feedRaw?.temps && <div className="set">
