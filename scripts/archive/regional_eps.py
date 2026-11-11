@@ -26,6 +26,20 @@ issued_at is the model run time (exact).
 Licences: DWD open data (attribution "Deutscher Wetterdienst"); MeteoSwiss
 Open Government Data ("Source: MeteoSwiss").
 
+Upper-air profiles (added 2026-11-11, claude/upper-air-plan.md): after the
+surface pass, a second pass archives each run's vertical profile at the
+resort cells, separately (own run_id suffix "-prof", own done marker
+"<model>+profile-<run>"), so a profile problem never costs the surface rows
+and a failed profile retries while the files are still up. These fields are
+the only free 1–2 km ensemble profiles for the Alps and are unrecoverable
+after ~24 h. Rows are INSTANTS (valid_start == valid_end, period_label
+"instant") at 00/06/12/18 UTC:
+  DWD          t_<p>hpa (°C), rh_<p>hpa (%, D2) or q_<p>hpa (g/kg, EU),
+               z_<p>hpa (m, from fi / g0) at PROFILE_LEVELS present on the server
+  MeteoSwiss   freezing_level (m, HZEROCL) and snow_limit (m, SNOWLMT) when the
+               STAC offers them; the run also logs every variable the STAC has,
+               so pressure-level T/RELHUM/FI can be added once their layout is known.
+
 FAIL LOUDLY: a target run that is on the server but cannot be collected makes
 the exit code non-zero. Missing variables are logged; missing precipitation
 fails the run.
@@ -53,6 +67,20 @@ ROOT = Path(__file__).resolve().parents[2]
 T0 = time.time()
 UA = "tabulator-archive/1.0 (+https://github.com/briantafel/tabulator)"
 PARSER_VERSION = "regional-eps-1"
+PROFILE_PARSER_VERSION = "regional-eps-profile-1"
+G0 = 9.80665
+# Levels that bracket resort tiers (~500–4000 m) plus 500 hPa for the dendritic
+# layer. Only the ones each server actually publishes are fetched.
+PROFILE_LEVELS = (1000, 950, 925, 900, 850, 800, 750, 700, 650, 600, 500)
+# our profile var → (DWD dir, row prefix, unit, transform)
+DWD_PROFILE = {
+    "t": ("t", "t", "C", lambda a: a - 273.15),
+    "relhum": ("relhum", "rh", "%", lambda a: a),
+    "qv": ("qv", "q", "g/kg", lambda a: a * 1000.0),
+    "fi": ("fi", "z", "m", lambda a: a / G0),
+}
+# MeteoSwiss single-level heights; −999-style fills (no 0 °C level / below ground) are dropped.
+CH_PROFILE = {"HZEROCL": ("freezing_level", "m"), "SNOWLMT": ("snow_limit", "m")}
 TIME_LIMIT_S = 50 * 60
 BLOCK_H = 6
 
@@ -72,16 +100,16 @@ VARS = {
 REQUIRED = {"tot_prec"}
 
 MODELS = {
-    "icon-eu-eps": dict(source="dwd-icon-eps", kind="dwd", runs=(0, 12), max_km=25.0,
+    "icon-eu-eps": dict(source="dwd-icon-eps", kind="dwd", runs=(0, 12), max_km=25.0, profile_max_lead=72,
                         leads=lambda h: list(range(0, 49)) + list(range(51, 73, 3)) + list(range(78, 121, 6))),
     # ~37 MB per file: no wind here (the EU and Swiss models carry it).
-    "icon-d2-eps": dict(source="dwd-icon-eps", kind="dwd", runs=(3, 15), max_km=5.0,
+    "icon-d2-eps": dict(source="dwd-icon-eps", kind="dwd", runs=(3, 15), max_km=5.0, profile_max_lead=48,
                         vars=("tot_prec", "snow_gsp", "snow_con", "t_2m"),
                         leads=lambda h: list(range(0, 46 if h == 3 else 28))),
     "icon-ch2-eps": dict(source="meteoswiss-icon-eps", kind="ch", collection="ch.meteoschweiz.ogd-forecasting-icon-ch2",
-                         runs=(0, 12), max_km=5.0, leads=lambda h: list(range(0, 121))),
+                         runs=(0, 12), max_km=5.0, profile_max_lead=120, leads=lambda h: list(range(0, 121))),
     "icon-ch1-eps": dict(source="meteoswiss-icon-eps", kind="ch", collection="ch.meteoschweiz.ogd-forecasting-icon-ch1",
-                         runs=(0, 12), max_km=3.0, leads=lambda h: list(range(0, 34))),
+                         runs=(0, 12), max_km=3.0, profile_max_lead=33, leads=lambda h: list(range(0, 34))),
 }
 
 
@@ -135,7 +163,8 @@ def grib_messages(raw: bytes):
                     break
                 try:
                     keys = {}
-                    for k in ("shortName", "perturbationNumber", "typeOfEnsembleForecast", "numberOfDataPoints"):
+                    for k in ("shortName", "perturbationNumber", "typeOfEnsembleForecast", "numberOfDataPoints",
+                              "typeOfLevel", "level"):
                         try:
                             keys[k] = eccodes.codes_get(gid, k)
                         except Exception:
@@ -353,6 +382,112 @@ def collect_run(model: str, cfg: dict, run_time: datetime, resorts: list[dict], 
     return rows
 
 
+# ---------------------------------------------------------------- profiles
+def profile_leads(run_hour: int, max_lead: int) -> list[int]:
+    """Leads that land on 00/06/12/18 UTC, up to max_lead."""
+    return [l for l in range(0, max_lead + 1) if (run_hour + l) % BLOCK_H == 0]
+
+
+def dwd_profile_files(model: str, hour: int, dvar: str, stamp: str, leads: set[int]) -> dict[tuple[int, int], str]:
+    """(lead, hPa) → URL for pressure-level files of one variable and run."""
+    url = f"{DWD}/{model}/grib/{hour:02d}/{dvar}/"
+    try:
+        html = http(url).decode("utf-8", "replace")
+    except urllib.error.HTTPError:
+        return {}
+    out = {}
+    for name in re.findall(r'href="([^"]+\.grib2\.bz2)"', html):
+        m = re.search(r"pressure-level_(\d{10})_(\d{3})_(\d+)_", name)
+        if m and m.group(1) == stamp and int(m.group(2)) in leads and int(m.group(3)) in PROFILE_LEVELS:
+            out[(int(m.group(2)), int(m.group(3)))] = url + name
+    return out
+
+
+def ch_variables(collection: str, ref: datetime) -> list[str]:
+    """Every forecast:variable the STAC offers for one run (one page at the
+    6 h horizon is enough to see the names)."""
+    body = {"collections": [collection], "forecast:reference_datetime": ref.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "forecast:horizon": "P0DT06H00M00S", "limit": 200}
+    names, url, data = set(), STAC, json.dumps(body).encode()
+    for _ in range(10):
+        page = json.loads(http(url, data=data))
+        for f in page.get("features", []):
+            v = f.get("properties", {}).get("forecast:variable")
+            if v:
+                names.add(v)
+        nxt = [l for l in page.get("links", []) if l.get("rel") == "next"]
+        if not nxt:
+            break
+        url, data = nxt[0]["href"], json.dumps({**body, **(nxt[0].get("body") or {})}).encode()
+    return sorted(names)
+
+
+def profile_rows(model: str, cfg: dict, run_time: datetime, resorts: list[dict], fields: list[tuple],
+                 consts: dict, fetched_at: str, run_id: str) -> list[dict]:
+    """fields: (lead, url, variable_name, unit, transform, wanted_level or None).
+    Each GRIB message is matched to the requested level (DWD files hold one
+    level; a MeteoSwiss file is single-level). One instant row per member."""
+    cells = nearest_cells(consts["clat"], consts["clon"], resorts, cfg["max_km"])
+    if not cells:
+        raise RuntimeError("no resort inside the model domain")
+    idx = np.array([c[0] for c in cells.values()])
+    ids = list(cells)
+    hs = consts.get("hsurf")
+    lat_deg = np.degrees(consts["clat"]) if np.nanmax(np.abs(consts["clat"])) <= math.pi + 0.01 else consts["clat"]
+    lon_deg = np.degrees(consts["clon"]) if np.nanmax(np.abs(consts["clon"])) <= math.pi + 0.01 else consts["clon"]
+
+    def fetch(f):
+        url = f[1]
+        raw = http(url)
+        return f, (bz2.decompress(raw) if url.split("?")[0].endswith(".bz2") else raw)
+
+    rows, mb = [], 0.0
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for (lead, url, variable, unit, tf, level), raw in pool.map(fetch, fields):
+            mb += len(raw) / 1e6
+            t = run_time + timedelta(hours=lead)
+            stamp = t.isoformat().replace("+00:00", "Z")
+            for keys, vals in grib_messages(raw):
+                if level is not None and keys.get("level") not in (None, level):
+                    continue
+                n = keys.get("perturbationNumber")
+                member = 0 if n is None or keys.get("typeOfEnsembleForecast") in (0, 1) and n == 0 else int(n)
+                if "ctrl" in url.split("?")[0].split("/")[-1].lower():
+                    member = 0
+                arr = tf(np.asarray(vals, dtype=float)[idx])
+                for k, rid in enumerate(ids):
+                    v = float(arr[k])
+                    if not math.isfinite(v) or abs(v) > 1e19 or (unit == "m" and v <= -900):
+                        continue  # GRIB fill / "no such level": missing, not zero
+                    ci = cells[rid][0]
+                    rows.append({
+                        "source": cfg["source"], "kind": "forecast", "resort_id": rid, "tier": "mid",
+                        "elevation_m": int(round(float(hs[ci]))) if hs is not None else None,
+                        "lat": round(float(lat_deg[ci]), 4), "lon": round(float(lon_deg[ci]), 4),
+                        "station_id": None, "issued_at": run_time.isoformat().replace("+00:00", "Z"),
+                        "fetched_at": fetched_at, "valid_start": stamp, "valid_end": stamp,
+                        "period_label": "instant", "variable": variable, "value": round(v, 2), "value_text": None,
+                        "unit": unit, "model": model, "member": member, "run_id": run_id,
+                        "parser_version": PROFILE_PARSER_VERSION,
+                    })
+    log(f"    profile: {len(fields)} files, {mb:.0f} MB decompressed, {len(rows)} rows ({time.time() - T0:.0f} s)")
+    return rows
+
+
+def profile_bounds(variable: str):
+    if variable.startswith("t_"):
+        return (-90, 45)
+    if variable.startswith("rh_"):
+        return (0, 105)
+    if variable.startswith("q_"):
+        return (0, 40)
+    if variable.startswith("z_"):
+        return (-1000, 7000)
+    if variable in ("freezing_level", "snow_limit"):
+        return (-500, 7000)
+    return None
+
+
 # A units or decoding mistake must fail loudly, not land in the archive as
 # plausible-looking numbers. Bounds per 6-hour block.
 PLAUSIBLE = {"precip": (0, 300), "snow_we": (0, 300), "temp_min": (-60, 45), "temp_max": (-60, 45),
@@ -366,15 +501,17 @@ def check_plausible(rows: list[dict]) -> None:
     bad = []
     for var, vals in sorted(by.items()):
         lo, hi = min(vals), max(vals)
-        log(f"    {var}: min {lo:.2f}, max {hi:.2f}, mean {sum(vals) / len(vals):.2f} ({len(vals)} values)")
-        b = PLAUSIBLE.get(var)
+        if len(by) <= 12 or not re.search(r"_\d+hpa$", var) or var.endswith("_850hpa"):
+            log(f"    {var}: min {lo:.2f}, max {hi:.2f}, mean {sum(vals) / len(vals):.2f} ({len(vals)} values)")
+        b = PLAUSIBLE.get(var) or profile_bounds(var)
         if b and (lo < b[0] or hi > b[1]):
             bad.append(f"{var} outside {b} (min {lo:.2f}, max {hi:.2f})")
     if bad:
         raise RuntimeError("implausible values — not archived: " + "; ".join(bad))
 
 
-def write_and_upload(work: Path, model: str, cfg: dict, run_time: datetime, rows: list[dict], run_id: str, dry: bool) -> None:
+def write_and_upload(work: Path, model: str, cfg: dict, run_time: datetime, rows: list[dict], run_id: str, dry: bool,
+                     marker_key: str | None = None) -> None:
     month = run_time.strftime("%Y-%m")
     d = work / run_id
     (d / "rows").mkdir(parents=True, exist_ok=True)
@@ -391,7 +528,7 @@ def write_and_upload(work: Path, model: str, cfg: dict, run_time: datetime, rows
     r = bucket_cmd("cp", str(d / "up"), f"s3://{b}/", "--recursive")
     if r.returncode:
         raise RuntimeError(f"upload failed: {r.stderr[-300:]}")
-    r = bucket_cmd("cp", str(marker), f"s3://{b}/regional/done/{model}-{run_time:%Y%m%d%H}.json")
+    r = bucket_cmd("cp", str(marker), f"s3://{b}/regional/done/{marker_key or model + '-' + f'{run_time:%Y%m%d%H}'}.json")
     if r.returncode:
         raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
 
@@ -478,6 +615,62 @@ def main() -> int:
                     raise RuntimeError("no rows built")
                 check_plausible(rows)
                 write_and_upload(work, model, cfg, rt, rows, run_id, dry)
+                collected.append(f"{key}: {len(rows)} rows")
+                log(f"  ✓ {key}: {len(rows)} rows ({time.time() - started:.0f} s elapsed)")
+            except Exception as e:
+                failures.append(f"{key}: {e}")
+                log(f"  ✗ {key}: {e}")
+
+    # ---- second pass: upper-air profiles, with whatever time is left
+    for model, cfg in MODELS.items():
+        if only and model != only:
+            continue
+        cands = []
+        for back in range(0, 2):
+            day = (now - timedelta(days=back)).date()
+            for h in cfg["runs"]:
+                rt = datetime(day.year, day.month, day.day, h, tzinfo=timezone.utc)
+                if timedelta(hours=1) < now - rt < timedelta(hours=23):
+                    cands.append(rt)
+        for rt in sorted(cands, reverse=True):
+            key = f"{model}+profile-{rt:%Y%m%d%H}"
+            if key in done or f"{model}-{rt:%Y%m%d%H}" not in done | {c.split(":")[0] for c in collected}:
+                continue  # profiles only for runs whose surface pass is archived (so the run is complete)
+            if time.time() - started > TIME_LIMIT_S:
+                waiting.append(f"{key}: time limit, next invocation")
+                continue
+            try:
+                leads = profile_leads(rt.hour, cfg["profile_max_lead"])
+                fields = []
+                if cfg["kind"] == "dwd":
+                    have = []
+                    for pvar, (dvar, prefix, unit, tf) in DWD_PROFILE.items():
+                        files = dwd_profile_files(model, rt.hour, dvar, f"{rt:%Y%m%d%H}", set(leads))
+                        if files:
+                            have.append(f"{dvar} {sorted({lv for _, lv in files})}")
+                        fields += [(l, u, f"{prefix}_{lv}hpa", unit, tf, lv) for (l, lv), u in sorted(files.items())]
+                    log(f"  {key}: pressure levels offered: {'; '.join(have) or 'none'}")
+                    consts = dwd_constants(model, rt.hour)
+                else:
+                    offered = ch_variables(cfg["collection"], rt)
+                    log(f"  {key}: STAC variables offered: {', '.join(offered) or 'none'}")
+                    for cvar, (name, unit) in CH_PROFILE.items():
+                        if cvar not in offered:
+                            continue
+                        for pert in (False, True):
+                            for l, u in ch_items(cfg["collection"], rt, cvar, pert).items():
+                                if l in leads:
+                                    fields.append((l, u, name, unit, lambda a: a, None))
+                    consts = ch_constants(cfg["collection"])
+                if not fields:
+                    failures.append(f"{key}: no profile fields found on the server (see the offered list above)")
+                    continue
+                run_id = f"{rt:%Y-%m-%dT%H%M}Z-{model}-prof-{gh}"
+                rows = profile_rows(model, cfg, rt, resorts, fields, consts, fetched_at, run_id)
+                if not rows:
+                    raise RuntimeError("no profile rows built")
+                check_plausible(rows)
+                write_and_upload(work, model, cfg, rt, rows, run_id, dry, marker_key=key)
                 collected.append(f"{key}: {len(rows)} rows")
                 log(f"  ✓ {key}: {len(rows)} rows ({time.time() - started:.0f} s elapsed)")
             except Exception as e:
