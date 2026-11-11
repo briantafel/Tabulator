@@ -191,8 +191,8 @@ export function sfDays(days, limit = 6) {
  * (icon and words only; the temperatures stay whatever the strip shows).
  *
  * REMOVE when the Tabulator snow model is promoted for days 1–6 — tracked in
- * claude/watchlist.md ("sky row follows Snow-Forecast"). One call site:
- * components/Detail.jsx.
+ * the "Tabulator — Open Issues & Questions" doc (claude/open-issues-doc.md
+ * links it), Forecast accuracy section. One call site: components/Detail.jsx.
  */
 export const SKY_SNOW_MIN_CM = 1; // ≈0.4", the smallest amount the chart labels as more than a trace
 
