@@ -103,6 +103,7 @@ export default function Trips({
   const rows = favs.map((n) => data.find((r) => r.name === n)).filter(Boolean);
 
   const empty = rows.length === 0;
+  const favDays = Math.max(0, ...rows.map((r) => (r.winAll ?? r.win ?? []).length));
 
   /* Picking matches on a plain case-folded substring — Brian's export types
      "Ja" and gets Jackson Hole and Jay Peak, so it is contains, not
@@ -125,7 +126,9 @@ export default function Trips({
           <h2>Favorites</h2>
           {/* Nothing to describe a window over until the table has something
               in it, so the subtitle only exists in the populated state. */}
-          {!empty && !picking && <p>Next 6 days</p>}
+          {/* The days the table actually covers (forecast + projected),
+              not a fixed "6" — it said 6 with projections on (Brian, 2026-11-11). */}
+          {!empty && !picking && <p>{`Next ${favDays} days`}</p>}
         </div>
         {/* The same link in both states — Brian's export keeps it reading
             "Edit" while you are searching, so it toggles rather than
