@@ -54,10 +54,11 @@ const WINTERS = [["2024-11-01", "2025-04-30"], ["2025-11-01", "2026-04-30"]];
    year, so om-portillo-ecmwf_ifs025-2024 is the 2024 austral winter. */
 const SOUTH_WINTERS = [["2024-05-01", "2024-10-31"], ["2025-05-01", "2025-10-31"]];
 const wintersFor = (r) => (coordsOf(r)?.[0] < 0 ? SOUTH_WINTERS : WINTERS);
-/* 2000, down from 3000 on 2026-11-11: the twice-daily ensembles (11
-   variables since 9d0510c) weigh far more than estimated, and they can never
-   be refilled while this can. Raise it again once the budget is measured. */
-const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 2000);
+/* PAUSED (0) on 2026-11-11, claude/lean-data-plan.md Phase 0: the live
+   ensembles take the whole free Open-Meteo allowance until they move to
+   dynamical.org (Phase 1). Nothing is lost: Previous Runs data stays
+   available. Raise to ~6000 once the ensembles leave Open-Meteo. */
+const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 0);
 const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
 const TIME_LIMIT_MS = 95 * 60e3;
 const SNOTEL = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
@@ -116,7 +117,7 @@ async function finish(piece, source, rows, raws) {
   }
   const marker = join(dir, "done.json");
   writeFileSync(marker, JSON.stringify({ key: piece.key, rows: rows.length, at: new Date().toISOString() }));
-  upload(marker, `backfill/done/${piece.key}.json`);
+  upload(marker, `backfill/done/${piece.doneKey ?? piece.key}.json`);
   rmSync(dir, { recursive: true, force: true });
   return rows.length;
 }
@@ -128,6 +129,12 @@ try {
   const f = JSON.parse(await readFile(`${root}public/forecast.json`, "utf8"));
   elevations = Object.fromEntries(f.resorts.map((r) => [r.id, r.elevation?.mid]));
 } catch { /* Open-Meteo picks its own elevation */ }
+try {
+  // archiveOnly resorts are not in forecast.json: use the Snow-Forecast mid
+  // elevations the archive run keeps (collect.js → src/data/sf-elevations.json).
+  const sfe = JSON.parse(await readFile(`${root}src/data/sf-elevations.json`, "utf8"));
+  for (const [id, m] of Object.entries(sfe)) if (!elevations[id] && m) elevations[id] = m;
+} catch { /* not written yet */ }
 const fetchedAt = new Date().toISOString();
 const year = (w) => w[0].slice(0, 4);
 
@@ -142,12 +149,16 @@ const pieces = [
   // name Open-Meteo rejects can only ever stop GEM.
   ...om.MODELS.flatMap((model) => resorts.filter(coordsOf).flatMap((r) => wintersFor(r).map((w) => ({
     key: `om-${r.id}-${model}-${year(w)}`, kind: "om", resort: r, model, winter: w,
+    // archiveOnly pieces fetched before 2026-11-11 had no elevation; a new
+    // marker name makes them run again (same Parquet paths, so overwritten).
+    doneKey: r.archiveOnly ? `om-${r.id}-${model}-${year(w)}@elev` : undefined,
     weight: om.callWeight(om.HOURLY.length, (Date.parse(w[1]) - Date.parse(w[0])) / 864e5 + 1),
   })))),
 ];
 
 const done = doneKeys();
-const pending = pieces.filter((p) => !done.has(p.key));
+const doneKeyOf = (p) => p.doneKey ?? p.key;
+const pending = pieces.filter((p) => !done.has(doneKeyOf(p)));
 log(`backfill: ${pieces.length} pieces, ${done.size} already done, ${pending.length} to go`);
 
 let stations = null;
@@ -264,6 +275,8 @@ for (const p of pending) {
   if (breakers.isOpen(g)) { skipped.set(g, (skipped.get(g) ?? 0) + 1); continue; }
   if (p.kind === "om") {
     if (omStop) continue;
+    if (OM_DAILY_BUDGET === 0) { omStop = "paused (OM_DAILY_BUDGET is 0; see claude/lean-data-plan.md)"; continue; }
+    if (p.resort?.archiveOnly && !elevations[p.resort.id]) { log(`  · ${p.key}: waiting for a Snow-Forecast elevation`); continue; }
     if (spent + p.weight > OM_DAILY_BUDGET) { omStop = `today's budget of ${OM_DAILY_BUDGET} calls is spent`; continue; }
     spent += p.weight;
   }
@@ -287,7 +300,7 @@ for (const p of pending) {
   if (p.kind === "om") await sleep(OM_SPACING_MS);
 }
 
-const nowDone = done.size + ok;
+const nowDone = pieces.filter((p) => done.has(doneKeyOf(p))).length + ok;
 const lines = [];
 lines.push(`this run: ${ok} pieces, ${rowsOut} rows, ~${Math.round(spent)} Open-Meteo calls${omStop ? ` (Open-Meteo stopped: ${omStop})` : ""}`);
 lines.push(nowDone >= pieces.length

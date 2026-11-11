@@ -19,7 +19,10 @@ import { coordsOf, fetchText, saveRaw, sleep } from "./common.js";
 
 export const PARSER_VERSION = "om-ens-2"; // 2: SLR predictors
 const URL_BASE = "https://ensemble-api.open-meteo.com/v1/ensemble";
-export const MODELS = ["ecmwf_ifs025", "gfs025"];
+/* gfs025 paused 2026-11-11 (claude/lean-data-plan.md, Phase 0): ECMWF + GFS
+   at 11 variables does not fit Open-Meteo's free tier even for the 56 app
+   resorts. GEFS returns from dynamical.org (Phase 1); ECMWF moves there too. */
+export const MODELS = ["ecmwf_ifs025"];
 export const BASE_HOURLY = ["snowfall", "precipitation", "temperature_2m", "freezing_level_height", "wind_speed_10m"];
 /* Snow-to-liquid predictors, added 2026-11-10 (claude/us-snow-research-plan.md:
    700 hPa temperature + wind explain most SLR variance at Alta; direction

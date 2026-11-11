@@ -98,12 +98,12 @@ jobs:
 
       - name: Commit projections
         id: projcommit
-        if: steps.projections.outcome == 'success'
+        if: always() && steps.collect.outcome != 'skipped'
         continue-on-error: true
         run: |
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
-          git add public/projections.json public/calibration.json
+          git add public/projections.json public/calibration.json src/data/sf-elevations.json
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "projections: $(date -u +%Y-%m-%dT%H:%MZ)"
           # The app's own scrape may have pushed since checkout.

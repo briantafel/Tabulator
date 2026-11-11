@@ -71,6 +71,16 @@ await run("nws", (sink, rawDir) =>
 await run("onthesnow", (sink, rawDir) =>
   ots.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
+/* Snow-Forecast's mid elevation per resort, kept in the repo so the
+   Previous Runs backfill can ask Open-Meteo for the right height for
+   resorts the app's forecast.json does not carry (archiveOnly). Merged, so
+   a resort missing from one run keeps its last value. Committed by archive.yml. */
+if (sfResult?.elevations && Object.keys(sfResult.elevations).length) {
+  const p = `${root}src/data/sf-elevations.json`;
+  let prev = {};
+  try { prev = JSON.parse(await readFile(p, "utf8")); } catch { /* first run */ }
+  await writeFile(p, JSON.stringify({ ...prev, ...sfResult.elevations }, null, 1) + "\n");
+}
 for (const s of Object.values(manifest.sources)) delete s.elevations;
 await writeFile(`${outDir}/manifest.json`, JSON.stringify(manifest, null, 1));
 
