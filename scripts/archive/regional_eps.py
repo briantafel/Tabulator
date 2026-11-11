@@ -636,7 +636,9 @@ def main() -> int:
             key = f"{model}+profile-{rt:%Y%m%d%H}"
             if key in done or f"{model}-{rt:%Y%m%d%H}" not in done | {c.split(":")[0] for c in collected}:
                 continue  # profiles only for runs whose surface pass is archived (so the run is complete)
-            if time.time() - started > TIME_LIMIT_S:
+            # A profile pass takes ~4–10 min (D2 03z: 120 files, 1.7 GB, 230 s on 2026-11-11), so stop
+            # starting them 12 min before the soft limit; the 60-min job timeout must never cut one off.
+            if time.time() - started > TIME_LIMIT_S - 12 * 60:
                 waiting.append(f"{key}: time limit, next invocation")
                 continue
             try:
