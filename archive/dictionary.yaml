@@ -124,6 +124,20 @@ sources:
       - "Variables: precip, temp_min, temp_max, wind_speed_max; ECMWF also temp_850_mean, temp_925_mean, dewpoint_2m_mean (and gust_max for IFS); GEFS also rh_2m_mean and frozen_pct_mean (NCEP's -50 no-precipitation code dropped, so no precip means no row)."
       - Treat this as a separate source from open-meteo-ensemble's ecmwf_ifs025 (same model, different processing). Never merge them.
       - "Licence: CC BY 4.0 via dynamical.org; ECMWF data also under ECMWF's terms. Attribution: ECMWF IFS ENS / AIFS ENS / NOAA GEFS from dynamical.org."
+  nbm:
+    name: NOAA National Blend of Models, CONUS 2.5 km (AWS noaa-nbm-grib2-pds)
+    kind: forecast (and the US baseline to beat)
+    url: https://noaa-nbm-grib2-pds.s3.amazonaws.com
+    models:
+      nbm: NBM core (deterministic, calibrated blend), 00z+12z cycles to 264 h
+    cadence: workflow nbm.yml every 3 h; collects every 00z/12z cycle in the last 3 days not yet archived (markers under nbm/done/)
+    since: 2026-11-11
+    raw: not kept (NOAA keeps NBM on AWS; byte ranges are re-readable)
+    notes:
+      - Nearest grid point within 3 km. That covers the 56 US and Canadian resorts (CONUS grid reaches southern Canada). lat/lon are the grid point's. elevation_m is null.
+      - "6-hour blocks aligned to 00/06/12/18 UTC: precip = APCP 6 h acc (mm); snow = ASNOW 6 h acc (cm), NBM's own snow-to-liquid; temp_min/max and wind_speed_max from the 2 m TMP / 10 m WIND instants inside the block (3-hourly, so min/max of 2–6 instants)."
+      - Only deterministic idx lines are used. Probability, percentile and std-dev messages share the variable names and are skipped by design.
+      - "Licence: NOAA open data, no restrictions. Attribution: NOAA National Blend of Models."
   snotel:
     name: NRCS SNOTEL via the AWDB REST API
     kind: observation (ground truth for US resorts) and mapping
