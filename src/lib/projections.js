@@ -41,6 +41,13 @@ export function extendFeed(feed, now = Date.now()) {
   if (!P?.resorts || !isFresh(P, now) || !sfDates.length) return { ...feed, sfDates };
 
   const lastSf = sfDates[sfDates.length - 1];
+  /* The builder makes a couple of spare days (it and the SF feed run on
+     different schedules); keep only what fits in MAX_DAYS. */
+  const room = Math.max(0, MAX_DAYS - sfDates.length);
+  const fits = new Set(
+    [...new Set(Object.values(P.resorts).flatMap((p) => (p.days ?? []).map((d) => d.date)))]
+      .filter((d) => d > lastSf).sort().slice(0, room),
+  );
   const extra = new Set();
   const resorts = feed.resorts.map((r) => {
     const p = P.resorts[r.id];
@@ -51,7 +58,7 @@ export function extendFeed(feed, now = Date.now()) {
       return range ? { ...d, range } : d;
     });
     for (const pd of p.days ?? []) {
-      if (pd.date <= lastSf || !pd.snow) continue;
+      if (!fits.has(pd.date) || !pd.snow) continue;
       const snow = pd.snow.p50 ?? 0;   // cm; rounded to whole inches only when shown
       days.push({
         date: pd.date, projected: true, snow,

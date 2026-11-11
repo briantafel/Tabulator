@@ -33,7 +33,7 @@ test("projected days are appended after SF's last date, up to day 10, flagged", 
   assert.equal(f.dates.length, 10);
   assert.deepEqual(f.sfDates, sfDays.map((d) => d.date));
   const alta = f.resorts.find((r) => r.id === "alta");
-  assert.equal(alta.days.length, 6 + 5);           // 11-08 overlaps SF and is skipped
+  assert.equal(alta.days.length, 6 + 4);           // 11-08 overlaps SF; 11-13 is past day 10
   assert.equal(alta.days[6].date, "2026-11-09");
   assert.equal(alta.days[6].projected, true);
   assert.equal(alta.days[6].snow, 6);
@@ -71,4 +71,21 @@ test("projected totals are added up member by member, models weighted equally", 
   assert.ok(r.p25 >= 0 && r.p25 <= 10 && r.p75 >= 10 && r.p75 <= 20 && r.p90 <= 20);
   assert.equal(projectedTotalRange(pm, ["zz"]), null);
   assert.equal(projectedTotalRange(null, ["d1"]), null);
+});
+
+test("SF rolled forward a day before projections were rebuilt: still 10 days", () => {
+  // Today's real case (2026-11-11): SF 11-11..11-16, projections built off the
+  // 11-10..11-15 run, so 11-16 overlaps. With spare days built, 10 survive.
+  const sf = ["2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16"];
+  const pdates = ["2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-21"];
+  const day = (date) => ({ date, snow: 0 });
+  const pd = (date) => ({ date, snow: { p10: 0, p25: 0, p50: 1, p75: 2, p90: 3 } });
+  const f = extendFeed({
+    dates: sf,
+    resorts: [{ id: "a", days: sf.map(day) }],
+    projections: { generatedAt: new Date(NOW).toISOString(), resorts: { a: { days: pdates.map(pd) } } },
+  }, NOW);
+  assert.equal(f.dates.length, 10);
+  assert.equal(f.dates.at(-1), "2026-11-20");
+  assert.equal(f.resorts[0].days.length, 10);   // the spare 11-21 is trimmed
 });

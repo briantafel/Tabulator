@@ -22,6 +22,11 @@
 
 export const MODEL_WEIGHT_EQUAL = true;   // ECMWF (51 members) and GFS (31) count equally
 export const PROJECTION_DAYS = 10;        // total days shown: SF's 6 + projections
+/* Days built past PROJECTION_DAYS. Snow-Forecast's feed (forecast.yml) and
+   this builder (archive.yml) run on separate, often-delayed schedules; when
+   SF rolls forward a day first, a file built to exactly day 10 only reaches
+   day 9. The spare days keep the app at 10; it trims to 10 itself. */
+export const PROJECTION_BUFFER_DAYS = 2;
 export const EWMA_ALPHA = 0.2;            // how fast the learned correction moves per run
 export const WIND_FACTOR_LIMITS = [0.5, 3];
 export const TEMP_OFFSET_LIMIT = 10;      // °C
@@ -190,7 +195,7 @@ export function projectionDates(sfDates, available) {
   const first = sfDates[0], last = sfDates[sfDates.length - 1];
   const want = [];
   const d = new Date(`${first}T12:00:00Z`);
-  for (let i = 0; i < PROJECTION_DAYS; i++) {
+  for (let i = 0; i < PROJECTION_DAYS + PROJECTION_BUFFER_DAYS; i++) {
     const s = d.toISOString().slice(0, 10);
     if (s > last) want.push(s);
     d.setUTCDate(d.getUTCDate() + 1);

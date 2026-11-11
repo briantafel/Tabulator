@@ -103,9 +103,9 @@ test("correction applies to the projected day and keeps the raw values", () => {
   assert.equal(correct(day, null).windMax, 20);
 });
 
-test("projected dates are the ones past Snow-Forecast's horizon, up to day 10", () => {
+test("projected dates are the ones past Snow-Forecast's horizon, to day 10 plus two spare", () => {
   const sf = ["2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08"];
-  const avail = new Set(["2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13"]);
-  assert.deepEqual(projectionDates(sf, avail), ["2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12"]);
+  const avail = new Set(["2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"]);
+  assert.deepEqual(projectionDates(sf, avail), ["2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14"]);
   assert.deepEqual(projectionDates([], avail), []);
 });
