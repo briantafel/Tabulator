@@ -199,7 +199,7 @@ async function runPiece(p) {
     const rows = bc.mappingRows(picks, { fetchedAt, runId, parserVersion: "bc-asws-history-1" });
     const from = "2024-10-25T00:00:00.000Z", to = "2026-05-03T00:00:00.000Z";
     for (const code of Object.keys(bc.FILES)) {
-      const gz = await bc.download(bc.archiveUrl(code), join(dl, `${code}_Archive.csv.gz`));
+      const gz = await bc.download(bc.archiveUrl(code), join(dl, `${code}_Archive.csv.gz`), { timeoutMs: 15 * 60e3 });
       const values = [];
       const res = await bc.parseWide(bc.gzLines(gz), code, { wanted, from, to, fetchedAt, runId,
         parserVersion: "bc-asws-history-1", onRow: (r) => { rows.push(r); values.push(r.value); } });

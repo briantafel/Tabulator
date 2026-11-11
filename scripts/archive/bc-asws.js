@@ -170,15 +170,20 @@ export function checkUnits(code, values) {
 
 /** Download a (possibly large) file to disk as gzip, then stream its lines.
  *  Returns { lines(), path }. The gzip is the raw record. */
-export async function download(url, gzPath) {
+/** Whole-transfer limit per attempt. The current files are ~0.3 MB a day of
+ *  the season; the _Archive files are large. Without a limit a stalled
+ *  server would hang the archive run until GitHub cancels it, and a
+ *  cancelled run uploads nothing from any source. */
+export async function download(url, gzPath, { timeoutMs = 4 * 60e3 } = {}) {
   await mkdir(dirname(gzPath), { recursive: true });
   let lastErr;
   for (let attempt = 0; attempt < 3; attempt++) {
     if (attempt) await new Promise((r) => setTimeout(r, 5000 * attempt));
     try {
-      const res = await fetch(url, { headers: { "User-Agent": UA } });
+      const signal = AbortSignal.timeout(timeoutMs);
+      const res = await fetch(url, { headers: { "User-Agent": UA }, signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      await pipeline(Readable.fromWeb(res.body), createGzip(), createWriteStream(gzPath));
+      await pipeline(Readable.fromWeb(res.body), createGzip(), createWriteStream(gzPath), { signal });
       return gzPath;
     } catch (e) { lastErr = e; }
   }
