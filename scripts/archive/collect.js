@@ -104,5 +104,19 @@ log(`\nrun ${runId}`);
 for (const [name, s] of Object.entries(manifest.sources)) log(`  ${s.ok ? "✓" : "✗"} ${name}: ${s.rows} rows`);
 if (failed.length) {
   log(`\nFAILED: ${failed.map(([n]) => n).join(", ")} — what succeeded is still written and uploaded.`);
+  // One annotation per failed source: annotations show on the run page and
+  // through the public API, so the cause can be read without the job log.
+  // Messages are error text from our own code (no data values, no secrets).
+  if (process.env.GITHUB_ACTIONS) {
+    const clean = (t) => String(t ?? "").replace(/[\r\n]+/g, " ").slice(0, 400);
+    for (const [name, s] of failed) {
+      if (/snow-forecast/.test(name)) { // paid: don't name it or quote it in public annotations
+        console.log("::error title=archive source failed::a paid source failed — see the Collect step");
+        continue;
+      }
+      const why = s.error ?? (s.failures?.length ? s.failures.slice(0, 3).join(" | ") : "returned ok=false");
+      console.log(`::error title=archive source ${name} failed::${clean(why)}`);
+    }
+  }
   process.exit(1);
 }
