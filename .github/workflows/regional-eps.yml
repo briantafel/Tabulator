@@ -1,0 +1,79 @@
+name: Regional ensembles (DWD, MeteoSwiss)
+
+# Added 2026-11-11 (claude/lean-data-plan.md). DWD ICON-EU-EPS / ICON-D2-EPS
+# and MeteoSwiss ICON-CH1-EPS / ICON-CH2-EPS at our resort points, straight
+# from the services' free open-data servers. They keep files ~24 h only, so
+# this runs every 3 hours and collects every target run that is complete and
+# not yet archived (done markers in the bucket under regional/done/). A late
+# or skipped run loses nothing while the files are still up. It does not use
+# Open-Meteo at all.
+#
+# Needs the archive's four R2 secrets.
+on:
+  schedule:
+    - cron: "40 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build rows but upload nothing (for testing)"
+        type: boolean
+        default: false
+      only:
+        description: "One model only: icon-eu-eps, icon-d2-eps, icon-ch1-eps or icon-ch2-eps"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: regional-eps
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60   # the script stops starting new model runs at 50 min
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ecCodes and friends
+        run: pip install eccodes eccodeslib numpy duckdb==2.0.0
+
+      - name: Collect
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          args="work"
+          [ "${{ inputs.dry_run }}" = "true" ] && args="$args --dry-run"
+          [ -n "${{ inputs.only }}" ] && args="$args --only ${{ inputs.only }}"
+          python3 -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
+          python3 scripts/archive/regional_eps.py $args
+
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\n\nA regional ensemble run (DWD or MeteoSwiss) could not be collected. These files are deleted after ~24 h, so a run not collected in time is lost. The run summary lists which model run failed and why.`;
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "regional-eps-failure" });
+            if (existing.length) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing[0].number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo,
+                title: "Regional ensemble collection failed", body, labels: ["regional-eps-failure"] });
+            }
