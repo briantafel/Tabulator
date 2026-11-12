@@ -263,7 +263,7 @@ async function runPiece(p) {
       if (res.status !== 200) throw new Error(`reports ${st}: HTTP ${res.status}`);
       if (res.text.trim()) {
         raws.push([`${p.key}-${st}.csv.gz`, res.text]);
-        for (const rep of cocorahs.parseCsv(res.text, cocorahs.REPORT_COLUMNS)) reports.push(rep); // no spread: a month is 40k+ rows
+        for (const rep of cocorahs.onlyState(cocorahs.parseCsv(res.text, cocorahs.REPORT_COLUMNS), st, failures, "reports")) reports.push(rep); // no spread: big months
       }
       await sleep(1000);
     }

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseCsv, obsTime, reportRows, statesFor } from "../scripts/archive/cocorahs.js";
+import { parseCsv, obsTime, reportRows, statesFor, onlyState, reportsUrl } from "../scripts/archive/cocorahs.js";
 
 const CSV = `ObservationDate,ObservationTime,EntryDateTime,StationNumber,StationName,Latitude,Longitude,TotalPrecipAmt,NewSnowDepth,NewSnowSWE,TotalSnowDepth,TotalSnowSWE,DateTimeStamp
 2026-11-10, 02:00 PM, 2026-11-10 03:51 PM, UT-SL-27, Sandy 2.0 NE, 40.6, -111.85, 0.52, 6.5, T, NA, NA, 2026-11-10 10:50 PM`;
@@ -21,5 +21,15 @@ test("CoCoRaHS: missing column fails loudly", () => {
 
 test("CoCoRaHS: states from resort regions, Canada adds provinces, overseas skipped", () => {
   assert.deepEqual(statesFor([{ region: "Utah" }, { region: "Canada" }, { country: "CH", archiveOnly: true, region: "Valais" }]),
-    ["AB", "BC", "ON", "QC", "UT"]);
+    ["CAN", "UT"]);
+});
+
+test("CoCoRaHS: Canada is one Country=CAN query; rows from other states are dropped loudly", () => {
+  assert.match(reportsUrl("CAN", "Date=1/1/2025"), /&Country=CAN&/);
+  assert.match(reportsUrl("UT", "Date=1/1/2025"), /&State=UT&/);
+  const f = [];
+  const kept = onlyState([{ StationNumber: "UT-SL-1" }, { StationNumber: "CO-LR-2" }, { StationNumber: "AZ-PM-3" }], "UT", f, "reports");
+  assert.equal(kept.length, 1);
+  assert.match(f[0], /filter ignored/);
+  assert.equal(onlyState([{ StationNumber: "CAN-BC-1" }], "CAN", [], "x").length, 1);
 });

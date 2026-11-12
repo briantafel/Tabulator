@@ -33,7 +33,11 @@ const STATE = {
   Wyoming: "WY", Idaho: "ID", Montana: "MT", "New Mexico": "NM", "New York": "NY", Vermont: "VT",
   "New Hampshire": "NH", Maine: "ME", Arizona: "AZ", Alaska: "AK", Michigan: "MI",
 };
-const CANADA = ["BC", "AB", "QC", "ON"];
+/* Canada: "State=BC" is not a filter (it returns the whole network, US included,
+   found 2026-11-12); "Country=CAN" returns every Canadian station. */
+const CANADA = ["CAN"];
+const where = (st) => (st === "CAN" ? "Country=CAN" : `State=${st}`);
+const prefix = (st) => `${st}-`; // station numbers: UT-SL-27, CAN-BC-12
 
 const km = ([a, b], [c, d]) => {
   const r = Math.PI / 180, x = Math.sin(((c - a) * r) / 2), y = Math.sin(((d - b) * r) / 2);
@@ -103,19 +107,28 @@ export function reportRows(rep, station, { fetchedAt, runId }) {
 
 const mdY = (d) => `${d.getUTCMonth() + 1}/${d.getUTCDate()}/${d.getUTCFullYear()}`;
 export const reportsUrl = (st, query) =>
-  `${BASE}/exportreports.aspx?ReportType=Daily&dtf=1&Format=CSV&State=${st}&ReportDateType=reportdate&${query}&TimesInGMT=True`;
+  `${BASE}/exportreports.aspx?ReportType=Daily&dtf=1&Format=CSV&${where(st)}&ReportDateType=reportdate&${query}&TimesInGMT=True`;
 export const REPORT_COLUMNS = ["ObservationDate", "ObservationTime", "StationNumber", ...Object.keys(FIELDS)];
+
+/** Keep only rows from the state asked for; an unfiltered answer (the whole
+ *  network) would otherwise be read once per state. Logged, not silent. */
+export function onlyState(rows, st, failures, what) {
+  const kept = rows.filter((r) => (r.StationNumber ?? "").startsWith(prefix(st)));
+  if (kept.length < rows.length && kept.length < 0.5 * rows.length)
+    failures.push(`${what} ${st}: CoCoRaHS returned ${rows.length} rows, only ${kept.length} from ${st} — filter ignored?`);
+  return kept;
+}
 
 /** Station lists for the states. includeClosed: a backfill needs stations that
  *  reported then but have closed since (claude/verify-truth-contract.md). */
 export async function loadStations(states, { rawDir, includeClosed = false, failures }) {
   const stations = new Map();
   for (const st of states) {
-    const r = await fetchText(`${BASE}/exportstations.aspx?State=${st}&Format=CSV`, { retries: 2 });
+    const r = await fetchText(`${BASE}/exportstations.aspx?${where(st)}&Format=CSV`, { retries: 2 });
     if (r.status !== 200) { failures.push(`stations ${st}: HTTP ${r.status}`); continue; }
     if (rawDir) await saveRaw(`${rawDir}/stations-${st}.csv.gz`, r.text);
     if (!r.text.trim()) continue; // a province with no stations
-    for (const s of parseCsv(r.text, ["StationNumber", "Latitude", "Longitude", "Elevation", "StationStatus"])) {
+    for (const s of onlyState(parseCsv(r.text, ["StationNumber", "Latitude", "Longitude", "Elevation", "StationStatus"]), st, failures, "stations")) {
       const lat = Number(s.Latitude), lon = Number(s.Longitude), ft = Number(s.Elevation);
       if (!Number.isFinite(lat) || !Number.isFinite(lon) || (!includeClosed && s.StationStatus === "Closed")) continue;
       stations.set(s.StationNumber, { lat, lon, elevation_m: Number.isFinite(ft) && ft > 0 ? Math.round(ft * 0.3048) : null, name: s.StationName });
@@ -174,7 +187,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log }) 
       fetched++;
       if (!r.text.trim()) continue;
       await saveRaw(`${rawDir}/reports-${st}-${d.toISOString().slice(0, 10)}.csv.gz`, r.text);
-      for (const rep of parseCsv(r.text, REPORT_COLUMNS)) reports.push(rep);
+      for (const rep of onlyState(parseCsv(r.text, REPORT_COLUMNS), st, failures, "reports")) reports.push(rep);
       await sleep(300);
     }
   }
