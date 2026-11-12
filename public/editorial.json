@@ -1,89 +1,70 @@
 {
- "generatedAt": "2026-11-12T02:21:05.016Z",
- "forecastGeneratedAt": "2026-11-12T02:14:45.087Z",
+ "generatedAt": "2026-11-12T15:18:16.875Z",
+ "forecastGeneratedAt": "2026-11-12T15:11:57.564Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-12",
-  "to": "2026-11-16",
-  "days": 5,
-  "toLabel": "Monday Nov 16"
+  "to": "2026-11-17",
+  "days": 6,
+  "toLabel": "Tuesday Nov 17"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Sugar Bowl leads with 17\" over the window, 13\" on Friday. The NWS is calling for rain and snow Friday, with southwest gusts to 44 mph. A Winter Storm Watch runs from Friday through Monday. Palisades and Kirkwood are close behind."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Whistler leads with 23\" over the window, 9\" on Sunday. Environment Canada expects mostly rain and showers through Monday, with snow mainly at the top. Expect soggy, mixed conditions. Cypress Mountain sees 7\" total."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Stevens Pass leads with 7\" over the window, 3\" on Sunday. The NWS expects a mix of rain and snow most days, so snow quality will vary. Mt. Baker and Crystal Mountain are at 6\" each."
+   "text": "Kirkwood leads with 27\" over six days, with 15\" on Friday. The NWS has a Winter Storm Warning from Friday through Saturday, with heavy snow Friday night and gusts to 53 mph. Sugar Bowl sees 25\", Palisades 24\"."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth sees 6\" on Friday. The NWS is calling for heavy snow Friday with southwest gusts to 80 mph and wind chill near 8. A Winter Storm Watch runs from Friday to Saturday. The NWS is calling for more, 18 to 30 inches Friday through Monday night."
+   "text": "Mammoth expects 13\" through Tuesday, with 8\" on Friday. Friday night brings heavy snow, wind chill near 7, and gusts to 65 mph. A Winter Storm Warning runs Friday through Saturday. The NWS is calling for more, 14\" to 26\" from Friday through Monday night."
   },
   {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Killington leads with 6\" over the window, 5\" on Thursday. The NWS expects light snow through Friday under a Winter Weather Advisory from Thursday to Friday. Whiteface and Stowe add 3\" each. The NWS is calling for more at Killington, 5 to 12 inches Thursday through Friday."
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Whistler totals 17\" with 7\" on each of Saturday and Sunday, but rain is mixed in through much of the period. Environment Canada expects periods of rain Saturday and rain Sunday. Cypress Mountain sees 4\", mostly Sunday."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride expects 12\", with 6\" Saturday and 6\" Tuesday, in snow showers. Crested Butte sees 5\" and Aspen Highlands 3\". Saturday brings snow showers before the next round Tuesday."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Stevens Pass sees 9\" through Sunday, with rain and snow mixing Saturday through Monday. Crystal Mountain totals 7\", and Mt. Baker 7\". Expect rain at lower elevations, and snow levels may limit depth at the base."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek expects 13\" with 8\" on Tuesday, and the NWS has raised its forecast to 13\" to 23\" from Friday night through Tuesday night. Taos sees 4\" and Tuesday's snow showers are likely. Saturday also brings a slight chance of thunderstorms."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Snowbasin and Powder Mountain each see 7\", and Snowbird 6\". Expect rain mixing in at times, especially Tuesday. The NWS raised Powder Mountain to 4\" to 12\" from Friday night through Tuesday night."
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Sun Valley sees 7\", with 4\" Tuesday, though rain mixes in and snow levels run low. Grand Targhee totals 4\" with snow showers Saturday and Tuesday. Jackson Hole sees 2\" on Tuesday."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says a stronger front may bring mountain snow to the West around Monday Nov 17 to Tuesday Nov 18 but its confidence is low.",
-  "sources": [
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-11T21:27:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-11T22:45:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-11T23:10:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
-   },
-   {
-    "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-11T23:28:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-11T19:35:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-11T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-12T02:14:45.087Z"
+   "issuedAt": "2026-11-12T15:11:57.564Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-12T02:21:04.776Z"
+   "issuedAt": "2026-11-12T15:18:16.638Z"
   }
  ],
  "api": {
   "day": "2026-11-12",
-  "calls": 1
+  "calls": 2
  }
 }
