@@ -263,7 +263,9 @@ def snowfall(con, out: Path) -> str:
 # --------------------------------------------------------------------------- wind
 def wind(con, archive: Path, out: Path) -> str:
     def view(name: str, source: str) -> bool:
-        files = sorted(str(p) for p in archive.glob(f"source={source}/**/*.parquet"))
+        # Wind truth starts 2026-11-11: read only this month on, not two winters of ensembles.
+        files = sorted(str(p) for p in archive.glob(f"source={source}/month=*/*.parquet")
+                       if p.parent.name[len("month="):] >= "2026-11")
         if not files:
             con.execute(f"CREATE TABLE {name} AS SELECT NULL::VARCHAR AS source WHERE false")
             return False

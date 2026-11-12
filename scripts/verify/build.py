@@ -58,6 +58,7 @@ TEMP_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecas
 LAPSE_C_PER_M = 0.0065
 TEMP_MIN_COVER_H = 20  # a forecast day needs ≥ this many hours covered to have a high and a low
 THIN_EVENTS = 20  # fewer observed events than this → the score is flagged thin
+DYN_HISTORY_BEFORE = "2026-10"  # dynamical-ens months before this are skipped (OOM, 2026-11-12)
 
 
 def log(lines: list[str], msg: str) -> None:
@@ -71,6 +72,16 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     files = sorted(str(p) for p in archive.rglob("*.parquet"))
     if not files:
         raise SystemExit(f"no parquet files under {archive}")
+    # 2026-11-12: the past-winter dynamical-ens load (51 + 31 members × 2 winters)
+    # ran this build out of disk (verify 43210527079, OOM in f0). Until members are
+    # aggregated before the dedupe (owner: verification session), those months are
+    # left out — loudly, with a count — and only this season's dynamical-ens is scored.
+    skip = [f for f in files if "/source=dynamical-ens/month=" in f
+            and f.split("/source=dynamical-ens/month=")[1][:7] < DYN_HISTORY_BEFORE]
+    if skip:
+        files = [f for f in files if f not in set(skip)]
+        log(public_log, f"SKIPPED {len(skip)} dynamical-ens history files (months before {DYN_HISTORY_BEFORE}): "
+                        "member aggregation needed before they fit (see claude/state-2026-11-12-digest.md)")
 
     con = duckdb.connect()
     con.execute("SET TimeZone = 'UTC'")
