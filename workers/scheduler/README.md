@@ -25,3 +25,4 @@ time from Cloudflare's cron instead. GitHub's own cron lines stay as a backup.
 ## What it starts (UTC)
 - every hour: watchdog, dynamical-history (until it is disabled)
 - every 3 h: regional-eps (01, 04, …), dynamical-ens and nbm (02, 05, …), upper-air (00, 03, …)
+- daily: ensembles-om (08:07), projections-dyn (10:07)
