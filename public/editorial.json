@@ -1,70 +1,134 @@
 {
- "generatedAt": "2026-11-12T15:18:16.875Z",
- "forecastGeneratedAt": "2026-11-12T15:11:57.564Z",
+ "generatedAt": "2026-11-13T01:54:23.138Z",
+ "forecastGeneratedAt": "2026-11-13T01:48:04.017Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-12",
+  "from": "2026-11-13",
   "to": "2026-11-17",
-  "days": 6,
+  "days": 5,
   "toLabel": "Tuesday Nov 17"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 27\" over six days, with 15\" on Friday. The NWS has a Winter Storm Warning from Friday through Saturday, with heavy snow Friday night and gusts to 53 mph. Sugar Bowl sees 25\", Palisades 24\"."
+   "text": "Kirkwood leads with 28\" over the window, 13\" on Friday. A Winter Storm Warning runs Friday through Saturday with gusty southwest wind. Sugar Bowl gets 27\" and Palisades 26\", with the biggest day Tuesday at 11\"."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth expects 13\" through Tuesday, with 8\" on Friday. Friday night brings heavy snow, wind chill near 7, and gusts to 65 mph. A Winter Storm Warning runs Friday through Saturday. The NWS is calling for more, 14\" to 26\" from Friday through Monday night."
+   "text": "Mammoth expects 13\" total, with 8\" on Friday. Heavy snow and very strong southwest wind, gusts to 85 mph, are the main concern. A Winter Storm Warning runs Friday through Saturday. The NWS is calling for more, 18\" to 30\" from Friday through Monday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler totals 17\" with 7\" on each of Saturday and Sunday, but rain is mixed in through much of the period. Environment Canada expects periods of rain Saturday and rain Sunday. Cypress Mountain sees 4\", mostly Sunday."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Telluride expects 12\", with 6\" Saturday and 6\" Tuesday, in snow showers. Crested Butte sees 5\" and Aspen Highlands 3\". Saturday brings snow showers before the next round Tuesday."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Stevens Pass sees 9\" through Sunday, with rain and snow mixing Saturday through Monday. Crystal Mountain totals 7\", and Mt. Baker 7\". Expect rain at lower elevations, and snow levels may limit depth at the base."
-  },
-  {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek expects 13\" with 8\" on Tuesday, and the NWS has raised its forecast to 13\" to 23\" from Friday night through Tuesday night. Taos sees 4\" and Tuesday's snow showers are likely. Saturday also brings a slight chance of thunderstorms."
+   "text": "Whistler is forecast for 16\" total, with 6\" on Saturday. Most of the period brings rain and showers, and snow levels will matter more than totals. Cypress Mountain sees 5\", with 4\" on Sunday, under mostly rain."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Snowbasin and Powder Mountain each see 7\", and Snowbird 6\". Expect rain mixing in at times, especially Tuesday. The NWS raised Powder Mountain to 4\" to 12\" from Friday night through Tuesday night."
+   "text": "Powder Mountain leads with 10\" total, 6\" of it on Tuesday, when rain and snow is likely. Snowbasin is at 9\" and Alta at 8\". Expect mixed precipitation Tuesday and Saturday's snow in the mid-elevations."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Stevens Pass forecasts 8\" total, with 4\" on Sunday, but much of the period is rain and snow. Mt. Bachelor sees 7\", with strong southwest wind Friday gusting to 52 mph. The NWS is calling for more, 6\" to 11\" from Friday through Monday night. Crystal Mountain sits at 7\"."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride forecasts 8\" total, with 4\" on Saturday, and the NWS is calling for more, 7\" to 14\" from Friday night through Tuesday night. Crested Butte expects 4\" and Aspen Highlands 3\", with light snow showers only."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Sun Valley sees 7\", with 4\" Tuesday, though rain mixes in and snow levels run low. Grand Targhee totals 4\" with snow showers Saturday and Tuesday. Jackson Hole sees 2\" on Tuesday."
+   "text": "Sun Valley forecasts 8\" total, with 5\" on Tuesday. Expect rain and snow mixes through Monday. Grand Targhee and Jackson Hole each see 2\" on Tuesday, with snow showers likely."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek forecasts 8\" total, with 4\" on Saturday, and the NWS is calling for more, 16\" to 28\" from Friday night through Tuesday night. Taos sees 2\" on Saturday, with snow showers and a slight chance of thunderstorms."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "A storm is expected to bring widespread snow to the Sierra around Friday Nov 20, with the Climate Prediction Center reporting high uncertainty in its own forecast. The Salt Lake City NWS office says run-to-run consistency has been lacking.",
+  "sources": [
+   {
+    "name": "NWS STO Area Forecast Discussion",
+    "issuedAt": "2026-11-12T22:26:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
+   },
+   {
+    "name": "NWS REV Area Forecast Discussion",
+    "issuedAt": "2026-11-12T22:33:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
+   },
+   {
+    "name": "NWS SLC Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:57:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
+   },
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-12T22:43:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "NWS PDT Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:38:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PDT&issuedby=PDT&product=AFD"
+   },
+   {
+    "name": "NWS GJT Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:18:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
+   },
+   {
+    "name": "NWS PIH Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:06:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
+   },
+   {
+    "name": "NWS RIW Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:05:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
+   },
+   {
+    "name": "NWS PUB Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:43:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
+   },
+   {
+    "name": "NWS ABQ Area Forecast Discussion",
+    "issuedAt": "2026-11-12T23:18:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-12T19:27:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-12T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-12T15:11:57.564Z"
+   "issuedAt": "2026-11-13T01:48:04.017Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-12T15:18:16.638Z"
+   "issuedAt": "2026-11-13T01:54:22.949Z"
   }
  ],
  "api": {
-  "day": "2026-11-12",
-  "calls": 2
+  "day": "2026-11-13",
+  "calls": 1
  }
 }
