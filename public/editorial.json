@@ -1,119 +1,59 @@
 {
- "generatedAt": "2026-11-14T01:32:41.419Z",
- "forecastGeneratedAt": "2026-11-14T01:26:25.243Z",
+ "generatedAt": "2026-11-14T13:35:52.954Z",
+ "forecastGeneratedAt": "2026-11-14T13:29:06.635Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-14",
-  "to": "2026-11-18",
-  "days": 5,
-  "toLabel": "Wednesday Nov 18"
+  "to": "2026-11-19",
+  "days": 6,
+  "toLabel": "Thursday Nov 19"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 26\" over the window, and the big day is Wednesday with 21\". The NWS is calling for more, 47\" Sunday night through Wednesday night. A Winter Storm Warning runs Friday through Saturday. Sugar Bowl and Palisades are close behind, each near 24\"."
+   "text": "Kirkwood is forecast for about 39\". Sugar Bowl about 32\" and Palisades about 31\". The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. The NWS is calling for more at Kirkwood: 35 to 60\" Saturday night through Thursday night."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth expects 13\" through Wednesday, with the best snow Wednesday at 11\". The NWS is calling for more, 20\" Sunday night through Wednesday night. Gusts to 60 mph Wednesday night will make the upper lifts tough. A Winter Storm Warning runs Friday through Saturday."
+   "text": "Mammoth is forecast for about 31\", 18\" of it Thursday."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler looks mostly wet this week, with rain Saturday night and Sunday and a 7\" day Saturday that falls mostly as rain at valley levels. Expect 13\" total. Cypress Mountain is milder and windier, with 3\" total and southeast gusts up to 70 km/h near the water."
+   "text": "Whistler is forecast for about 15\", 8\" of it Saturday. Cypress Mountain about 5\"."
   },
   {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Crystal Mountain leads at 6\" total, with its best day Sunday at 3\". Snow levels stay low, so expect rain mixed in through the weekend and cold snow later. Stevens Pass is close at 6\", and Mt. Baker has 5\" spread evenly across Saturday through Monday."
-  },
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "Big Sky should get 8\", with the bulk Tuesday at 7\". The NWS is calling for more, 14\" Monday night through Wednesday. Sun Valley adds 4\" and Grand Targhee 3\", both mostly Monday through Wednesday."
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Alta is forecast for about 8\", 4\" of it Tuesday. Brighton about 8\" and Snowbird about 8\". The NWS is calling for more at Alta: 24 to 46\" Saturday through Thursday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride gets 7\" over the window, with 4\" on Saturday. The NWS is calling for more, 14\" through Wednesday. Crested Butte is at 3\", with the main snow Wednesday, and the NWS is calling for 8\" through Wednesday. Steamboat adds 2\" Tuesday."
+   "text": "Telluride is forecast for about 11\", 6\" of it Saturday. Crested Butte about 5\" and Aspen Highlands about 4\". The NWS is calling for more at Crested Butte: 3 to 8\" Saturday through Thursday night."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek has 7\" over the window, and the NWS is calling for more, 27\" Saturday through Wednesday. Expect gusts to 60 mph Tuesday night. A Winter Weather Advisory covers Saturday into Saturday night. Taos is at 3\", with the NWS calling for up to 11\" through Tuesday night."
+   "text": "Wolf Creek is forecast for about 9\", 6\" of it Tuesday. Taos about 5\". The NWS is calling for more at Wolf Creek: 17 to 33\" Saturday through Thursday night. Winter Weather Advisory at Wolf Creek from Saturday to Saturday night."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says another Pacific storm may bring heavy Sierra snow around Friday Nov 20. It has low confidence in the exact track.",
-  "sources": [
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-13T21:43:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-13T21:19:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
-   },
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-13T23:51:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS TFX Area Forecast Discussion",
-    "issuedAt": "2026-11-13T23:45:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
-   },
-   {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-13T23:11:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-13T23:55:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-11-14T00:16:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
-   },
-   {
-    "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-11-13T23:53:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-13T19:30:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-13T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-14T01:26:25.243Z"
+   "issuedAt": "2026-11-14T13:29:06.635Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-14T01:32:41.243Z"
+   "issuedAt": "2026-11-14T13:35:52.665Z"
   }
  ],
  "api": {
   "day": "2026-11-14",
-  "calls": 1
+  "calls": 3
  }
 }
