@@ -1,0 +1,23 @@
+{
+  "version": "slr-v2",
+  "form": "SLR = a + b*T, clamped",
+  "a": 11.558,
+  "b": -0.368,
+  "clamp": [
+    5.0,
+    25.0
+  ],
+  "temperature": "forecast 2 m, precipitation-weighted, at the point being converted (\u00b0C); fitted at station height, applied at the slope",
+  "fitted_on": "2024-25, leads 1-3, CoCoRaHS / SLF plots / AMeDAS same-window new snow + water, water >= 2.5 mm, snow > 0, T <= 0.0 C",
+  "n_days": 3139,
+  "median_observed_slr": 13.0,
+  "promote": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  }
+}
