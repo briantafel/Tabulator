@@ -9,7 +9,7 @@
 
 import { toBlocks } from "./ensembles.js";
 
-export const PARSER_VERSION = "om-prev-1";
+export const PARSER_VERSION = "om-prev-2"; // 2: + hourly `temp` rows (the lift-hours low, 2026-11-15)
 export const URL_BASE = "https://previous-runs-api.open-meteo.com/v1/forecast";
 /* GEM — Environment Canada's model — added 2026-10-31 for every resort.
    Open-Meteo's docs page names it "GEM Seamless" but shows only
@@ -74,6 +74,25 @@ export function previousRunsToRows(json, { resort, model, elevation, fetchedAt, 
           variable, value, unit, model, run_id: runId, parser_version: PARSER_VERSION,
         });
       }
+    }
+    // Hourly 2 m temperature as well (om-prev-2): the −10 °F veto reads the coldest hour 08–16
+    // LOCAL, which 6-hour UTC blocks can't give. Same shape as NWS hourly: variable `temp`,
+    // one-hour window, so scripts/verify/build.py scores it as the lift-hours low.
+    const temps = series.temperature_2m;
+    if (Array.isArray(temps)) {
+      h.time.forEach((t, i) => {
+        const v = temps[i];
+        if (typeof v !== "number" || !Number.isFinite(v)) return;
+        const vs = new Date(`${t}Z`).toISOString();
+        rows.push({
+          source: "open-meteo-previous-runs", kind: "forecast", resort_id: resort.id, tier: "mid",
+          elevation_m: elevation ?? json.elevation ?? null, lat: json.latitude, lon: json.longitude,
+          issued_at: new Date(Date.parse(vs) - lead * 86400e3).toISOString(),
+          fetched_at: fetchedAt, valid_start: vs, valid_end: new Date(Date.parse(vs) + 3600e3).toISOString(),
+          period_label: `previous_day${lead}`,
+          variable: "temp", value: v, unit: "C", model, run_id: runId, parser_version: PARSER_VERSION,
+        });
+      });
     }
   }
   return rows;

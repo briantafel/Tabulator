@@ -308,6 +308,7 @@ sources:
       - What each model forecast for each past hour from the runs 0–7 days before it. 6-hour blocks like the ensembles.
       - period_label is the source's own lead label (previous_day0 … previous_day7) and is exact. issued_at is APPROXIMATE (valid_start minus that many days); the archive has no exact run time for these.
       - Snowfall, precipitation and temperature only, to stay inside the free tier's limits.
+      - From parser om-prev-2 (2026-11-15) also one `temp` row per hour (one-hour window), so the lift-hours low (coldest hour 08–16 local, the −10 °F veto) can be scored. Rows from om-prev-1 have blocks only.
   snow-forecast-hindcast:
     name: Snow-Forecast.com hindcast ("Past Weather"), subscriber-only
     kind: hindcast
