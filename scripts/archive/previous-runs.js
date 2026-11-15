@@ -27,6 +27,10 @@ export const unknownModel = (status, text) =>
 export const VARS = ["snowfall", "precipitation", "temperature_2m"];
 export const LEADS = [0, 1, 2, 3, 4, 5, 6, 7];
 export const HOURLY = VARS.flatMap((v) => LEADS.map((l) => (l ? `${v}_previous_day${l}` : v)));
+/* This season's nightly pieces: only what temps-v1 and blend-v1 read (16
+   series, so 1.6 weighted calls instead of 2.4). Snowfall is Open-Meteo's
+   own fixed-ratio conversion of these and isn't used by our models. */
+export const LIVE_HOURLY = ["precipitation", "temperature_2m"].flatMap((v) => LEADS.map((l) => (l ? `${v}_previous_day${l}` : v)));
 
 /** Open-Meteo's free tier counts a request with more than 10 variables, or
  *  more than 2 weeks for one location, as several calls: variables / 10 ×

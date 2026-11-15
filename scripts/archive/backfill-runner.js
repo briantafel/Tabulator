@@ -29,6 +29,19 @@
  *   bc-asws-history        BC snow pillows, hourly, both winters (no quota)
  *   ots-history-<resort>   OnTheSnow monthly history             (no quota)
  *   om-<resort>-<model>-<year>  Open-Meteo previous runs         (~31 calls)
+ *   om-live-<resort>-<model>-<start>  this season, one week a piece   (1.6 calls)
+ *
+ * THIS SEASON (added 2026-11-15, claude/state-2026-11-15-first-digest.md).
+ * temps-v1 and blend-v1 are fitted on Previous Runs, so they can only be
+ * scored on days the archive has Previous Runs for. Until now that was the
+ * two past winters only, and the digest had no day where ours and
+ * Snow-Forecast could be compared. The om-live pieces fetch this season for
+ * the app resorts, one week per resort and model, precipitation and
+ * temperature only (16 series → 1.6 weighted calls, any window ≤ 14 days).
+ * A week is fetched up to yesterday and marked done only once it ended two
+ * days ago; until then it is fetched again each night (same Parquet path,
+ * so overwritten). Own budget, OM_LIVE_BUDGET: ~270 calls a night once
+ * caught up (~800 on the first night), independent of the paused backfill.
  *
  * The bucket is reached through the aws CLI with the R2 secrets in the
  * environment. For tests, BACKFILL_LOCAL_BUCKET=<dir> stands in for it.
@@ -63,6 +76,11 @@ const wintersFor = (r) => (coordsOf(r)?.[0] < 0 ? SOUTH_WINTERS : WINTERS);
    available. Raise to ~6000 once the ensembles leave Open-Meteo. */
 const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 0);
 const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
+/* This season's Previous Runs (see the header). Northern season only; the
+   app resorts first, since they are the ones Snow-Forecast and the app share. */
+const LIVE_SEASON_START = "2026-11-01";
+const OM_LIVE_BUDGET = Number(process.env.OM_LIVE_BUDGET ?? 900);
+const OM_LIVE_SPACING_MS = 2000; // a one-week request is small
 const TIME_LIMIT_MS = 95 * 60e3;
 const SNOTEL = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
 const started = Date.now();
@@ -120,7 +138,7 @@ async function finish(piece, source, rows, raws) {
   }
   const marker = join(dir, "done.json");
   writeFileSync(marker, JSON.stringify({ key: piece.key, rows: rows.length, at: new Date().toISOString() }));
-  upload(marker, `backfill/done/${piece.doneKey ?? piece.key}.json`);
+  if (piece.final !== false) upload(marker, `backfill/done/${piece.doneKey ?? piece.key}.json`);
   rmSync(dir, { recursive: true, force: true });
   return rows.length;
 }
@@ -139,6 +157,18 @@ try {
   for (const [id, m] of Object.entries(sfe)) if (!elevations[id] && m) elevations[id] = m;
 } catch { /* not written yet */ }
 const fetchedAt = new Date().toISOString();
+const dayOf = (ms) => new Date(ms).toISOString().slice(0, 10);
+const todayMs = Date.parse(`${fetchedAt.slice(0, 10)}T00:00:00Z`);
+/** One-week windows from LIVE_SEASON_START: [start, end clipped to yesterday, final?].
+ *  A window is final once it ended two days ago, so its last day's runs are all in. */
+function liveWindows(seasonStart, today) {
+  const out = [];
+  for (let s = Date.parse(`${seasonStart}T00:00:00Z`); s < today; s += 7 * 864e5) {
+    const end = s + 6 * 864e5;
+    out.push([dayOf(s), dayOf(Math.min(end, today - 864e5)), end <= today - 2 * 864e5]);
+  }
+  return out;
+}
 const year = (w) => w[0].slice(0, 4);
 /* [first day, last day] of each calendar month inside a winter. */
 function monthsOf([from, to]) {
@@ -178,6 +208,13 @@ const pieces = [
     weight: om.callWeight(om.HOURLY.length, (Date.parse(w[1]) - Date.parse(w[0])) / 864e5 + 1),
   })))),
 ];
+// This season, first: own budget, not paused with the past-winter pieces above.
+const livePieces = om.MODELS.flatMap((model) => resorts.filter((r) => coordsOf(r) && !r.archiveOnly && coordsOf(r)[0] > 0)
+  .flatMap((r) => liveWindows(LIVE_SEASON_START, todayMs).map(([from, to, final]) => ({
+    key: `om-live-${r.id}-${model}-${from}`, kind: "om", live: true, final, resort: r, model, winter: [from, to],
+    hourly: om.LIVE_HOURLY, weight: om.callWeight(om.LIVE_HOURLY.length, (Date.parse(to) - Date.parse(from)) / 864e5 + 1),
+  }))));
+pieces.unshift(...livePieces);
 
 const done = doneKeys();
 const doneKeyOf = (p) => p.doneKey ?? p.key;
@@ -303,7 +340,7 @@ async function runPiece(p) {
   const ids = om.MODEL_IDS[p.model] ?? [p.model];
   let res;
   for (const id of ids) {
-    const q = new URLSearchParams({ latitude: lat, longitude: lon, models: id, hourly: om.HOURLY.join(","),
+    const q = new URLSearchParams({ latitude: lat, longitude: lon, models: id, hourly: (p.hourly ?? om.HOURLY).join(","),
       start_date: p.winter[0], end_date: p.winter[1], timezone: "GMT", timeformat: "iso8601" });
     if (elevations[p.resort.id]) q.set("elevation", String(elevations[p.resort.id]));
     // Retry network faults. A connect timeout means the request never reached
@@ -332,7 +369,7 @@ async function runPiece(p) {
 // ---- the run ------------------------------------------------------------------
 // Each source has its own breaker (scripts/archive/breakers.js): a source
 // that keeps failing is skipped for the rest of the run, and the others go on.
-let spent = 0, omStop = null, ok = 0, rowsOut = 0;
+let spent = 0, liveSpent = 0, liveOk = 0, omStop = null, ok = 0, rowsOut = 0;
 const breakers = makeBreakers();
 const failed = [];
 const skipped = new Map(); // group → pieces not tried this run
@@ -340,7 +377,11 @@ for (const p of pending) {
   if (Date.now() - started > TIME_LIMIT_MS) { log("time limit for this run reached — the rest continues next run"); break; }
   const g = groupOf(p);
   if (breakers.isOpen(g)) { skipped.set(g, (skipped.get(g) ?? 0) + 1); continue; }
-  if (p.kind === "om") {
+  if (p.kind === "om" && p.live) {
+    if (omStop) continue;
+    if (liveSpent + p.weight > OM_LIVE_BUDGET) { skipped.set("om-live (budget)", (skipped.get("om-live (budget)") ?? 0) + 1); continue; }
+    liveSpent += p.weight;
+  } else if (p.kind === "om") {
     if (omStop) continue;
     if (OM_DAILY_BUDGET === 0) { omStop = "paused (OM_DAILY_BUDGET is 0; see claude/lean-data-plan.md)"; continue; }
     if (p.resort?.archiveOnly && !elevations[p.resort.id]) { log(`  · ${p.key}: waiting for a Snow-Forecast elevation`); continue; }
@@ -350,6 +391,7 @@ for (const p of pending) {
   try {
     const n = await runPiece(p);
     ok++; rowsOut += n;
+    if (p.live) liveOk++;
     breakers.success(g);
     log(`  ✓ ${p.key}: ${n} rows`);
   } catch (e) {
@@ -364,15 +406,18 @@ for (const p of pending) {
       log(`  ⏸ ${g}: switched off for this run after repeated failures; other sources carry on`);
     }
   }
-  if (p.kind === "om") await sleep(OM_SPACING_MS);
+  if (p.kind === "om") await sleep(p.live ? OM_LIVE_SPACING_MS : OM_SPACING_MS);
 }
 
-const nowDone = pieces.filter((p) => done.has(doneKeyOf(p))).length + ok;
+const history = pieces.filter((p) => !p.live);
+const nowDone = history.filter((p) => done.has(doneKeyOf(p))).length + (ok - liveOk);
+const liveDue = livePieces.filter((p) => !done.has(doneKeyOf(p))).length;
 const lines = [];
-lines.push(`this run: ${ok} pieces, ${rowsOut} rows, ~${Math.round(spent)} Open-Meteo calls${omStop ? ` (Open-Meteo stopped: ${omStop})` : ""}`);
-lines.push(nowDone >= pieces.length
-  ? `BACKFILL COMPLETE — all ${pieces.length} pieces are in the bucket.`
-  : `backfill: ${nowDone}/${pieces.length} pieces done; the rest continue on the next scheduled run.`);
+lines.push(`this run: ${ok} pieces, ${rowsOut} rows, ~${Math.round(spent + liveSpent)} Open-Meteo calls${omStop ? ` (Open-Meteo stopped: ${omStop})` : ""}`);
+lines.push(`this season (Previous Runs, app resorts): ${liveOk}/${liveDue} week pieces fetched, ~${Math.round(liveSpent)} of ${OM_LIVE_BUDGET} calls`);
+lines.push(nowDone >= history.length
+  ? `BACKFILL COMPLETE — all ${history.length} pieces are in the bucket.`
+  : `backfill: ${nowDone}/${history.length} pieces done; the rest continue on the next scheduled run.`);
 const off = breakers.opened();
 if (off.length) {
   lines.push("", "Sources switched off for this run (retried next run):");
