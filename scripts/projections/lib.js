@@ -31,6 +31,16 @@ export const EWMA_ALPHA = 0.2;            // how fast the learned correction mov
 export const WIND_FACTOR_LIMITS = [0.5, 3];
 export const TEMP_OFFSET_LIMIT = 10;      // °C
 const MIN_WIND_KMH = 5;                   // below this a ratio is noise
+/* Open-Meteo's snowfall is frozen water × 7 (a fixed 7:1). With a fitted SLR
+   (public/slr.json, scripts/model/slr.py v2: judged better than 7:1 at leads
+   1–7 on CoCoRaHS new-snow boards) each hour is rescaled by SLR(T) ÷ 7, at that
+   hour's 2 m temperature at the Snow-Forecast mid elevation. Open-Meteo's own
+   rain/snow split is kept. Brian, 2026-11-15: days 7–10, behind the `slr` switch. */
+export const OM_SLR = 7;
+export function slrOf(tC, p) {
+  const [lo, hi] = p.clamp ?? [5, 25];
+  return Math.min(hi, Math.max(lo, p.a + p.b * tC));
+}
 
 /** YYYY-MM-DD for an instant, in a resort's own time zone. */
 export function localDate(ms, tz) {
@@ -43,7 +53,7 @@ export function localDate(ms, tz) {
  *  An hourly value describes the hour ENDING at its timestamp, so it is
  *  dated by t − 1h. A day counts only if all 24 of its hours are present
  *  (a partial snow sum would read as less snow). */
-export function dailyByMember(json, tz) {
+export function dailyByMember(json, tz, slr = null) {
   const h = json?.hourly;
   if (!h?.time?.length) return new Map();
   const members = new Map(); // member → { var → series }
@@ -59,17 +69,18 @@ export function dailyByMember(json, tz) {
   for (const [n, s] of members) {
     const days = new Map();
     dayOf.forEach((d, i) => {
-      if (!days.has(d)) days.set(d, { hours: 0, snow: 0, tMax: -Infinity, tMin: Infinity, wMax: -Infinity, ok: true });
+      if (!days.has(d)) days.set(d, { hours: 0, snow: 0, snowSlr: 0, tMax: -Infinity, tMin: Infinity, wMax: -Infinity, ok: true });
       const a = days.get(d);
       const sn = s.snowfall?.[i], t = s.temperature_2m?.[i], w = s.wind_speed_10m?.[i];
       const num = (v) => typeof v === "number" && Number.isFinite(v);
       if (!num(sn) || !num(t) || !num(w)) { a.ok = false; return; }
-      a.hours++; a.snow += sn; a.tMax = Math.max(a.tMax, t); a.tMin = Math.min(a.tMin, t); a.wMax = Math.max(a.wMax, w);
+      a.hours++; a.snow += sn; if (slr) a.snowSlr += (sn * slrOf(t, slr)) / OM_SLR; a.tMax = Math.max(a.tMax, t); a.tMin = Math.min(a.tMin, t); a.wMax = Math.max(a.wMax, w);
     });
     const clean = new Map();
     for (const [d, a] of days) {
       if (a.ok && a.hours === 24) {
-        clean.set(d, { snow: Number(a.snow.toFixed(2)), tempMax: a.tMax, tempMin: a.tMin, windMax: a.wMax });
+        clean.set(d, { snow: Number(a.snow.toFixed(2)), ...(slr ? { snowSlr: Number(a.snowSlr.toFixed(2)) } : {}),
+          tempMax: a.tMax, tempMin: a.tMin, windMax: a.wMax });
       }
     }
     out.set(n, clean);
@@ -106,9 +117,10 @@ export function pool(byModel) {
     const w = MODEL_WEIGHT_EQUAL ? 1 / (models.length * members.size) : 1;
     for (const [, perDay] of members) {
       for (const [d, a] of perDay) {
-        if (!days.has(d)) days.set(d, { snow: [], tempMax: [], tempMin: [], windMax: [], n: 0 });
+        if (!days.has(d)) days.set(d, { snow: [], snowSlr: [], tempMax: [], tempMin: [], windMax: [], n: 0 });
         const p = days.get(d);
-        p.snow.push({ v: a.snow, w }); p.tempMax.push({ v: a.tempMax, w });
+        p.snow.push({ v: a.snow, w });
+        if (a.snowSlr != null) p.snowSlr.push({ v: a.snowSlr, w }); p.tempMax.push({ v: a.tempMax, w });
         p.tempMin.push({ v: a.tempMin, w }); p.windMax.push({ v: a.windMax, w });
         p.n++;
       }
@@ -122,8 +134,11 @@ const r1 = (v) => (v == null ? null : Math.round(v * 10) / 10);
 /** Summary of one pooled day. */
 export function summarize(p) {
   const q = (k, x) => r1(wQuantile(p[k], x));
+  const bands = (k) => ({ p10: q(k, 0.1), p25: q(k, 0.25), p50: q(k, 0.5), p75: q(k, 0.75), p90: q(k, 0.9) });
   return {
-    snow: { p10: q("snow", 0.1), p25: q("snow", 0.25), p50: q("snow", 0.5), p75: q("snow", 0.75), p90: q("snow", 0.9) },
+    snow: bands("snow"),
+    // Only when every member has it: a ratio applied to some members would skew the spread.
+    ...(p.snowSlr?.length && p.snowSlr.length === p.snow.length ? { snowSlr: bands("snowSlr") } : {}),
     tempMax: q("tempMax", 0.5), tempMin: q("tempMin", 0.5), windMax: q("windMax", 0.5),
     members: p.n,
   };

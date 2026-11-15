@@ -67,6 +67,7 @@ export default function Tabulator() {
   const [projOverride, setProjOverride] = useState(() => loadSaved("projections", null));
   /* Same for our temperature model (lib/temps.js). */
   const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
+  const [slrOverride, setSlrOverride] = useState(() => loadSaved("slr", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -117,14 +118,20 @@ export default function Tabulator() {
   const tempsMode = feedRaw?.flags?.temps ?? "off";
   const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
   const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
+  /* Days 7–10 snow: Open-Meteo's 7:1, or rescaled by our fitted ratio (needs a
+     projections file built with one). */
+  const slrMode = feedRaw?.flags?.slr ?? "off";
+  const slrAvailable = !!feedRaw?.projections?.slr;
+  const slrOn = projections && effectiveFlag(slrMode, slrOverride) && slrAvailable;
+  const chooseSlr = (on) => setSlrOverride(nextOverride(on, slrMode));
   /* Our temperatures go in AFTER the projected days are appended, so days
      1–10 all carry the same temperature. Off: untouched. */
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
   const base = useMemo(() => (tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw), [tempsOn, feedRaw]);
   const feed = useMemo(() => {
-    const f = projections && feedRaw ? extendFeed(feedRaw) : feedRaw;
+    const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
     return tempsOn ? applyTemps(f, feedRaw.temps) : f;
-  }, [projections, tempsOn, feedRaw]);
+  }, [projections, tempsOn, slrOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
   /* Switching projections off with a 7–10 day window picked: back to six,
@@ -151,6 +158,7 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
   useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
   useEffect(() => { saveLocal("temps", tempsOverride); }, [tempsOverride]);
+  useEffect(() => { saveLocal("slr", slrOverride); }, [slrOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -303,6 +311,13 @@ export default function Tabulator() {
               <span className="pill sm">
                 <button className={!projections ? "on" : ""} onClick={() => chooseProjections(false)}>Forecast only</button>
                 <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>Tabulator projections</button>
+              </span>
+            </div>}
+            {canChoose(slrMode) && projections && slrAvailable && <div className="set">
+              <span className="set-label">Snow days 7–10</span>
+              <span className="pill sm">
+                <button className={!slrOn ? "on" : ""} onClick={() => chooseSlr(false)}>Flat 7:1</button>
+                <button className={slrOn ? "on" : ""} onClick={() => chooseSlr(true)}>Tabulator ratio</button>
               </span>
             </div>}
             {canChoose(tempsMode) && feedRaw?.temps && <div className="set">

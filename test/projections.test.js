@@ -109,3 +109,18 @@ test("projected dates are the ones past Snow-Forecast's horizon, to day 10 plus 
   assert.deepEqual(projectionDates(sf, avail), ["2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14"]);
   assert.deepEqual(projectionDates([], avail), []);
 });
+
+test("fitted SLR rescales each hour by SLR(T) ÷ 7; without one, no snowSlr", () => {
+  const slr = { a: 11.558, b: -0.368, clamp: [5, 25] };
+  // −5 °C → SLR 13.398 → each 0.1 cm hour becomes 0.1 × 13.398 / 7.
+  const day = dailyByMember(fake({ hours: 48, temp: -5 }), "UTC", slr).get(0).get("2026-11-03");
+  assert.equal(day.snow, 2.4);
+  assert.ok(Math.abs(day.snowSlr - 24 * 0.1 * 13.398 / 7) < 0.01, day.snowSlr);
+  // Warm hour: the ratio clamps at 5 (Open-Meteo's own phase still decides rain vs snow).
+  const warm = dailyByMember(fake({ hours: 48, temp: 30 }), "UTC", slr).get(0).get("2026-11-03");
+  assert.ok(Math.abs(warm.snowSlr - 2.4 * 5 / 7) < 0.01, warm.snowSlr);
+  assert.equal("snowSlr" in dailyByMember(fake({ hours: 48 }), "UTC").get(0).get("2026-11-03"), false);
+  const s = summarize(pool({ m: dailyByMember(fake({ hours: 48, temp: -5 }), "UTC", slr) }).get("2026-11-03"));
+  assert.ok(s.snowSlr.p50 > s.snow.p50, s);
+  assert.equal(summarize(pool({ m: dailyByMember(fake({ hours: 48 }), "UTC") }).get("2026-11-03")).snowSlr, undefined);
+});

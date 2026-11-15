@@ -55,7 +55,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
 /* temps: our temperature model (lib/temps.js), Brian 2026-11-11. */
 /* weatherSource: the Settings → Weather row (government vs Snow-Forecast
    sky). Hidden by default since 2026-11-11 (Brian); "preview" brings it back. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off" });
+/* slr (2026-11-15): days 7–10 snow from Open-Meteo rescaled by our fitted
+   snow-to-liquid ratio instead of its flat 7:1. Needs projections on. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

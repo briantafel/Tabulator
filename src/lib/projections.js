@@ -34,7 +34,7 @@ export function isFresh(projections, now = Date.now()) {
 
 /** The feed as the projections view sees it. Returns the feed unchanged
  *  (plus `sfDates`) when there is nothing usable to add. */
-export function extendFeed(feed, now = Date.now()) {
+export function extendFeed(feed, now = Date.now(), { slr = false } = {}) {
   if (!feed) return feed;
   const sfDates = feed.dates ?? [];
   const P = feed.projections;
@@ -62,20 +62,26 @@ export function extendFeed(feed, now = Date.now()) {
       const range = s ? bandAround(d.snow, s) : null;
       return range ? { ...d, range } : d;
     });
+    /* Our snow-to-liquid ratio (the `slr` switch): only when this resort's
+       entry has it for every projected day AND its members, so one resort
+       never mixes 7:1 and our ratio across its days or its trip total. */
+    const useSlr = slr && (p.days ?? []).every((pd) => !pd.snow || pd.snowSlr) && !!p.membersSlr;
     for (const pd of p.days ?? []) {
       if (!fits.has(pd.date) || !pd.snow) continue;
-      const snow = pd.snow.p50 ?? 0;   // cm; rounded to whole inches only when shown
+      const s = useSlr ? pd.snowSlr : pd.snow;
+      const snow = s.p50 ?? 0;   // cm; rounded to whole inches only when shown
       days.push({
-        date: pd.date, projected: true, snow,
-        range: { p10: pd.snow.p10, p25: pd.snow.p25, p75: pd.snow.p75, p90: pd.snow.p90 },
+        date: pd.date, projected: true, snow, snowRatio: useSlr ? "tabulator" : "7:1",
+        range: { p10: s.p10, p25: s.p25, p75: s.p75, p90: s.p90 },
         tempMax: pd.tempMax, tempMin: pd.tempMin, windMax: pd.windMax, periods: [],
       });
       extra.add(pd.date);
     }
     /* Per-member snow for the projected dates, so a window's projected
        total can be added up member by member (see projectedTotalRange). */
-    const members = p.members && p.days?.length
-      ? { dates: p.days.map((d) => d.date), models: p.members }
+    const mem = useSlr ? p.membersSlr : p.members;
+    const members = mem && p.days?.length
+      ? { dates: p.days.map((d) => d.date), models: mem }
       : null;
     return { ...r, days, projMembers: members };
   });
