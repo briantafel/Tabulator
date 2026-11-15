@@ -5,15 +5,18 @@
  * Per resort × local day, from each model's HOURLY 2 m temperature at the
  * resort's Snow-Forecast mid elevation (the slope — Brian's choice):
  *   hi      warmest hour of the day, minus the model's per-resort high bias
- *   lo      coldest hour of the day (no correction; SNOTEL lows unresolved)
- *   liftLo  coldest hour from 08:00 to 16:00 local — the −10 °F veto, the
- *           cold dot and the temperature ranking read this (Brian's choice)
+ *   lo      coldest hour of the day, minus the model's per-resort low bias
+ *   liftLo  coldest hour from 08:00 to 16:00 local, minus its own lift-hours
+ *           bias — the −10 °F veto, the cold dot and the temperature ranking
+ *           read this (Brian's choice)
  * then a weighted mean over the models present that day (weights per lead
  * from scripts/model/temps.py). A model without that day is dropped and the
  * weights re-normalised; no model at all → the day is absent, never 0.
  *
- * The high correction is only applied at leads the judge winter promoted
- * (params.promote.hi[lead]); without parameters the models get equal weight
+ * Each correction is only applied at leads the judge winter promoted
+ * (params.promote.{hi,lo,lift}[lead]; temps-v2). The low and lift-hours biases
+ * are fitted against SNOTEL, which may read warm in deep cold — see the
+ * caveat in temp-model.json. Without parameters the models get equal weight
  * and no correction, and the file says so (`validated: false`).
  */
 
@@ -66,11 +69,14 @@ export function blendResort(perModel, { resortId, issueDate, params }) {
       used.push(m);
       const wHi = params?.weights?.hi?.[k]?.[m] ?? 1;
       const wLo = params?.weights?.lo?.[k]?.[m] ?? 1;
-      const correct = params?.promote?.hi?.[k] === true;
-      const bias = correct ? params?.high_bias?.[`${m}|${resortId}`] ?? 0 : 0;
-      acc.hi[0] += wHi * (d.hi - bias); acc.hi[1] += wHi;
-      acc.lo[0] += wLo * d.lo; acc.lo[1] += wLo;
-      if (d.liftLo != null) { acc.liftLo[0] += wLo * d.liftLo; acc.liftLo[1] += wLo; }
+      const wLift = params?.weights?.lift?.[k]?.[m] ?? wLo;
+      const bias = (v, table) =>
+        params?.promote?.[v]?.[k] === true ? params?.[table]?.[`${m}|${resortId}`] ?? 0 : 0;
+      acc.hi[0] += wHi * (d.hi - bias("hi", "high_bias")); acc.hi[1] += wHi;
+      acc.lo[0] += wLo * (d.lo - bias("lo", "low_bias")); acc.lo[1] += wLo;
+      if (d.liftLo != null) {
+        acc.liftLo[0] += wLift * (d.liftLo - bias("lift", "lift_bias")); acc.liftLo[1] += wLift;
+      }
     }
     if (!used.length) continue;
     const v = (a) => (a[1] > 0 ? round1(a[0] / a[1]) : null);

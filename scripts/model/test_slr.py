@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Synthetic test for slr.py: a known SLR = 10 − 0.8·T must be recovered,
-and on the judge winter the fitted ratio must beat 7:1 on ≥15 cm days.
+"""Synthetic test for slr.py v2. Truth: CoCoRaHS-style station windows with new
+snow AND water, true SLR = 12 − 0.6·T at the station, stations 800 m below the
+Snow-Forecast mid elevation (so the station is 5.2 °C warmer than the slope).
+The fit must recover the line at STATION temperature, beat 7:1 at 10 cm on
+the judge winter (promoted), and compare against a Snow-Forecast hindcast.
     python3 scripts/model/test_slr.py
 """
 import json
 import sys
 import tempfile
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import duckdb
@@ -15,42 +18,58 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent))
 from slr import main  # noqa: E402
 
+PREV = "open-meteo-previous-runs"
 
-def make(path: Path) -> None:
-    rng = np.random.default_rng(1)
-    rows = []
+
+def make_tables(out: Path) -> None:
+    rng = np.random.default_rng(3)
+    con = duckdb.connect()
+    con.execute("SET TimeZone = 'UTC'")
+    con.execute("""CREATE TABLE wpairs(resort_id VARCHAR, region VARCHAR, product VARCHAR, truth_source VARCHAR,
+        space VARCHAR, station_id VARCHAR, station_km DOUBLE, st_elev INTEGER, delev_mid INTEGER, elev_class VARCHAR,
+        ws TIMESTAMPTZ, we TIMESTAMPTZ, obs DOUBLE, source VARCHAR, source_label VARCHAR, issue_key VARCHAR,
+        lead_day INTEGER, fc DOUBLE, split VARCHAR)""")
+    con.execute("""CREATE TABLE pairs(source VARCHAR, source_label VARCHAR, resort_id VARCHAR, tier VARCHAR,
+        space VARCHAR, issue_key VARCHAR, lead_day INTEGER, local_date DATE, fc_temp_c DOUBLE, split VARCHAR)""")
+    W, P = [], []
     for split, start in (("train", date(2024, 12, 1)), ("test", date(2025, 12, 1))):
-        for d in range(120):
+        for d in range(140):
             day = start + timedelta(days=d)
             for resort in ("alta", "snowbird", "vail", "jackson-hole"):
-                t = rng.uniform(-15, 0)
-                liq = rng.choice([0, 0, 2, 8, 15, 25, 40])
-                true_slr = 10 - 0.8 * t
-                obs_depth = liq * true_slr / 10 * rng.uniform(0.9, 1.1)
-                for lead in range(0, 4):
-                    rows.append(("open-meteo-previous-runs", "open-meteo-previous-runs:gfs_seamless", resort, day, lead,
-                                 split, "liquid", float(liq), float(t), float(liq), float(obs_depth)))
-                rows.append(("snow-forecast-hindcast", "snow-forecast-hindcast", resort, day, 0, split, "snow",
-                             float(obs_depth * 0.8), None, float(liq), float(obs_depth)))
-    con = duckdb.connect()
-    con.execute("""CREATE TABLE p(source VARCHAR, source_label VARCHAR, resort_id VARCHAR, local_date DATE,
-      lead_day INTEGER, split VARCHAR, space VARCHAR, fc_amount DOUBLE, fc_temp_c DOUBLE,
-      obs_swe_gain_mm DOUBLE, obs_depth_gain_cm DOUBLE)""")
-    con.executemany("INSERT INTO p VALUES (?,?,?,?,?,?,?,?,?,?,?)", rows)
-    con.execute("ALTER TABLE p ADD COLUMN pair_quality VARCHAR DEFAULT 'strict'")
-    con.execute("ALTER TABLE p ADD COLUMN tier VARCHAR DEFAULT 'mid'")
-    con.execute(f"COPY p TO '{path}' (FORMAT parquet)")
+                t_mid = rng.uniform(-18, -3)
+                t_st = t_mid + 0.0065 * 800
+                water = float(rng.choice([0, 0, 1, 4, 8, 15, 25]))
+                snow = water * (12 - 0.6 * t_st) / 10 * rng.uniform(0.9, 1.1) if t_st <= 0 else 0.0
+                ws = datetime(day.year, day.month, day.day, 14, tzinfo=timezone.utc)
+                we = ws + timedelta(hours=24)
+                st = f"cocorahs:{resort}"
+                base = (resort, "Utah", "cocorahs", "cocorahs")
+                tail = (st, 5.0, 2100, -800, "valley", ws, we)
+                for lead in range(0, 8):
+                    ik = f"previous_day{lead}"
+                    fw = water * rng.uniform(0.8, 1.2)
+                    W.append(base + ("liquid",) + tail + (water, PREV, f"{PREV}:ecmwf_ifs025", ik, lead, fw, split))
+                    W.append(base + ("snow",) + tail + (snow, PREV, f"{PREV}:ecmwf_ifs025", ik, lead, fw * 0.7, split))
+                    P.append((PREV, f"{PREV}:ecmwf_ifs025", resort, "mid", "liquid", ik, lead, day,
+                              t_mid + rng.normal(0, 0.5), split))
+                W.append(base + ("liquid",) + tail + (water, "snow-forecast-hindcast", "snow-forecast-hindcast", "h", 0, water, split))
+                W.append(base + ("snow",) + tail + (snow, "snow-forecast-hindcast", "snow-forecast-hindcast", "h", 0, snow * 0.6, split))
+    con.executemany(f"INSERT INTO wpairs VALUES ({', '.join('?' * 19)})", W)
+    con.executemany(f"INSERT INTO pairs VALUES ({', '.join('?' * 10)})", P)
+    out.mkdir(parents=True, exist_ok=True)
+    con.execute(f"COPY wpairs TO '{out / 'wpairs.parquet'}' (FORMAT parquet)")
+    con.execute(f"COPY pairs TO '{out / 'pairs.parquet'}' (FORMAT parquet)")
 
 
 with tempfile.TemporaryDirectory() as tmp:
-    tmp = Path(tmp)
-    make(tmp / "pairs.parquet")
-    main(tmp / "pairs.parquet", tmp / "out")
-    p = json.loads((tmp / "out" / "slr.json").read_text())
-    assert abs(p["a"] - 10) < 1.0 and abs(p["b"] + 0.8) < 0.1, p
-    rep = (tmp / "out" / "slr_report.md").read_text()
-    assert "Ours vs Snow-Forecast" in rep and "gfs_seamless" in rep
-    line = next(l for l in rep.splitlines() if l.startswith("| gfs_seamless | 1 | 15.00"))
-    cells = [c.strip() for c in line.strip("|").split("|")]
-    assert float(cells[6]) > float(cells[4]), f"ours should beat 7:1: {line}"
+    out = Path(tmp) / "out"
+    make_tables(out)
+    main(out / "pairs.parquet", out)
+    p = json.loads((out / "slr.json").read_text())
+    assert p["version"] == "slr-v2", p
+    # Recovered at STATION temperature (not the slope's): a ≈ 12, b ≈ −0.6.
+    assert abs(p["a"] - 12) < 1.0 and abs(p["b"] + 0.6) < 0.1, p
+    assert p["promote"].get("1") is True, p["promote"]
+    rep = (out / "slr_report.md").read_text()
+    assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep, rep
 print("slr: all checks passed")

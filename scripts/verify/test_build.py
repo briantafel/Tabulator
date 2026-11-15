@@ -114,6 +114,12 @@ def main():
         for var, v in (("temp_max", 0.0), ("temp_min", -8.0)):
             rows.append(row(source="snotel", kind="observation", station_id="766:UT:SNTL", fetched_at=fetched,
                             valid_start=t, valid_end=t + timedelta(days=1), period_label="daily", variable=var, value=v))
+    # SNOTEL hourly TOBS Jan 7: −15 °C at 03:00 (night, not lift hours), −12 °C at 09:00, else −5 °C.
+    for h in range(24):
+        t = local(7, h, MST)
+        rows.append(row(source="snotel", kind="observation", station_id="766:UT:SNTL", fetched_at=fetched,
+                        valid_start=t, valid_end=t, period_label="hourly", variable="temp",
+                        value=-15.0 if h == 3 else -12.0 if h == 9 else -5.0))
     # NWS hourly temperature, 5 °C all day Jan 7, grid cell at 2,520 m, issued Jan 6 → lead 1.
     nws_issued = local(6, 12, MST)
     for h in range(0, 48):
@@ -278,6 +284,11 @@ def main():
         assert fr == 2.0 and abs(fa - (2.0 - 0.13)) < 1e-9 and ob == 0, (fa, fr, ob)
         fa, ld = one("SELECT fc_adj, lead_day FROM tp WHERE source = 'nws' AND var = 'hi' AND local_date = DATE '2025-01-07'")
         assert abs(fa - (5.0 - 2.6)) < 1e-9 and ld == 1, (fa, ld)
+        # Lift-hours low: NWS hourly 5 °C → 2.4 °C at the station; truth = −12 (09:00), not the night's −15.
+        fa, ob = one("SELECT fc_adj, obs FROM tp WHERE source = 'nws' AND var = 'lift' AND local_date = DATE '2025-01-07'")
+        assert abs(fa - 2.4) < 1e-9 and ob == -12, (fa, ob)
+        # Snow-Forecast has 6-hour blocks only → no lift-hours low, not a wrong one.
+        assert one("SELECT count(*) FROM tp WHERE source = 'snow-forecast' AND var = 'lift'")[0] == 0
         # Snow-Forecast: high from the periods, low includes the night that ends 06:00 on the 7th.
         assert one("SELECT fc_raw FROM tp WHERE source = 'snow-forecast' AND var = 'hi' AND local_date = DATE '2025-01-07'")[0] == 3
         assert one("SELECT fc_raw FROM tp WHERE source = 'snow-forecast' AND var = 'lo' AND local_date = DATE '2025-01-07'")[0] == -6

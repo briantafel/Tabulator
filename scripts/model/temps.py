@@ -44,6 +44,7 @@ import numpy as np
 SOURCE = "open-meteo-previous-runs"
 MODELS = ("ecmwf_ifs025", "gem_seamless", "gfs_seamless")
 LEADS = range(1, 8)
+VARS = ("hi", "lo", "lift")  # lift = coldest hour 08–16 local (the −10 °F veto)
 SHRINK_DAYS = 30
 F = 9 / 5
 N_BOOT = 1000
@@ -65,23 +66,25 @@ def main(pairs: Path, out: Path) -> None:
     if con.execute("SELECT count(*) FROM d WHERE split = 'train'").fetchone()[0] < 1000:
         raise SystemExit("temps: too few training pairs")
 
-    # ---- high correction per resort × model (leads 1–3 of the training winter), shrunk to the region
+    # ---- correction per var × resort × model (leads 1–3 of the training winter), shrunk to the region.
+    # v2 (2026-11-15, Brian "do it all"): lows and lift-hours lows get the same treatment as highs,
+    # and each is promoted per lead only if it beats every comparator on the test winter.
     con.execute(f"""
     CREATE TABLE corr AS
-    WITH r AS (SELECT model, resort_id, any_value(region) AS region, avg(fc - obs) AS b, count(*) AS n
-               FROM d WHERE split = 'train' AND var = 'hi' AND lead BETWEEN 1 AND 3 GROUP BY model, resort_id),
-         g AS (SELECT model, region, avg(fc - obs) AS gb FROM d
-               WHERE split = 'train' AND var = 'hi' AND lead BETWEEN 1 AND 3 GROUP BY model, region)
-    SELECT r.model, r.resort_id, r.region, r.n, r.b AS raw_bias,
+    WITH r AS (SELECT var, model, resort_id, any_value(region) AS region, avg(fc - obs) AS b, count(*) AS n
+               FROM d WHERE split = 'train' AND lead BETWEEN 1 AND 3 GROUP BY var, model, resort_id),
+         g AS (SELECT var, model, region, avg(fc - obs) AS gb FROM d
+               WHERE split = 'train' AND lead BETWEEN 1 AND 3 GROUP BY var, model, region)
+    SELECT r.var, r.model, r.resort_id, r.region, r.n, r.b AS raw_bias,
            (r.n * r.b + {SHRINK_DAYS} * g.gb) / (r.n + {SHRINK_DAYS}) AS bias
-    FROM r JOIN g USING (model, region)""")
+    FROM r JOIN g USING (var, model, region)""")
     con.execute("""
     CREATE TABLE dc AS
-    SELECT d.*, CASE WHEN d.var = 'hi' THEN d.fc - coalesce(c.bias, 0) ELSE d.fc END AS fcc
-    FROM d LEFT JOIN corr c USING (model, resort_id)""")
+    SELECT d.*, d.fc - coalesce(c.bias, 0) AS fcc
+    FROM d LEFT JOIN corr c USING (var, model, resort_id)""")
 
     # ---- weights per var × lead: inverse MSE on the training winter
-    weights: dict[str, dict[str, dict[str, float]]] = {"hi": {}, "lo": {}}
+    weights: dict[str, dict[str, dict[str, float]]] = {v: {} for v in VARS}
     for var, lead, model, mse in con.execute("""SELECT var, lead, model, avg(power(fcc - obs, 2)) FROM dc
                                                 WHERE split = 'train' GROUP BY ALL ORDER BY ALL""").fetchall():
         weights[var].setdefault(str(lead), {})[model] = 1 / mse
@@ -89,19 +92,23 @@ def main(pairs: Path, out: Path) -> None:
         for lead, ws in weights[var].items():
             t = sum(ws.values())
             weights[var][lead] = {m: round(v / t, 3) for m, v in ws.items()}
-    best = {var: {} for var in ("hi", "lo")}
+    best = {var: {} for var in VARS}
     for var, lead, model in con.execute("""SELECT var, lead, arg_min(model, mae) FROM (
           SELECT var, lead, model, avg(abs(fc - obs)) AS mae FROM d WHERE split = 'train' GROUP BY ALL) GROUP BY ALL""").fetchall():
         best[var][str(lead)] = model
 
-    corrections = {f"{m}|{r}": round(b, 3) for m, r, b in
-                   con.execute("SELECT model, resort_id, bias FROM corr ORDER BY ALL").fetchall()}
+    corr_by = {v: {} for v in VARS}
+    for v, m, r, b in con.execute("SELECT var, model, resort_id, bias FROM corr ORDER BY ALL").fetchall():
+        corr_by.setdefault(v, {})[f"{m}|{r}"] = round(b, 3)
     params = {
-        "version": "temps-v1", "units": "C", "fitted_on": "2024-25 (train); judged on 2025-26",
+        "version": "temps-v2", "units": "C", "fitted_on": "2024-25 (train); judged on 2025-26",
         "models": list(MODELS), "elevation": "Snow-Forecast mid elevation (Open-Meteo `elevation`)",
-        "high_correction": "forecast − bias[model|resort]; bias = forecast − SNOTEL TMAX, shrunk to region",
-        "low_correction": "none (Brian 2026-11-11: target is the slope; SNOTEL lows unresolved)",
-        "weights": weights, "high_bias": corrections, "best_single_on_train": best,
+        "correction": "forecast − bias[model|resort]; bias = forecast − SNOTEL (TMAX / TMIN / coldest hourly "
+                      "TOBS 08–16 local), leads 1–3 of 2024-25, shrunk to region. Applied only where promote[var][lead].",
+        "caveat_lows": "SNOTEL lows may read warm in deep cold (sensor); a low correction moves us toward SNOTEL, "
+                       "not necessarily toward the slope. Re-check against slope stations (Synoptic, Dec).",
+        "weights": weights, "high_bias": corr_by.get("hi", {}), "low_bias": corr_by.get("lo", {}),
+        "lift_bias": corr_by.get("lift", {}), "best_single_on_train": best,
     }
 
     # ---- judge on the test winter
@@ -120,8 +127,8 @@ def main(pairs: Path, out: Path) -> None:
     GROUP BY dc.var, dc.lead, dc.resort_id, dc.local_date HAVING count(*) = {len(MODELS)}""")
     rng = np.random.default_rng(SEED)
     rows = []
-    promote = {"hi": {}, "lo": {}}
-    for var in ("hi", "lo"):
+    promote = {v: {} for v in VARS}
+    for var in VARS:
         for lead in LEADS:
             r = con.execute(f"SELECT * FROM t WHERE var = '{var}' AND lead = {lead}").fetchnumpy()
             if len(r["obs"]) == 0:
@@ -151,8 +158,6 @@ def main(pairs: Path, out: Path) -> None:
                 if name == "best":
                     res["best"] = b.split("_")[0]
                     res["best_w3"] = float(np.mean(np.abs(r[col] - r["obs"]) * F <= 3))
-                if var == "lo" and name == "uncorrected":
-                    continue  # identical for lows (no correction)
                 if not hi_ < 0:
                     beats_all = False
             res["promote"] = beats_all
@@ -170,12 +175,12 @@ def main(pairs: Path, out: Path) -> None:
     tbl = ["| " + " | ".join(h for h, _ in cols) + " |", "|" + "---|" * len(cols)]
     tbl += ["| " + " | ".join(f(r.get(k, "—")) for _, k in cols) + " |" for r in rows]
     big = con.execute(f"""SELECT resort_id, region, round(avg(raw_bias) * {F}, 1), round(avg(bias) * {F}, 1), min(n)
-                          FROM corr GROUP BY resort_id, region ORDER BY abs(avg(bias)) DESC LIMIT 12""").fetchall()
+                          FROM corr WHERE var = 'hi' GROUP BY resort_id, region ORDER BY abs(avg(bias)) DESC LIMIT 12""").fetchall()
     report = "\n".join([
-        "# Temperature model v1 — fitted on 2024-25, judged on 2025-26\n",
-        "Public models + SNOTEL only. Highs: per-resort correction + lead weights. Lows: lead weights only.",
+        "# Temperature model v2 — fitted on 2024-25, judged on 2025-26\n",
+        "Public models + SNOTEL only. hi / lo / lift (coldest 08–16 local): per-resort correction + lead weights.",
         "Ranges are 90% (date bootstrap) of the MAE difference in °F; negative = ours better.",
-        "PROMOTE = better than the equal blend, the uncorrected blend (highs) and the best single model,",
+        "PROMOTE = better than the equal blend, the uncorrected blend and the best single model,",
         "with the whole range below zero.\n",
         "## Judged on the test winter\n", "\n".join(tbl),
         "\n## Largest high corrections (°F, mean over the three models; + = models too warm)\n",
@@ -184,7 +189,7 @@ def main(pairs: Path, out: Path) -> None:
         "\n## Weights\n```\n" + json.dumps(weights, indent=1) + "\n```\n",
     ])
     (out / "temps_report.md").write_text(report)
-    print("temps v1 written", file=sys.stderr)
+    print("temps v2 written", file=sys.stderr)
 
 
 if __name__ == "__main__":

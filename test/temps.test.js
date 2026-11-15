@@ -43,6 +43,17 @@ test("blendResort: weights per lead, correction only where promoted, missing mod
   assert.equal(notPromoted[0].hi, 0.7); // (0 + 0.25·2) / 0.75, no correction
 });
 
+test("blendResort: temps-v2 low and lift-hours corrections only where promoted", () => {
+  const perModel = { ecmwf_ifs025: { "2026-12-02": { hi: 0, lo: -10, liftLo: -6 } } };
+  const base = { weights: {}, low_bias: { "ecmwf_ifs025|alta": -3 }, lift_bias: { "ecmwf_ifs025|alta": -2 } };
+  const run = (promote) => blendResort(perModel, { resortId: "alta", issueDate: "2026-12-01",
+    params: { ...base, promote } })[0];
+  // Models too cold by 3 (night) and 2 (lift hours): corrected −10 → −7, −6 → −4.
+  assert.deepEqual(run({ lo: { 1: true }, lift: { 1: true } }), { date: "2026-12-02", hi: 0, lo: -7, liftLo: -4, models: 1 });
+  // Not promoted (or a v1 file without the tables): raw values, never a guess.
+  assert.deepEqual(run({ lo: { 1: false } }), { date: "2026-12-02", hi: 0, lo: -10, liftLo: -6, models: 1 });
+});
+
 const resort = (days) => ({ id: "alta", name: "Alta", days });
 const day = (date, o) => ({ date, snow: 10, tempMax: F(20), tempMin: F(-14), windMax: 10, periods: [], ...o });
 

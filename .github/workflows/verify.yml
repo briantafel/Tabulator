@@ -53,6 +53,7 @@ jobs:
           python3 scripts/model/test_slr.py
           python3 scripts/model/test_blend.py
           python3 scripts/model/test_temps.py
+          python3 scripts/model/test_temps.py
 
       - name: Download the archive
         run: |

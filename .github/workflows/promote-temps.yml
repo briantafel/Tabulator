@@ -1,0 +1,76 @@
+name: Promote judged models (temperature, SLR)
+
+# Copies the judged temperature model from the latest verify run (private
+# bucket, verify/latest/temp-model.json) into public/temp-model.json, keeping
+# ONLY the var × lead combinations the judge winter promoted
+# (scripts/model/promote_temps.py). The file holds public-model weights and
+# per-resort biases fitted against SNOTEL — nothing paid. The commit triggers
+# temps.yml, which rebuilds public/temps.json and redeploys. Manual on purpose:
+# Brian approves a promotion (2026-11-15: "do it all").
+#
+# Also SLR v2 (scripts/model/slr.py, same-station new snow + water; public truth
+# only): public/slr.json is written ONLY if every judged lead was promoted.
+# scripts/projections/build_dyn.py reads it in place of its stated prior.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temps
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch the judged model
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/temp-model.json" /tmp/temp-model.json --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/slr.json" /tmp/slr.json --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/temps_report.md" /tmp/temps_report.md --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/slr_report.md" /tmp/slr_report.md --endpoint-url "$ENDPOINT" --only-show-errors
+      - name: Show the public-data judgement (no paid rows)
+        run: |
+          # temps_report.md is public models vs SNOTEL only. slr_report.md is cut BEFORE its Snow-Forecast section.
+          cat /tmp/temps_report.md >> "$GITHUB_STEP_SUMMARY"
+          python3 -c "import sys;t=open('/tmp/slr_report.md').read();print(t.split('## Ours (ECMWF water')[0].replace('PRIVATE (contains paid-source comparison).',''))" >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep promoted parts only
+        run: python3 scripts/model/promote_temps.py /tmp/temp-model.json public/temp-model.json 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: SLR — ship only if promoted at every judged lead
+        run: |
+          python3 - <<'PY' 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          p = json.load(open("/tmp/slr.json"))
+          prom = p.get("promote") or {}
+          if p.get("version") != "slr-v2" or not prom:
+              print(f"SLR: {p.get('version')} has no per-lead judgement — not shipped")
+          elif all(prom.values()):
+              keep = {k: p[k] for k in ("version", "form", "a", "b", "clamp", "temperature", "fitted_on", "n_days",
+                                        "median_observed_slr", "promote")}
+              json.dump(keep, open("public/slr.json", "w"), indent=2); open("public/slr.json", "a").write("\n")
+              print(f"SLR: shipped {p['version']}: SLR = {p['a']} + {p['b']}·T (promoted at every lead)")
+          else:
+              print(f"SLR: NOT shipped — promoted leads {sorted(k for k, v in prom.items() if v)} of {sorted(prom)}")
+          PY
+      - name: Commit
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add public/temp-model.json public/slr.json 2>/dev/null || git add public/temp-model.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "models: promote judged temperature / SLR from verify/latest"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done

@@ -58,7 +58,8 @@ TEMP_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecas
 LAPSE_C_PER_M = 0.0065
 TEMP_MIN_COVER_H = 20  # a forecast day needs ≥ this many hours covered to have a high and a low
 THIN_EVENTS = 20  # fewer observed events than this → the score is flagged thin
-DYN_HISTORY_BEFORE = "2026-10"  # dynamical-ens months before this are skipped (OOM, 2026-11-12)
+DYN_HISTORY_BEFORE = "2026-10"
+LIFT_FROM, LIFT_TO, LIFT_MIN_HOURS = 8, 16, 8  # lift hours, local; inclusive (matches scripts/temps/lib.js)  # dynamical-ens months before this are skipped (OOM, 2026-11-12)
 
 
 def log(lines: list[str], msg: str) -> None:
@@ -506,11 +507,16 @@ def temperature(con, out: Path, paid_list: str) -> dict:
     ), m AS (
       SELECT source, kind, resort_id, region, tz, tier, model, member, issue_key, min(issue_ts) AS issue_ts, local_date,
              any_value(day_start) AS day_start, max(hi) AS hi, min(lo) AS lo, avg(elev) AS elev,
-             sum(epoch(least(valid_end, day_end) - greatest(valid_start, day_start))) / 3600 AS cov_h
+             sum(epoch(least(valid_end, day_end) - greatest(valid_start, day_start))) / 3600 AS cov_h,
+             -- lift-hours low (the −10 °F veto): coldest HOURLY value 08:00–16:00 local, ≥ 8 of the 9 hours
+             CASE WHEN count(*) FILTER (WHERE valid_end - valid_start = INTERVAL 1 HOUR
+                                          AND hour(timezone(tz, valid_start)) BETWEEN {LIFT_FROM} AND {LIFT_TO}) >= {LIFT_MIN_HOURS}
+                  THEN min(lo) FILTER (WHERE valid_end - valid_start = INTERVAL 1 HOUR
+                                         AND hour(timezone(tz, valid_start)) BETWEEN {LIFT_FROM} AND {LIFT_TO}) END AS lift
       FROM z GROUP BY source, kind, resort_id, region, tz, tier, model, member, issue_key, local_date
     )
     SELECT source, kind, resort_id, region, tz, tier, model, issue_key, min(issue_ts) AS issue_ts, local_date,
-           any_value(day_start) AS day_start, median(hi) AS hi, median(lo) AS lo, avg(elev) AS elev,
+           any_value(day_start) AS day_start, median(hi) AS hi, median(lo) AS lo, median(lift) AS lift, avg(elev) AS elev,
            count(*) AS n_members
     FROM m WHERE cov_h >= {TEMP_MIN_COVER_H}
     GROUP BY source, kind, resort_id, region, tz, tier, model, issue_key, local_date""")
@@ -538,6 +544,22 @@ def temperature(con, out: Path, paid_list: str) -> dict:
     FROM s JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)
     WHERE p.truth_source = 'snotel'
     GROUP BY ALL""")
+    # SNOTEL hourly TOBS → coldest reading 08:00–16:00 local (≥ 8 of 9 hours). Same days as tobs.
+    con.execute(f"""
+    CREATE TABLE tlift AS
+    WITH h AS (
+      SELECT station_id, valid_end AS t, value FROM raw
+      WHERE source = 'snotel' AND kind = 'observation' AND period_label = 'hourly' AND variable = 'temp'
+        AND value BETWEEN -50 AND 35
+      QUALIFY row_number() OVER (PARTITION BY station_id, valid_end ORDER BY fetched_at DESC) = 1
+    )
+    SELECT p.resort_id, p.tier, CAST(timezone(r.tz, h.t) AS DATE) AS local_date, min(h.value) AS obs_lift
+    FROM h JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)
+    WHERE p.truth_source = 'snotel' AND hour(timezone(r.tz, h.t)) BETWEEN {LIFT_FROM} AND {LIFT_TO}
+    GROUP BY p.resort_id, p.tier, p.station_id, local_date HAVING count(*) >= {LIFT_MIN_HOURS}""")
+    con.execute("ALTER TABLE tobs ADD COLUMN obs_lift DOUBLE")
+    con.execute("""UPDATE tobs SET obs_lift = l.obs_lift FROM tlift l
+                   WHERE tobs.resort_id = l.resort_id AND tobs.tier = l.tier AND tobs.local_date = l.local_date""")
     # Sensor faults: out of range, or a low above the high. Dropped, counted.
     bad = con.execute("""SELECT count(*) FROM tobs WHERE obs_hi NOT BETWEEN -45 AND 35 OR obs_lo NOT BETWEEN -50 AND 30
                          OR obs_lo > obs_hi""").fetchone()[0]
@@ -549,13 +571,15 @@ def temperature(con, out: Path, paid_list: str) -> dict:
     WITH l AS (
       SELECT d.*, d.source IN ({paid_list}) AS paid,
              d.source || CASE WHEN d.model <> '' THEN ':' || d.model ELSE '' END AS source_label,
-             o.station_id, o.st_elev, o.pair_quality, o.obs_hi, o.obs_lo,
+             o.station_id, o.st_elev, o.pair_quality, o.obs_hi, o.obs_lo, o.obs_lift,
              CASE WHEN month(d.local_date) >= 7 THEN year(d.local_date) ELSE year(d.local_date) - 1 END AS winter
       FROM tday d JOIN tobs o USING (resort_id, tier, local_date)
     ), v AS (
       SELECT *, 'hi' AS var, hi AS fc_raw, obs_hi AS obs FROM l
       UNION ALL
       SELECT *, 'lo', lo, obs_lo FROM l
+      UNION ALL
+      SELECT *, 'lift', lift, obs_lift FROM l
     )
     SELECT source, paid, source_label, resort_id, region, tier, issue_key, lead_day, local_date, winter,
            CASE winter WHEN 2024 THEN 'train' WHEN 2025 THEN 'test' ELSE 'live' END AS split,

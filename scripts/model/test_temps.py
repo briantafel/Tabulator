@@ -2,7 +2,8 @@
 """Synthetic test for temps.py: each model has a fixed per-resort HIGH bias
 (e.g. GEM +3 °C at Alta) plus noise; ECMWF is the noisiest. The fit must
 recover the biases, weight the quiet models higher, and the corrected blend
-must be promoted for highs on the judge winter. Lows get no correction.
+must be promoted for highs on the judge winter. Lows have NO bias, so their correction
+must not be promoted; lift-hours lows have a cold bias and must be.
     python3 scripts/model/test_temps.py
 """
 import json
@@ -28,10 +29,11 @@ for split, start in (("train", date(2024, 12, 1)), ("test", date(2025, 12, 1))):
     for d in range(150):
         day = start + timedelta(days=d)
         for resort in REGION:
-            hi, lo = rng.normal(-3, 5), rng.normal(-12, 5)
+            hi, lo, lift = rng.normal(-3, 5), rng.normal(-12, 5), rng.normal(-8, 5)
             for lead in range(1, 8):
                 for m in NOISE:
-                    for var, obs, b in (("hi", hi, BIAS[(m, resort)]), ("lo", lo, 0.0)):
+                    for var, obs, b in (("hi", hi, BIAS[(m, resort)]), ("lo", lo, 0.0),
+                                        ("lift", lift, -BIAS[(m, resort)] - 2.0)):
                         rows.append(("open-meteo-previous-runs", f"open-meteo-previous-runs:{m}", resort,
                                      REGION[resort], day, lead, split, var, obs + b + rng.normal(0, NOISE[m]), obs))
 with tempfile.TemporaryDirectory() as tmp:
@@ -51,7 +53,10 @@ with tempfile.TemporaryDirectory() as tmp:
     w = p["weights"]["hi"]["1"]
     assert w["gem_seamless"] > w["gfs_seamless"] > w["ecmwf_ifs025"], w
     assert all(p["promote"]["hi"].values()), p["promote"]
-    assert "lo" in p["weights"] and "low_correction" in p
+    assert p["version"] == "temps-v2" and "caveat_lows" in p
+    assert not any(p["promote"]["lo"].values()), p["promote"]["lo"]  # no real low bias → no promotion
+    assert all(p["promote"]["lift"].values()), p["promote"]["lift"]
+    assert abs(p["lift_bias"]["gem_seamless|alta"] + 5.0) < 0.4, p["lift_bias"]
     rep = (tmp / "out" / "temps_report.md").read_text()
     assert "Judged on the test winter" in rep
 print("temps: all checks passed")

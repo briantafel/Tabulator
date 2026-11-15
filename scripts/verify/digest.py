@@ -33,6 +33,7 @@ import json
 from pathlib import Path
 
 import duckdb
+import numpy as np
 
 PAID = ("snow-forecast", "snow-forecast-hindcast")
 THIN = 20
@@ -90,25 +91,34 @@ def temperature(con, out: Path) -> str:
     ours_note = "temps-v1 not found — ours not scored."
     if mp.exists():
         m = json.loads(mp.read_text())
+        # Exactly what the app ships (promote_temps.py + scripts/temps/lib.js): a var × lead that
+        # was not promoted gets equal weights and no correction.
+        prom = m.get("promote", {})
+        on = lambda v, l: bool(prom.get(v, {}).get(str(l)))
         con.execute("CREATE TABLE tw(var VARCHAR, lead INTEGER, model VARCHAR, w DOUBLE)")
         con.executemany("INSERT INTO tw VALUES (?, ?, ?, ?)",
-                        [(v, int(l), mo, x) for v, ls in m["weights"].items() for l, ws in ls.items() for mo, x in ws.items()])
-        con.execute("CREATE TABLE tc(model VARCHAR, resort_id VARCHAR, b DOUBLE)")
-        con.executemany("INSERT INTO tc VALUES (?, ?, ?)",
-                        [(k.split("|")[0], k.split("|")[1], v) for k, v in m["high_bias"].items()])
+                        [(v, l, mo, (m["weights"].get(v, {}).get(str(l), {}).get(mo, 1.0) if on(v, l) else 1.0))
+                         for v in ("hi", "lo", "lift") for l in range(1, 8) for mo in m["models"]])
+        con.execute("CREATE TABLE tc(var VARCHAR, lead INTEGER, model VARCHAR, resort_id VARCHAR, b DOUBLE)")
+        tables = {"hi": m.get("high_bias", {}), "lo": m.get("low_bias", {}), "lift": m.get("lift_bias", {})}
+        tc_rows = [(v, l, k.split("|")[0], k.split("|")[1], b) for v, t in tables.items()
+                   for l in range(1, 8) if on(v, l) for k, b in t.items()]
+        if tc_rows:  # nothing promoted → no corrections (equal weights only)
+            con.executemany("INSERT INTO tc VALUES (?, ?, ?, ?, ?)", tc_rows)
         n_models = len(m["models"])
         con.execute(f"""
         INSERT INTO td
-        SELECT 'ours (temps-v1)', false, d.var, d.split, d.resort_id, any_value(d.macro), d.local_date, d.lead,
-               sum(tw.w * (d.fc - CASE WHEN d.var = 'hi' THEN coalesce(tc.b, 0) ELSE 0 END)) / sum(tw.w),
+        SELECT 'ours (temps)', false, d.var, d.split, d.resort_id, any_value(d.macro), d.local_date, d.lead,
+               sum(tw.w * (d.fc - coalesce(tc.b, 0))) / sum(tw.w),
                any_value(d.obs)
         FROM (SELECT *, split_part(source_label, ':', 2) AS model FROM td
               WHERE source_label LIKE 'open-meteo-previous-runs:%') d
         JOIN tw ON tw.var = d.var AND tw.lead = d.lead AND tw.model = d.model
-        LEFT JOIN tc ON tc.model = d.model AND tc.resort_id = d.resort_id
+        LEFT JOIN tc ON tc.var = d.var AND tc.lead = d.lead AND tc.model = d.model AND tc.resort_id = d.resort_id
         GROUP BY d.var, d.split, d.resort_id, d.local_date, d.lead HAVING count(*) = {n_models}""")
-        ours_note = ("temps-v1 = per-resort high correction + inverse-error lead weights over ECMWF / GEM / GFS, "
-                     "fitted on 2024-25. 2025-26 and this season are out of sample. Leads 1–7 only.")
+        ours_note = (f"Ours = {m.get('version', 'temps')} as the app applies it: per-resort correction + lead weights "
+                     "over ECMWF / GEM / GFS, fitted on 2024-25, ONLY at promoted var × lead (else equal weights, "
+                     "no correction). 2025-26 and this season are out of sample. Leads 1–7 only.")
     con.execute(f"""
     CREATE TABLE tday AS
     SELECT source_label, paid, var, split, macro, lead, count(*) AS n, count(DISTINCT resort_id) AS resorts,
@@ -122,19 +132,19 @@ def temperature(con, out: Path) -> str:
     con.execute(f"""
     CREATE TABLE th2h AS
     WITH k AS (SELECT var, split, resort_id, local_date, lead FROM td GROUP BY ALL
-               HAVING bool_or(source_label = 'ours (temps-v1)') AND bool_or(source_label = 'snow-forecast'))
+               HAVING bool_or(source_label = 'ours (temps)') AND bool_or(source_label = 'snow-forecast'))
     SELECT td.var, td.split, coalesce(td.macro, 'ALL') AS macro, td.lead, count(*) AS n,
-           avg(abs(td.fc - td.obs)) FILTER (WHERE source_label = 'ours (temps-v1)') * {F} AS ours,
+           avg(abs(td.fc - td.obs)) FILTER (WHERE source_label = 'ours (temps)') * {F} AS ours,
            avg(abs(td.fc - td.obs)) FILTER (WHERE source_label = 'snow-forecast') * {F} AS sf,
            avg(abs(td.fc - td.obs)) FILTER (WHERE source_label = 'nws') * {F} AS nws,
-           count(*) FILTER (WHERE source_label = 'ours (temps-v1)') AS days
+           count(*) FILTER (WHERE source_label = 'ours (temps)') AS days
     FROM td JOIN k USING (var, split, resort_id, local_date, lead)
     GROUP BY GROUPING SETS ((td.var, td.split, td.macro, td.lead), (td.var, td.split, td.lead))""")
     con.execute("UPDATE th2h SET macro = 'ALL' WHERE macro IS NULL")
     con.execute(f"COPY (SELECT * FROM th2h ORDER BY ALL) TO '{out / 'digest_temp_h2h.csv'}' (HEADER)")
 
     parts = ["## 1. Temperature (°F, mean absolute error vs SNOTEL, strict mid pairs)\n", ours_note + "\n"]
-    for var, name in (("hi", "Daily high"), ("lo", "Daily low")):
+    for var, name in (("hi", "Daily high"), ("lo", "Overnight low"), ("lift", "Lift-hours low (08–16, the −10 °F veto)")):
         parts += [f"\n### {name}: ours vs Snow-Forecast (paid) on the same resort-days\n",
                   "Lower is better. `sf − ours` > 0 means we beat the paid forecast. NWS shown where it covered the day.\n",
                   md(con, f"""SELECT split AS winter, macro AS region, lead, days,
@@ -149,11 +159,23 @@ def temperature(con, out: Path) -> str:
                                      lead, round(mae_f, 1) || ' (' || n || ')' AS v
                               FROM tday WHERE var = '{var}' AND macro = 'ALL' AND split IN ('test', 'live'))
                              ON lead USING any_value(v) GROUP BY split, source ORDER BY split, source""")]
+    veto_c = (-10 - 32) * 5 / 9
+    parts += ["\n### The −10 °F deal breaker: lift-hours low at or below −10 °F (all regions, own samples)\n",
+              "A false alarm removes a resort that was skiable; a miss keeps one that wasn't.\n",
+              md(con, f"""SELECT split, source_label AS source, lead, count(*) AS days,
+                               count(*) FILTER (WHERE obs <= {veto_c}) AS "cold days",
+                               count(*) FILTER (WHERE fc <= {veto_c}) AS "vetoed",
+                               round(count(*) FILTER (WHERE fc <= {veto_c} AND obs <= {veto_c})
+                                     / nullif(count(*) FILTER (WHERE obs <= {veto_c}), 0), 2) AS pod,
+                               round(count(*) FILTER (WHERE fc <= {veto_c} AND obs > {veto_c})
+                                     / nullif(count(*) FILTER (WHERE fc <= {veto_c}), 0), 2) AS far
+                        FROM td WHERE var = 'lift' AND lead IN (1, 3, 5) AND split IN ('test', 'live')
+                        GROUP BY ALL ORDER BY split, lead, source""")]
     parts += ["\n### Bias by region, lead 1–3 (°F, + = forecast too warm)\n",
               md(con, f"""PIVOT (SELECT var, macro AS region, source_label AS source,
                                  round(sum(bias_f * n) / sum(n), 1) AS b
                           FROM tday WHERE lead BETWEEN 1 AND 3 AND macro <> 'ALL' AND split IN ('test', 'live')
-                            AND (source_label IN ('ours (temps-v1)', 'snow-forecast', 'nws', 'nbm')
+                            AND (source_label IN ('ours (temps)', 'snow-forecast', 'nws', 'nbm')
                                  OR source_label LIKE 'dynamical-ens%')
                           GROUP BY ALL) ON source USING any_value(b) GROUP BY var, region ORDER BY var, region""")]
     return "\n".join(parts)
@@ -197,8 +219,33 @@ def snowfall(con, out: Path) -> str:
         LEFT JOIN bpool ON bpool.model = d.model AND bpool.lead = d.lead
         GROUP BY d.split, d.resort_id, d.local_date, d.lead""")
         ours_note = ("Ours = blend-v1: region-corrected, inverse-error weighted ECMWF / GEM / GFS precipitation, "
-                     "fitted on 2024-25. It is LIQUID (mm of water); turning it into snow needs the fitted SLR, "
-                     "which isn't approved yet. Leads 1–7.")
+                     "fitted on 2024-25 (LIQUID, mm of water). Leads 1–7.")
+    # Ours in SNOW: blend-v1 water × SLR (slr.py; v2 is fitted on same-station new snow + water). Same arithmetic
+    # as scripts/projections/build_dyn.py: SLR = a + b·T clamped, at the slope temperature; warm days (> 2 °C) = rain.
+    sp = out / "slr.json"
+    slr_note = "No fitted SLR — ours has no snow number."
+    if bp.exists() and sp.exists():
+        sl = json.loads(sp.read_text())
+        prom = sl.get("promote") or {}
+        con.execute(f"""
+        CREATE TABLE stemp AS
+        SELECT resort_id, local_date, lead_day AS lead, split, avg(fc_temp_c) AS t
+        FROM read_parquet('{pp}') WHERE source = 'open-meteo-previous-runs' AND space = 'liquid' AND tier = 'mid'
+          AND fc_temp_c IS NOT NULL GROUP BY ALL""")
+        lo_, hi_ = sl["clamp"]
+        con.execute(f"""
+        INSERT INTO sd
+        SELECT 'ours (blend × SLR)', false, 'snow', o.split, o.resort_id, o.region, o.macro, o.local_date, o.lead,
+               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest({sl['a']} + {sl['b']} * t.t, {lo_}), {hi_}) / 10 END,
+               s.obs
+        FROM sd o JOIN stemp t USING (resort_id, local_date, lead, split)
+        JOIN (SELECT DISTINCT resort_id, local_date, lead, split, obs FROM sd WHERE space = 'snow') s
+          USING (resort_id, local_date, lead, split)
+        WHERE o.source_label = 'ours (blend-v1)'""")
+        slr_note = (f"Ours in snow = blend-v1 water × {sl.get('version')} (SLR = {sl['a']} + {sl['b']}·T); "
+                    f"promoted at leads {sorted(k for k, v in prom.items() if v) or 'none'}. "
+                    "Snow truth here is SNOTEL depth gain, which settles — every source is judged on it the same way, "
+                    "but a correct ratio will look like a slight over-forecast.")
     con.execute("CREATE TABLE sthr(space VARCHAR, t DOUBLE)")
     con.executemany("INSERT INTO sthr VALUES (?, ?)",
                     [("liquid", 2.5), ("liquid", 10.0), ("liquid", 20.0), ("snow", 2.5), ("snow", 15.0), ("snow", 30.0)])
@@ -221,7 +268,8 @@ def snowfall(con, out: Path) -> str:
     CREATE TABLE sh2h AS
     WITH k AS (SELECT space, split, resort_id, local_date, lead FROM sd GROUP BY ALL
                HAVING bool_or(source_label = 'snow-forecast')
-                  AND bool_or(source_label IN ('ours (blend-v1)', 'open-meteo-previous-runs:ecmwf_ifs025'))),
+                  AND bool_or(source_label IN ('ours (blend-v1)', 'ours (blend × SLR)',
+                                               'open-meteo-previous-runs:ecmwf_ifs025'))),
          s AS (SELECT sd.*, sthr.t, sd.fc >= sthr.t AS f, sd.obs >= sthr.t AS o
                FROM sd JOIN k USING (space, split, resort_id, local_date, lead) JOIN sthr USING (space))
     SELECT source_label, any_value(paid) AS paid, space, split, coalesce(macro, 'ALL') AS macro, lead, t AS threshold, {sc}
@@ -237,8 +285,9 @@ def snowfall(con, out: Path) -> str:
                            ON lead USING any_value(v) GROUP BY split, region, source
                            ORDER BY CASE split WHEN 'live' THEN 0 ELSE 1 END, region = 'ALL' DESC, region, source""")
 
+    gate = snow_gate(con)
     parts = ["## 2. Snowfall and precipitation (hit rates vs SNOTEL / BC pillows, strict mid pairs)\n",
-             ours_note,
+             ours_note, "\n" + slr_note + "\n", gate,
              "\nCSI = hits ÷ (hits + misses + false alarms): 1 is perfect, 0 is useless. "
              "`*` = fewer than 20 observed events (thin — not a result). Columns are lead days.\n",
              "\n### Snow ≥ 15 cm (powder day), Snow-Forecast vs the models on the same resort-days\n",
@@ -253,11 +302,81 @@ def snowfall(con, out: Path) -> str:
                                round(freq_bias, 2) AS "freq bias"
                         FROM sh2h WHERE space = 'snow' AND threshold = 15 AND macro = 'ALL' AND lead IN (1, 3, 5)
                         ORDER BY split, lead, csi DESC NULLS LAST"""),
+             "\n### Own samples (each source on every day it forecast — NOT head-to-head), snow ≥ 15 cm, all regions\n",
+             csi_table("sscore", "snow", 15.0, "AND macro = 'ALL' AND split IN ('test', 'live')"),
+             "\n### Own samples, snow ≥ 15 cm, by region (test winter)\n",
+             csi_table("sscore", "snow", 15.0, "AND macro <> 'ALL' AND split = 'test' AND (source_label LIKE 'ours%' "
+                       "OR source_label = 'open-meteo-previous-runs:ecmwf_ifs025' OR paid)"),
+             "\n### Own samples, water ≥ 10 mm, all regions\n",
+             csi_table("sscore", "liquid", 10.0, "AND macro = 'ALL' AND split IN ('test', 'live')"),
              "\n### Sample: observed snow ≥ 15 cm days by region (same-day sample)\n",
              md(con, """PIVOT (SELECT split, macro AS region, lead, max(events) AS e FROM sh2h
                                WHERE space = 'snow' AND threshold = 15 AND lead BETWEEN 1 AND 7 GROUP BY ALL)
                         ON lead USING any_value(e) GROUP BY split, region ORDER BY split, region""")]
     return "\n".join(parts)
+
+
+GATE_EVENTS = 40      # observed ≥ 15 cm days on shared resort-days before a lead can be judged
+GATE_LEADS = range(1, 7)
+
+
+def snow_gate(con) -> str:
+    """Days 1–6 show Snow-Forecast today. Ours may replace it at a lead only when, on the SAME resort-days
+    (live season, then test winter if Snow-Forecast was archived there), ours beats it at snow ≥ 15 cm with
+    the whole 90 % date-bootstrap range above zero, ≥ GATE_EVENTS observed events, and is not worse at ≥ 2.5 cm."""
+    rng = np.random.default_rng(20261115)
+    rows = []
+    for split in ("live", "test"):
+        for lead in GATE_LEADS:
+            r = con.execute(f"""
+              WITH k AS (SELECT resort_id, local_date FROM sd WHERE space = 'snow' AND split = '{split}' AND lead = {lead}
+                         GROUP BY ALL HAVING bool_or(source_label = 'snow-forecast')
+                            AND bool_or(source_label = 'ours (blend × SLR)'))
+              SELECT sd.local_date, max(CASE WHEN source_label = 'ours (blend × SLR)' THEN fc END) AS ours,
+                     max(CASE WHEN source_label = 'snow-forecast' THEN fc END) AS sf, any_value(obs) AS obs
+              FROM sd JOIN k USING (resort_id, local_date)
+              WHERE sd.space = 'snow' AND sd.split = '{split}' AND sd.lead = {lead}
+              GROUP BY sd.resort_id, sd.local_date""").fetchnumpy()
+            n = len(r["obs"])
+            row = {"split": split, "lead": lead, "days": n}
+            if n == 0:
+                rows.append({**row, "status": "no shared days"}); continue
+            ud, inv = np.unique(r["local_date"], return_inverse=True)
+            idx = rng.integers(0, len(ud), size=(1000, len(ud)))
+            for thr in (2.5, 15.0):
+                o = r["obs"] >= thr
+                res = []
+                for col in ("ours", "sf"):
+                    f = r[col] >= thr
+                    H = np.bincount(inv, (f & o).astype(int), len(ud)); FA = np.bincount(inv, (f & ~o).astype(int), len(ud))
+                    M = np.bincount(inv, (~f & o).astype(int), len(ud))
+                    res.append((H.sum() / max(H.sum() + M.sum() + FA.sum(), 1),
+                                H[idx].sum(1) / np.maximum(H[idx].sum(1) + M[idx].sum(1) + FA[idx].sum(1), 1)))
+                d = res[0][1] - res[1][1]
+                row[f"ev{thr:g}"] = int(o.sum())
+                row[f"ours{thr:g}"], row[f"sf{thr:g}"] = float(res[0][0]), float(res[1][0])
+                row[f"d{thr:g}"] = (float(np.percentile(d, 5)), float(np.percentile(d, 95)))
+            if row["ev15"] < GATE_EVENTS:
+                row["status"] = f"too few powder days ({row['ev15']} of {GATE_EVENTS})"
+            elif row["d15"][0] > 0 and row["d2.5"][1] >= 0:
+                row["status"] = "OURS AHEAD — eligible to replace Snow-Forecast"
+            elif row["d15"][1] < 0:
+                row["status"] = "Snow-Forecast ahead"
+            else:
+                row["status"] = "no real difference yet"
+            rows.append(row)
+    f = lambda v: "—" if v is None else f"{v:.2f}"
+    rng_ = lambda t: "—" if t is None else f"{t[0]:+.2f} to {t[1]:+.2f}"
+    lines = ["\n### Gate: may ours replace Snow-Forecast on days 1–6?\n",
+             f"Rule: same resort-days, ≥ {GATE_EVENTS} observed ≥ 15 cm days, ours − Snow-Forecast CSI at 15 cm "
+             "above zero across the 90% range, and not worse at 2.5 cm. Until a lead passes, the app keeps "
+             "Snow-Forecast there.\n",
+             "| winter | lead | shared days | ≥15 events | ours CSI 15 | SF CSI 15 | ours − SF (15) | ours − SF (2.5) | status |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    for r in rows:
+        lines.append(f"| {r['split']} | {r['lead']} | {r['days']} | {r.get('ev15', '—')} | {f(r.get('ours15'))} | "
+                     f"{f(r.get('sf15'))} | {rng_(r.get('d15'))} | {rng_(r.get('d2.5'))} | {r['status']} |")
+    return "\n".join(lines) + "\n"
 
 
 # --------------------------------------------------------------------------- wind
