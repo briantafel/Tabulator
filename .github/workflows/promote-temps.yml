@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # a GITHUB_TOKEN push doesn't trigger temps.yml, so it is started explicitly
 
 concurrency:
   group: temps
@@ -74,3 +75,7 @@ jobs:
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "models: promote judged temperature / SLR from verify/latest"
           for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+      - name: Rebuild temperatures with the promoted model
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run temps.yml --ref main
