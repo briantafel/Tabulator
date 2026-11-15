@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { searchResorts } from "../lib/resortSearch.js";
 
 /* Brian's close X from Tabulator-radar-2, in his own coordinates. */
 const CLOSE =
@@ -23,12 +24,9 @@ export default function ResortSearch({ resorts, query, onQuery, onOpen, onClose,
   const field = useRef(null);
   useEffect(() => { field.current?.focus(); }, []);
 
-  /* Contains, case-folded, alphabetical — the Favorites picker's rules, for
-     its reason: you are looking for a name you already know. */
-  const q = query.trim().toLowerCase();
-  const matches = q
-    ? resorts.filter((r) => r.name.toLowerCase().includes(q)).sort((x, y) => x.name.localeCompare(y.name))
-    : [];
+  /* Name contains, as before (the Favorites picker's rule), then resorts that
+     match by place: country, state, range... (src/lib/resortSearch.js). */
+  const matches = searchResorts(resorts, query);
 
   return (
     <>

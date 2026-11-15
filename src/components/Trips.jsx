@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { searchResorts } from "../lib/resortSearch.js";
 import TripWhen from "./TripWhen.jsx";
 import Table from "./Table.jsx";
 import { GLASS, STAR } from "./tripIcons.js";
@@ -112,12 +113,9 @@ export default function Trips({
      Alphabetical, not snowfall order: you are looking for a name you already
      have in mind, so the list has to be where you expect it — and the export
      shows Jackson Hole above Jay Peak, which snowfall order would not. */
-  const q = query.trim().toLowerCase();
-  const matches = q
-    ? data
-      .filter((r) => r.name.toLowerCase().includes(q))
-      .sort((x, y) => x.name.localeCompare(y.name))
-    : [];
+  /* From 2026-11-15 also by place (country, state, range...): name matches
+     first, then place matches (src/lib/resortSearch.js). */
+  const matches = searchResorts(data, query);
 
   return (
     <div className={`trips${empty ? " empty" : ""}${picking ? " picking" : ""}`}>

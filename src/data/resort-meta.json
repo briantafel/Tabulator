@@ -1,0 +1,2606 @@
+{
+ "palisades": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe"
+  ],
+  "aliases": [
+   "Palisades Tahoe",
+   "Squaw Valley",
+   "Squaw",
+   "Olympic Valley",
+   "Alpine Meadows"
+  ]
+ },
+ "heavenly": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA",
+   "Nevada",
+   "NV"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Carson Range",
+   "Lake Tahoe",
+   "Tahoe",
+   "South Lake Tahoe"
+  ],
+  "aliases": []
+ },
+ "kirkwood": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe"
+  ],
+  "aliases": []
+ },
+ "sugar-bowl": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe",
+   "Donner Summit"
+  ],
+  "aliases": []
+ },
+ "northstar": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe",
+   "Truckee"
+  ],
+  "aliases": [
+   "Northstar California"
+  ]
+ },
+ "mt-rose": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Nevada",
+   "NV"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Carson Range",
+   "Lake Tahoe",
+   "Tahoe",
+   "Reno"
+  ],
+  "aliases": [
+   "Mount Rose",
+   "Mt Rose Ski Tahoe"
+  ]
+ },
+ "sierra-at-tahoe": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe"
+  ],
+  "aliases": [
+   "Sierra at Tahoe"
+  ]
+ },
+ "homewood": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Lake Tahoe",
+   "Tahoe"
+  ],
+  "aliases": []
+ },
+ "mammoth": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "California",
+   "CA"
+  ],
+  "range": [
+   "Sierra Nevada",
+   "Sierra"
+  ],
+  "subrange": [
+   "Eastern Sierra"
+  ],
+  "aliases": [
+   "Mammoth Mountain",
+   "Mammoth Lakes"
+  ]
+ },
+ "mt-baker": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West",
+   "Pacific Northwest",
+   "PNW"
+  ],
+  "state": [
+   "Washington",
+   "WA"
+  ],
+  "range": [
+   "Cascades",
+   "Cascade Range"
+  ],
+  "subrange": [
+   "North Cascades"
+  ],
+  "aliases": [
+   "Mount Baker"
+  ]
+ },
+ "crystal": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West",
+   "Pacific Northwest",
+   "PNW"
+  ],
+  "state": [
+   "Washington",
+   "WA"
+  ],
+  "range": [
+   "Cascades",
+   "Cascade Range"
+  ],
+  "subrange": [
+   "Mount Rainier"
+  ],
+  "aliases": [
+   "Crystal Mountain"
+  ]
+ },
+ "stevens-pass": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West",
+   "Pacific Northwest",
+   "PNW"
+  ],
+  "state": [
+   "Washington",
+   "WA"
+  ],
+  "range": [
+   "Cascades",
+   "Cascade Range"
+  ],
+  "subrange": [
+   "Central Cascades"
+  ],
+  "aliases": []
+ },
+ "mt-bachelor": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West",
+   "Pacific Northwest",
+   "PNW"
+  ],
+  "state": [
+   "Oregon",
+   "OR"
+  ],
+  "range": [
+   "Cascades",
+   "Cascade Range"
+  ],
+  "subrange": [
+   "Central Oregon",
+   "Bend"
+  ],
+  "aliases": [
+   "Mount Bachelor"
+  ]
+ },
+ "telluride": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "San Juan Mountains",
+   "San Juans",
+   "Central Rockies"
+  ],
+  "aliases": []
+ },
+ "crested-butte": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Elk Mountains",
+   "Central Rockies"
+  ],
+  "aliases": [
+   "CB",
+   "Mt Crested Butte"
+  ]
+ },
+ "aspen-highlands": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Elk Mountains",
+   "Aspen",
+   "Central Rockies"
+  ],
+  "aliases": [
+   "Aspen Snowmass",
+   "Highlands"
+  ]
+ },
+ "steamboat": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Park Range",
+   "Central Rockies"
+  ],
+  "aliases": [
+   "Steamboat Springs"
+  ]
+ },
+ "vail": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Gore Range",
+   "I-70",
+   "Central Rockies"
+  ],
+  "aliases": []
+ },
+ "breckenridge": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Tenmile Range",
+   "Summit County",
+   "I-70",
+   "Central Rockies"
+  ],
+  "aliases": [
+   "Breck"
+  ]
+ },
+ "arapahoe-basin": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Front Range",
+   "Summit County",
+   "I-70",
+   "Central Rockies"
+  ],
+  "aliases": [
+   "A-Basin",
+   "A Basin"
+  ]
+ },
+ "snowbird": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Little Cottonwood Canyon",
+   "Cottonwoods",
+   "Salt Lake City"
+  ],
+  "aliases": [
+   "The Bird"
+  ]
+ },
+ "alta": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Little Cottonwood Canyon",
+   "Cottonwoods",
+   "Salt Lake City"
+  ],
+  "aliases": []
+ },
+ "brighton": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Big Cottonwood Canyon",
+   "Cottonwoods",
+   "Salt Lake City"
+  ],
+  "aliases": []
+ },
+ "solitude": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Big Cottonwood Canyon",
+   "Cottonwoods",
+   "Salt Lake City"
+  ],
+  "aliases": []
+ },
+ "snowbasin": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Ogden Valley",
+   "Ogden"
+  ],
+  "aliases": []
+ },
+ "powder-mountain": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Utah",
+   "UT"
+  ],
+  "range": [
+   "Wasatch",
+   "Wasatch Range"
+  ],
+  "subrange": [
+   "Ogden Valley",
+   "Ogden"
+  ],
+  "aliases": [
+   "Pow Mow",
+   "PowMow"
+  ]
+ },
+ "jackson-hole": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Wyoming",
+   "WY"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Teton Range",
+   "Tetons",
+   "Teton Village",
+   "Northern Rockies"
+  ],
+  "aliases": [
+   "JHMR",
+   "Jackson Hole Mountain Resort",
+   "Jackson"
+  ]
+ },
+ "grand-targhee": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Wyoming",
+   "WY"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Teton Range",
+   "Tetons",
+   "Northern Rockies"
+  ],
+  "aliases": [
+   "Targhee"
+  ]
+ },
+ "sun-valley": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Idaho",
+   "ID"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Smoky Mountains",
+   "Ketchum",
+   "Northern Rockies"
+  ],
+  "aliases": [
+   "Bald Mountain",
+   "Baldy"
+  ]
+ },
+ "big-sky": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Montana",
+   "MT"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Madison Range",
+   "Lone Peak",
+   "Northern Rockies"
+  ],
+  "aliases": []
+ },
+ "taos": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West",
+   "Southwest"
+  ],
+  "state": [
+   "New Mexico",
+   "NM"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Sangre de Cristo Mountains",
+   "Sangre de Cristos",
+   "Southern Rockies"
+  ],
+  "aliases": [
+   "Taos Ski Valley"
+  ]
+ },
+ "wolf-creek": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "West"
+  ],
+  "state": [
+   "Colorado",
+   "CO"
+  ],
+  "range": [
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "San Juan Mountains",
+   "San Juans",
+   "Southern Rockies"
+  ],
+  "aliases": []
+ },
+ "revelstoke": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Selkirk Mountains",
+   "Selkirks",
+   "Mount Mackenzie",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": [
+   "Revelstoke Mountain Resort",
+   "RMR"
+  ]
+ },
+ "whistler": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Coast Mountains"
+  ],
+  "subrange": [
+   "Garibaldi Ranges",
+   "Sea to Sky"
+  ],
+  "aliases": [
+   "Whistler Blackcomb",
+   "Blackcomb"
+  ]
+ },
+ "lake-louise": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "Alberta",
+   "AB"
+  ],
+  "range": [
+   "Canadian Rockies",
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Banff",
+   "Banff National Park"
+  ],
+  "aliases": [
+   "Louise"
+  ]
+ },
+ "kicking-horse": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Purcell Mountains",
+   "Purcells",
+   "Golden",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": [
+   "Kicking Horse Mountain Resort",
+   "KHMR"
+  ]
+ },
+ "fernie": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Canadian Rockies",
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Lizard Range",
+   "Elk Valley",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": [
+   "Fernie Alpine Resort"
+  ]
+ },
+ "red-mountain": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains",
+   "Monashee Mountains",
+   "Monashees"
+  ],
+  "subrange": [
+   "Rossland Range",
+   "Rossland",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": [
+   "RED",
+   "Red Resort"
+  ]
+ },
+ "whitewater": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Selkirk Mountains",
+   "Selkirks",
+   "Nelson",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": []
+ },
+ "panorama": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Purcell Mountains",
+   "Purcells",
+   "Invermere",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": []
+ },
+ "kimberley": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Purcell Mountains",
+   "Purcells",
+   "BC Interior",
+   "Kootenays"
+  ],
+  "aliases": []
+ },
+ "big-white": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Monashee Mountains",
+   "Monashees"
+  ],
+  "subrange": [
+   "Okanagan Highland",
+   "Kelowna",
+   "BC Interior",
+   "Okanagan"
+  ],
+  "aliases": []
+ },
+ "silverstar": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Monashee Mountains",
+   "Monashees"
+  ],
+  "subrange": [
+   "Okanagan Highland",
+   "Vernon",
+   "BC Interior",
+   "Okanagan"
+  ],
+  "aliases": [
+   "Silver Star"
+  ]
+ },
+ "sun-peaks": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Columbia Mountains"
+  ],
+  "subrange": [
+   "Shuswap Highland",
+   "Kamloops",
+   "BC Interior",
+   "Okanagan"
+  ],
+  "aliases": [
+   "Tod Mountain"
+  ]
+ },
+ "sunshine": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "Alberta",
+   "AB"
+  ],
+  "range": [
+   "Canadian Rockies",
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Banff",
+   "Banff National Park"
+  ],
+  "aliases": [
+   "Sunshine Village",
+   "Banff Sunshine"
+  ]
+ },
+ "norquay": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "Alberta",
+   "AB"
+  ],
+  "range": [
+   "Canadian Rockies",
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Banff",
+   "Banff National Park"
+  ],
+  "aliases": [
+   "Mt Norquay",
+   "Mount Norquay"
+  ]
+ },
+ "marmot": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "Alberta",
+   "AB"
+  ],
+  "range": [
+   "Canadian Rockies",
+   "Rockies",
+   "Rocky Mountains"
+  ],
+  "subrange": [
+   "Jasper",
+   "Jasper National Park"
+  ],
+  "aliases": [
+   "Marmot Basin"
+  ]
+ },
+ "cypress": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "West",
+   "Western Canada"
+  ],
+  "state": [
+   "British Columbia",
+   "BC"
+  ],
+  "range": [
+   "Coast Mountains"
+  ],
+  "subrange": [
+   "North Shore Mountains",
+   "Vancouver"
+  ],
+  "aliases": [
+   "Cypress Mountain"
+  ]
+ },
+ "whiteface": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "East",
+   "Northeast"
+  ],
+  "state": [
+   "New York",
+   "NY"
+  ],
+  "range": [
+   "Adirondacks",
+   "Adirondack Mountains"
+  ],
+  "subrange": [
+   "Lake Placid"
+  ],
+  "aliases": []
+ },
+ "stowe": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "East",
+   "Northeast",
+   "New England"
+  ],
+  "state": [
+   "Vermont",
+   "VT"
+  ],
+  "range": [
+   "Green Mountains"
+  ],
+  "subrange": [
+   "Mount Mansfield"
+  ],
+  "aliases": []
+ },
+ "killington": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "East",
+   "Northeast",
+   "New England"
+  ],
+  "state": [
+   "Vermont",
+   "VT"
+  ],
+  "range": [
+   "Green Mountains"
+  ],
+  "subrange": [],
+  "aliases": [
+   "The Beast"
+  ]
+ },
+ "jay-peak": {
+  "country": [
+   "United States",
+   "US",
+   "USA"
+  ],
+  "area": [
+   "East",
+   "Northeast",
+   "New England"
+  ],
+  "state": [
+   "Vermont",
+   "VT"
+  ],
+  "range": [
+   "Green Mountains"
+  ],
+  "subrange": [
+   "Northeast Kingdom"
+  ],
+  "aliases": [
+   "Jay"
+  ]
+ },
+ "tremblant": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "East",
+   "Eastern Canada"
+  ],
+  "state": [
+   "Quebec",
+   "QC",
+   "Québec"
+  ],
+  "range": [
+   "Laurentians",
+   "Laurentides",
+   "Laurentian Mountains"
+  ],
+  "subrange": [
+   "Northeast"
+  ],
+  "aliases": [
+   "Mont-Tremblant",
+   "Mont Tremblant"
+  ]
+ },
+ "le-massif": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "East",
+   "Eastern Canada"
+  ],
+  "state": [
+   "Quebec",
+   "QC",
+   "Québec"
+  ],
+  "range": [
+   "Laurentians",
+   "Laurentides",
+   "Laurentian Mountains"
+  ],
+  "subrange": [
+   "Charlevoix",
+   "Northeast"
+  ],
+  "aliases": [
+   "Le Massif de Charlevoix"
+  ]
+ },
+ "mont-sainte-anne": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "East",
+   "Eastern Canada"
+  ],
+  "state": [
+   "Quebec",
+   "QC",
+   "Québec"
+  ],
+  "range": [
+   "Laurentians",
+   "Laurentides",
+   "Laurentian Mountains"
+  ],
+  "subrange": [
+   "Quebec City",
+   "Northeast"
+  ],
+  "aliases": [
+   "MSA",
+   "Mont Sainte Anne"
+  ]
+ },
+ "blue-mountain": {
+  "country": [
+   "Canada"
+  ],
+  "area": [
+   "East",
+   "Eastern Canada"
+  ],
+  "state": [
+   "Ontario",
+   "ON"
+  ],
+  "range": [
+   "Niagara Escarpment"
+  ],
+  "subrange": [
+   "Collingwood",
+   "Northeast"
+  ],
+  "aliases": []
+ },
+ "verbier": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Valais",
+   "Wallis"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Pennine Alps",
+   "4 Vallées",
+   "Four Valleys"
+  ],
+  "aliases": []
+ },
+ "zermatt": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Valais",
+   "Wallis"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Pennine Alps",
+   "Matterhorn"
+  ],
+  "aliases": [
+   "Matterhorn Glacier Paradise"
+  ]
+ },
+ "engelberg": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Obwalden"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Uri Alps",
+   "Urner Alps",
+   "Titlis"
+  ],
+  "aliases": [
+   "Engelberg-Titlis"
+  ]
+ },
+ "laax": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Graubünden",
+   "Grisons"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Glarus Alps"
+  ],
+  "aliases": [
+   "Flims",
+   "Flims Laax",
+   "Flims-Laax"
+  ]
+ },
+ "andermatt": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Uri"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Lepontine Alps",
+   "Gemsstock",
+   "Gotthard"
+  ],
+  "aliases": [
+   "Andermatt-Sedrun"
+  ]
+ },
+ "st-moritz": {
+  "country": [
+   "Switzerland",
+   "CH",
+   "Swiss"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Graubünden",
+   "Grisons"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Albula Alps",
+   "Bernina",
+   "Engadin"
+  ],
+  "aliases": [
+   "Saint Moritz",
+   "Corviglia"
+  ]
+ },
+ "st-anton": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Tyrol",
+   "Tirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Arlberg"
+  ],
+  "aliases": [
+   "Saint Anton",
+   "St. Anton am Arlberg"
+  ]
+ },
+ "lech-zurs": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Vorarlberg"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Arlberg"
+  ],
+  "aliases": [
+   "Lech",
+   "Zürs",
+   "Zurs"
+  ]
+ },
+ "ischgl": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Tyrol",
+   "Tirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Silvretta",
+   "Paznaun"
+  ],
+  "aliases": []
+ },
+ "solden": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Tyrol",
+   "Tirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Ötztal Alps",
+   "Otztal Alps",
+   "Ötztal"
+  ],
+  "aliases": [
+   "Soelden"
+  ]
+ },
+ "obergurgl": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Tyrol",
+   "Tirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Ötztal Alps",
+   "Otztal Alps",
+   "Ötztal"
+  ],
+  "aliases": [
+   "Obergurgl-Hochgurgl",
+   "Hochgurgl"
+  ]
+ },
+ "kitzbuhel": {
+  "country": [
+   "Austria",
+   "AT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Tyrol",
+   "Tirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Kitzbühel Alps",
+   "Kitzbuhel Alps"
+  ],
+  "aliases": [
+   "Kitzbuehel",
+   "Kitz"
+  ]
+ },
+ "chamonix": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Haute-Savoie",
+   "Savoie"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Mont Blanc massif",
+   "Mont Blanc"
+  ],
+  "aliases": [
+   "Chamonix-Mont-Blanc",
+   "Cham"
+  ]
+ },
+ "val-disere-tignes": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Savoie"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Graian Alps",
+   "Tarentaise",
+   "Espace Killy"
+  ],
+  "aliases": [
+   "Val d'Isere",
+   "Val Disere",
+   "Tignes"
+  ]
+ },
+ "val-thorens": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Savoie"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Vanoise",
+   "Tarentaise",
+   "Three Valleys",
+   "3 Vallées",
+   "Les 3 Vallées"
+  ],
+  "aliases": []
+ },
+ "la-grave": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Hautes-Alpes"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Écrins",
+   "Ecrins",
+   "La Meije"
+  ],
+  "aliases": [
+   "La Grave-La Meije"
+  ]
+ },
+ "les-arcs": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Savoie"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Tarentaise",
+   "Paradiski"
+  ],
+  "aliases": [
+   "Arc 1950",
+   "Arc 2000"
+  ]
+ },
+ "alpe-dhuez": {
+  "country": [
+   "France",
+   "FR"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Isère",
+   "Isere"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Grandes Rousses",
+   "Oisans"
+  ],
+  "aliases": [
+   "Alpe d Huez",
+   "Alpe dHuez"
+  ]
+ },
+ "cervinia": {
+  "country": [
+   "Italy",
+   "IT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Aosta Valley",
+   "Valle d'Aosta"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Pennine Alps",
+   "Matterhorn",
+   "Monte Cervino"
+  ],
+  "aliases": [
+   "Breuil-Cervinia"
+  ]
+ },
+ "courmayeur": {
+  "country": [
+   "Italy",
+   "IT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Aosta Valley",
+   "Valle d'Aosta"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Mont Blanc massif",
+   "Monte Bianco"
+  ],
+  "aliases": []
+ },
+ "livigno": {
+  "country": [
+   "Italy",
+   "IT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "Lombardy",
+   "Lombardia"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Livigno Alps",
+   "Rhaetian Alps",
+   "Valtellina"
+  ],
+  "aliases": [
+   "Little Tibet"
+  ]
+ },
+ "val-gardena": {
+  "country": [
+   "Italy",
+   "IT"
+  ],
+  "area": [
+   "Europe"
+  ],
+  "state": [
+   "South Tyrol",
+   "Alto Adige",
+   "Südtirol"
+  ],
+  "range": [
+   "Alps"
+  ],
+  "subrange": [
+   "Dolomites",
+   "Dolomiti",
+   "Dolomiti Superski",
+   "Sella Ronda"
+  ],
+  "aliases": [
+   "Gröden",
+   "Selva",
+   "Selva di Val Gardena",
+   "Ortisei"
+  ]
+ },
+ "niseko": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Hokkaido"
+  ],
+  "range": [
+   "Niseko Range"
+  ],
+  "subrange": [
+   "Mount Annupuri",
+   "Annupuri",
+   "Shiribeshi"
+  ],
+  "aliases": [
+   "Niseko United",
+   "Grand Hirafu",
+   "Hirafu"
+  ]
+ },
+ "rusutsu": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Hokkaido"
+  ],
+  "range": [
+   "Shiribeshi"
+  ],
+  "subrange": [],
+  "aliases": [
+   "Rusutsu Resort"
+  ]
+ },
+ "kiroro": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Hokkaido"
+  ],
+  "range": [
+   "Shiribeshi"
+  ],
+  "subrange": [
+   "Otaru"
+  ],
+  "aliases": [
+   "Kiroro Snow World"
+  ]
+ },
+ "furano": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Hokkaido"
+  ],
+  "range": [
+   "Central Hokkaido"
+  ],
+  "subrange": [
+   "Tokachi Range"
+  ],
+  "aliases": []
+ },
+ "asahidake": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Hokkaido"
+  ],
+  "range": [
+   "Daisetsuzan",
+   "Daisetsu Mountains"
+  ],
+  "subrange": [
+   "Asahikawa",
+   "Mount Asahi"
+  ],
+  "aliases": [
+   "Asahi-dake"
+  ]
+ },
+ "hakuba-happo": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Nagano",
+   "Honshu"
+  ],
+  "range": [
+   "Japanese Alps",
+   "Northern Alps",
+   "Hida Mountains"
+  ],
+  "subrange": [
+   "Hakuba Valley"
+  ],
+  "aliases": [
+   "Hakuba",
+   "Happo-one",
+   "Happo One"
+  ]
+ },
+ "myoko-akakura": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Niigata",
+   "Honshu"
+  ],
+  "range": [
+   "Myoko Kogen"
+  ],
+  "subrange": [
+   "Mount Myoko"
+  ],
+  "aliases": [
+   "Myoko",
+   "Akakura",
+   "Akakura Kanko"
+  ]
+ },
+ "nozawa-onsen": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Nagano",
+   "Honshu"
+  ],
+  "range": [
+   "Northern Nagano"
+  ],
+  "subrange": [],
+  "aliases": [
+   "Nozawa"
+  ]
+ },
+ "shiga-kogen": {
+  "country": [
+   "Japan",
+   "JP"
+  ],
+  "area": [
+   "Asia"
+  ],
+  "state": [
+   "Nagano",
+   "Honshu"
+  ],
+  "range": [
+   "Joshinetsu Kogen"
+  ],
+  "subrange": [],
+  "aliases": [
+   "Shiga"
+  ]
+ },
+ "portillo": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Valparaíso",
+   "Valparaiso"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Central Andes",
+   "Los Andes"
+  ],
+  "aliases": [
+   "Ski Portillo"
+  ]
+ },
+ "valle-nevado": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Santiago",
+   "Santiago Metropolitan"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Central Andes",
+   "Tres Valles",
+   "Three Valleys",
+   "Farellones"
+  ],
+  "aliases": []
+ },
+ "la-parva": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Santiago",
+   "Santiago Metropolitan"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Central Andes",
+   "Tres Valles",
+   "Three Valleys",
+   "Farellones"
+  ],
+  "aliases": []
+ },
+ "el-colorado": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Santiago",
+   "Santiago Metropolitan"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Central Andes",
+   "Tres Valles",
+   "Three Valleys",
+   "Farellones"
+  ],
+  "aliases": []
+ },
+ "nevados-de-chillan": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Ñuble",
+   "Nuble"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Chillán volcano",
+   "Chillan"
+  ],
+  "aliases": [
+   "Nevados de Chillan",
+   "Chillan"
+  ]
+ },
+ "corralco": {
+  "country": [
+   "Chile",
+   "CL"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Araucanía",
+   "Araucania"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Lonquimay volcano"
+  ],
+  "aliases": [
+   "Lonquimay"
+  ]
+ },
+ "las-lenas": {
+  "country": [
+   "Argentina",
+   "AR"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Mendoza"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Central Andes"
+  ],
+  "aliases": [
+   "Las Lenas"
+  ]
+ },
+ "cerro-catedral": {
+  "country": [
+   "Argentina",
+   "AR"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Río Negro",
+   "Rio Negro"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Patagonia",
+   "Bariloche"
+  ],
+  "aliases": [
+   "Catedral",
+   "Catedral Alta Patagonia"
+  ]
+ },
+ "chapelco": {
+  "country": [
+   "Argentina",
+   "AR"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Neuquén",
+   "Neuquen"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Patagonia",
+   "San Martín de los Andes",
+   "San Martin de los Andes"
+  ],
+  "aliases": [
+   "Cerro Chapelco"
+  ]
+ },
+ "cerro-castor": {
+  "country": [
+   "Argentina",
+   "AR"
+  ],
+  "area": [
+   "South America"
+  ],
+  "state": [
+   "Tierra del Fuego"
+  ],
+  "range": [
+   "Andes"
+  ],
+  "subrange": [
+   "Fuegian Andes",
+   "Patagonia",
+   "Ushuaia"
+  ],
+  "aliases": [
+   "Castor"
+  ]
+ },
+ "gudauri": {
+  "country": [
+   "Georgia",
+   "GE",
+   "Sakartvelo"
+  ],
+  "area": [
+   "Europe",
+   "Asia"
+  ],
+  "state": [
+   "Mtskheta-Mtianeti"
+  ],
+  "range": [
+   "Caucasus",
+   "Greater Caucasus"
+  ],
+  "subrange": [
+   "Kazbegi",
+   "Georgian Military Road"
+  ],
+  "aliases": []
+ },
+ "bakuriani": {
+  "country": [
+   "Georgia",
+   "GE",
+   "Sakartvelo"
+  ],
+  "area": [
+   "Europe",
+   "Asia"
+  ],
+  "state": [
+   "Samtskhe-Javakheti"
+  ],
+  "range": [
+   "Caucasus",
+   "Lesser Caucasus"
+  ],
+  "subrange": [
+   "Trialeti Range",
+   "Borjomi"
+  ],
+  "aliases": []
+ },
+ "goderdzi": {
+  "country": [
+   "Georgia",
+   "GE",
+   "Sakartvelo"
+  ],
+  "area": [
+   "Europe",
+   "Asia"
+  ],
+  "state": [
+   "Adjara"
+  ],
+  "range": [
+   "Caucasus",
+   "Lesser Caucasus"
+  ],
+  "subrange": [
+   "Arsiani Range"
+  ],
+  "aliases": [
+   "Goderdzi Pass"
+  ]
+ },
+ "tetnuldi": {
+  "country": [
+   "Georgia",
+   "GE",
+   "Sakartvelo"
+  ],
+  "area": [
+   "Europe",
+   "Asia"
+  ],
+  "state": [
+   "Samegrelo-Zemo Svaneti",
+   "Svaneti"
+  ],
+  "range": [
+   "Caucasus",
+   "Greater Caucasus"
+  ],
+  "subrange": [
+   "Mestia"
+  ],
+  "aliases": []
+ },
+ "hatsvali": {
+  "country": [
+   "Georgia",
+   "GE",
+   "Sakartvelo"
+  ],
+  "area": [
+   "Europe",
+   "Asia"
+  ],
+  "state": [
+   "Samegrelo-Zemo Svaneti",
+   "Svaneti"
+  ],
+  "range": [
+   "Caucasus",
+   "Greater Caucasus"
+  ],
+  "subrange": [
+   "Mestia"
+  ],
+  "aliases": [
+   "Mestia",
+   "Hatsvali"
+  ]
+ },
+ "hemsedal": {
+  "country": [
+   "Norway",
+   "NO"
+  ],
+  "area": [
+   "Scandinavia",
+   "Europe",
+   "Nordic"
+  ],
+  "state": [
+   "Buskerud"
+  ],
+  "range": [
+   "Scandes",
+   "Scandinavian Mountains"
+  ],
+  "subrange": [
+   "Hallingdal"
+  ],
+  "aliases": []
+ },
+ "trysil": {
+  "country": [
+   "Norway",
+   "NO"
+  ],
+  "area": [
+   "Scandinavia",
+   "Europe",
+   "Nordic"
+  ],
+  "state": [
+   "Innlandet"
+  ],
+  "range": [
+   "Scandes",
+   "Scandinavian Mountains"
+  ],
+  "subrange": [],
+  "aliases": []
+ },
+ "narvik": {
+  "country": [
+   "Norway",
+   "NO"
+  ],
+  "area": [
+   "Scandinavia",
+   "Europe",
+   "Nordic",
+   "Arctic"
+  ],
+  "state": [
+   "Nordland"
+  ],
+  "range": [
+   "Scandes",
+   "Scandinavian Mountains"
+  ],
+  "subrange": [
+   "Ofoten"
+  ],
+  "aliases": [
+   "Narvikfjellet"
+  ]
+ },
+ "are": {
+  "country": [
+   "Sweden",
+   "SE"
+  ],
+  "area": [
+   "Scandinavia",
+   "Europe",
+   "Nordic"
+  ],
+  "state": [
+   "Jämtland",
+   "Jamtland"
+  ],
+  "range": [
+   "Scandes",
+   "Scandinavian Mountains"
+  ],
+  "subrange": [],
+  "aliases": [
+   "Åre",
+   "Are",
+   "Åre Duved"
+  ]
+ },
+ "riksgransen": {
+  "country": [
+   "Sweden",
+   "SE"
+  ],
+  "area": [
+   "Scandinavia",
+   "Europe",
+   "Nordic",
+   "Arctic"
+  ],
+  "state": [
+   "Norrbotten",
+   "Lapland"
+  ],
+  "range": [
+   "Scandes",
+   "Scandinavian Mountains"
+  ],
+  "subrange": [],
+  "aliases": [
+   "Riksgränsen"
+  ]
+ }
+}
