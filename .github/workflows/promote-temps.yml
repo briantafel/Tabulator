@@ -46,8 +46,8 @@ jobs:
       - name: Show the public-data judgement (no paid rows)
         run: |
           # temps_report.md is public models vs SNOTEL only. slr_report.md is cut BEFORE its Snow-Forecast section.
-          cat /tmp/temps_report.md >> "$GITHUB_STEP_SUMMARY"
-          python3 -c "import sys;t=open('/tmp/slr_report.md').read();print(t.split('## Ours (ECMWF water')[0].replace('PRIVATE (contains paid-source comparison).',''))" >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/temps_report.md | tee -a "$GITHUB_STEP_SUMMARY"
+          python3 -c "import sys;t=open('/tmp/slr_report.md').read();print(t.split('## Ours (ECMWF water')[0].replace('PRIVATE (contains paid-source comparison).',''))" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Keep promoted parts only
         run: python3 scripts/model/promote_temps.py /tmp/temp-model.json public/temp-model.json 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: SLR — ship only if promoted at every judged lead
