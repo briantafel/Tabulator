@@ -1,59 +1,45 @@
 {
- "generatedAt": "2026-11-14T13:35:52.954Z",
- "forecastGeneratedAt": "2026-11-14T13:29:06.635Z",
+ "generatedAt": "2026-11-15T01:06:45.050Z",
+ "forecastGeneratedAt": "2026-11-15T01:00:24.562Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-14",
+  "from": "2026-11-15",
   "to": "2026-11-19",
-  "days": 6,
+  "days": 5,
   "toLabel": "Thursday Nov 19"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 39\". Sugar Bowl about 32\" and Palisades about 31\". The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. The NWS is calling for more at Kirkwood: 35 to 60\" Saturday night through Thursday night."
+   "text": "Kirkwood leads at 32\" over the window, with its biggest day Thursday at 17\". The NWS is calling for more, 44 to 71 inches Sunday night through Thursday night. A Winter Weather Advisory runs Sunday through Monday night. Sugar Bowl sits at 25\" and Palisades at 23\"."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 31\", 18\" of it Thursday."
+   "text": "Mammoth gets 23\" with 17\" due Thursday. Expect strong southwest wind, with gusts to 60 mph Wednesday night, and wind chill near 12 Sunday night. The NWS is calling for more, 24 to 40 inches Monday through Thursday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 15\", 8\" of it Saturday. Cypress Mountain about 5\"."
-  },
-  {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Alta is forecast for about 8\", 4\" of it Tuesday. Brighton about 8\" and Snowbird about 8\". The NWS is calling for more at Alta: 24 to 46\" Saturday through Thursday night."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Telluride is forecast for about 11\", 6\" of it Saturday. Crested Butte about 5\" and Aspen Highlands about 4\". The NWS is calling for more at Crested Butte: 3 to 8\" Saturday through Thursday night."
-  },
-  {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 9\", 6\" of it Tuesday. Taos about 5\". The NWS is calling for more at Wolf Creek: 17 to 33\" Saturday through Thursday night. Winter Weather Advisory at Wolf Creek from Saturday to Saturday night."
+   "text": "Whistler sees 8\", mostly Sunday at 7\", but it arrives as rain. Winds gust to 40 km/h Sunday morning, and showers continue through Monday. Cypress Mountain gets 4\" with a risk of thunderstorms Sunday afternoon. Both turn to sun and cloud midweek."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-14T13:29:06.635Z"
+   "issuedAt": "2026-11-15T01:00:24.562Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-14T13:35:52.665Z"
+   "issuedAt": "2026-11-15T01:06:44.739Z"
   }
  ],
  "api": {
-  "day": "2026-11-14",
-  "calls": 3
+  "day": "2026-11-15",
+  "calls": 1
  }
 }
