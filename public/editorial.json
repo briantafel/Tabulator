@@ -1,114 +1,60 @@
 {
- "generatedAt": "2026-11-16T01:05:51.646Z",
- "forecastGeneratedAt": "2026-11-16T00:59:16.090Z",
+ "generatedAt": "2026-11-16T15:48:50.124Z",
+ "forecastGeneratedAt": "2026-11-16T15:42:21.620Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-16",
-  "to": "2026-11-20",
-  "days": 5,
-  "toLabel": "Friday Nov 20"
+  "to": "2026-11-21",
+  "days": 6,
+  "toLabel": "Saturday Nov 21"
  },
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 50\" over the week, peaking at 26\" Wednesday. Heavy snow is forecast Wednesday and Wednesday night. A Winter Storm Watch runs Tuesday night through Friday. Palisades (38\") and Sierra-at-Tahoe (36\") are close behind."
+   "text": "Kirkwood leads with 59\" over the window, peaking at 31\" Wednesday. Winds are strong, with gusts to 54 mph. Winter Storm Watch runs Tuesday night through Friday. Palisades and Sugar Bowl each show 48\", peaking at 22\" Wednesday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth gets 38\" over the week, peaking at 22\" Wednesday. Expect strong southwest wind with gusts to 60 mph Wednesday night. The NWS is calling for more, 34\" to 57\" Monday through Friday. A Winter Storm Watch runs Wednesday through Friday."
+   "text": "Mammoth shows 42\", peaking at 19\" Wednesday. Winds reach gusts of 65 mph Wednesday night. Winter Storm Watch runs Wednesday through Friday. The NWS is calling for more, 46\" to 69\" Monday through Thursday night."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Powder Mountain, Snowbird and Alta are all in the 12\" to 13\" range, with Tuesday the biggest day at 7\". The NWS is calling for more at Powder Mountain (20\" to 36\") and Snowbird (25\" to 45\") Tuesday through Friday night. Snow levels could drop near 5,000 feet Friday night."
+   "text": "Snowbird and Alta each show 16\", with 9\" Tuesday. Snowbasin shows the same 16\". The NWS is calling for more, 22\" to 45\" at Snowbird and 29\" to 53\" at Alta, Tuesday through Friday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee leads at 12\", with snow showers Tuesday and Friday. Sun Valley (10\") and Jackson Hole (9\") bring light to moderate snow showers across the week. The NWS is calling for more at Grand Targhee, 9\" to 21\" Tuesday through Friday night."
+   "text": "Grand Targhee shows 11\", with 8\" Tuesday. The NWS is calling for more, 11\" to 23\" Tuesday through Friday night. Big Sky shows 9\", with 6\" Tuesday. Jackson Hole also shows 9\"."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat tops the region at 9\", but most of it is due Friday, when 8\" is forecast. Tuesday brings rain mixed with snow at Steamboat. Telluride (8\") and Crested Butte (7\") see their snow mostly Tuesday and Friday."
+   "text": "Telluride shows 9\", peaking at 4\" Friday. The NWS is calling for more, 8\" to 15\" Tuesday through Friday. Crested Butte shows 6\", with 4\" Friday. Steamboat shows 5\" Friday."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek leads with 14\", peaking at 8\" Tuesday. Gusts to 60 mph are forecast Tuesday night, so expect rough lift conditions. The NWS is calling for more at Wolf Creek, 16\" to 32\" Tuesday through Friday night. Taos sees only 2\" over the week."
+   "text": "Wolf Creek shows 9\", with 5\" Friday. Winds reach gusts of 60 mph Tuesday night and Friday. The NWS is calling for more, 17\" to 33\" Tuesday through Friday night. Taos shows 2\"."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center expects a Pacific atmospheric river to bring heavy mountain snow to California around Wednesday Nov 25. Confidence in the timing and track is moderate, since model runs still disagree on the storm's speed.",
-  "sources": [
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-15T22:01:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-15T21:46:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
-   },
-   {
-    "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-11-15T23:20:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-16T00:06:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-15T23:31:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-15T23:45:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-11-15T23:55:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
-   },
-   {
-    "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-11-16T00:01:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-15T18:53:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-15T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-16T00:59:16.090Z"
+   "issuedAt": "2026-11-16T15:42:21.620Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-16T01:05:51.390Z"
+   "issuedAt": "2026-11-16T15:48:49.827Z"
   }
  ],
  "api": {
   "day": "2026-11-16",
-  "calls": 1
+  "calls": 3
  }
 }
