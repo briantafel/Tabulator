@@ -23,6 +23,12 @@ export const SCHEDULE = [
   // compares itself against that pass.
   { file: "ensembles-om.yml", every: 24, offset: 8 },
   { file: "projections-dyn.yml", every: 24, offset: 10 },
+  // 2026-11-16: the scoring job and the temperature build were on GitHub's
+  // cron only, and GitHub skipped them (no verify run on 11-16 until Brian
+  // asked). verify after the 02:30 archive run and the 08:13 ensemble pass;
+  // temps after each main model cycle, as temps.yml's own cron says.
+  { file: "verify.yml", every: 24, offset: 9 },
+  { file: "temps.yml", every: 6, offset: 5 },
 ];
 
 export function due(hour, schedule = SCHEDULE) {
