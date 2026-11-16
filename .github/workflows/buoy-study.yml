@@ -8,6 +8,12 @@ name: Buoy study (Powder Buoy test)
 # report is this run's summary page and the buoy-study artifact.
 on:
   workflow_dispatch:
+    inputs:
+      buoy:
+        description: "NDBC buoy: 51101 (NW of Kauai) or 51001 (Hawaii Buoy One, Ruzek's original)"
+        type: choice
+        options: ["51101", "51001"]
+        default: "51101"
 
 permissions:
   contents: read
@@ -24,10 +30,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node scripts/research/buoy-study.js
+        env:
+          BUOY: ${{ inputs.buoy }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: buoy-study
+          name: buoy-study-${{ inputs.buoy }}
           path: out/
           if-no-files-found: ignore
           retention-days: 90

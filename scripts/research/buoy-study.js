@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ------------------------------------------------------------------ *
- * The Powder Buoy test: does a swell "pop" at NOAA buoy 51101 predict a
+ * The Powder Buoy test: does a swell "pop" at a NOAA buoy (51101 or 51001) predict a
  * storm in our mountains about two weeks later? Run by
  * .github/workflows/buoy-study.yml (the sandbox cannot reach NOAA or
  * SNOTEL). Writes out/buoy-study.md (also the job summary) and CSVs.
@@ -16,7 +16,13 @@ import {
   parseNdbc, dailyMax, findPops, gainsFromAccum, regionDaily, score, lagScan, persistenceSplit, seasonOf, PRIMARY,
 } from "./buoy-stats.js";
 
-const BUOY = "51101";
+/* Which buoy. 51101 (NW of Kauai) is the one the Powder Buoy press names;
+   Ruzek has said he started on 51001 ("Hawaii Buoy One", farther NW) in
+   2002, so the study runs on either. Same pre-registered definition for
+   both: the thresholds were fixed before any result and are not retuned
+   per buoy. */
+const BUOY = process.env.BUOY ?? "51101";
+if (!/^\d{5}$/.test(BUOY)) throw new Error(`BUOY must be a 5-digit NDBC station id, got "${BUOY}"`);
 const FIRST_YEAR = Number(process.env.BUOY_FIRST_YEAR ?? 2008);
 const LAST_WINTER_END = process.env.LAST_WINTER_END ?? "2026-04-30";
 const AWDB = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
