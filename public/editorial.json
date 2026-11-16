@@ -1,60 +1,60 @@
 {
- "generatedAt": "2026-11-16T15:48:50.124Z",
- "forecastGeneratedAt": "2026-11-16T15:42:21.620Z",
+ "generatedAt": "2026-11-16T16:52:34.114Z",
+ "forecastGeneratedAt": "2026-11-16T16:46:12.048Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-16",
   "to": "2026-11-21",
   "days": 6,
   "toLabel": "Saturday Nov 21"
  },
+ "overview": null,
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood leads with 59\" over the window, peaking at 31\" Wednesday. Winds are strong, with gusts to 54 mph. Winter Storm Watch runs Tuesday night through Friday. Palisades and Sugar Bowl each show 48\", peaking at 22\" Wednesday."
+   "text": "Kirkwood is forecast for about 59\", 31\" of it Wednesday. Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. Winter Storm Watch at Kirkwood from Tuesday night to Friday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth shows 42\", peaking at 19\" Wednesday. Winds reach gusts of 65 mph Wednesday night. Winter Storm Watch runs Wednesday through Friday. The NWS is calling for more, 46\" to 69\" Monday through Thursday night."
+   "text": "Mammoth is forecast for about 42\". The National Weather Service has heavy snow at Mammoth Wednesday and Wednesday night. The NWS is calling for more at Mammoth: 46 to 69 inches Monday through Thursday night. Winter Storm Warning at Mammoth from Wednesday to Friday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Snowbird and Alta each show 16\", with 9\" Tuesday. Snowbasin shows the same 16\". The NWS is calling for more, 22\" to 45\" at Snowbird and 29\" to 53\" at Alta, Tuesday through Friday night."
+   "text": "Snowbird is forecast for about 16\", 9\" of it Tuesday. Alta and Snowbasin follow. The NWS is calling for more at Snowbird: 22 to 45 inches Tuesday through Friday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee shows 11\", with 8\" Tuesday. The NWS is calling for more, 11\" to 23\" Tuesday through Friday night. Big Sky shows 9\", with 6\" Tuesday. Jackson Hole also shows 9\"."
+   "text": "Grand Targhee is forecast for about 11\", 8\" of it Tuesday. Big Sky and Jackson Hole follow. The NWS is calling for more at Grand Targhee: 12 to 25 inches Tuesday through Friday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride shows 9\", peaking at 4\" Friday. The NWS is calling for more, 8\" to 15\" Tuesday through Friday. Crested Butte shows 6\", with 4\" Friday. Steamboat shows 5\" Friday."
+   "text": "Telluride is forecast for about 9\". Crested Butte and Steamboat follow. The NWS is calling for more at Telluride: 8 to 15 inches Tuesday through Friday."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek shows 9\", with 5\" Friday. Winds reach gusts of 60 mph Tuesday night and Friday. The NWS is calling for more, 17\" to 33\" Tuesday through Friday night. Taos shows 2\"."
+   "text": "Wolf Creek is forecast for about 9\", 5\" of it Friday. Taos follows. The NWS is calling for more at Wolf Creek: 17 to 33 inches Tuesday through Friday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-16T15:42:21.620Z"
+   "issuedAt": "2026-11-16T16:46:12.048Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-16T15:48:49.827Z"
+   "issuedAt": "2026-11-16T16:52:33.865Z"
   }
  ],
  "api": {
   "day": "2026-11-16",
-  "calls": 3
+  "calls": 5
  }
 }

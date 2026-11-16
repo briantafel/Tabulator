@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-16T15:48:49.827Z",
+ "generatedAt": "2026-11-16T16:52:33.865Z",
  "source": "api.weather.gov + api.weather.gc.ca",
  "note": "US resorts: National Weather Service, for a point on each mountain. Canadian resorts: Environment and Climate Change Canada, for the nearest forecast town; alerts for the resort's own point.",
  "resorts": {
@@ -17,8 +17,8 @@
      "isDaytime": true,
      "temperature": 35,
      "shortForecast": "Snow",
-     "detailedForecast": "Snow before 8am, then snow and areas of freezing fog between 8am and 2pm, then snow likely and areas of fog. Mostly cloudy. High near 35, with temperatures falling to around 29 in the afternoon. Southwest wind around 5 mph. Chance of precipitation is 100%. New snow accumulation of 3 to 5 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "detailedForecast": "Snow and areas of freezing fog before 2pm, then snow likely and areas of fog. Mostly cloudy. High near 35, with temperatures falling to around 29 in the afternoon. Southwest wind around 3 mph. Chance of precipitation is 90%. New snow accumulation of 3 to 5 inches possible.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -155,7 +155,7 @@
      "temperature": 31,
      "shortForecast": "Light Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a high near 31. Southwest wind 10 to 20 mph. Chance of precipitation is 90%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -264,15 +264,15 @@
    ],
    "alerts": [
     {
-     "event": "Winter Storm Watch",
-     "headline": "Winter Storm Watch issued November 16 at 2:05AM PST until November 20 at 4:00AM PST by NWS Reno NV",
+     "event": "Winter Storm Warning",
+     "headline": "Winter Storm Warning issued November 16 at 8:34AM PST until November 20 at 4:00AM PST by NWS Reno NV",
      "onset": "2026-11-18T04:00:00-08:00",
      "ends": "2026-11-20T04:00:00-08:00"
     },
     {
      "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 16 at 2:05AM PST until November 16 at 7:00PM PST by NWS Reno NV",
-     "onset": "2026-11-16T02:05:00-08:00",
+     "headline": "Winter Weather Advisory issued November 16 at 8:34AM PST until November 16 at 7:00PM PST by NWS Reno NV",
+     "onset": "2026-11-16T08:34:00-08:00",
      "ends": "2026-11-16T19:00:00-08:00"
     }
    ]
@@ -291,8 +291,8 @@
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Snow",
-     "detailedForecast": "Snow and areas of fog before 7am, then snow and areas of freezing fog between 7am and noon, then snow and areas of fog between noon and 2pm, then snow and areas of freezing fog. Cloudy. High near 34, with temperatures falling to around 28 in the afternoon. Southwest wind 2 to 8 mph, with gusts as high as 22 mph. Chance of precipitation is 100%. New snow accumulation of 6 to 10 inches possible.",
-     "startTime": "2026-11-16T06:00:00-08:00"
+     "detailedForecast": "Snow and areas of freezing fog before noon, then snow and areas of fog between noon and 2pm, then snow and areas of freezing fog. Cloudy. High near 34, with temperatures falling to around 28 in the afternoon. West southwest wind around 5 mph. Chance of precipitation is 100%. New snow accumulation of 6 to 10 inches possible.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -428,8 +428,8 @@
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Snow",
-     "detailedForecast": "Snow and areas of freezing fog before noon, then snow likely and areas of fog between noon and 1pm, then areas of freezing fog and a chance of snow between 1pm and 2pm, then areas of fog and a chance of snow between 2pm and 3pm, then areas of freezing fog and a chance of snow. Mostly cloudy. High near 34, with temperatures falling to around 31 in the afternoon. Southwest wind 1 to 5 mph. Chance of precipitation is 90%. New snow accumulation of 3 to 5 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "detailedForecast": "Snow and areas of freezing fog before noon, then snow likely and areas of fog between noon and 1pm, then areas of freezing fog and a chance of snow between 1pm and 2pm, then areas of fog and a chance of snow between 2pm and 3pm, then areas of freezing fog and a chance of snow. Mostly cloudy. High near 34, with temperatures falling to around 31 in the afternoon. Southwest wind 1 to 5 mph. Chance of precipitation is 80%. New snow accumulation of 3 to 5 inches possible.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -566,7 +566,7 @@
      "temperature": 39,
      "shortForecast": "Light Snow",
      "detailedForecast": "Snow. Mostly cloudy. High near 39, with temperatures falling to around 31 in the afternoon. West wind 0 to 5 mph. Chance of precipitation is 100%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -675,15 +675,15 @@
    ],
    "alerts": [
     {
-     "event": "Winter Storm Watch",
-     "headline": "Winter Storm Watch issued November 16 at 2:05AM PST until November 20 at 4:00AM PST by NWS Reno NV",
+     "event": "Winter Storm Warning",
+     "headline": "Winter Storm Warning issued November 16 at 8:34AM PST until November 20 at 4:00AM PST by NWS Reno NV",
      "onset": "2026-11-18T04:00:00-08:00",
      "ends": "2026-11-20T04:00:00-08:00"
     },
     {
      "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 16 at 2:05AM PST until November 16 at 7:00PM PST by NWS Reno NV",
-     "onset": "2026-11-16T02:05:00-08:00",
+     "headline": "Winter Weather Advisory issued November 16 at 8:34AM PST until November 16 at 7:00PM PST by NWS Reno NV",
+     "onset": "2026-11-16T08:34:00-08:00",
      "ends": "2026-11-16T19:00:00-08:00"
     }
    ]
@@ -702,8 +702,8 @@
      "isDaytime": true,
      "temperature": 33,
      "shortForecast": "Light Snow",
-     "detailedForecast": "Snow. Mostly cloudy. High near 33, with temperatures falling to around 23 in the afternoon. Southwest wind 15 to 35 mph, with gusts as high as 55 mph. Chance of precipitation is 90%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-11-16T06:00:00-08:00"
+     "detailedForecast": "Snow. Mostly cloudy. High near 33, with temperatures falling to around 23 in the afternoon. Southwest wind 15 to 20 mph, with gusts as high as 30 mph. Chance of precipitation is 90%. New snow accumulation of 1 to 2 inches possible.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -812,15 +812,15 @@
    ],
    "alerts": [
     {
-     "event": "Winter Storm Watch",
-     "headline": "Winter Storm Watch issued November 16 at 2:05AM PST until November 20 at 4:00AM PST by NWS Reno NV",
+     "event": "Winter Storm Warning",
+     "headline": "Winter Storm Warning issued November 16 at 8:34AM PST until November 20 at 4:00AM PST by NWS Reno NV",
      "onset": "2026-11-18T04:00:00-08:00",
      "ends": "2026-11-20T04:00:00-08:00"
     },
     {
      "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 16 at 2:05AM PST until November 16 at 7:00PM PST by NWS Reno NV",
-     "onset": "2026-11-16T02:05:00-08:00",
+     "headline": "Winter Weather Advisory issued November 16 at 8:34AM PST until November 16 at 7:00PM PST by NWS Reno NV",
+     "onset": "2026-11-16T08:34:00-08:00",
      "ends": "2026-11-16T19:00:00-08:00"
     }
    ]
@@ -840,7 +840,7 @@
      "temperature": 33,
      "shortForecast": "Snow",
      "detailedForecast": "Snow and areas of freezing fog before noon, then snow and areas of fog between noon and 2pm, then snow and areas of freezing fog between 2pm and 4pm, then areas of freezing fog and a chance of snow. Cloudy. High near 33, with temperatures falling to around 27 in the afternoon. Southwest wind around 3 mph. Chance of precipitation is 100%. New snow accumulation of 4 to 8 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -977,7 +977,7 @@
      "temperature": 35,
      "shortForecast": "Light Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a high near 35. West wind around 0 mph. Chance of precipitation is 100%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1086,15 +1086,15 @@
    ],
    "alerts": [
     {
-     "event": "Winter Storm Watch",
-     "headline": "Winter Storm Watch issued November 16 at 2:05AM PST until November 20 at 4:00AM PST by NWS Reno NV",
+     "event": "Winter Storm Warning",
+     "headline": "Winter Storm Warning issued November 16 at 8:34AM PST until November 20 at 4:00AM PST by NWS Reno NV",
      "onset": "2026-11-18T04:00:00-08:00",
      "ends": "2026-11-20T04:00:00-08:00"
     },
     {
      "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 16 at 2:05AM PST until November 16 at 7:00PM PST by NWS Reno NV",
-     "onset": "2026-11-16T02:05:00-08:00",
+     "headline": "Winter Weather Advisory issued November 16 at 8:34AM PST until November 16 at 7:00PM PST by NWS Reno NV",
+     "onset": "2026-11-16T08:34:00-08:00",
      "ends": "2026-11-16T19:00:00-08:00"
     }
    ]
@@ -1114,7 +1114,7 @@
      "temperature": 31,
      "shortForecast": "Snow",
      "detailedForecast": "Snow after 10am. Mostly cloudy. High near 31, with temperatures falling to around 25 in the afternoon. Wind chill values as low as 11. Southwest wind 15 to 25 mph, with gusts as high as 40 mph. Chance of precipitation is 90%. New snow accumulation of 3 to 5 inches possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1223,8 +1223,8 @@
    ],
    "alerts": [
     {
-     "event": "Winter Storm Watch",
-     "headline": "Winter Storm Watch issued November 16 at 2:05AM PST until November 20 at 4:00AM PST by NWS Reno NV",
+     "event": "Winter Storm Warning",
+     "headline": "Winter Storm Warning issued November 16 at 8:34AM PST until November 20 at 4:00AM PST by NWS Reno NV",
      "onset": "2026-11-18T04:00:00-08:00",
      "ends": "2026-11-20T04:00:00-08:00"
     }
@@ -1245,7 +1245,7 @@
      "temperature": 35,
      "shortForecast": "Partly Sunny then Slight Chance Snow Showers",
      "detailedForecast": "A slight chance of snow showers between noon and 4pm. Partly sunny. High near 35, with temperatures falling to around 32 in the afternoon. Wind chill values as low as 24. South southwest wind 1 to 7 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1367,9 +1367,9 @@
      "name": "Today",
      "isDaytime": true,
      "temperature": 33,
-     "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers between 1pm and 5pm. Mostly sunny. High near 33, with temperatures falling to around 30 in the afternoon. Wind chill values as low as 19. South southwest wind 1 to 7 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "shortForecast": "Partly Sunny then Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers between 1pm and 5pm. Partly sunny. High near 33, with temperatures falling to around 30 in the afternoon. Wind chill values as low as 19. South southwest wind 1 to 6 mph. Chance of precipitation is 20%.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1493,7 +1493,7 @@
      "temperature": 33,
      "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
      "detailedForecast": "A slight chance of snow showers after 2pm. Mostly sunny. High near 33, with temperatures falling to around 31 in the afternoon. West northwest wind around 3 mph. Chance of precipitation is 20%. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1616,8 +1616,8 @@
      "isDaytime": true,
      "temperature": 25,
      "shortForecast": "Mostly Sunny then Chance Light Snow",
-     "detailedForecast": "A chance of snow after 1pm. Mostly sunny. High near 25, with temperatures falling to around 19 in the afternoon. West wind around 6 mph. Chance of precipitation is 30%.",
-     "startTime": "2026-11-16T07:00:00-08:00"
+     "detailedForecast": "A chance of snow after 1pm. Mostly sunny. High near 25, with temperatures falling to around 19 in the afternoon. West wind around 5 mph. Chance of precipitation is 30%.",
+     "startTime": "2026-11-16T08:00:00-08:00"
     },
     {
      "name": "Tonight",
@@ -1741,7 +1741,7 @@
      "temperature": 46,
      "shortForecast": "Mostly Sunny",
      "detailedForecast": "Mostly sunny, with a high near 46. South wind 0 to 5 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -1864,8 +1864,8 @@
      "isDaytime": true,
      "temperature": 48,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 48. Southwest wind 0 to 5 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "detailedForecast": "Mostly sunny, with a high near 48. West wind 0 to 5 mph.",
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -1988,8 +1988,8 @@
      "isDaytime": true,
      "temperature": 54,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 54. South southeast wind 0 to 5 mph.",
-     "startTime": "2026-11-16T06:00:00-07:00"
+     "detailedForecast": "Mostly sunny, with a high near 54. North wind 0 to 5 mph.",
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2112,8 +2112,8 @@
      "isDaytime": true,
      "temperature": 47,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 47. South southwest wind 0 to 5 mph.",
-     "startTime": "2026-11-16T06:00:00-07:00"
+     "detailedForecast": "Mostly sunny, with a high near 47. West southwest wind 0 to 5 mph.",
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2236,8 +2236,8 @@
      "isDaytime": true,
      "temperature": 50,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 50. West wind 0 to 5 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "detailedForecast": "Mostly sunny, with a high near 50. West wind around 0 mph.",
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2361,7 +2361,7 @@
      "temperature": 49,
      "shortForecast": "Mostly Sunny",
      "detailedForecast": "Mostly sunny. High near 49, with temperatures falling to around 34 in the afternoon. South southeast wind 2 to 7 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2485,7 +2485,7 @@
      "temperature": 39,
      "shortForecast": "Mostly Sunny",
      "detailedForecast": "Mostly sunny. High near 39, with temperatures falling to around 29 in the afternoon. South wind 2 to 8 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2609,7 +2609,7 @@
      "temperature": 48,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 48, with temperatures falling to around 42 in the afternoon. South southeast wind around 8 mph.",
-     "startTime": "2026-11-16T06:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2733,7 +2733,7 @@
      "temperature": 42,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 42, with temperatures falling to around 37 in the afternoon. South wind around 9 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2857,7 +2857,7 @@
      "temperature": 38,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 38, with temperatures falling to around 34 in the afternoon. South wind around 9 mph.",
-     "startTime": "2026-11-16T06:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -2981,7 +2981,7 @@
      "temperature": 43,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 43, with temperatures falling to around 37 in the afternoon. South wind around 9 mph.",
-     "startTime": "2026-11-16T06:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3105,7 +3105,7 @@
      "temperature": 47,
      "shortForecast": "Partly Sunny",
      "detailedForecast": "Partly sunny. High near 47, with temperatures falling to around 43 in the afternoon. South southwest wind 3 to 8 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3229,7 +3229,7 @@
      "temperature": 39,
      "shortForecast": "Partly Sunny",
      "detailedForecast": "Partly sunny. High near 39, with temperatures falling to around 36 in the afternoon. South wind 7 to 12 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3353,7 +3353,7 @@
      "temperature": 43,
      "shortForecast": "Partly Sunny",
      "detailedForecast": "Partly sunny. High near 43, with temperatures falling to around 40 in the afternoon. South southwest wind around 5 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3376,7 +3376,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 21. West southwest wind 3 to 13 mph, with gusts as high as 31 mph. Chance of precipitation is 100%. New snow accumulation of 2 to 4 inches possible.",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 21. West southwest wind 3 to 13 mph, with gusts as high as 31 mph. Chance of precipitation is 100%. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-17T18:00:00-07:00"
     },
     {
@@ -3477,7 +3477,7 @@
      "temperature": 41,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 41, with temperatures falling to around 37 in the afternoon. South wind 3 to 8 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3500,7 +3500,7 @@
      "isDaytime": false,
      "temperature": 18,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Cloudy, with a low around 18. West southwest wind 5 to 16 mph, with gusts as high as 29 mph. Chance of precipitation is 100%. New snow accumulation of 4 to 8 inches possible.",
+     "detailedForecast": "Snow showers. Cloudy, with a low around 18. West southwest wind 5 to 16 mph, with gusts as high as 29 mph. Chance of precipitation is 100%. New snow accumulation of 5 to 9 inches possible.",
      "startTime": "2026-11-17T18:00:00-07:00"
     },
     {
@@ -3508,7 +3508,7 @@
      "isDaytime": true,
      "temperature": 23,
      "shortForecast": "Snow Showers Likely then Mostly Sunny",
-     "detailedForecast": "Snow showers likely before 11am. Mostly sunny, with a high near 23. South southwest wind 5 to 15 mph, with gusts as high as 28 mph. Chance of precipitation is 60%. New snow accumulation of less than half an inch possible.",
+     "detailedForecast": "Snow showers likely before 11am. Mostly sunny, with a high near 23. South southwest wind 5 to 15 mph, with gusts as high as 28 mph. Chance of precipitation is 60%. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-18T06:00:00-07:00"
     },
     {
@@ -3601,7 +3601,7 @@
      "temperature": 40,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 40, with temperatures falling to around 35 in the afternoon. South southeast wind around 6 mph. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3725,14 +3725,14 @@
      "temperature": 41,
      "shortForecast": "Mostly Cloudy",
      "detailedForecast": "Mostly cloudy. High near 41, with temperatures falling to around 38 in the afternoon. South southeast wind around 8 mph, with gusts as high as 22 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 32,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 32. Southeast wind around 7 mph. Little or no snow accumulation expected.",
+     "detailedForecast": "Mostly cloudy, with a low around 32. Southeast wind around 7 mph. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-16T18:00:00-07:00"
     },
     {
@@ -3849,7 +3849,7 @@
      "temperature": 36,
      "shortForecast": "Mostly Sunny",
      "detailedForecast": "Mostly sunny. High near 36, with temperatures falling to around 30 in the afternoon. Southwest wind 5 to 10 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -3971,9 +3971,9 @@
      "name": "Today",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 37. Southwest wind 5 to 10 mph.",
-     "startTime": "2026-11-16T08:00:00-07:00"
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny, with a high near 37. Southwest wind 5 to 10 mph.",
+     "startTime": "2026-11-16T09:00:00-07:00"
     },
     {
      "name": "Tonight",
@@ -4096,8 +4096,8 @@
      "isDaytime": true,
      "temperature": 31,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 31. West wind 7 to 10 mph.",
-     "startTime": "2026-11-16T10:00:00-05:00"
+     "detailedForecast": "Partly sunny, with a high near 31. West wind around 9 mph.",
+     "startTime": "2026-11-16T11:00:00-05:00"
     },
     {
      "name": "Tonight",
@@ -4220,8 +4220,8 @@
      "isDaytime": true,
      "temperature": 33,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. High near 33, with temperatures falling to around 27 in the afternoon. Northwest wind 3 to 8 mph.",
-     "startTime": "2026-11-16T10:00:00-05:00"
+     "detailedForecast": "Mostly cloudy. High near 33, with temperatures falling to around 27 in the afternoon. Northwest wind 3 to 7 mph.",
+     "startTime": "2026-11-16T11:00:00-05:00"
     },
     {
      "name": "Tonight",
@@ -4344,8 +4344,8 @@
      "isDaytime": true,
      "temperature": 33,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 33. Northwest wind 7 to 12 mph.",
-     "startTime": "2026-11-16T10:00:00-05:00"
+     "detailedForecast": "Partly sunny, with a high near 33. Northwest wind 7 to 10 mph.",
+     "startTime": "2026-11-16T11:00:00-05:00"
     },
     {
      "name": "Tonight",
@@ -4468,8 +4468,8 @@
      "isDaytime": true,
      "temperature": 32,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a high near 32. Northwest wind around 6 mph.",
-     "startTime": "2026-11-16T10:00:00-05:00"
+     "detailedForecast": "Mostly cloudy, with a high near 32. West wind around 6 mph.",
+     "startTime": "2026-11-16T11:00:00-05:00"
     },
     {
      "name": "Tonight",
@@ -6447,8 +6447,8 @@
      "name": "Today",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Clearing",
-     "detailedForecast": "Mainly cloudy. Clearing late this morning. Wind up to 15 km/h. High plus 5. Wind chill minus 5 this morning. UV index 1 or low.",
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High plus 5. UV index 1 or low.",
      "startTime": "2026-11-16T06:00:00-05:00"
     },
     {
@@ -6563,8 +6563,8 @@
      "name": "Today",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Mainly sunny",
-     "detailedForecast": "Mainly sunny. Wind up to 15 km/h. High plus 4. Wind chill minus 9 this morning. UV index 1 or low.",
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High plus 4. UV index 1 or low.",
      "startTime": "2026-11-16T06:00:00-05:00"
     },
     {
@@ -6680,7 +6680,7 @@
      "isDaytime": true,
      "temperature": 41,
      "shortForecast": "Mainly sunny",
-     "detailedForecast": "A mix of sun and cloud. Clearing near noon. Wind becoming southwest 20 km/h near noon. High plus 5. Wind chill minus 9 this morning. UV index 1 or low.",
+     "detailedForecast": "Mainly sunny. Wind southwest 20 km/h. High plus 5. UV index 1 or low.",
      "startTime": "2026-11-16T06:00:00-05:00"
     },
     {
@@ -6696,7 +6696,7 @@
      "isDaytime": true,
      "temperature": 45,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h gusting to 40 in the morning. High 7. Wind chill minus 6 in the morning. UV index 1 or low.",
+     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h gusting to 40 in the morning. High 7. Wind chill minus 7 in the morning. UV index 1 or low.",
      "startTime": "2026-11-17T06:00:00-05:00"
     },
     {
