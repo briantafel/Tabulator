@@ -34,7 +34,10 @@ const MAX_RESORTS = 3;          // per region, strongest first
 const NWS_RESORTS = 2;          // whose NWS periods go in the fact sheet
 const MAX_PERIODS = 8;
 const DETAIL_CHARS = 200;
-export const REGION_TEXT_MAX = 380; // about 60 words; the prompt asks for 50
+/* 480: the first live run of the weather-systems read-out (2026-11-16)
+   lost two good drafts at 400 and 509 against 380 — a model can't count
+   characters, so the cap needs room above the ~60 words the prompt asks for. */
+export const REGION_TEXT_MAX = 480;
 export const OVERVIEW_TEXT_MAX = 300;
 /** Inch figures per region. The chart already lists every total; the text
  *  gives one or two as the payoff and spends the rest on the weather. */
@@ -302,6 +305,43 @@ function datesIn(text, ref) {
     return `${year}-${String(mon).padStart(2, "0")}-${String(m[2]).padStart(2, "0")}`;
   });
 }
+/* NWS office id → the city the writer is told to use ("the Reno NWS office"). */
+const OFFICE_CITY = {
+  SLC: "Salt Lake City", REV: "Reno", STO: "Sacramento", RIW: "Riverton", TFX: "Great Falls", GJT: "Grand Junction",
+  PUB: "Pueblo", ABQ: "Albuquerque", BOU: "Boulder|Denver", MSO: "Missoula", PIH: "Pocatello", BOI: "Boise",
+  SEW: "Seattle", PDT: "Pendleton", PQR: "Portland", MFR: "Medford", BTV: "Burlington", ALY: "Albany",
+  LKN: "Elko", HNX: "Hanford", BYZ: "Billings", OTX: "Spokane", EKA: "Eureka", VEF: "Las Vegas",
+};
+/** The discussions a look-ahead line names. */
+function creditedSources(text, ahead = []) {
+  return ahead.filter((a) => {
+    if (/^WPC/.test(a.source)) return /Weather Prediction Center|\bWPC\b/i.test(text);
+    if (/^CPC/.test(a.source)) return /Climate Prediction Center|\bCPC\b/i.test(text);
+    const office = a.source.match(/^NWS ([A-Z]{3}) /)?.[1];
+    const city = OFFICE_CITY[office];
+    return !!city && new RegExp(`\\b(${city})\\b[^.]*\\b(NWS|National Weather Service|forecast office|office)\\b|\\b(NWS|National Weather Service)\\b[^.]*\\b(${city})\\b`, "i").test(text);
+  });
+}
+/** The last date a discussion speaks for, from its own text where it says
+ *  so (WPC "Valid … - 12Z Mon Nov 23 2026"; CPC "8-14 DAY OUTLOOK FOR NOV 23 - 29
+ *  2026"), else ten days from issue (an NWS office's key messages). */
+export function coverageEnd(src) {
+  const t = String(src.excerpt ?? "");
+  const y = String(src.issuedAt ?? "").slice(0, 4);
+  const mon = (m) => String(MONTHS.indexOf(m.slice(0, 1).toUpperCase() + m.slice(1, 3).toLowerCase()) + 1).padStart(2, "0");
+  let m = t.match(/Valid[^\n]*-\s*\d+Z\s+\w{3}\s+([A-Za-z]{3})\s+(\d{1,2})\s+(\d{4})/);
+  if (m) return `${m[3]}-${mon(m[1])}-${m[2].padStart(2, "0")}`;
+  const outlooks = [...t.matchAll(/OUTLOOK FOR ([A-Za-z]{3})\w*\s+(\d{1,2})\s*-\s*(?:([A-Za-z]{3})\w*\s+)?(\d{1,2})\s+(\d{4})/gi)];
+  if (outlooks.length) {
+    return outlooks.map((o) => `${o[5]}-${mon(o[3] ?? o[1])}-${o[4].padStart(2, "0")}`).sort().pop();
+  }
+  if (src.issuedAt && y) {
+    const d = new Date(src.issuedAt);
+    d.setUTCDate(d.getUTCDate() + 10); // an NWS office's key messages reach into the next week ("Thanksgiving")
+    return d.toISOString().slice(0, 10);
+  }
+  return null;
+}
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** Every reason a writer's output may not ship. Empty means it may. */
@@ -313,7 +353,13 @@ export function validateReadout(out, facts) {
   const got = out.regions.map((r) => r?.key);
   if (want.join("|") !== got.join("|")) problems.push(`regions must be exactly [${want.join(", ")}] in that order, got [${got.join(", ")}]`);
 
-  const allowedNumbers = new Set(numbersIn(JSON.stringify(factsForWriter(facts))));
+  const sheet = JSON.stringify(factsForWriter(facts));
+  const allowedNumbers = new Set(numbersIn(sheet));
+  /* Forecasters write elevations as "9-10k" or "8k"; a writer spelling
+     that out as "9,000 to 10,000 feet" is quoting, not inventing. */
+  for (const m of sheet.matchAll(/(\d+(?:\.\d+)?)(?:\s*[-–]\s*(\d+(?:\.\d+)?))?\s*k\b/gi)) {
+    for (const n of [m[1], m[2]].filter(Boolean)) allowedNumbers.add(String(Number(n) * 1000));
+  }
   const check = (label, text, max) => {
     if (typeof text !== "string" || !text.trim()) { problems.push(`${label}: empty`); return; }
     if (text.length > max) problems.push(`${label}: ${text.length} chars, limit ${max}`);
@@ -350,6 +396,16 @@ export function validateReadout(out, facts) {
       const dates = datesIn(out.ahead, facts.window.to);
       if (!dates.length) problems.push(`ahead: names no date — say when, after ${facts.window.toLabel}`);
       for (const d of dates) if (d <= facts.window.to) problems.push(`ahead: ${d} is inside the radar's window (to ${facts.window.to})`);
+      /* Who said it. The first live run (2026-11-16) credited the Weather
+         Prediction Center with a storm "around Thursday Nov 26" — WPC's
+         discussion ran only to Nov 23. Each source covers a known span;
+         a claim credited to it beyond that span cannot be its claim. */
+      const credited = creditedSources(out.ahead, facts.ahead);
+      if (!credited.length) problems.push("ahead: credit the agency that says it, by name (e.g. \"the Weather Prediction Center\", \"the Reno NWS office\")");
+      for (const d of dates) {
+        const ok = credited.some((src) => { const end = coverageEnd(src); return !end || d <= end; });
+        if (credited.length && !ok) problems.push(`ahead: ${d} is beyond what ${credited.map((c) => c.source).join(" / ")} covers — that is not its claim`);
+      }
     }
   }
   return problems;

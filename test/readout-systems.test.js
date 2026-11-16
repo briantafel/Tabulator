@@ -137,3 +137,43 @@ test("the run writes the overview and credits the discussions it drew on", async
   assert.match(sent.messages[0].content, /atmospheric river/);
   assert.doesNotMatch(sent.messages[0].content, /12-18|2 to 4 feet/, "amounts never reach the writer");
 });
+
+test("forecasters' '9-10k' shorthand can be written out (11-16 live run)", () => {
+  const gjt = { ...disc("REV", ".SYNOPSIS...\nWarm temperatures keep snow levels in the 9-10k range, near 8k by Friday.\n&&") };
+  const f = readoutFacts({ resorts: feed(WEEK), weather: WX, now: NOW, ahead: [gjt] });
+  const good = templateReadout(f);
+  const t = (text) => ({ ...good, regions: good.regions.map((r, i) => (i ? r : { ...r, text })) });
+  assert.deepEqual(validateReadout(t("Snow levels sit near 9,000 to 10,000 feet, falling to 8,000 feet by Friday."), f), []);
+  assert.match(validateReadout(t("Snow levels sit near 11,000 feet."), f).join(), /number 11000/);
+});
+
+test("a 60-word paragraph fits; a 509-character one does not (11-16 live run)", () => {
+  const f = facts();
+  const good = templateReadout(f);
+  const t = (text) => ({ ...good, regions: good.regions.map((r, i) => (i ? r : { ...r, text })) });
+  const sixty = Array.from({ length: 60 }, (_, i) => (i % 2 ? "storms" : "squall")).join(" ") + ".";
+  assert.ok(sixty.length > 380, "longer than the old cap");
+  assert.deepEqual(validateReadout(t(sixty), f), []);
+  assert.match(validateReadout(t("x".repeat(509)), f).join(), /509 chars, limit 480/);
+});
+
+test("a look-ahead credited to an agency must fall inside what that agency covers (11-16 live run)", async () => {
+  const { coverageEnd } = await import("../src/lib/readout.js");
+  const wpc = { source: "WPC Extended Forecast Discussion", issuedAt: "2026-11-16T06:23:00.000Z", url: "u",
+    excerpt: "Extended Forecast Discussion\nValid 12Z Thu Nov 19 2026 - 12Z Mon Nov 23 2026\n...Another upper trough moves into the West late next weekend..." };
+  const rev = { source: "NWS REV Area Forecast Discussion", issuedAt: "2026-11-16T10:22:00+00:00", url: "u",
+    excerpt: ".KEY MESSAGES...\n* An active storm pattern continues into next week with potential travel impacts for the Thanksgiving holiday period." };
+  assert.equal(coverageEnd(wpc), "2026-11-23");
+  assert.equal(coverageEnd({ source: "CPC", issuedAt: "2026-11-15T20:00:00Z", excerpt: "6-10 DAY OUTLOOK FOR NOV 21 - 25 2026 ... 8-14 DAY OUTLOOK FOR NOV 23 - 29 2026" }), "2026-11-29");
+  const DAYS = ["2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-21"];
+  const f = readoutFacts({ resorts: resortData.resorts.map((r) => ({ id: r.id, name: r.name, days: DAYS.map((date, i) => ({ date, snow: (r.id === "kirkwood" && i === 2 ? 10 : 0) * 2.54 })) })),
+    weather: WX, now: new Date("2026-11-16T12:00:00Z"), ahead: [wpc, rev] });
+  const base = { ...templateReadout(f) };
+  const check = (ahead) => validateReadout({ ...base, ahead }, f).filter((p) => p.startsWith("ahead"));
+  // The live draft: WPC never said Nov 26.
+  assert.match(check("The Weather Prediction Center expects another atmospheric river around Thursday Nov 26.").join(), /beyond what WPC/);
+  // Reno did mention Thanksgiving.
+  assert.deepEqual(check("The Reno NWS office says the active pattern may bring travel trouble around Thanksgiving, Thursday Nov 26."), []);
+  assert.deepEqual(check("The Weather Prediction Center sees another trough reaching the West around Sunday Nov 22."), []);
+  assert.match(check("Another storm may arrive around Sunday Nov 22.").join(), /credit the agency/);
+});
