@@ -67,7 +67,6 @@ export default function Tabulator() {
   const [projOverride, setProjOverride] = useState(() => loadSaved("projections", null));
   /* Same for our temperature model (lib/temps.js). */
   const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
-  const [slrOverride, setSlrOverride] = useState(() => loadSaved("slr", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -118,12 +117,12 @@ export default function Tabulator() {
   const tempsMode = feedRaw?.flags?.temps ?? "off";
   const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
   const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
-  /* Days 7–10 snow: Open-Meteo's 7:1, or rescaled by our fitted ratio (needs a
-     projections file built with one). */
-  const slrMode = feedRaw?.flags?.slr ?? "off";
-  const slrAvailable = !!feedRaw?.projections?.slr;
-  const slrOn = projections && effectiveFlag(slrMode, slrOverride) && slrAvailable;
-  const chooseSlr = (on) => setSlrOverride(nextOverride(on, slrMode));
+  /* Days 7–10 snow from our fitted ratio — ACTIVE, no Settings choice (Brian,
+     2026-11-15: "We decided not to put things behind a switch. Instead it's
+     just active."). Used whenever the projections file was built with a ratio;
+     otherwise Open-Meteo's 7:1. flags.json `slr: "off"` remains an emergency
+     stop for the whole site; it has no per-phone setting. */
+  const slrOn = projections && (feedRaw?.flags?.slr ?? "on") !== "off" && !!feedRaw?.projections?.slr;
   /* Our temperatures go in AFTER the projected days are appended, so days
      1–10 all carry the same temperature. Off: untouched. */
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
@@ -158,7 +157,6 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
   useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
   useEffect(() => { saveLocal("temps", tempsOverride); }, [tempsOverride]);
-  useEffect(() => { saveLocal("slr", slrOverride); }, [slrOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -311,13 +309,6 @@ export default function Tabulator() {
               <span className="pill sm">
                 <button className={!projections ? "on" : ""} onClick={() => chooseProjections(false)}>Forecast only</button>
                 <button className={projections ? "on" : ""} onClick={() => chooseProjections(true)}>Tabulator projections</button>
-              </span>
-            </div>}
-            {canChoose(slrMode) && projections && slrAvailable && <div className="set">
-              <span className="set-label">Snow days 7–10</span>
-              <span className="pill sm">
-                <button className={!slrOn ? "on" : ""} onClick={() => chooseSlr(false)}>Flat 7:1</button>
-                <button className={slrOn ? "on" : ""} onClick={() => chooseSlr(true)}>Tabulator ratio</button>
               </span>
             </div>}
             {canChoose(tempsMode) && feedRaw?.temps && <div className="set">
