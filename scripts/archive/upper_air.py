@@ -87,6 +87,12 @@ HRRR_LOV, HRRR_ROTCON = -97.5, math.sin(math.radians(38.5))
 HRRR_URL = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com"
 GEFS_URL = "https://noaa-gefs-pds.s3.amazonaws.com"
 ECMWF_URL = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
+# The same files, same paths, on ECMWF's other mirrors. The AWS bucket answers
+# 503 "Slow Down" for hours at a time under load (ECMWF forum, Nov 2025–2026;
+# three failed runs on 2026-11-16), and ECMWF's advice is to use another
+# mirror. Azure now needs a SAS token, so it is not used. Tried in order after
+# AWS has exhausted its own retries.
+ECMWF_MIRRORS = ("https://storage.googleapis.com/ecmwf-open-data", "https://data.ecmwf.int/forecasts")
 
 
 def leads_6h(last: int, step_after: dict | None = None) -> list[int]:
@@ -139,7 +145,33 @@ def iso(t: datetime) -> str:
 
 
 def http(url: str, headers: dict | None = None, retries: int = 6, timeout: int = 90) -> bytes:
-    """GET with retries; 503/429 (S3 'slow down') back off up to ~2 min in total."""
+    """GET with retries; 503/429 (S3 'slow down') back off up to ~2 min in total.
+    An ECMWF file that AWS still refuses after that is fetched from the next
+    mirror (same path); only when every mirror fails is the error raised."""
+    try:
+        return _http(url, headers, retries, timeout)
+    except urllib.error.HTTPError as first:
+        raise  # 403/404 come straight through: not published (yet), not a mirror problem
+    except Exception as first:
+        if not url.startswith(ECMWF_URL):
+            raise
+        last = first
+        for root in ECMWF_MIRRORS:
+            alt = root + url[len(ECMWF_URL):]
+            try:
+                data = _http(alt, headers, retries=2, timeout=timeout)
+                log(f"    mirror: {root} served {alt.rsplit('/', 1)[-1]} (AWS: {str(last)[-80:]})")
+                return data
+            except urllib.error.HTTPError as e:
+                if e.code == 404:
+                    raise  # the file is not published anywhere (yet): not a mirror problem
+                last = e
+            except Exception as e:
+                last = e
+        raise RuntimeError(f"{url} and the ECMWF mirrors: {last}")
+
+
+def _http(url: str, headers: dict | None, retries: int, timeout: int) -> bytes:
     import random
     last = None
     for attempt in range(retries + 1):

@@ -1,4 +1,6 @@
 """Tests for upper_air.py index parsing (no network): python3 -m pytest scripts/archive/test_upper_air.py"""
+import urllib.error
+import pytest
 import json
 import sys
 from pathlib import Path
@@ -155,3 +157,36 @@ def test_hrrr_winds_are_rotated_to_earth_relative():
                                       "hrrr", np.array([-111.6]))
     d = {v: a for _, _, v, _, a in out}
     assert np.isclose(d["wdir_700hpa"][0], 360 - 8.78, atol=0.05) and np.isclose(d["wspd_700hpa"][0], 36.0)
+
+
+# ---------------------------------------------------------------- ECMWF mirror fallback (2026-11-16)
+def test_ecmwf_file_falls_back_to_the_next_mirror_after_aws_fails(monkeypatch):
+    calls = []
+
+    def fake(url, headers, retries, timeout):
+        calls.append(url)
+        if url.startswith(ua.ECMWF_URL):
+            raise RuntimeError(f"{url}: HTTP Error 503: Service Unavailable")
+        return b"ok"
+
+    monkeypatch.setattr(ua, "_http", fake)
+    u = f"{ua.ECMWF_URL}/20261116/00z/ifs/0p25/oper/20261116000000-240h-oper-fc.index"
+    assert ua.http(u) == b"ok"
+    assert calls[1] == f"{ua.ECMWF_MIRRORS[0]}/20261116/00z/ifs/0p25/oper/20261116000000-240h-oper-fc.index"
+
+
+def test_non_ecmwf_urls_and_404s_do_not_try_mirrors(monkeypatch):
+    calls = []
+
+    def fake(url, headers, retries, timeout):
+        calls.append(url)
+        if "404" in url:
+            raise urllib.error.HTTPError(url, 404, "nf", {}, None)
+        raise RuntimeError("503")
+
+    monkeypatch.setattr(ua, "_http", fake)
+    with pytest.raises(RuntimeError):
+        ua.http("https://noaa-hrrr-bdp-pds.s3.amazonaws.com/x.idx")
+    with pytest.raises(urllib.error.HTTPError):
+        ua.http(f"{ua.ECMWF_URL}/404/x.index")
+    assert len(calls) == 2
