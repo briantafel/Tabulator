@@ -170,6 +170,7 @@ def test_ecmwf_file_falls_back_to_the_next_mirror_after_aws_fails(monkeypatch):
         return b"ok"
 
     monkeypatch.setattr(ua, "_http", fake)
+    monkeypatch.setattr(ua, "_ecmwf_first", [])
     u = f"{ua.ECMWF_URL}/20261116/00z/ifs/0p25/oper/20261116000000-240h-oper-fc.index"
     assert ua.http(u) == b"ok"
     assert calls[1] == f"{ua.ECMWF_MIRRORS[0]}/20261116/00z/ifs/0p25/oper/20261116000000-240h-oper-fc.index"
@@ -185,8 +186,27 @@ def test_non_ecmwf_urls_and_404s_do_not_try_mirrors(monkeypatch):
         raise RuntimeError("503")
 
     monkeypatch.setattr(ua, "_http", fake)
+    monkeypatch.setattr(ua, "_ecmwf_first", [])
     with pytest.raises(RuntimeError):
         ua.http("https://noaa-hrrr-bdp-pds.s3.amazonaws.com/x.idx")
     with pytest.raises(urllib.error.HTTPError):
         ua.http(f"{ua.ECMWF_URL}/404/x.index")
     assert len(calls) == 2
+
+
+def test_the_mirror_that_worked_is_tried_first_for_later_files(monkeypatch):
+    calls = []
+
+    def fake(url, headers, retries, timeout):
+        calls.append(url)
+        assert retries <= 2  # no long backoff on any one root
+        if url.startswith(ua.ECMWF_URL):
+            raise RuntimeError("503")
+        return b"ok"
+
+    monkeypatch.setattr(ua, "_http", fake)
+    monkeypatch.setattr(ua, "_ecmwf_first", [])
+    ua.http(f"{ua.ECMWF_URL}/a.index")
+    calls.clear()
+    ua.http(f"{ua.ECMWF_URL}/b.grib2", headers={"Range": "bytes=0-9"})
+    assert calls == [f"{ua.ECMWF_MIRRORS[0]}/b.grib2"]

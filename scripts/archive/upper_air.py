@@ -144,31 +144,40 @@ def iso(t: datetime) -> str:
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+_ecmwf_first: list[str] = []  # the root that last served an ECMWF file, tried first next time
+
+
 def http(url: str, headers: dict | None = None, retries: int = 6, timeout: int = 90) -> bytes:
-    """GET with retries; 503/429 (S3 'slow down') back off up to ~2 min in total.
-    An ECMWF file that AWS still refuses after that is fetched from the next
-    mirror (same path); only when every mirror fails is the error raised."""
-    try:
+    """GET with retries; 503/429 (S3 'slow down') back off.
+    ECMWF files: AWS gets two quick retries, then the same path is tried on
+    each mirror. Whichever root serves a file is tried first for the rest of
+    the run, so one slow bucket costs one file's backoff, not every file's
+    (run 43904603909 sat ~3.5 min per file on AWS backoff before falling back).
+    Only when every root fails is the error raised; 403/404 pass straight through."""
+    if not url.startswith(ECMWF_URL):
         return _http(url, headers, retries, timeout)
-    except urllib.error.HTTPError as first:
-        raise  # 403/404 come straight through: not published (yet), not a mirror problem
-    except Exception as first:
-        if not url.startswith(ECMWF_URL):
-            raise
-        last = first
-        for root in ECMWF_MIRRORS:
-            alt = root + url[len(ECMWF_URL):]
-            try:
-                data = _http(alt, headers, retries=2, timeout=timeout)
-                log(f"    mirror: {root} served {alt.rsplit('/', 1)[-1]} (AWS: {str(last)[-80:]})")
-                return data
-            except urllib.error.HTTPError as e:
-                if e.code == 404:
-                    raise  # the file is not published anywhere (yet): not a mirror problem
-                last = e
-            except Exception as e:
-                last = e
-        raise RuntimeError(f"{url} and the ECMWF mirrors: {last}")
+    path = url[len(ECMWF_URL):]
+    roots = [ECMWF_URL, *ECMWF_MIRRORS]
+    if _ecmwf_first and _ecmwf_first[0] in roots:
+        roots.remove(_ecmwf_first[0])
+        roots.insert(0, _ecmwf_first[0])
+    last = None
+    for root in roots:
+        try:
+            data = _http(root + path, headers, retries=2, timeout=timeout)
+        except urllib.error.HTTPError as e:
+            if e.code == 404 or (root == ECMWF_URL and e.code == 403):
+                raise  # not published (yet): not a mirror problem
+            last = e
+            continue
+        except Exception as e:
+            last = e
+            continue
+        if root != ECMWF_URL and (not _ecmwf_first or _ecmwf_first[0] != root):
+            log(f"    mirror: {root} served {path.rsplit('/', 1)[-1]}; using it first from now on (last error: {str(last)[-80:]})")
+        _ecmwf_first[:] = [root]
+        return data
+    raise RuntimeError(f"{url} and the ECMWF mirrors: {last}")
 
 
 def _http(url: str, headers: dict | None, retries: int, timeout: int) -> bytes:
