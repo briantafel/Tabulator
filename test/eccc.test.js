@@ -140,7 +140,7 @@ test("a Canadian region names Environment Canada, never the NWS", () => {
   const t = templateReadout(facts);
   const text = t.regions.find((r) => r.key === "the Kootenays").text;
   assert.match(text, /Environment Canada has heavy snow at Revelstoke Sunday/);
-  assert.match(text, /Environment Canada is calling for more at Revelstoke: 12 to 16" Sunday/);
+  assert.match(text, /Environment Canada is calling for more at Revelstoke: 12 to 16 inches Sunday/);
   assert.doesNotMatch(text, /NWS|National Weather Service/);
   assert.deepEqual(validateReadout(t, facts), []);
 });

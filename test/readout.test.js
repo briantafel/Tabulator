@@ -62,7 +62,7 @@ test("the best bet is always included, even under the cutoff", () => {
 test("a quiet week has no regions", () => {
   const facts = readoutFacts({ resorts: feed({}), now: NOW });
   assert.equal(facts.quiet, true);
-  assert.deepEqual(templateReadout(facts), { regions: [], ahead: null });
+  assert.deepEqual(templateReadout(facts), { regions: [], overview: null, ahead: null });
 });
 
 test("totals are our inches and the NWS lines come from weather.json", () => {
@@ -84,7 +84,7 @@ test("the template passes its own check and quotes the NWS", () => {
   assert.match(by["the central Rockies"], /^Telluride is forecast for about 16", 10" of it Sunday\./);
   assert.match(by["the central Rockies"], /rain mixed in at Telluride Sunday/);
   assert.match(by["the central Rockies"], /Winter Storm Watch at Telluride from Sunday to Monday night/);
-  assert.match(by["the Eastern Sierra"], /The NWS is calling for more at Mammoth: 13 to 22" Friday night through Saturday night\./);
+  assert.match(by["the Eastern Sierra"], /The NWS is calling for more at Mammoth: 13 to 22 inches Friday night through Saturday night\./);
   assert.match(by["the Wasatch"], /heavy snow at Alta Sunday and Sunday night/);
   assert.equal(t.ahead, null);
 });

@@ -34,7 +34,11 @@ const MAX_RESORTS = 3;          // per region, strongest first
 const NWS_RESORTS = 2;          // whose NWS periods go in the fact sheet
 const MAX_PERIODS = 8;
 const DETAIL_CHARS = 200;
-export const REGION_TEXT_MAX = 320; // about 50 words; the prompt asks for 40
+export const REGION_TEXT_MAX = 380; // about 60 words; the prompt asks for 50
+export const OVERVIEW_TEXT_MAX = 300;
+/** Inch figures per region. The chart already lists every total; the text
+ *  gives one or two as the payoff and spends the rest on the weather. */
+export const MAX_INCH_FIGURES = 2;
 export const AHEAD_TEXT_MAX = 320;
 
 const DOW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -150,10 +154,15 @@ function alertSpan(a) {
 /**
  * @param resorts  forecast.json resorts (cm)
  * @param weather  weather.json `resorts` map (may be empty)
- * @param ahead    [{ source, issuedAt, url, excerpt }] — fresh discussions only;
- *                 the caller decides freshness
+ * @param ahead    [{ source, issuedAt, url, excerpt, office?, now? }] — fresh
+ *                 discussions only, amounts already scrubbed; the caller
+ *                 decides freshness. `excerpt` (long range) feeds "Looking
+ *                 ahead"; an AFD's `now` (synopsis and short term) becomes
+ *                 the `pattern` of the regions its office covers.
  */
-export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = new Date(), ahead = [] }) {
+export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = new Date(), ahead: discussions = [] }) {
+  const ahead = discussions.filter((d) => d.excerpt).map(({ source, issuedAt, url, excerpt }) => ({ source, issuedAt, url, excerpt }));
+  const nowByOffice = new Map(discussions.filter((d) => d.office && d.now).map((d) => [d.office, d]));
   const rows = snowRows(resorts, now);
   const all = rows.map((r) => r.days.map((d) => d.date)).find((d) => d.length) ?? [];
   const window = { from: all[0] ?? null, to: all[all.length - 1] ?? null, days: all.length };
@@ -171,11 +180,18 @@ export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = 
     if (i > 0 && cmToIn(sorted[0].total) < CUTOFF_IN) return;
     const top = sorted.filter((r) => inch(r.total) >= 1).slice(0, MAX_RESORTS);
     if (!top.length) return;
+    /* What the forecasters covering this region say is driving the snow —
+       the commentary Brian asked for on 2026-11-15, instead of restating
+       the chart. One entry per NWS office among the region's top resorts. */
+    const offices = [...new Set(top.map((r) => weather[r.id]?.office).filter(Boolean))];
+    const pattern = offices.map((o) => nowByOffice.get(o)).filter(Boolean)
+      .map((d) => ({ source: d.source, issuedAt: d.issuedAt, text: d.now }));
     regions.push({
       key: name,
       title: titleOf({ key: name }),
       range: rs[0].range,
       bestBet: i === 0,
+      ...(pattern.length ? { pattern } : {}),
       resorts: top.map((r, j) => {
         const days = r.days
           .map((d) => ({ date: d.date, dow: dowOf(d.date), in: inch(d.snow ?? 0) }))
@@ -239,7 +255,7 @@ const andList = (xs) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join("
 
 /** Plain prose straight from the fact sheet. No model; cannot invent. */
 export function templateReadout(facts) {
-  if (facts.quiet) return { regions: [], ahead: null };
+  if (facts.quiet) return { regions: [], overview: null, ahead: null };
   return {
     regions: facts.regions.map((g) => {
       const [top, ...rest] = g.resorts;
@@ -248,7 +264,8 @@ export function templateReadout(facts) {
       if (top.peak && top.peak.in >= top.totalIn * 0.5 && top.peak.in < top.totalIn) lead += `, ${top.peak.in}" of it ${top.peak.dow}`;
       else if (top.peak && top.peak.in >= top.totalIn) lead += `, all of it ${top.peak.dow}`;
       parts.push(`${lead}.`);
-      if (rest.length) parts.push(`${andList(rest.map((r) => `${r.name} about ${r.totalIn}"`))}.`);
+      // Names only: the chart already shows their totals (Brian, 2026-11-15).
+      if (rest.length) parts.push(`${andList(rest.map((r) => r.name))} ${rest.length > 1 ? "follow" : "follows"}.`);
 
       /* NWS colour, from the top two resorts: heavy snow wherever it is
          called, rain only when it falls on the big day itself. */
@@ -260,12 +277,13 @@ export function templateReadout(facts) {
       if (heavy) parts.push(`${agency(heavy.r)} has heavy snow at ${heavy.r.name} ${andList(heavy.ps.map((p) => when(p.name)))}.`);
       else if (mixed) parts.push(`${agency(mixed.r)} has rain mixed in at ${mixed.r.name} ${andList(mixed.ps.map((p) => when(p.name)))}.`);
       const hi = g.resorts.slice(0, 2).find((r) => r.nwsHigher);
-      if (hi) parts.push(`${hi.nwsHigher.by === "NWS" ? "The NWS" : hi.nwsHigher.by} is calling for more at ${hi.name}: ${hi.nwsHigher.fromIn} to ${hi.nwsHigher.toIn}" ${hi.nwsHigher.over}.`);
+      if (hi) parts.push(`${hi.nwsHigher.by === "NWS" ? "The NWS" : hi.nwsHigher.by} is calling for more at ${hi.name}: ${hi.nwsHigher.fromIn} to ${hi.nwsHigher.toIn} inches ${hi.nwsHigher.over}.`);
       const alert = top.alerts?.[0];
       if (alert) parts.push(`${alert.event} at ${top.name}${alert.from ? ` from ${alert.from}${alert.to ? ` to ${alert.to}` : ""}` : ""}.`);
       return { key: g.key, text: parts.join(" ") };
     }),
-    ahead: null, // summarising forecasters' prose needs a model
+    overview: null, // summarising forecasters' prose needs a model
+    ahead: null,
   };
 }
 
@@ -307,7 +325,20 @@ export function validateReadout(out, facts) {
       if (new RegExp(`\\b${escape(place)}\\b`, "i").test(text)) problems.push(`${label}: names ${place}, which is not in the read-out's regions`);
     }
   };
-  out.regions.forEach((r, i) => check(`region ${i + 1} (${r?.key})`, r?.text, REGION_TEXT_MAX));
+  out.regions.forEach((r, i) => {
+    const label = `region ${i + 1} (${r?.key})`;
+    check(label, r?.text, REGION_TEXT_MAX);
+    const inches = String(r?.text ?? "").match(/\d+(?:\.\d+)?\s*["”]/g) ?? [];
+    if (inches.length > MAX_INCH_FIGURES) problems.push(`${label}: ${inches.length} inch figures — the chart shows the totals; give at most ${MAX_INCH_FIGURES} and spend the rest on the weather`);
+  });
+
+  if (out.overview != null) {
+    if (!facts.regions.some((g) => g.pattern) && !facts.ahead?.length) problems.push("overview: written with no forecaster discussion to draw on");
+    else {
+      check("overview", out.overview, OVERVIEW_TEXT_MAX);
+      if ((String(out.overview).match(/\d+(?:\.\d+)?\s*["”]/g) ?? []).length) problems.push("overview: no inch figures — it describes the pattern, the regions give the numbers");
+    }
+  }
 
   if (out.ahead != null) {
     if (!facts.ahead?.length) problems.push("ahead: written with no fresh discussion to draw on");

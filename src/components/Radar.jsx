@@ -155,6 +155,7 @@ export default function Radar({
           was written from the forecast on screen. Inches only for now. */}
       {readoutMatches(editorial, generatedAt) && (
         <section className="rd-read" aria-label="Read-out">
+          {editorial.overview && <p className="rd-read-p rd-read-lead">{editorial.overview}</p>}
           {editorial.regions.map((g) => (
             <div key={g.key} className="rd-read-g">
               <h3 className="rd-read-h">{g.title}</h3>

@@ -29,7 +29,7 @@ import { gatherAhead } from "./discussions.js";
 
 export const MAX_ATTEMPTS = 2;
 export const DAILY_CAP = 6;
-export const MAX_INPUT_CHARS = 30000;
+export const MAX_INPUT_CHARS = 60000; // the forecasters' discussions roughly double the fact sheet
 export const MAX_TOKENS = 2000;
 export const TIMEOUT_MS = 45000;
 
@@ -39,9 +39,22 @@ const readJson = async (path, fallback) => {
 
 /** Shrink the fact sheet to fit the input cap, or say it cannot. */
 export function fitForWriter(facts) {
-  const f = { ...factsForWriter(facts), ahead: [...(facts.ahead ?? [])] };
+  const f = {
+    ...factsForWriter(facts),
+    ahead: [...(facts.ahead ?? [])],
+    regions: facts.regions.map((g) => ({ ...g, ...(g.pattern ? { pattern: [...g.pattern] } : {}) })),
+  };
   let s = JSON.stringify(f);
+  // The look-ahead goes first, then the forecasters' reasoning from the
+  // last region backwards, one discussion at a time.
   while (s.length > MAX_INPUT_CHARS && f.ahead.length) { f.ahead.pop(); s = JSON.stringify(f); }
+  for (let i = f.regions.length - 1; i >= 0 && s.length > MAX_INPUT_CHARS; i--) {
+    while (s.length > MAX_INPUT_CHARS && f.regions[i].pattern?.length) {
+      f.regions[i].pattern.pop();
+      if (!f.regions[i].pattern.length) delete f.regions[i].pattern;
+      s = JSON.stringify(f);
+    }
+  }
   return s.length > MAX_INPUT_CHARS ? null : { facts: f, text: s };
 }
 
@@ -67,7 +80,7 @@ export async function run({
   const base = { resorts: forecast.resorts, weather: weather.resorts ?? {}, generatedAt: forecast.generatedAt, now };
   let facts = readoutFacts(base);
   if (!facts.quiet) {
-    const offices = [...new Set(facts.regions.flatMap((g) => g.resorts.slice(0, 2)).map((r) => weather.resorts?.[r.id]?.office).filter(Boolean))];
+    const offices = [...new Set(facts.regions.flatMap((g) => g.resorts).map((r) => weather.resorts?.[r.id]?.office).filter(Boolean))];
     const ahead = await gather(offices, { now, log });
     facts = readoutFacts({ ...base, ahead });
   }
@@ -77,7 +90,7 @@ export async function run({
   const fitted = facts.quiet ? null : fitForWriter(facts);
 
   if (facts.quiet) {
-    out = { regions: [], ahead: null };
+    out = { regions: [], overview: null, ahead: null };
   } else if (!key) {
     log("readout: no ANTHROPIC_API_KEY — template");
   } else if (!fitted) {
@@ -139,6 +152,7 @@ export async function run({
     writer,
     ...(model ? { model } : {}),
     window: facts.window,
+    overview: out.overview ?? null,
     regions: out.regions.map((r) => ({ key: r.key, title: titles[r.key] ?? r.key, text: r.text })),
     ahead: out.ahead
       ? { text: out.ahead, sources: facts.ahead.map(({ source, issuedAt, url }) => ({ name: source, issuedAt, url })) }
@@ -146,6 +160,10 @@ export async function run({
     sources: [
       { name: "Snow-Forecast (totals)", issuedAt: forecast.generatedAt },
       ...(weather.generatedAt ? [{ name: "National Weather Service point forecasts", issuedAt: weather.generatedAt }] : []),
+      // The discussions each region drew on, when a model wrote it.
+      ...(writer === "claude"
+        ? [...new Map(facts.regions.flatMap((g) => g.pattern ?? []).map((p) => [p.source, { name: p.source, issuedAt: p.issuedAt }])).values()]
+        : []),
     ],
     api,
   };

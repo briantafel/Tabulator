@@ -23,6 +23,7 @@ const UA = "Tabulator/1.0 (personal ski-trip planner; github.com/briantafel/Tabu
 export const WPC_URL = "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd";
 export const CPC_URL = "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html";
 const AFD_CHARS = 1800;
+const AFD_NOW_CHARS = 2400;
 const WPC_CHARS = 3000;
 const CPC_CHARS = 2500;
 
@@ -63,10 +64,9 @@ export function issuedDateLine(text) {
 export const isFresh = (iso, now = new Date()) =>
   !!iso && now - new Date(iso) >= -3600e3 && now - new Date(iso) <= FRESH_HOURS * 3600e3;
 
-/** The forward-looking sections of an Area Forecast Discussion. Sections
- *  open with ".NAME..." and close with "&&". */
-export function afdAhead(text) {
-  const keep = /^\.(LONG TERM|KEY MESSAGES|EXTENDED)/i;
+/** Sections of an Area Forecast Discussion whose header matches `keep`.
+ *  Sections open with ".NAME..." and close with "&&". */
+function afdSections(text, keep, chars) {
   const out = [];
   let on = false;
   for (const line of String(text).split("\n")) {
@@ -74,8 +74,31 @@ export function afdAhead(text) {
     if (/^&&/.test(line)) on = false;
     if (on) out.push(line);
   }
-  return squash(out.join("\n")).slice(0, AFD_CHARS);
+  return squash(out.join("\n")).slice(0, chars);
 }
+
+/** The forward-looking sections — for "Looking ahead". */
+export const afdAhead = (text) => afdSections(text, /^\.(LONG TERM|KEY MESSAGES|EXTENDED)/i, AFD_CHARS);
+
+/** The forecaster's reasoning about the days on the radar — for each
+ *  region's paragraph (Brian, 2026-11-15: "commentary about weather systems
+ *  rather than just restating what the chart already shows"). */
+export const afdNow = (text) => afdSections(text, /^\.(SYNOPSIS|KEY MESSAGES|SHORT TERM|NEAR TERM|DISCUSSION|UPDATE)/i, AFD_NOW_CHARS);
+
+/* Every snow or rain amount out of a forecaster's prose before the writer
+   sees it. Inches come from our table (rule 6); the October read-out
+   quoted "3 to 8 inches more" from NWS text that sat in the fact sheet.
+   Snow levels ("near 6000 ft"), wind and temperatures stay: they are
+   reasoning, not amounts. */
+const UNIT = String.raw`(?:inches|inch|in\.|in(?=\s+of)|"|”|cm|mm)`;
+const RANGE = String.raw`\d+(?:\.\d+)?(?:\s*(?:-|–|to)\s*\d+(?:\.\d+)?)?`;
+export const scrubAmounts = (text) => String(text ?? "")
+  .replace(new RegExp(String.raw`(?:up to |around |near |locally |over )?${RANGE}\+?\s*${UNIT}`, "gi"), "[amount]")
+  /* Feet are an amount when small ("2 to 4 feet along the crest") and an
+     elevation when large ("snow levels fall to 5000 feet"). */
+  .replace(new RegExp(String.raw`(${RANGE})\+?\s*(?:feet|foot|ft)\b`, "gi"), (m, n) =>
+    (Math.max(...n.split(/\s*(?:-|–|to)\s*/).map(Number)) < 100 ? "[amount]" : m))
+  .replace(/\b(a|one|two|three) (foot|feet) of (new |fresh )?snow/gi, "[amount] of snow");
 
 const squash = (s) => s.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 /* The discussion's own text: every <pre> on the page, or the whole page if
@@ -106,11 +129,13 @@ async function get(url, accept) {
 }
 
 /** Fetch every fresh discussion for these offices, plus WPC and CPC.
+ *  AFDs carry both `excerpt` (long range, for "Looking ahead") and `now`
+ *  (synopsis and short term, for each region's paragraph), amounts scrubbed.
  *  Never throws: a source that fails or is stale is logged and left out. */
 export async function gatherAhead(offices, { now = new Date(), log = console.error } = {}) {
   const out = [];
   const add = (item) => {
-    if (!item.excerpt) return log(`ahead: ${item.source} — nothing forward-looking in it, skipped`);
+    if (!item.excerpt && !item.now) return log(`ahead: ${item.source} — nothing usable in it, skipped`);
     if (!item.issuedAt) return log(`ahead: ${item.source} — could not read when it was issued, skipped. Page starts: ${JSON.stringify(item.head ?? item.excerpt.slice(0, 160))}`);
     if (!isFresh(item.issuedAt, now)) return log(`ahead: ${item.source} issued ${item.issuedAt} — older than ${FRESH_HOURS}h, skipped`);
     const { head, ...keep } = item; // eslint-disable-line no-unused-vars
@@ -122,14 +147,22 @@ export async function gatherAhead(offices, { now = new Date(), log = console.err
       const id = (list?.["@graph"] ?? [])[0]?.id;
       if (!id) throw new Error("no AFD listed");
       const p = await get(`${API}/products/${id}`, "application/ld+json");
-      add({ source: `NWS ${office} Area Forecast Discussion`, issuedAt: p.issuanceTime, url: `https://forecast.weather.gov/product.php?site=${office}&issuedby=${office}&product=AFD`, excerpt: afdAhead(p.productText) });
+      add({
+        source: `NWS ${office} Area Forecast Discussion`, office, issuedAt: p.issuanceTime,
+        url: `https://forecast.weather.gov/product.php?site=${office}&issuedby=${office}&product=AFD`,
+        excerpt: scrubAmounts(afdAhead(p.productText)),
+        now: scrubAmounts(afdNow(p.productText)),
+      });
     } catch (e) { log(`ahead: NWS ${office} failed — ${e.message}`); }
   }
   for (const [source, url, parse] of [
     ["WPC Extended Forecast Discussion", WPC_URL, wpcAhead],
     ["CPC 6–10 and 8–14 Day Discussion", CPC_URL, cpcAhead],
   ]) {
-    try { add({ source, url, ...parse(await get(url, "text/html")) }); }
+    try {
+      const got = parse(await get(url, "text/html"));
+      add({ source, url, ...got, excerpt: scrubAmounts(got.excerpt) });
+    }
     catch (e) { log(`ahead: ${source} failed — ${e.message}`); }
   }
   return out;
