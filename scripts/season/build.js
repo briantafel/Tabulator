@@ -172,6 +172,67 @@ async function collectAvalanche(resorts, today) {
   return out;
 }
 
+/** NOAA CPC 6–10 and 8–14 day outlooks at each US resort's point
+ *  (mapservices.weather.noaa.gov, ArcGIS, public). Each layer answers with
+ *  the polygon the point falls in: a category (Above / Below / Near normal,
+ *  or EC = equal chances) and the probability of that category. The service
+ *  has no week 3–4 layer. Secondary: failures warn, the file ships. */
+const CPC = "https://mapservices.weather.noaa.gov/vector/rest/services/outlooks";
+export function parseCpcAttrs(a) {
+  if (!a) return null;
+  const k = (re) => Object.keys(a).find((x) => re.test(x));
+  const cat = a[k(/^cat/i)] ?? null;
+  const prob = Number(a[k(/^prob/i)]);
+  const norm = String(cat ?? "").toLowerCase();
+  const category = /^a/.test(norm) ? "above" : /^b/.test(norm) ? "below" : /^n/.test(norm) ? "near" : /^ec|equal/.test(norm) ? "equal" : null;
+  return category ? { category, prob: Number.isFinite(prob) ? prob : null } : null;
+}
+async function collectOutlook(resorts) {
+  const out = {};
+  let logged = false, ok = 0, tried = 0;
+  for (const r of resorts.filter((x) => coordsOf(x) && !x.country && x.region !== "Canada")) {
+    const [lat, lon] = coordsOf(r);
+    const one = {};
+    for (const [key, svc] of [["d6_10", "cpc_6_10_day_outlk"], ["d8_14", "cpc_8_14_day_outlk"]]) {
+      for (const [layer, what] of [[0, "temp"], [1, "precip"]]) {
+        tried++;
+        try {
+          const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326",
+            spatialRel: "esriSpatialRelIntersects", outFields: "*", returnGeometry: "false", f: "json" });
+          const res = await fetchText(`${CPC}/${svc}/MapServer/${layer}/query?${q}`);
+          if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+          const json = JSON.parse(res.text);
+          const attrs = json?.features?.[0]?.attributes ?? null;
+          if (!logged && attrs) { console.log(`CPC attributes: ${JSON.stringify(attrs)}`); logged = true; }
+          (one[key] ??= {})[what] = parseCpcAttrs(attrs);
+          ok++;
+        } catch (e) { console.log(`::warning::CPC ${svc}/${layer} ${r.id}: ${e.message}`); }
+      }
+    }
+    out[r.id] = one;
+  }
+  console.log(`CPC outlooks: ${ok}/${tried} point queries answered`);
+  return out;
+}
+
+/** ENSO status from CPC's monthly discussion: the alert line and synopsis. */
+export function parseEnso(html) {
+  const text = String(html ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
+  const status = /ENSO Alert System Status:\s*([^.]+?)(?:\s{2,}|Synopsis|$)/i.exec(text)?.[1]?.trim() ?? null;
+  const synopsis = /Synopsis:\s*([^.]+\.)/i.exec(text)?.[1]?.trim() ?? null;
+  return status || synopsis ? { status, synopsis } : null;
+}
+async function collectEnso() {
+  try {
+    const res = await fetchText("https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml");
+    if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+    const e = parseEnso(res.text);
+    console.log(`ENSO: ${JSON.stringify(e)}`);
+    if (!e) console.log("::warning::ENSO discussion: no status line found — the page shape may have moved");
+    return e;
+  } catch (e) { console.log(`::warning::ENSO: ${e.message}`); return null; }
+}
+
 async function main() {
   const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
   const slr = JSON.parse(await readFile(`${root}public/slr.json`, "utf8"));
@@ -258,6 +319,8 @@ async function main() {
   console.log(`  summary: ${JSON.stringify(cmp)}`);
 
   const avalanche = await collectAvalanche(resorts, today);
+  const outlook = await collectOutlook(resorts);
+  const enso = await collectEnso();
 
   const n = Object.keys(out).length;
   console.log(`season: ${n} resorts from ${ids.length} stations`);
@@ -274,6 +337,8 @@ async function main() {
     ],
     newSnowCheck: cmp,
     avalanche,
+    outlook,
+    enso,
     resorts: out,
   };
   await writeFile(`${outDir}/season.json`, JSON.stringify(doc));

@@ -125,3 +125,15 @@ test("new-snow comparison ignores the dry pairs and reports bias", () => {
   assert.equal(c.highByHalf, 1);
   assert.equal(c.lowByHalf, 0);
 });
+
+import { parseCpcAttrs, parseEnso } from "../scripts/season/build.js";
+test("CPC attributes: category and probability, whatever the field case", () => {
+  assert.deepEqual(parseCpcAttrs({ Cat: "Above", Prob: 50 }), { category: "above", prob: 50 });
+  assert.deepEqual(parseCpcAttrs({ cat: "EC", prob: 33.3 }), { category: "equal", prob: 33.3 });
+  assert.equal(parseCpcAttrs({ foo: 1 }), null);
+});
+test("ENSO status and synopsis from the discussion page", () => {
+  const e = parseEnso("<p>ENSO Alert System Status: La Niña Advisory</p><p>Synopsis: La Niña is favored to continue into the Northern Hemisphere winter. More text.</p>");
+  assert.equal(e.status, "La Niña Advisory");
+  assert.match(e.synopsis, /^La Niña is favored/);
+});
