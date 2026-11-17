@@ -466,9 +466,13 @@ export default function Tabulator() {
               {shown && calFar && (
                 <div className="far-note">
                   <p>
-                    {calWin.beyond
-                      ? `${label} is past the ${dates.length}-day forecast, which reaches ${shortDate(cs)} around ${shortDate(tripCountdown({ start: cs }, dates, localToday()).reach)}.`
-                      : `The forecast covers ${rangeLabel(dates[calWin.ta], dates[calWin.tb])} so far. The rest of ${label} fills in as it arrives.`}
+                    {calWin.beyond ? (
+                      <><b>{label}</b> is past the {dates.length}-day forecast, which reaches it
+                        around <b>{shortDate(tripCountdown({ start: cs }, dates, localToday()).reach)}</b>.</>
+                    ) : (
+                      <>The forecast covers <b>{rangeLabel(dates[calWin.ta], dates[calWin.tb])}</b> so far.
+                        The rest of {label} fills in as it arrives.</>
+                    )}
                     {" "}Save it and it updates as the forecast moves.
                   </p>
                   {/* Brian's own trip glyph, not a pill — the same

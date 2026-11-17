@@ -49,14 +49,20 @@ export default function TripDetail({
      When the dates enter the forecast window, data can then appear." The
      season-to-date report (claude/calendar-shaping-up-plan.md) goes here;
      until it exists, say plainly how far off the forecast is. */
+  /* Segments, like the verdict: the numbers that matter in red so the line
+     reads at a glance. Plain grey prose alone all but vanished (Brian tried
+     it on the live site, 2026-11-17). */
   const note = past
-    ? "This trip is over."
+    ? [{ t: "This trip is over." }]
     : beyond && countdown
-      ? `${countdown.daysOut} days out. The ${countdown.horizon}-day forecast reaches this trip around ${shortDate(countdown.reach)}.`
+      ? [{ t: `${countdown.daysOut} days out.`, hot: true },
+         { t: ` The ${countdown.horizon}-day forecast reaches this trip around ` },
+         { t: shortDate(countdown.reach), hot: true }, { t: "." }]
       : beyond
-        ? "These dates are past the forecast. Check back closer to the trip."
+        ? [{ t: "These dates are past the forecast. Check back closer to the trip." }]
         : partial
-          ? `The forecast covers ${rangeLabel(dates[win.ta], dates[win.tb])} so far. The rest of the trip fills in as it arrives.`
+          ? [{ t: "The forecast covers " }, { t: rangeLabel(dates[win.ta], dates[win.tb]), hot: true },
+             { t: " so far. The rest of the trip fills in as it arrives." }]
           : null;
 
   return (
@@ -115,7 +121,9 @@ export default function TripDetail({
           replaces. */}
       {note && (
         <>
-          <p className="td-verdict"><span>{note}</span></p>
+          <p className="td-verdict td-note">
+            {note.map((seg, i) => (seg.hot ? <b key={i}>{seg.t}</b> : <span key={i}>{seg.t}</span>))}
+          </p>
           <div className="td-rule td-rule-2" />
         </>
       )}
@@ -137,7 +145,8 @@ export default function TripDetail({
           tell you it was empty while holding five resorts. */}
       {trip.resorts.length === 0 ? (
         <p className="fav-empty">
-          Nothing in this trip yet. Tap the search above to add a resort.
+          Nothing in this trip yet. Tap the search above to add a resort, or add a
+          whole region from its sheet on the radar.
         </p>
       ) : rows.length === 0 ? (
         <ul className="td-names">

@@ -1511,9 +1511,13 @@ body { background: #F2F2F2; }
    covered, and the two ways to keep it. Quiet grey prose; the actions in the
    app's red, like Edit. */
 .far-note { margin-top: calc(24 * var(--u)); }
+/* The same statement type as the trip verdict (23.5/700 on 28), with the
+   dates in the red — the design's "past the forecast" line. */
 .far-note p {
-  margin: 0; font-size: calc(12.5 * var(--u)); line-height: calc(16 * var(--u)); color: #8A8A8A;
+  margin: 0; font-size: calc(23.5 * var(--u)); line-height: calc(28 * var(--u));
+  font-weight: 700; letter-spacing: -.04em; color: #8A8A8A;
 }
+.far-note b { font-weight: 700; color: var(--mark-red); }
 .far-actions {
   display: flex; justify-content: center; gap: calc(36 * var(--u));
   margin-top: calc(16 * var(--u));
@@ -1535,3 +1539,8 @@ body { background: #F2F2F2; }
   font-size: calc(15 * var(--u));
 }
 .td-names button { padding: 0; font: inherit; color: inherit; text-align: left; }
+
+/* A verdict-styled line with no verdict behind it (countdown, coverage):
+   darker prose than the verdict's --fill, which only works when red clauses
+   carry the eye. */
+.td-verdict.td-note { color: #8A8A8A; }
