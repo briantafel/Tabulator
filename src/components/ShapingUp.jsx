@@ -49,7 +49,11 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
               {regionParagraph(g, metric).map((s, i) => (s.hot ? <b key={i}>{s.t}</b> : <span key={i}>{s.t}</span>))}
             </p>
 
-            <div className="su-h su-h2"><h3>Best of {g.name} so far</h3><span>top {top.length} of {g.rows.length}</span></div>
+            <div className="su-h su-h2">
+              {g.leading
+                ? <><h3>Best of {g.name} so far</h3><span>top {top.length} of {g.rows.length}</span></>
+                : <h3>Your resorts here</h3>}
+            </div>
             {top.map(({ r, s }, i) => {
               const sf = snowpack(byId(r.id));
               /* Snow-Forecast prints 0 / 0 before a resort reports; that is
@@ -76,19 +80,22 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
               );
             })}
 
+            {/* The table earns its place when it lists more than the cards. */}
+            {g.rows.length > top.length && (<>
             <div className="su-h su-h2"><h3>Every resort</h3></div>
-            <div className="su-table">
-              <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>14 days</span><span>Last big day</span></div>
-              {g.rows.map(({ r, s }, i) => (
-                <div key={r.id} className={`su-tr${i === 0 ? " hot" : ""}`}>
-                  <span>{r.name}</span>
-                  <span>{s.pctReliable && typeof s.swePctMedian === "number" ? `${s.swePctMedian}%` : "—"}</span>
-                  <span>{s.new14Cm != null ? sw(s.new14Cm) : "—"}</span>
-                  <span>{s.lastDump ? shortDate(s.lastDump) : "—"}</span>
-                </div>
-              ))}
-            </div>
-            <p className="su-small">A dash means no reading or too early to compare, never zero.</p>
+              <div className="su-table">
+                <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>14 days</span><span>Last big day</span></div>
+                {g.rows.map(({ r, s }, i) => (
+                  <div key={r.id} className={`su-tr${i === 0 ? " hot" : ""}`}>
+                    <span>{r.name}</span>
+                    <span>{s.pctReliable && typeof s.swePctMedian === "number" ? `${s.swePctMedian}%` : "—"}</span>
+                    <span>{s.new14Cm != null ? sw(s.new14Cm) : "—"}</span>
+                    <span>{s.lastDump ? shortDate(s.lastDump) : "—"}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="su-small">A dash means no reading or too early to compare, never zero.</p>
+            </>)}
           </section>
         );
       })}
