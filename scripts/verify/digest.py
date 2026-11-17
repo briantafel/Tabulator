@@ -202,8 +202,9 @@ def snowfall(con, out: Path) -> str:
         con.executemany("INSERT INTO bw VALUES (?, ?, ?)",
                         [(int(l), m, v) for l, ws in b["weights"].items() for m, v in ws.items()])
         con.execute("CREATE TABLE bf(model VARCHAR, lead INTEGER, region VARCHAR, f DOUBLE)")
-        con.executemany("INSERT INTO bf VALUES (?, ?, ?, ?)",
-                        [(k.split("|")[0], int(k.split("|")[1]), k.split("|")[2], v) for k, v in b["factors"].items()])
+        bf_rows = [(k.split("|")[0], int(k.split("|")[1]), k.split("|")[2], v) for k, v in b["factors"].items()]
+        if bf_rows:
+            con.executemany("INSERT INTO bf VALUES (?, ?, ?, ?)", bf_rows)
         con.execute("CREATE TABLE bpool(model VARCHAR, lead INTEGER, f DOUBLE)")
         con.executemany("INSERT INTO bpool VALUES (?, ?, ?)",
                         [(k.split("|")[0], int(k.split("|")[1]), v) for k, v in b["pooled_factors"].items()])
@@ -509,6 +510,102 @@ def wind(con, archive: Path, out: Path) -> str:
     return "\n".join(parts)
 
 
+# --------------------------------------------------------------------------- resort reports
+def resort_reports(con, out: Path) -> str:
+    """What skiers are told the next morning (Brian, 2026-11-17): every snow forecast scored against the
+    resort's own reported new snow (OnTheSnow `reported_daily_snow`, archived since Oct 2026). Self-reported
+    and often generous, so it sits BESIDE the gauge truth, never replaces it. Fresh snow on a board — the
+    definition the app's daily number aims at. No station needed, so every app resort that reports counts."""
+    pp = out / "pairs.parquet"
+    head = ["## 4. Against resort-reported new snow (what skiers are told)\n",
+            "Truth: each resort's own daily new-snow report (OnTheSnow). Self-reported, unaudited, often generous; "
+            "a fresh-snow (board) number, not settled depth. `*` = fewer than 20 observed events (thin).\n"]
+    if not pp.exists():
+        return "\n".join(head + ["_pairs.parquet missing_\n"])
+    con.execute(f"""
+    CREATE TABLE rb AS
+    SELECT p.source_label, any_value(p.paid) AS paid, p.space, p.split, p.resort_id, any_value(z.region) AS region,
+           any_value(z.macro) AS macro, p.local_date, p.lead_day AS lead, avg(p.fc_amount) AS fc
+    FROM read_parquet('{pp}') p JOIN rz z USING (resort_id)
+    WHERE p.fc_amount IS NOT NULL AND coalesce(p.tier, 'mid') = 'mid' AND p.lead_day BETWEEN 0 AND 7
+    GROUP BY p.source_label, p.space, p.split, p.resort_id, p.local_date, p.lead_day""")
+    con.execute(f"""
+    CREATE TABLE rep AS
+    SELECT resort_id, local_date, any_value(ots_reported_cm) AS rep FROM read_parquet('{pp}')
+    WHERE ots_reported_cm IS NOT NULL GROUP BY ALL""")
+    n_rep = con.execute("SELECT count(*), count(DISTINCT resort_id), min(local_date), max(local_date) FROM rep").fetchone()
+    if not n_rep[0]:
+        return "\n".join(head + ["_no resort reports paired yet_\n"])
+    # Ours, exactly as in section 2 but without needing a gauge on the day (bw / bf / bpool / stemp / sline).
+    have = {r[0] for r in con.execute("SELECT table_name FROM information_schema.tables").fetchall()}
+    if {"bw", "bf", "bpool", "stemp"} <= have:
+        sl = json.loads((out / "slr.json").read_text())
+        lo_, hi_ = sl["clamp"]
+        line = "LEFT JOIN sline l ON l.resort_id = o.resort_id" if "sline" in have else \
+               "LEFT JOIN (SELECT NULL::VARCHAR AS resort_id, NULL::DOUBLE AS a, NULL::DOUBLE AS b) l ON false"
+        con.execute(f"""
+        INSERT INTO rb
+        WITH w AS (
+          SELECT d.split, d.resort_id, any_value(d.region) AS region, any_value(d.macro) AS macro, d.local_date, d.lead,
+                 sum(bw.w * d.fc * coalesce(bf.f, bpool.f, 1.0)) / sum(bw.w) AS fc
+          FROM (SELECT *, split_part(source_label, ':', 2) AS model FROM rb
+                WHERE space = 'liquid' AND source_label LIKE 'open-meteo-previous-runs:%') d
+          JOIN bw ON bw.lead = d.lead AND bw.model = d.model
+          LEFT JOIN bf ON bf.model = d.model AND bf.lead = d.lead AND bf.region = d.region
+          LEFT JOIN bpool ON bpool.model = d.model AND bpool.lead = d.lead
+          GROUP BY d.split, d.resort_id, d.local_date, d.lead)
+        SELECT 'ours (blend × SLR)', false, 'snow', o.split, o.resort_id, o.region, o.macro, o.local_date, o.lead,
+               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest(coalesce(l.a, {sl['a']}) + coalesce(l.b, {sl['b']}) * t.t,
+                                                                  {lo_}), {hi_}) / 10 END
+        FROM w o JOIN stemp t USING (resort_id, local_date, lead, split) {line}""")
+    # Which day does a report belong to? A report dated D is the 24 h ending that MORNING, so it may match the
+    # forecast for D (lag 0) or D − 1 (lag 1). Chosen by the data, pooled over sources, and printed.
+    lags = con.execute("""
+      SELECT lag, corr(r.fc, rep.rep), count(*) FROM (SELECT 0 AS lag UNION ALL SELECT 1) g
+      JOIN rb r ON r.space = 'snow' AND r.lead BETWEEN 1 AND 3
+      JOIN rep ON rep.resort_id = r.resort_id AND rep.local_date = r.local_date + g.lag
+      GROUP BY lag ORDER BY lag""").fetchall()
+    good = [x for x in lags if x[1] is not None and x[1] == x[1]]  # drop NULL / NaN correlations
+    lag = max(good, key=lambda x: x[1])[0] if good else 0
+    con.execute(f"""
+    CREATE TABLE rr AS
+    SELECT r.*, rep.rep AS obs FROM rb r JOIN rep ON rep.resort_id = r.resort_id AND rep.local_date = r.local_date + {lag}
+    WHERE r.space = 'snow'""")
+    con.execute(f"COPY (SELECT * FROM rr ORDER BY ALL) TO '{out / 'digest_resort_reports.csv'}' (HEADER)")
+    sc = f"""count(*) AS n, sum(CAST(obs >= t AS INT)) AS events,
+      sum(CAST(fc >= t AND obs >= t AS INT)) / nullif(sum(CAST(obs >= t AS INT)), 0) AS pod,
+      sum(CAST(fc >= t AND obs < t AS INT)) / nullif(sum(CAST(fc >= t AS INT)), 0) AS far,
+      sum(CAST(fc >= t AND obs >= t AS INT)) / nullif(sum(CAST(fc >= t OR obs >= t AS INT)), 0) AS csi,
+      sum(CAST(fc >= t AS INT)) / nullif(sum(CAST(obs >= t AS INT)), 0) AS freq_bias,
+      sum(fc) FILTER (WHERE fc > 0 OR obs > 0) / nullif(sum(obs) FILTER (WHERE fc > 0 OR obs > 0), 0) AS volume,
+      sum(CAST(obs >= t AS INT)) < {THIN} AS thin"""
+    # Head-to-head: the same resort-days for ours, Snow-Forecast and OnTheSnow's own forecast.
+    con.execute(f"""
+    CREATE TABLE rrs AS
+    WITH k AS (SELECT split, resort_id, local_date, lead FROM rr GROUP BY ALL
+               HAVING bool_or(source_label = 'ours (blend × SLR)') AND bool_or(source_label = 'snow-forecast')),
+         x AS (SELECT rr.*, t FROM rr JOIN k USING (split, resort_id, local_date, lead)
+               CROSS JOIN (SELECT 2.5 AS t UNION ALL SELECT 15.0) th
+               WHERE source_label IN ('ours (blend × SLR)', 'snow-forecast', 'onthesnow',
+                                      'open-meteo-previous-runs:ecmwf_ifs025'))
+    SELECT split, source_label, any_value(paid) AS paid, lead, t AS threshold, {sc} FROM x GROUP BY split, source_label, lead, t""")
+    con.execute(f"COPY (SELECT * FROM rrs ORDER BY ALL) TO '{out / 'digest_resort_reports_h2h.csv'}' (HEADER)")
+    lag_txt = ", ".join(f"lag {l}: r = {c:.2f} (n {n})" for l, c, n in good) or "no correlation yet, lag 0 by default"
+    return "\n".join(head + [
+        f"Reports paired: {n_rep[0]} resort-days from {n_rep[1]} resorts, {n_rep[2]} → {n_rep[3]}. "
+        f"Report dated D matched to the forecast for D − {lag} ({lag_txt}).\n",
+        "\n### Same resort-days: ours vs Snow-Forecast vs OnTheSnow's forecast vs raw ECMWF (7:1)\n",
+        "`volume` = forecast ÷ reported snow on days either had snow (1.0 = same total). `freq bias` > 1 = forecasts "
+        "the event more often than it is reported.\n",
+        md(con, """SELECT split, replace(source_label, 'open-meteo-previous-runs:', '') ||
+                          CASE WHEN paid THEN ' (paid)' ELSE '' END AS source,
+                          lead, threshold AS "≥ cm", n, events, round(pod, 2) AS pod, round(far, 2) AS far,
+                          round(csi, 2) || CASE WHEN thin THEN '*' ELSE '' END AS csi, round(freq_bias, 2) AS "freq bias",
+                          round(volume, 2) AS volume
+                   FROM rrs WHERE lead IN (1, 2, 3, 5) ORDER BY split, threshold DESC, lead, csi DESC NULLS LAST"""),
+    ])
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("archive", type=Path)
@@ -520,7 +617,8 @@ def main() -> None:
     setup(con, a.resorts)
     sections = []
     for name, fn in (("temperature", lambda: temperature(con, a.out)), ("snowfall", lambda: snowfall(con, a.out)),
-                     ("wind", lambda: wind(con, a.archive, a.out))):
+                     ("wind", lambda: wind(con, a.archive, a.out)),
+                     ("resort reports", lambda: resort_reports(con, a.out))):
         try:
             sections.append(fn())
         except Exception as e:  # loud in the report AND the exit code, but the other sections still print
