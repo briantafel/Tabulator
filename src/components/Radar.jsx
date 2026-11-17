@@ -162,19 +162,17 @@ export default function Radar({
               <p className="rd-read-p">{g.text}</p>
             </div>
           ))}
-          {editorial.buoy?.text && (
-            <div className="rd-read-g rd-buoy">
-              <h3 className="rd-read-h">Powder Buoy (experimental)</h3>
-              <p className="rd-read-p">
-                {editorial.buoy.text}{" "}
-                <a href={editorial.buoy.link} target="_blank" rel="noopener noreferrer">powderbuoy.com</a>
-              </p>
-            </div>
-          )}
-          {editorial.ahead && (
+          {(editorial.ahead || editorial.buoy?.text) && (
             <div className="rd-read-g rd-ahead">
               <h3 className="rd-read-h">Looking ahead</h3>
-              <p className="rd-read-p">{editorial.ahead.text}</p>
+              {editorial.ahead && <p className="rd-read-p">{editorial.ahead.text}</p>}
+              {/* Powder Buoy (Brian, 2026-11-17: in Looking ahead). Template text, labelled experimental. */}
+              {editorial.buoy?.text && (
+                <p className="rd-read-p rd-buoy">
+                  <strong>Powder Buoy (experimental):</strong> {editorial.buoy.text}{" "}
+                  <a href={editorial.buoy.link} target="_blank" rel="noopener noreferrer">powderbuoy.com</a>
+                </p>
+              )}
             </div>
           )}
           <p className="rd-read-src">
