@@ -189,6 +189,11 @@ const pieces = [
   // piece: a whole winter of hourly values per 20 stations is a very large response.
   ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-temp-${m[0].slice(0, 7)}`, kind: "snotel",
     winter: m, elements: ["TOBS"], duration: "HOURLY" }))),
+  // Added 2026-11-17 (claude/state-2026-11-16-blend-gap.md): hourly snow depth and SWE, so
+  // verify can score new snow as the day's peak depth gain instead of the settled
+  // midnight-to-midnight change. Same shape as the hourly temperature pieces.
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-snow-${m[0].slice(0, 7)}`, kind: "snotel",
+    winter: m, elements: ["SNWD", "WTEQ"], duration: "HOURLY" }))),
   // Added 2026-11-11: CoCoRaHS and SNODAS past winters (claude/verify-truth-contract.md),
   // one calendar month a piece. SNODAS's first month starts a day early so the
   // 24 h gain on Nov 1 has its Oct 31 snapshot.
@@ -252,7 +257,7 @@ async function runPiece(p) {
     if (!rows.length) throw new Error("no SNOTEL readings");
     if (p.elements) {
       // Loud: a station set that returns no highs at all means AWDB renamed or dropped the element.
-      for (const want of p.elements.map((e) => ({ TMAX: "temp_max", TMIN: "temp_min", TOBS: "temp" })[e] ?? e)) {
+      for (const want of p.elements.map((e) => ({ TMAX: "temp_max", TMIN: "temp_min", TOBS: "temp", SNWD: "snow_depth", WTEQ: "swe" })[e] ?? e)) {
         if (!rows.some((r) => r.variable === want)) throw new Error(`no ${want} in ${p.key} — check the AWDB element code`);
       }
     }
