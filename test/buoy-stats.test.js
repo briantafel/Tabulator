@@ -133,3 +133,19 @@ test("the persistence split counts both sides", () => {
   assert.ok(p.afterStorm.pop.n + p.afterQuiet.pop.n > 50);
   assert.ok(p.afterQuiet.base.n > 0);
 });
+
+test("within-winter base compares each pop only with its own winter", async () => {
+  const { score, PRIMARY } = await import("../scripts/research/buoy-stats.js");
+  // Two winters: 2010-11 storms every day, 2011-12 never. Pops only in the dry winter, no storms after them.
+  const region = new Map();
+  for (const [s, v] of [["2010", 1], ["2011", 0]]) {
+    for (let d = Date.parse(`${s}-11-01`); d <= Date.parse(`${Number(s) + 1}-04-30`); d += 864e5) {
+      region.set(new Date(d).toISOString().slice(0, 10), v);
+    }
+  }
+  const pops = ["2011-12-01", "2012-01-01", "2012-02-01"];
+  const pooled = score(pops, region, PRIMARY, { boot: 0 });
+  const within = score(pops, region, PRIMARY, { boot: 0, within: true });
+  if (!(pooled.diff < -0.4)) throw new Error(`pooled should look strongly negative, got ${pooled.diff}`);
+  if (Math.abs(within.diff) > 1e-9) throw new Error(`within-winter should be 0, got ${within.diff}`);
+});

@@ -35,6 +35,21 @@ export const PRIMARY = Object.freeze({
   minHeightM: 3.0, riseM: 1.5, lookback: 3, gapDays: 5, popMonths: [11, 12, 1, 2, 3],
   stormIn: 0.5, from: 11, to: 17,
 });
+/* LIVE TEST, PRE-REGISTERED 2026-11-17 (Brian, "yes"), before any 2026-27 data.
+ * The 2007–2026 history has been looked at many ways (two buoys, overlap,
+ * winter by winter), so it can no longer test anything. This rule is scored
+ * ONLY on winters from 2026-27 on:
+ *   pop, storm, window   exactly PRIMARY (≥ 3.0 m and +1.5 m; ≥ 0.5 in; 11–17 days)
+ *   base                 WITHIN THE SAME WINTER: each pop is compared with that
+ *                        winter's non-pop days within ±MATCH_DAYS of its date
+ *                        (the pooled base mixed dry winters, where pops cluster,
+ *                        with wet ones)
+ *   region / buoy        Wasatch; buoy 51001 decides, 51101 reported beside it
+ *   verdict              not before 3 live winters; then skill iff the 90% range
+ *                        of the within-winter difference (winter-block bootstrap)
+ *                        is above zero
+ * Do not edit these values. A different rule needs a new name and new winters. */
+export const LIVE_TEST = Object.freeze({ firstWinter: "2026-27", minWinters: 3, buoy: "51001", region: "Wasatch" });
 export const MATCH_DAYS = 10;
 export const EXCLUDE_NEAR_POP = 3;
 export const BOOTSTRAP = 2000;
@@ -184,7 +199,7 @@ function caseDays(region, popSet, def) {
  * P(storm | pop) against the base rate of non-pop days at the same time of
  * winter, with a 90% interval from resampling whole winters.
  */
-export function score(pops, region, def = PRIMARY, { boot = BOOTSTRAP, seed = 12345 } = {}) {
+export function score(pops, region, def = PRIMARY, { boot = BOOTSTRAP, seed = 12345, within = false } = {}) {
   const popSet = new Set(pops);
   const all = caseDays(region, popSet, def);
   const popCases = all.filter((c) => c.pop);
@@ -195,11 +210,13 @@ export function score(pops, region, def = PRIMARY, { boot = BOOTSTRAP, seed = 12
     if (!pc.length || !bc.length) return { pPop: NaN, pBase: NaN, diff: NaN, lift: NaN };
     // Matched base: for each pop, the base rate of days within ±MATCH_DAYS
     // of its day of winter, across the winters in this sample.
+    // within: only the pop's own winter (LIVE_TEST); otherwise every winter in the sample.
+    const key = (season, dos) => (within ? `${season}|${dos}` : String(dos));
     const byDos = new Map();
-    for (const c of bc) byDos.set(c.dos, [...(byDos.get(c.dos) ?? []), c.y]);
+    for (const c of bc) byDos.set(key(c.season, c.dos), [...(byDos.get(key(c.season, c.dos)) ?? []), c.y]);
     const matched = pc.map((c) => {
       const ys = [];
-      for (let k = c.dos - MATCH_DAYS; k <= c.dos + MATCH_DAYS; k++) ys.push(...(byDos.get(k) ?? []));
+      for (let k = c.dos - MATCH_DAYS; k <= c.dos + MATCH_DAYS; k++) ys.push(...(byDos.get(key(c.season, k)) ?? []));
       return mean(ys);
     }).filter(Number.isFinite);
     const pPop = mean(pc.map((c) => c.y)), pBase = mean(matched);

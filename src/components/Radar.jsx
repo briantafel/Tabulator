@@ -162,6 +162,15 @@ export default function Radar({
               <p className="rd-read-p">{g.text}</p>
             </div>
           ))}
+          {editorial.buoy?.text && (
+            <div className="rd-read-g rd-buoy">
+              <h3 className="rd-read-h">Powder Buoy (experimental)</h3>
+              <p className="rd-read-p">
+                {editorial.buoy.text}{" "}
+                <a href={editorial.buoy.link} target="_blank" rel="noopener noreferrer">powderbuoy.com</a>
+              </p>
+            </div>
+          )}
           {editorial.ahead && (
             <div className="rd-read-g rd-ahead">
               <h3 className="rd-read-h">Looking ahead</h3>

@@ -26,6 +26,7 @@ import { pathToFileURL } from "node:url";
 import { readoutFacts, factsForWriter, templateReadout, validateReadout } from "../src/lib/readout.js";
 import { callClaude, parseReply, HAIKU, SONNET } from "./readout-api.js";
 import { gatherAhead } from "./discussions.js";
+import { buoyNow } from "./buoy-now.js";
 
 export const MAX_ATTEMPTS = 2;
 export const DAILY_CAP = 6;
@@ -64,6 +65,7 @@ export async function run({
   now = new Date(),
   fetchImpl = fetch,
   gather = gatherAhead,
+  buoy = null, // the CLI passes buoyNow; tests stay offline
   log = console.error,
 } = {}) {
   const forecast = await readJson(`${root}public/forecast.json`, null);
@@ -167,6 +169,13 @@ export async function run({
     ],
     api,
   };
+  // Powder Buoy line (experimental, template only; scripts/buoy-now.js).
+  if (buoy) {
+    const b = await buoy({ now });
+    editorial.buoy = b.block;
+    if (b.block) editorial.sources.push({ name: "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)", issuedAt: now.toISOString() });
+    if (b.warning) status.warnings.push(b.warning);
+  }
   await writeFile(`${root}public/editorial.json`, JSON.stringify(editorial, null, 1));
 
   await mkdir(`${root}readout-debug`, { recursive: true });
@@ -179,7 +188,7 @@ export async function run({
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   try {
-    const { status } = await run();
+    const { status } = await run({ buoy: buoyNow });
     for (const w of status.warnings) console.log(`::warning::Radar read-out: ${w}`);
     if (status.fatal) {
       console.log(`::error::Radar read-out fell back to the template: ${status.fatal}`);

@@ -13,7 +13,7 @@ import { mkdir, writeFile, appendFile, readFile } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
 import { pickStations } from "../archive/snotel.js";
 import {
-  parseNdbc, dailyMax, findPops, gainsFromAccum, regionDaily, score, lagScan, persistenceSplit, seasonOf, PRIMARY,
+  parseNdbc, dailyMax, findPops, gainsFromAccum, regionDaily, score, lagScan, persistenceSplit, seasonOf, PRIMARY, LIVE_TEST,
 } from "./buoy-stats.js";
 
 /* Which buoy. 51101 (NW of Kauai) is the one the Powder Buoy press names;
@@ -21,7 +21,7 @@ import {
    2002, so the study runs on either. Same pre-registered definition for
    both: the thresholds were fixed before any result and are not retuned
    per buoy. */
-const BUOY = process.env.BUOY ?? "51101";
+const BUOY = process.env.BUOY || "51001";  // empty on the yearly scheduled run → the live test's buoy
 if (!/^\d{5}$/.test(BUOY)) throw new Error(`BUOY must be a 5-digit NDBC station id, got "${BUOY}"`);
 /* COMPARE (optional, added 2026-11-17): a second buoy. The report then adds an
    overlap section: which of BUOY's pops the other buoy also flagged (±MATCH_POP
@@ -160,6 +160,26 @@ async function main() {
   L(`- **Window:** a storm day ${PRIMARY.from}–${PRIMARY.to} days after the pop.`);
   L(`- **Verdict:** skill only if the 90% range of (storm chance after a pop − storm chance on comparable days without one) is above zero for the ${PRIMARY_REGION}. Comparable = non-pop days within ±10 days of the same date, in every winter. Ranges come from resampling whole winters.`);
   L();
+
+  // The live test (pre-registered 2026-11-17, LIVE_TEST in buoy-stats.js): winters from 2026-27 only.
+  {
+    const lp = pops.filter((d) => seasonOf(d) >= LIVE_TEST.firstWinter);
+    const ld = new Map([...regions[LIVE_TEST.region].daily].filter(([d]) => seasonOf(d) >= LIVE_TEST.firstWinter));
+    const nW = new Set(lp.map(seasonOf)).size;
+    L(`## Live pre-registered test (${LIVE_TEST.region}, within-winter base, winters from ${LIVE_TEST.firstWinter}; buoy ${LIVE_TEST.buoy} decides)`);
+    L();
+    if (!lp.length) L(`No pops yet in live winters. Verdict after ${LIVE_TEST.minWinters} winters.`);
+    else {
+      const ls = score(lp, ld, PRIMARY, { within: true });
+      const verdict = nW < LIVE_TEST.minWinters ? `too early (${nW} of ${LIVE_TEST.minWinters} winters)`
+        : BUOY !== LIVE_TEST.buoy ? `reported only (buoy ${LIVE_TEST.buoy} decides)`
+        : ls.skill ? "**SKILL**" : "**NO MEASURABLE SKILL**";
+      L("| buoy | pops | winters | after a pop | same winter, comparable days | difference (90% range) | verdict |");
+      L("| :-- | --: | --: | --: | --: | --: | :-- |");
+      L(`| ${BUOY} | ${lp.length} | ${nW} | ${pct(ls.pPop)} | ${pct(ls.pBase)} | ${pp(ls.diff)} (${range(ls.diff90)}) | ${verdict} |`);
+    }
+    L();
+  }
 
   const primary = score(pops, regions[PRIMARY_REGION].daily, PRIMARY);
   L(`## Verdict (${PRIMARY_REGION}): ${primary.skill ? "**SKILL** — a pop raises the storm chance beyond chance" : "**NO MEASURABLE SKILL** — storms follow pops about as often as they follow any comparable day"}`);

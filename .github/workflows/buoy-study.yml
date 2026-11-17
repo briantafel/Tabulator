@@ -7,6 +7,9 @@ name: Buoy study (Powder Buoy test)
 # nothing is committed, uploaded to the archive, or shown in the app. The
 # report is this run's summary page and the buoy-study artifact.
 on:
+  # Yearly, after the winter: scores the live pre-registered test (LIVE_TEST) on 51001, with 51101 beside it.
+  schedule:
+    - cron: "17 14 5 5 *"
   workflow_dispatch:
     inputs:
       buoy:
@@ -36,11 +39,11 @@ jobs:
       - run: node scripts/research/buoy-study.js
         env:
           BUOY: ${{ inputs.buoy }}
-          COMPARE: ${{ inputs.compare }}
+          COMPARE: ${{ inputs.compare || (github.event_name == 'schedule' && '51101' || '') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: buoy-study-${{ inputs.buoy }}
+          name: buoy-study-${{ inputs.buoy || '51001' }}
           path: out/
           if-no-files-found: ignore
           retention-days: 90
