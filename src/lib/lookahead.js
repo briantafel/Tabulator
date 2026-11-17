@@ -110,10 +110,15 @@ export function noaaRow(ids, season) {
   const pr = pick("precip"), tp = pick("temp");
   if (!pr && !tp) return null;
   const part = (x, what) => (!x ? null : x.cat === "equal" ? null : `${LEAN[x.cat][what]}${x.prob ? ` (${x.prob}% chance)` : ""}`);
-  const bits = [part(pr, "precip"), part(tp, "temp")].filter(Boolean);
+  const pBit = part(pr, "precip"), tBit = part(tp, "temp");
+  const bits = [pBit, tBit].filter(Boolean);
   const when = pr?.start && pr?.end ? `${shortDate(pr.start)}–${shortDate(pr.end)}` : "Days 8–14";
   const segs = bits.length
-    ? [{ t: "NOAA's 8–14 day outlook leans " }, { t: bits.join(", with "), hot: pr?.cat === "above" }, { t: ". A tilt in the odds, not a storm." }]
+    ? [{ t: "NOAA's 8–14 day outlook leans " },
+       ...(pBit ? [{ t: pBit, hot: pr.cat === "above" }] : []),
+       ...(pBit && tBit ? [{ t: ", with " }] : []),
+       ...(tBit ? [{ t: tBit }] : []),
+       { t: ". A tilt in the odds, not a storm." }]
     : [{ t: "NOAA's 8–14 day outlook gives equal chances either way here: no tilt to go on yet." }];
   return { horizon: when, conf: "lean", segs };
 }
