@@ -49,4 +49,10 @@ with tempfile.TemporaryDirectory() as tmp:
     mae = [l for l in rep.split("Mean absolute error")[1].splitlines() if l.startswith("| 1 |")][0]
     v = [float(x) for x in mae.strip("|").split("|")[1:]]
     assert v[0] < min(v[1:]), f"blend MAE should beat every raw model: {mae}"
+    fc = rep.split("## Factor check")[1]
+    allrow = [l for l in fc.splitlines() if l.startswith("| 1-3 | ALL |")][0]
+    cells = [x.strip() for x in allrow.strip("|").split("|")]
+    none_vol, v1_vol, cand_vol = float(cells[5]), float(cells[9]), float(cells[13])
+    # ECMWF reads half the water and carries most weight: no factor is dry, v1 fixes it, cand (clamp 1.5) partly.
+    assert none_vol < 0.9 and 0.9 <= v1_vol <= 1.1 and none_vol < cand_vol <= v1_vol, allrow
 print("blend: all checks passed")

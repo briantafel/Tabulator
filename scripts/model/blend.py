@@ -148,6 +148,59 @@ def evaluate(con, params: dict) -> list[dict]:
     return out, mae
 
 
+# Factor check (2026-11-17): the live blend runs ~1.7x Snow-Forecast, worst in Utah/Nevada,
+# and 40 of 210 v1 factors sit at the 2.0 clamp. Judged on the test winter, per region x lead
+# group: three factor rules with the same weights — none (1.0), v1, and a conservative candidate.
+CAND_SHRINK, CAND_CLAMP = 120, (0.67, 1.5)
+
+
+def factor_check(con, params: dict) -> str:
+    lo_c, hi_c = CAND_CLAMP
+    con.execute(f"""
+    CREATE TABLE cand AS
+    WITH r AS (SELECT model, lead, region, sum(obs) so, sum(fc) sf, sum(CAST(obs >= {WET_MM} AS INT)) wet
+               FROM d WHERE split = 'train' GROUP BY ALL),
+         a AS (SELECT model, lead, least(greatest(coalesce(sum(so) / nullif(sum(sf), 0), 1.0), {lo_c}), {hi_c}) AS pooled
+               FROM r GROUP BY ALL)
+    SELECT r.model, r.lead, r.region,
+           least(greatest(r.wet / (r.wet + {CAND_SHRINK}) * coalesce(r.so / nullif(r.sf, 0), a.pooled)
+                          + {CAND_SHRINK} / (r.wet + {CAND_SHRINK}) * a.pooled, {lo_c}), {hi_c}) AS f
+    FROM r JOIN a USING (model, lead)""")
+    con.execute("""
+    CREATE TABLE fx AS
+    SELECT dc.resort_id, dc.region, dc.local_date, dc.lead, any_value(dc.obs) AS obs,
+           sum(w.w * dc.fc) / sum(w.w) AS none,
+           sum(w.w * dc.fcc) / sum(w.w) AS v1,
+           sum(w.w * dc.fc * coalesce(cand.f, 1.0)) / sum(w.w) AS cand,
+           count(*) AS n
+    FROM dc JOIN w USING (lead, model) LEFT JOIN cand USING (model, lead, region)
+    WHERE dc.split = 'test' GROUP BY dc.resort_id, dc.region, dc.local_date, dc.lead""")
+    metric = lambda v: (f"sum({v}) / nullif(sum(obs), 0), "
+                        f"sum(CAST({v} >= 10 AS INT)) / nullif(sum(CAST(obs >= 10 AS INT)), 0), "
+                        f"sum(CAST({v} >= 10 AND obs >= 10 AS INT)) / nullif(sum(CAST({v} >= 10 OR obs >= 10 AS INT)), 0), "
+                        f"sum(CAST({v} >= 20 AND obs >= 20 AS INT)) / nullif(sum(CAST({v} >= 20 OR obs >= 20 AS INT)), 0)")
+    rows = []
+    for grp, lo, hi in (("1-3", 1, 3), ("4-7", 4, 7)):
+        q = con.execute(f"""
+        SELECT region, count(*), sum(CAST(obs >= 10 AS INT)), sum(CAST(obs >= 20 AS INT)),
+               {metric('none')}, {metric('v1')}, {metric('cand')}
+        FROM fx WHERE n = 3 AND lead BETWEEN {lo} AND {hi}
+        GROUP BY ROLLUP (region) ORDER BY region NULLS LAST""").fetchall()
+        rows += [(grp,) + tuple(r) for r in q]
+    f = lambda v: "—" if v is None else (f"{v:.2f}" if isinstance(v, float) else str(v))
+    names = [f"{n} {m}" for n in ("none", "v1", "cand") for m in ("volume", "freq ≥10", "CSI ≥10", "CSI ≥20")]
+    out = ["| leads | region | days | events ≥10 | ≥20 | " + " | ".join(names) + " |", "|" + "---|" * (5 + len(names))]
+    out += ["| " + " | ".join([r[0], r[1] or "ALL"] + [f(x) for x in r[2:]]) + " |" for r in rows]
+    capped = sum(1 for v in params["factors"].values() if v >= CLAMP[1] - 1e-9)
+    return "\n".join([
+        "\n## Factor check — test winter, same weights, three factor rules\n",
+        f"v1 factors at the {CLAMP[1]} clamp: {capped} of {len(params['factors'])}. "
+        f"none = factor 1.0; v1 = live rule; cand = shrink {CAND_SHRINK} wet days, clamp {list(CAND_CLAMP)}.",
+        "volume = Σforecast ÷ Σobserved (1.00 = unbiased); freq ≥10 = forecast ≥10 mm days ÷ observed ones.",
+        "Higher CSI is better. Truth is SNOTEL/BC liquid at the mid-tier station pair, not slope snow.\n",
+        "\n".join(out)]) + "\n"
+
+
 def main(pairs: Path, out: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect()
@@ -176,7 +229,7 @@ def main(pairs: Path, out: Path) -> None:
         "\n## Mean absolute error, mm/day (all test days)\n",
         "| lead | blend | ECMWF | GEM | GFS |\n|---|---|---|---|---|\n" +
         "\n".join(f"| {l} | {a:.2f} | {b:.2f} | {c:.2f} | {e:.2f} |" for l, a, b, c, e in mae),
-    ]) + "\n"
+    ]) + "\n" + factor_check(con, params)
     (out / "blend_report.md").write_text(report)
     print("blend v1 written", file=sys.stderr)
 
