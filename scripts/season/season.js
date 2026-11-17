@@ -119,3 +119,29 @@ export function pickPrimary(candidates) {
     .filter((c) => c.summary && (c.summary.depthCm != null || c.summary.sweMm != null))
     .sort((a, b) => (b.elevationM ?? -1) - (a.elevationM ?? -1))[0] ?? null;
 }
+
+const ordinal = (n) => {
+  const s = ["th", "st", "nd", "rd"], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+export { ordinal };
+
+/** Against the station's own history (scripts/season/normals.js): the
+ *  1991–2020 median depth for the date, and where this season's SWE ranks
+ *  among every season on record for the same calendar day (1 = most).
+ *  A rank stays meaningful in November, when the median is a few mm. */
+export function againstHistory(hist, { date, depthCm, sweMm }) {
+  const day = hist?.days?.[date?.slice(5, 10)];
+  if (!day) return {};
+  const wy = Number(date.slice(5, 7)) >= 10 ? Number(date.slice(0, 4)) + 1 : Number(date.slice(0, 4));
+  const past = Object.entries(day.swe ?? {}).filter(([y]) => Number(y) !== wy).map(([, v]) => v);
+  const rank = num(sweMm) && past.length >= 10
+    ? { position: 1 + past.filter((v) => v > sweMm).length, of: past.length + 1 }
+    : null;
+  const med = day.depthMed;
+  return {
+    depthMedianCm: num(med) ? med : null,
+    depthPctMedian: num(depthCm) && num(med) && med >= 10 ? Math.round((100 * depthCm) / med) : null,
+    rank,
+  };
+}

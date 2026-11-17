@@ -1,0 +1,47 @@
+name: Build station history (season normals)
+
+# Per SNOTEL station the season job uses: 1991–2020 median snow depth for
+# each calendar day, and every season's SWE on that day, so Shaping up can
+# show depth vs normal and rank this season (scripts/season/normals.js).
+# History does not change, so monthly is plenty. Commits
+# scripts/season/normals.json.gz (build data, not shipped to the app).
+
+on:
+  schedule:
+    - cron: "41 6 3 * *"
+  push:
+    branches: [main]
+    paths: ["scripts/season/normals.js", ".github/workflows/normals.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write   # to rebuild season.json afterwards
+
+concurrency:
+  group: normals
+  cancel-in-progress: false
+
+jobs:
+  normals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build scripts/season/normals.json.gz
+        run: node scripts/season/normals.js
+      - name: Commit normals.json.gz
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add scripts/season/normals.json.gz
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "season normals: $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+      - name: Rebuild season.json with the history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run season.yml --ref main

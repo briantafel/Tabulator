@@ -16,12 +16,13 @@
  * red instead of shipping a plausible-looking empty file.
  * ------------------------------------------------------------------ */
 import { readFile, writeFile } from "node:fs/promises";
+import { gunzipSync } from "node:zlib";
 import { fetchText, sleep } from "../archive/common.js";
 import { skireportToRows } from "../archive/onthesnow.js";
 import { coordsOf } from "../archive/common.js";
 import { zoneFor, parseAvorgProduct, parseAvcanProduct, maxBand, withHistory } from "./avalanche.js";
 import { pickStations, toMetric } from "../archive/snotel.js";
-import { summarise, pickPrimary } from "./season.js";
+import { summarise, pickPrimary, againstHistory } from "./season.js";
 
 const API = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
 const ELEMENTS = ["SNWD", "WTEQ", "PREC", "TMAX", "TMIN"];
@@ -254,6 +255,14 @@ async function main() {
   const ids = [...byId.keys()];
   if (!ids.length) throw new Error("no SNOTEL stations near any resort");
 
+  /* Station history (scripts/season/normals.js, monthly). Optional: without
+     it depth vs normal and the rank are simply absent. */
+  let normals = null;
+  try {
+    normals = JSON.parse(gunzipSync(await readFile(`${root}scripts/season/normals.json.gz`)).toString("utf8"));
+    console.log(`normals: ${Object.keys(normals.stations ?? {}).length} stations, built ${normals.generatedAt}`);
+  } catch { console.log("::warning::no scripts/season/normals.json.gz yet — depth vs normal and rank left out"); }
+
   const series = new Map();
   const stats = { medians: 0, sample: null };
   const failures = [];
@@ -280,7 +289,10 @@ async function main() {
       return {
         id: p.station.stationTriplet, name: p.station.name ?? null, km: p.km,
         elevationM: Number.isFinite(p.station.elevation) ? Math.round(p.station.elevation * 0.3048) : null,
-        summary: summarise(days, { slr, today }),
+        summary: (() => {
+          const sm = summarise(days, { slr, today });
+          return sm ? { ...sm, ...againstHistory(normals?.stations?.[p.station.stationTriplet], { date: sm.asOf, depthCm: sm.depthCm, sweMm: sm.sweMm }) } : sm;
+        })(),
       };
     });
     const primary = pickPrimary(cands);

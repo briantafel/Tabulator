@@ -138,3 +138,22 @@ test("ENSO status and synopsis from the discussion page", () => {
   assert.match(e.synopsis, /^La Niña is favored/);
   assert.equal(parseEnso("ENSO Alert System Status: El Ni&ntilde;o Advisory Synopsis: greater than a 79&#37; chance.").status, "El Niño Advisory");
 });
+
+import { againstHistory, ordinal } from "../scripts/season/season.js";
+import { compact } from "../scripts/season/normals.js";
+test("history: depth median for the date and this season's rank", () => {
+  const days = [];
+  for (let wy = 1991; wy <= 2026; wy++) {
+    const y = wy - 1;
+    days.push({ date: `${y}-11-16`, depthCm: wy <= 2020 ? 20 + (wy % 10) : 99, sweMm: wy * 0 + (wy % 7) * 10 });
+  }
+  const c = compact(days);
+  // 1991–2020 depths are 20 + (wy % 10): three of each 20…29, median 24.5 → 25.
+  assert.equal(c["11-16"].depthMed, 25);
+  const h = againstHistory({ days: c }, { date: "2026-11-16", depthCm: 50, sweMm: 65 });
+  assert.equal(h.rank.position, 1);
+  assert.equal(h.rank.of, 37, "36 past seasons plus this one");
+  assert.ok(h.depthPctMedian > 100);
+  assert.deepEqual(againstHistory(null, { date: "2026-11-16" }), {});
+  assert.equal(ordinal(3), "3rd"); assert.equal(ordinal(11), "11th"); assert.equal(ordinal(22), "22nd");
+});
