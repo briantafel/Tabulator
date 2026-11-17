@@ -33,7 +33,12 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
       )}
 
       {regions.map((g) => {
-        const top = g.rows.slice(0, 3);
+        /* Cards: the top three by distinct station. Resorts that share a
+           SNOTEL site would show identical numbers side by side (Palisades,
+           Sugar Bowl and Northstar all read the Palisades Tahoe pillow);
+           the table below still lists every resort. */
+        const seen = new Set();
+        const top = g.rows.filter(({ s }) => (seen.has(s.station.id) ? false : seen.add(s.station.id))).slice(0, 3);
         return (
           <section key={g.name} className="su-region">
             <div className="su-h">
@@ -47,6 +52,9 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
             <div className="su-h su-h2"><h3>Best of {g.name} so far</h3><span>top {top.length} of {g.rows.length}</span></div>
             {top.map(({ r, s }, i) => {
               const sf = snowpack(byId(r.id));
+              /* Snow-Forecast prints 0 / 0 before a resort reports; that is
+                 "not reported", not a bare mountain. */
+              const sfKnown = (sf.base ?? 0) > 0 || (sf.top ?? 0) > 0;
               const chips = surfaceChips(s);
               return (
                 <button key={r.id} className="su-card" onClick={() => onOpenResort?.(byId(r.id))}>
@@ -57,9 +65,9 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
                     </span>
                   </div>
                   <div className="su-stats">
-                    <div><i>Base / top</i><b>{sf.base != null || sf.top != null ? `${sf.base != null ? sw(sf.base) : "—"} / ${sf.top != null ? sw(sf.top) : "—"}` : "—"}</b></div>
+                    <div><i>Base / top</i><b>{sfKnown ? `${sf.base ? sw(sf.base) : "—"} / ${sf.top ? sw(sf.top) : "—"}` : "Not reported"}</b></div>
                     <div><i>Last 7 / 14 d</i><b>{s.new7Cm != null ? sw(s.new7Cm) : "—"} / {s.new14Cm != null ? sw(s.new14Cm) : "—"}</b></div>
-                    <div><i>Since a big day</i><b>{s.daysSinceDump != null ? `${s.daysSinceDump} days` : "—"}</b></div>
+                    <div><i>Since a big day</i><b>{s.lastDump ? (s.daysSinceDump === 0 ? shortDate(s.lastDump) : `${s.daysSinceDump} days`) : "None yet"}</b></div>
                     <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>
                   </div>
                   {chips.length > 0 && <div className="su-chips">{chips.map((c) => <span key={c}>{c}</span>)}</div>}
@@ -70,13 +78,13 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
 
             <div className="su-h su-h2"><h3>Every resort</h3></div>
             <div className="su-table">
-              <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>14 days</span><span>Big day</span></div>
+              <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>14 days</span><span>Last big day</span></div>
               {g.rows.map(({ r, s }, i) => (
                 <div key={r.id} className={`su-tr${i === 0 ? " hot" : ""}`}>
                   <span>{r.name}</span>
                   <span>{s.pctReliable && typeof s.swePctMedian === "number" ? `${s.swePctMedian}%` : "—"}</span>
                   <span>{s.new14Cm != null ? sw(s.new14Cm) : "—"}</span>
-                  <span>{s.daysSinceDump != null ? `${s.daysSinceDump}d ago` : "—"}</span>
+                  <span>{s.lastDump ? shortDate(s.lastDump) : "—"}</span>
                 </div>
               ))}
             </div>
