@@ -11,7 +11,7 @@ import { shortDate } from "../lib/dates.js";
  *  regional paragraph, the top mountains and every resort's numbers. Looking
  *  ahead and avalanche come next; they are left out rather than faked. */
 export default function ShapingUp({ trip, season, resorts, metric, onOpenResort }) {
-  const { dynamic, regions } = tripRegions(trip, resorts, season);
+  const { regions } = tripRegions(trip, resorts, season);
   if (!regions.length) {
     return (
       <div className="su">
@@ -25,13 +25,6 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
 
   return (
     <div className="su">
-      {dynamic && (
-        <p className="su-small su-dynamic">
-          Leading region right now. This changes as other regions pull ahead;
-          add a resort or a region to the trip to keep it.
-        </p>
-      )}
-
       {regions.map((g) => {
         /* Cards: the top three by distinct station. Resorts that share a
            SNOTEL site would show identical numbers side by side (Palisades,
@@ -41,6 +34,13 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
         const top = g.rows.filter(({ s }) => (seen.has(s.station.id) ? false : seen.add(s.station.id))).slice(0, 3);
         return (
           <section key={g.name} className="su-region">
+            <p className="su-small su-dynamic">
+              {g.leading
+                ? (g.pinned
+                  ? "Leading region right now, and in your trip."
+                  : "Leading region right now. This changes as other regions pull ahead; add a resort or a region to the trip to keep one.")
+                : "In your trip."}
+            </p>
             <div className="su-h">
               <h3>{g.name.replace(/^the /, "The ")} so far</h3>
               {asOf && <span>as of {shortDate(asOf)}</span>}

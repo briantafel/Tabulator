@@ -1,11 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { regionTable, tripRegions, regionParagraph, surfaceChips, rankResorts } from "../src/lib/season.js";
+import { regionTable, tripRegions, regionParagraph, surfaceChips, rankResorts, regionOf } from "../src/lib/season.js";
 
 const R = (id, name, region) => ({ id, name, region });
 const resorts = [R("alta", "Alta", "Utah"), R("snowbird", "Snowbird", "Utah"), R("brighton", "Brighton", "Utah"),
   R("palisades", "Palisades", "California"), R("kirkwood", "Kirkwood", "California"), R("vail", "Vail", "Colorado")];
 const S = (new14Cm, extra = {}) => ({ new7Cm: new14Cm / 2, new14Cm, swePctMedian: 100, pctReliable: true, daysSinceDump: 3, sinceDump: { warmDays: 0, freezeThaw: 0, rainOnSnow: 0 }, asOf: "2026-11-16", ...extra });
+const regionOfVail = regionOf({ id: "vail", region: "Colorado" });
 const season = { resorts: { alta: S(30), snowbird: S(28), brighton: S(20), palisades: S(60), kirkwood: S(50), vail: S(90) } };
 
 test("regions rank by recent snow; a lone resort is not a region", () => {
@@ -15,16 +16,26 @@ test("regions rank by recent snow; a lone resort is not a region", () => {
 
 test("an empty far trip follows the leading region", () => {
   const r = tripRegions({ resorts: [] }, resorts, season);
-  assert.equal(r.dynamic, true);
-  assert.equal(r.regions[0].name, "the Sierra");
+  assert.deepEqual(r.regions.map((g) => [g.name, g.leading, g.pinned]), [["the Sierra", true, false]]);
   const later = { resorts: { ...season.resorts, alta: S(200), snowbird: S(190) } };
   assert.equal(tripRegions({ resorts: [] }, resorts, later).regions[0].name, "the Wasatch", "moves when another region pulls ahead");
 });
 
-test("a trip with resorts is pinned to them", () => {
+test("adding a resort elsewhere keeps the leader and adds its region after it", () => {
+  // Brian, 2026-11-17: adding a Utah resort to a Sierra-led trip used to drop the Sierra.
   const r = tripRegions({ resorts: [{ name: "Alta" }, { name: "Brighton" }] }, resorts, season);
-  assert.equal(r.dynamic, false);
-  assert.deepEqual(r.regions[0].rows.map((x) => x.r.name), ["Alta", "Brighton"]);
+  assert.deepEqual(r.regions.map((g) => [g.name, g.leading, g.pinned]), [["the Sierra", true, false], ["the Wasatch", false, true]]);
+  assert.deepEqual(r.regions[1].rows.map((x) => x.r.name), ["Alta", "Brighton"]);
+});
+
+test("a pinned region that leads appears once, as both", () => {
+  const r = tripRegions({ resorts: [{ name: "Palisades" }] }, resorts, season);
+  assert.deepEqual(r.regions.map((g) => [g.name, g.leading, g.pinned]), [["the Sierra", true, true]]);
+});
+
+test("a pinned resort whose region has one station still shows", () => {
+  const r = tripRegions({ resorts: [{ name: "Vail" }] }, resorts, season);
+  assert.deepEqual(r.regions.map((g) => g.name), ["the Sierra", regionOfVail]);
 });
 
 test("missing values sort last, not as zero", () => {

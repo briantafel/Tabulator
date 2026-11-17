@@ -32,7 +32,7 @@ export function rankResorts(rows) {
 /** Every region with season data, best first, each with its resorts.
  *  A region needs two resorts with data to be ranked on its own: one
  *  station is a point, not a region. */
-export function regionTable(resorts, season) {
+export function regionTable(resorts, season, { minResorts = 2 } = {}) {
   const by = new Map();
   for (const r of resorts) {
     const s = season?.resorts?.[r.id];
@@ -43,7 +43,7 @@ export function regionTable(resorts, season) {
   }
   const out = [];
   for (const [name, rows] of by) {
-    if (rows.length < 2) continue;
+    if (rows.length < minResorts) continue;
     const ranked = rankResorts(rows);
     out.push({
       name, rows: ranked,
@@ -62,23 +62,35 @@ export function regionTable(resorts, season) {
   return out.sort((a, b) => k(b.new14Cm) - k(a.new14Cm) || k(b.swePctMedian) - k(a.swePctMedian));
 }
 
-/** Which regions a trip is about.
- *  Pinned: the trip holds resorts — their regions, in the trip's order.
- *  Dynamic: the trip holds none — the leading region right now, which moves
- *  as others pull ahead (Brian, 2026-11-17: "These far out trip contents
- *  should be dynamic, unless manually saved to the trip"). */
+/** Which regions a trip shows, in order.
+ *
+ *  First, always, the leading region right now — dynamic: it moves as other
+ *  regions pull ahead (Brian, 2026-11-17: "it should begin with the region
+ *  that's the top performer"; "dynamic, unless manually saved to the trip").
+ *  Then each region the trip pins through resorts added by hand, narrowed to
+ *  those resorts. Pinning never replaces the leader: adding a Utah resort to
+ *  a trip the Sierra leads used to swap the Sierra out (Brian found it).
+ *  A pinned region that is also the leader appears once, as both. */
 export function tripRegions(trip, resorts, season) {
-  const table = regionTable(resorts, season);
-  if (!trip.resorts?.length) return { dynamic: true, regions: table.slice(0, 1) };
-  const names = trip.resorts.map((e) => regionOf(resorts.find((r) => r.name === e.name) ?? {})).filter(Boolean);
-  const wanted = [...new Set(names)];
-  const regions = wanted.map((n) => table.find((g) => g.name === n)).filter(Boolean);
-  // Narrow a pinned region to the resorts actually in the trip.
-  const inTrip = new Set(trip.resorts.map((e) => e.name));
-  return {
-    dynamic: false,
-    regions: regions.map((g) => ({ ...g, rows: g.rows.filter((x) => inTrip.has(x.r.name)) })).filter((g) => g.rows.length),
-  };
+  const ranked = regionTable(resorts, season);
+  const all = regionTable(resorts, season, { minResorts: 1 });
+  const leader = ranked[0] ?? null;
+  const inTrip = new Set((trip.resorts ?? []).map((e) => e.name));
+  const pinnedNames = [...new Set((trip.resorts ?? [])
+    .map((e) => regionOf(resorts.find((r) => r.name === e.name) ?? {})).filter(Boolean))];
+  const out = [];
+  if (leader) {
+    const pinned = pinnedNames.includes(leader.name);
+    out.push({ ...leader, leading: true, pinned, mine: leader.rows.filter((x) => inTrip.has(x.r.name)) });
+  }
+  for (const n of pinnedNames) {
+    if (leader && n === leader.name) continue;
+    const g = all.find((x) => x.name === n);
+    if (!g) continue;
+    const mine = g.rows.filter((x) => inTrip.has(x.r.name));
+    if (mine.length) out.push({ ...g, leading: false, pinned: true, rows: mine, mine });
+  }
+  return { regions: out, pinnedCount: pinnedNames.length };
 }
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
