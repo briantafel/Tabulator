@@ -1,5 +1,6 @@
 import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER } from "../lib/season.js";
 import { snowpack } from "../lib/depths.js";
+import { lookAhead, CONF } from "../lib/lookahead.js";
 import { snowWithUnit } from "../lib/units.js";
 import { shortDate } from "../lib/dates.js";
 
@@ -10,7 +11,7 @@ import { shortDate } from "../lib/dates.js";
  *  This first version shows what public/season.json carries today: the
  *  regional paragraph, the top mountains and every resort's numbers. Looking
  *  ahead and avalanche come next; they are left out rather than faked. */
-export default function ShapingUp({ trip, season, resorts, metric, onOpenResort }) {
+export default function ShapingUp({ trip, season, projections = null, resorts, metric, onOpenResort }) {
   const { regions } = tripRegions(trip, resorts, season);
   if (!regions.length) {
     return (
@@ -48,6 +49,26 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
             <p className="su-prose">
               {regionParagraph(g, metric).map((s, i) => (s.hot ? <b key={i}>{s.t}</b> : <span key={i}>{s.t}</span>))}
             </p>
+
+            {(() => {
+              const rows = lookAhead(g, { resorts, season, metric, projections });
+              if (!rows.length) return null;
+              return (
+                <div className="su-la">
+                  <div className="su-h su-h2"><h3>Looking ahead</h3><span>nearest first</span></div>
+                  {rows.map((x) => (
+                    <div key={x.horizon} className="su-la-row">
+                      <div className="su-la-when">
+                        <span className="su-la-h">{x.horizon}{x.beta && <em className="su-beta">Beta</em>}</span>
+                        {CONF[x.conf].dots && <span className={`su-la-dots${x.conf === "likely" ? " ink" : ""}`} aria-hidden="true">{CONF[x.conf].dots}</span>}
+                        <span className={`su-la-conf${x.conf === "likely" ? " ink" : ""}`}>{CONF[x.conf].label}</span>
+                      </div>
+                      <p className="su-la-p">{x.segs.map((s, i) => (s.hot ? <b key={i}>{s.t}</b> : <span key={i}>{s.t}</span>))}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             <div className="su-h su-h2">
               {g.leading
@@ -147,7 +168,7 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
       <p className="su-small su-sources">
         Snowpack, new snow and surface: NRCS SNOTEL, against the 1991–2020 median. New snow is estimated from
         snow water and our snow-to-liquid ratio. Base and top depths: Snow-Forecast. Avalanche: avalanche.org
-        and Avalanche Canada.
+        and Avalanche Canada. Looking ahead: our forecast, the ECMWF and GFS ensembles, NOAA CPC.
       </p>
     </div>
   );

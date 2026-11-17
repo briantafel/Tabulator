@@ -18,7 +18,7 @@ import ShapingUp from "./ShapingUp.jsx";
  *  fallen out of the feed simply does not appear; showing a stale row would be
  *  worse than showing one fewer. */
 export default function TripDetail({
-  trip, data, win = {}, countdown = null, dates = [], season = null, favs, metric, onOpen, onClose,
+  trip, data, win = {}, countdown = null, dates = [], season = null, projections = null, favs, metric, onOpen, onClose,
   catalog = [], onAddResort, onRemoveResort, onOpenResort,
 }) {
   /* Adding from inside the trip. Brian, 2026-10-31: "there needs to be a way
@@ -167,7 +167,7 @@ export default function TripDetail({
         <Table data={rows} metric={metric} onOpen={onOpen} favs={favs} />
       )}
       {shaping && (
-        <ShapingUp trip={trip} season={season} resorts={catalog} metric={metric} onOpenResort={onOpenResort} />
+        <ShapingUp trip={trip} season={season} projections={projections} resorts={catalog} metric={metric} onOpenResort={onOpenResort} />
       )}
       </>
       )}

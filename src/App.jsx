@@ -596,6 +596,7 @@ export default function Tabulator() {
                   data={tripData}
                   win={win}
                   season={seasonOn ? feedRaw.season : null}
+                  projections={feedRaw?.projections ?? null}
                   countdown={tripCountdown(t, dates, localToday())}
                   dates={dates}
                   favs={favs}

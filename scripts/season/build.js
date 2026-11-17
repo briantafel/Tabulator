@@ -185,7 +185,8 @@ export function parseCpcAttrs(a) {
   const prob = Number(a[k(/^prob/i)]);
   const norm = String(cat ?? "").toLowerCase();
   const category = /^a/.test(norm) ? "above" : /^b/.test(norm) ? "below" : /^n/.test(norm) ? "near" : /^ec|equal/.test(norm) ? "equal" : null;
-  return category ? { category, prob: Number.isFinite(prob) ? prob : null } : null;
+  const day = (ms) => (Number.isFinite(Number(ms)) ? new Date(Number(ms)).toISOString().slice(0, 10) : null);
+  return category ? { category, prob: Number.isFinite(prob) ? prob : null, start: day(a.start_date), end: day(a.end_date) } : null;
 }
 async function collectOutlook(resorts) {
   const out = {};
@@ -217,7 +218,11 @@ async function collectOutlook(resorts) {
 
 /** ENSO status from CPC's monthly discussion: the alert line and synopsis. */
 export function parseEnso(html) {
-  const text = String(html ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
+  const ent = { nbsp: " ", ntilde: "ñ", Ntilde: "Ñ", amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", ndash: "–", mdash: "—" };
+  const text = String(html ?? "").replace(/<[^>]+>/g, " ")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&([a-zA-Z]+);/g, (m, n) => ent[n] ?? m)
+    .replace(/\s+/g, " ");
   const status = /ENSO Alert System Status:\s*([^.]+?)(?:\s{2,}|Synopsis|$)/i.exec(text)?.[1]?.trim() ?? null;
   const synopsis = /Synopsis:\s*([^.]+\.)/i.exec(text)?.[1]?.trim() ?? null;
   return status || synopsis ? { status, synopsis } : null;
