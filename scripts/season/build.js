@@ -16,7 +16,8 @@
  * red instead of shipping a plausible-looking empty file.
  * ------------------------------------------------------------------ */
 import { readFile, writeFile } from "node:fs/promises";
-import { fetchText } from "../archive/common.js";
+import { fetchText, sleep } from "../archive/common.js";
+import { skireportToRows } from "../archive/onthesnow.js";
 import { pickStations, toMetric } from "../archive/snotel.js";
 import { summarise, pickPrimary } from "./season.js";
 
@@ -64,6 +65,47 @@ export function parseDaily(json, into = new Map(), stats = { medians: 0, sample:
     }
   }
   return into;
+}
+
+/** The resort report, summarised: last 7 days of reported snow (null when
+ *  under four of the seven days were reported), base and summit depth. */
+export function reportedSummary(rows, asOf) {
+  const daily = new Map();
+  for (const r of rows) {
+    if (r.variable !== "reported_daily_snow") continue;
+    daily.set(dayOf(r), r.value);
+  }
+  const end = asOf ?? [...daily.keys()].sort().pop();
+  const days = [...daily.entries()].filter(([d]) => !end || d <= end).sort(([a], [b]) => a.localeCompare(b)).slice(-7);
+  const val = (v) => rows.find((r) => r.variable === v)?.value ?? null;
+  return {
+    issued: rows.find((r) => r.issued_at)?.issued_at ?? null,
+    last7Cm: days.length >= 4 ? Math.round(days.reduce((s, [, v]) => s + v, 0)) : null,
+    baseCm: val("reported_base_depth"),
+    summitCm: val("reported_summit_depth"),
+    days,
+  };
+}
+/* The resort-local date a reported day belongs to. valid_start is that
+   day's local midnight expressed in UTC, so noon after it is safely inside
+   the same local day wherever the resort is. */
+const dayOf = (r) => new Date(Date.parse(r.valid_start) + 12 * 3600e3).toISOString().slice(0, 10);
+
+/** Ours against the resorts', over resorts where either saw real snow:
+ *  median ratio and the share where we read high or low by more than half. */
+export function compareNewSnow(pairs) {
+  const real = pairs.filter((p) => p.ours >= 5 || p.theirs >= 5);
+  if (!real.length) return { n: 0 };
+  const ratios = real.filter((p) => p.theirs > 0).map((p) => p.ours / p.theirs).sort((a, b) => a - b);
+  const med = ratios.length ? ratios[Math.floor(ratios.length / 2)] : null;
+  return {
+    n: real.length,
+    medianRatio: med == null ? null : Number(med.toFixed(2)),
+    highByHalf: real.filter((p) => p.ours > 1.5 * p.theirs).length,
+    lowByHalf: real.filter((p) => p.ours < 0.5 * p.theirs).length,
+    sumOurs: real.reduce((s, p) => s + p.ours, 0),
+    sumTheirs: real.reduce((s, p) => s + p.theirs, 0),
+  };
 }
 
 async function main() {
@@ -120,6 +162,37 @@ async function main() {
       neighbours: cands.filter((c) => c.summary).map((c) => ({ id: c.id, elevationM: c.elevationM, swePctMedian: c.summary.swePctMedian })),
     };
   }
+  /* Resort reports (OnTheSnow /skireport, public pages the archive already
+     reads twice a day): the resort's own daily snowfall for the last eight
+     days and its base/summit depth. Two jobs: a check on our SNOTEL-based
+     new-snow estimate, and the public depth source that is meant to replace
+     Snow-Forecast's paid depths once it is as close (Brian, 2026-11-17).
+     Secondary: a failure here is logged loudly but does not stop the file. */
+  const check = [];
+  let otsOk = 0, otsTried = 0;
+  for (const r of resorts) {
+    if (!out[r.id] || !r.otsPath) continue;
+    otsTried++;
+    try {
+      const res = await fetchText(`https://www.onthesnow.com/${r.otsPath}/skireport`, { delayMs: 1500 });
+      if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+      const rows = skireportToRows(res.text, { resort: r, fetchedAt: now.toISOString(), runId: "season" });
+      out[r.id].reported = reportedSummary(rows, out[r.id].asOf);
+      otsOk++;
+      const ours = out[r.id].new7Cm, theirs = out[r.id].reported.last7Cm;
+      if (ours != null && theirs != null) check.push({ id: r.id, ours, theirs });
+    } catch (e) {
+      console.log(`::warning::onthesnow ${r.id}: ${e.message}`);
+    }
+    await sleep(1500);
+  }
+  console.log(`onthesnow: ${otsOk}/${otsTried} resort reports read`);
+  if (otsTried && otsOk < otsTried / 2) console.log(`::error::onthesnow: only ${otsOk}/${otsTried} reports read — the page shape may have moved`);
+  const cmp = compareNewSnow(check);
+  console.log(`new-snow check (ours = SNOTEL SWE gain x SLR, theirs = resort-reported, 7 days):`);
+  for (const c of check) console.log(`  ${c.id.padEnd(18)} ours ${String(c.ours).padStart(4)} cm   reported ${String(c.theirs).padStart(4)} cm`);
+  console.log(`  summary: ${JSON.stringify(cmp)}`);
+
   const n = Object.keys(out).length;
   console.log(`season: ${n} resorts from ${ids.length} stations`);
   if (n < MIN_RESORTS) throw new Error(`only ${n} resorts summarised — expected at least ${MIN_RESORTS}`);
@@ -133,6 +206,7 @@ async function main() {
       "sinceDump counts days since the last ≥15 cm day: warm = high > +2 °C; freezeThaw = high > 0 and low < −2 °C; rainOnSnow = ≥2.5 mm water at mean > +1 °C onto snow.",
       "The station is the highest of up to three SNOTEL sites within 30 km with a current reading.",
     ],
+    newSnowCheck: cmp,
     resorts: out,
   };
   await writeFile(`${outDir}/season.json`, JSON.stringify(doc));

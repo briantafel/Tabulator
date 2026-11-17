@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { slrAt, dayNewSnowCm, dayFlags, summarise, pickPrimary } from "../scripts/season/season.js";
-import { parseDaily, waterYearStart } from "../scripts/season/build.js";
+import { parseDaily, waterYearStart, reportedSummary, compareNewSnow } from "../scripts/season/build.js";
 
 const SLR = { a: 11.558, b: -0.368, clamp: [5, 25], median_observed_slr: 13 };
 
@@ -98,4 +98,24 @@ test("AWDB daily JSON parses to metric, medians included", () => {
 test("the water year starts Oct 1", () => {
   assert.equal(waterYearStart(new Date("2026-11-17T00:00:00Z")), "2026-10-01");
   assert.equal(waterYearStart(new Date("2027-02-01T00:00:00Z")), "2026-10-01");
+});
+
+test("resort report summary: last 7 reported days, depths, local dates", () => {
+  const day = (d, cm) => ({ variable: "reported_daily_snow", valid_start: `${d}T07:00:00.000Z`, value: cm, issued_at: "2026-11-16T14:00:00Z" });
+  const rows = ["10", "11", "12", "13", "14", "15", "16"].map((x, i) => day(`2026-11-${x}`, i === 4 ? 20 : 1))
+    .concat([day("2026-11-09", 50), { variable: "reported_base_depth", value: 40 }, { variable: "reported_summit_depth", value: 70 }]);
+  const s = reportedSummary(rows, "2026-11-16");
+  assert.equal(s.last7Cm, 26);
+  assert.equal(s.baseCm, 40);
+  assert.equal(s.summitCm, 70);
+  assert.equal(s.days[0][0], "2026-11-10");
+  assert.equal(reportedSummary(rows.slice(0, 3), "2026-11-16").last7Cm, null, "under four days reported is unknown");
+});
+
+test("new-snow comparison ignores the dry pairs and reports bias", () => {
+  const c = compareNewSnow([{ ours: 0, theirs: 0 }, { ours: 30, theirs: 20 }, { ours: 10, theirs: 20 }, { ours: 40, theirs: 20 }]);
+  assert.equal(c.n, 3);
+  assert.equal(c.medianRatio, 1.5);
+  assert.equal(c.highByHalf, 1);
+  assert.equal(c.lowByHalf, 0);
 });
