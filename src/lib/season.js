@@ -102,7 +102,7 @@ export function regionParagraph(g, metric) {
   const segs = [];
   const name = cap(g.name);
   if (typeof g.swePctMedian === "number") {
-    segs.push({ t: `${name} is running at ` }, { t: `${Math.round(g.swePctMedian)}% of its normal snowpack`, hot: true }, { t: " for the date." });
+    segs.push({ t: `${name} is running at ` }, { t: `${Math.round(g.swePctMedian)}% of its normal snowpack`, hot: true }, { t: " to date." });
   } else {
     segs.push({ t: `${name}: it is too early in the season for a fair comparison with normal.` });
   }
