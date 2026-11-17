@@ -1601,3 +1601,12 @@ body { background: #F2F2F2; }
 .su-la-dots.ink, .su-la-conf.ink { color: var(--ink); }
 .su-la-p { margin: 0; font-size: calc(13.5 * var(--u)); line-height: calc(19 * var(--u)); color: #333; }
 .su-la-p b { font-weight: 700; color: var(--mark-red); }
+
+/* Avalanche on the resort sheet (2026-11-17). Same heading as Weather and
+   Skier reports; the zone block below it is the one Shaping up uses. */
+.rs-av { margin-top: calc(23.8 * var(--u)); padding-bottom: calc(22 * var(--u)); border-bottom: 1px solid var(--line); }
+.rs-av h3 {
+  margin: 0 0 calc(16 * var(--u)); font-size: calc(23.5 * var(--u)); font-weight: 700;
+  line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
+}
+.su-av-trend { margin-top: calc(6 * var(--u)); }

@@ -670,6 +670,7 @@ export default function Tabulator() {
         wxSource={wxEffective}
         history={feed?.history}
         projections={projections}
+        avalanche={seasonOn && open ? feedRaw.season?.avalanche?.[open.id] ?? null : null}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

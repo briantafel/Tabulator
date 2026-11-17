@@ -1,4 +1,5 @@
 import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER, vsNormal } from "../lib/season.js";
+import { AvalancheZone, BACKCOUNTRY_NOTE } from "./Avalanche.jsx";
 import { snowpack } from "../lib/depths.js";
 import { lookAhead, CONF } from "../lib/lookahead.js";
 import { snowWithUnit } from "../lib/units.js";
@@ -8,9 +9,8 @@ import { shortDate } from "../lib/dates.js";
  *  (claude/calendar-shaping-up-plan.md; design on the canvas and in Figma,
  *  2026-11-17). Behind the `season` switch.
  *
- *  This first version shows what public/season.json carries today: the
- *  regional paragraph, the top mountains and every resort's numbers. Looking
- *  ahead and avalanche come next; they are left out rather than faked. */
+ *  The regional paragraph, Looking ahead, the top mountains, every resort's
+ *  numbers and the avalanche forecasts behind them. */
 export default function ShapingUp({ trip, season, projections = null, resorts, metric, onOpenResort }) {
   const { regions } = tripRegions(trip, resorts, season);
   if (!regions.length) {
@@ -132,33 +132,9 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                 <div className="su-av">
                   <div className="su-h su-h2"><h3>Avalanche</h3></div>
                   {zones.map((z) => (
-                    <div key={`${z.center}${z.zone}`} className="su-av-zone">
-                      <div className="su-h">
-                        <span className="su-av-name">{z.zone ?? z.center}</span>
-                        {z.link ? <a href={z.link} target="_blank" rel="noreferrer">{z.center}</a> : <span>{z.center}</span>}
-                      </div>
-                      {z.max == null ? (
-                        <p className="su-small">No rating yet{z.offSeason ? ": the center is between seasons" : ": forecasts start when the center opens for the season"}.</p>
-                      ) : (
-                        <>
-                          {[["Above treeline", z.bands?.upper], ["Near treeline", z.bands?.middle], ["Below treeline", z.bands?.lower]].map(([label, v]) => (
-                            <div key={label} className="su-av-band">
-                              <span>{label}</span>
-                              <span className="su-av-track"><i className={`su-av-bg-${v ?? 0}`} style={{ width: `${((v ?? 0) / 5) * 100}%` }} /></span>
-                              <b>{v ? `${v} ${DANGER[v]}` : "—"}</b>
-                            </div>
-                          ))}
-                          {z.problems?.length > 0 && (
-                            <p className="su-prose su-av-p">
-                              <b className="ink">{z.problems.join(", ")}</b>
-                              {z.persistent ? ". A persistent layer like this can last for weeks, so it is worth watching all the way to your trip." : "."}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
+                    <AvalancheZone key={`${z.center}${z.zone}`} z={z} />
                   ))}
-                  <p className="su-small">Ratings are for the backcountry. Inside the resort, ski patrol controls the terrain; this matters for sidecountry and anything past the gates.</p>
+                  <p className="su-small">{BACKCOUNTRY_NOTE}</p>
                 </div>
               );
             })()}

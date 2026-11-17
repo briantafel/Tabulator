@@ -13,6 +13,7 @@ import { snowpack } from "../lib/depths.js";
 import Dot from "./Dot.jsx";
 import RangeChart from "./RangeChart.jsx";
 import RollNumber from "./RollNumber.jsx";
+import AvalancheSection from "./Avalanche.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 import { coldLow, stripWithOurTemps } from "../lib/temps.js";
 
@@ -28,7 +29,7 @@ const reducedMotion = () =>
 
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
-  reports, weather, wxSource = "nws", history, projections = false,
+  reports, weather, wxSource = "nws", history, projections = false, avalanche = null,
 }) {
   const [adding, setAdding] = useState(false);
   /* Which total the headline shows (projections only): it rests on the
@@ -505,6 +506,19 @@ export default function Detail({
                 ))}
               </div>
             </section>
+          )}
+
+          {/* Brian, 2026-11-17: avalanche risk belongs on the resort sheet too —
+              the app is for people chasing the big days, and the big days are
+              when it climbs. The resort's own zone, from season.json (so it
+              comes and goes with the Shaping up switch). No zone, no section:
+              most resorts outside the US and Canada have no center. The storm
+              line uses the next three days of this sheet's own forecast. */}
+          {max && avalanche && (
+            <AvalancheSection
+              a={avalanche}
+              stormCm={r.win.slice(0, 3).reduce((t, d) => t + (d.snow ?? 0), 0)}
+            />
           )}
 
           {max && (

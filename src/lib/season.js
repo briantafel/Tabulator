@@ -173,6 +173,24 @@ export function regionAvalanche(rows, season) {
   return [...out.values()].sort((a, b) => (b.max ?? -1) - (a.max ?? -1));
 }
 
+/** How the danger has moved, from the 14-day history of [date, max] pairs:
+ *  "Up from Moderate yesterday", "Moderate for 5 days". Null with one day or
+ *  none, or when today has no rating. A gap in the history (a day the center
+ *  did not publish) is not read as a change. */
+export function avalancheTrend(history) {
+  const h = (history ?? []).filter(([, v]) => typeof v === "number" && v > 0);
+  if (h.length < 2) return null;
+  const [lastDate, now] = h[h.length - 1];
+  const [prevDate, prev] = h[h.length - 2];
+  const gap = Math.round((Date.parse(lastDate) - Date.parse(prevDate)) / 86400000);
+  const when = gap === 1 ? "yesterday" : `${gap} days earlier`;
+  if (now > prev) return `Up from ${DANGER[prev]} ${when}.`;
+  if (now < prev) return `Down from ${DANGER[prev]} ${when}.`;
+  let n = 1;
+  for (let i = h.length - 2; i >= 0 && h[i][1] === now; i -= 1) n += 1;
+  return `${DANGER[now]} for ${n} forecasts in a row.`;
+}
+
 const ordinal = (n) => {
   const t = ["th", "st", "nd", "rd"], v = n % 100;
   return n + (t[(v - 20) % 10] || t[v] || t[0]);
