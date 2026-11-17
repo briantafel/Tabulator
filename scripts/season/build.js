@@ -18,6 +18,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fetchText, sleep } from "../archive/common.js";
 import { skireportToRows } from "../archive/onthesnow.js";
+import { coordsOf } from "../archive/common.js";
+import { zoneFor, parseAvorgProduct, parseAvcanProduct, maxBand, withHistory } from "./avalanche.js";
 import { pickStations, toMetric } from "../archive/snotel.js";
 import { summarise, pickPrimary } from "./season.js";
 
@@ -108,6 +110,68 @@ export function compareNewSnow(pairs) {
   };
 }
 
+/** Avalanche danger for every US and Canadian resort with coordinates.
+ *  Secondary like the resort reports: failures warn loudly, the file still
+ *  ships, and a resort with no forecast simply has no entry. */
+async function collectAvalanche(resorts, today) {
+  let prev = {};
+  try { prev = JSON.parse(await readFile(`${outDir}/season.json`, "utf8")).avalanche ?? {}; } catch { /* first run */ }
+  const out = {};
+  const north = resorts.filter((r) => coordsOf(r) && !r.country);
+
+  // US: zones from the avalanche.org map layer, then each zone's product.
+  let layer = null;
+  try {
+    const res = await fetchText(`https://api.avalanche.org/v2/public/products/map-layer`);
+    if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+    layer = JSON.parse(res.text);
+  } catch (e) { console.log(`::warning::avalanche.org map layer: ${e.message}`); }
+  const products = new Map();
+  let logged = false;
+  for (const r of north.filter((x) => x.region !== "Canada")) {
+    const z = layer ? zoneFor(coordsOf(r), layer) : null;
+    if (!z) continue;
+    const key = `${z.centerId}/${z.zoneId}`;
+    if (!products.has(key)) {
+      let parsed = null;
+      try {
+        const res = await fetchText(`https://api.avalanche.org/v2/public/product?type=forecast&center_id=${encodeURIComponent(z.centerId)}&zone_id=${encodeURIComponent(z.zoneId)}`);
+        if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+        const json = JSON.parse(res.text);
+        if (!logged) { console.log(`avalanche.org product keys: ${Object.keys(json ?? {}).join(",")}; danger[0]: ${JSON.stringify(json?.danger?.[0] ?? null)}`); logged = true; }
+        parsed = parseAvorgProduct(json);
+      } catch (e) { console.log(`::warning::avalanche.org ${key}: ${e.message}`); }
+      products.set(key, parsed);
+      await sleep(500);
+    }
+    const p = products.get(key);
+    const bands = p?.bands ?? null;
+    const max = maxBand(bands) ?? z.mapLevel;
+    out[r.id] = {
+      source: "avalanche.org", center: z.center, zone: z.zone, link: z.link, offSeason: z.offSeason,
+      issued: p?.issued ?? null, bands, max, problems: p?.problems ?? [], persistent: !!p?.persistent,
+      history: withHistory(prev[r.id], today, max),
+    };
+  }
+
+  // Canada: the point endpoint.
+  for (const r of north.filter((x) => x.region === "Canada")) {
+    const [lat, lon] = coordsOf(r);
+    try {
+      const res = await fetchText(`https://avcan-services-api.prod.avalanche.ca/forecasts/en/products/point?lat=${lat}&long=${lon}`);
+      if (res.status === 404) continue;              // outside every forecast area
+      if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+      const p = parseAvcanProduct(JSON.parse(res.text));
+      const max = maxBand(p.bands);
+      out[r.id] = { source: "avalanche.ca", ...p, offSeason: max == null, max, history: withHistory(prev[r.id], today, max) };
+    } catch (e) { console.log(`::warning::avalanche.ca ${r.id}: ${e.message}`); }
+    await sleep(500);
+  }
+  const rated = Object.values(out).filter((x) => x.max != null).length;
+  console.log(`avalanche: ${Object.keys(out).length} resorts in a forecast zone, ${rated} with a current rating`);
+  return out;
+}
+
 async function main() {
   const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
   const slr = JSON.parse(await readFile(`${root}public/slr.json`, "utf8"));
@@ -193,6 +257,8 @@ async function main() {
   for (const c of check) console.log(`  ${c.id.padEnd(18)} ours ${String(c.ours).padStart(4)} cm   reported ${String(c.theirs).padStart(4)} cm`);
   console.log(`  summary: ${JSON.stringify(cmp)}`);
 
+  const avalanche = await collectAvalanche(resorts, today);
+
   const n = Object.keys(out).length;
   console.log(`season: ${n} resorts from ${ids.length} stations`);
   if (n < MIN_RESORTS) throw new Error(`only ${n} resorts summarised — expected at least ${MIN_RESORTS}`);
@@ -207,6 +273,7 @@ async function main() {
       "The station is the highest of up to three SNOTEL sites within 30 km with a current reading.",
     ],
     newSnowCheck: cmp,
+    avalanche,
     resorts: out,
   };
   await writeFile(`${outDir}/season.json`, JSON.stringify(doc));
