@@ -141,7 +141,7 @@ export function againstHistory(hist, { date, depthCm, sweMm }) {
   const med = day.depthMed;
   return {
     depthMedianCm: num(med) ? med : null,
-    depthPctMedian: num(depthCm) && num(med) && med >= 10 ? Math.round((100 * depthCm) / med) : null,
+    depthPctMedian: num(depthCm) && num(med) && med >= 25 ? Math.round((100 * depthCm) / med) : null,
     rank,
   };
 }
