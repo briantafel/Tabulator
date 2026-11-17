@@ -123,15 +123,72 @@ export function noaaRow(ids, season) {
   return { horizon: when, conf: "lean", segs };
 }
 
-export function ensoRow(season) {
+/** Which checkpoint speaks to a trip: the first of the month after it starts
+ *  (a December trip is judged on Jan 1), Apr 1 for spring trips or none. */
+export function ensoCheckpoint(start) {
+  const m = start ? Number(start.slice(5, 7)) : null;
+  if (m === 10 || m === 11 || m === 12) return "01-01";
+  if (m === 1) return "02-01";
+  if (m === 2) return "03-01";
+  return "04-01";
+}
+const CHECK_LABEL = { "01-01": "Jan 1", "02-01": "Feb 1", "03-01": "Mar 1", "04-01": "Apr 1" };
+
+/** NOAA's status names the class we compare against: "strong" in the
+ *  status or synopsis means strong El Niño winters, else any El Niño; La
+ *  Niña likewise. Neutral or unknown: no comparison. */
+export function currentEnso(e) {
+  const t = `${e?.status ?? ""} ${e?.synopsis ?? ""}`;
+  if (/El Ni(ñ|n)o/i.test(t) && !/La Ni(ñ|n)a/i.test(e?.status ?? "")) return /strong/i.test(t) ? "strongElNino" : "elNino";
+  if (/La Ni(ñ|n)a/i.test(t)) return "laNina";
+  return null;
+}
+const CLASS_NAME = { strongElNino: "strong El Niño", elNino: "El Niño", laNina: "La Niña" };
+
+/** What past winters like this one did in this region (Brian, 2026-11-17:
+ *  "state what El Niño means for that region"). Plain rules over our own
+ *  SNOTEL history (season.ensoHistory):
+ *    tended to favor:  ≥ 3 in 4 at or above normal and median ≥ 110%
+ *    tended to short:  ≤ 1 in 4 at or above normal and median ≤ 90%
+ *    otherwise: it has gone either way, and we say so.
+ *  Fewer than 3 strong winters falls back to all El Niño winters. Under 8
+ *  winters is called a small sample. */
+export function ensoHistoryLine(region, season, start) {
+  const cls = currentEnso(season?.enso);
+  const reg = season?.ensoHistory?.regions?.[region];
+  if (!cls || !reg) return null;
+  const md = ensoCheckpoint(start);
+  const at = reg[md];
+  let key = cls;
+  if (key === "strongElNino" && !(at?.strongElNino?.n >= 3)) key = "elNino";
+  const g = at?.[key];
+  if (!g?.n || g.n < 3) return null;
+  const pcts = g.years.map(([, , p]) => p);
+  const lo = Math.min(...pcts), hi = Math.max(...pcts);
+  const Name = region.charAt(0).toUpperCase() + region.slice(1);
+  const share = g.above / g.n;
+  const verdict = share >= 0.75 && g.median >= 110 ? `Past ${CLASS_NAME[key]} winters have tended to favor ${region}.`
+    : share <= 0.25 && g.median <= 90 ? `Past ${CLASS_NAME[key]} winters have tended to leave ${region} short.`
+      : `Here it has gone either way: ${CLASS_NAME[key]} has not decided the season.`;
+  const segs = [
+    { t: ` In the ${g.n} ${CLASS_NAME[key]} winters since ${g.years[0][0]}, ${Name}'s snowpack on ${CHECK_LABEL[md]} ran ` },
+    { t: `${lo}–${hi}% of normal`, hot: true },
+    { t: `, ${g.above} of ${g.n} at or above it. ${verdict}` },
+  ];
+  if (g.n < 8) segs.push({ t: ` ${g.n} winters is a small sample.` });
+  return { segs, years: g.years, checkpoint: md, key };
+}
+
+export function ensoRow(season, region = null, start = null) {
   const e = season?.enso;
   if (!e?.status) return null;
-  const segs = [{ t: `${e.status}.`, hot: true }, ...(e.synopsis ? [{ t: ` ${e.synopsis}` }] : [])];
-  return { horizon: "The season", conf: "backdrop", segs, source: "NOAA CPC" };
+  const hist = region ? ensoHistoryLine(region, season, start) : null;
+  const segs = [{ t: `${e.status}.`, hot: true }, ...(e.synopsis ? [{ t: ` ${e.synopsis}` }] : []), ...(hist?.segs ?? [])];
+  return { horizon: "The season", conf: "backdrop", segs, source: hist ? "NOAA CPC, our SNOTEL history" : "NOAA CPC" };
 }
 
 /** All rows for a region, nearest horizon first; rows without data drop out. */
-export function lookAhead(g, { resorts, season, metric, projections = null }) {
+export function lookAhead(g, { resorts, season, metric, projections = null, start = null }) {
   const ids = g.rows.map((x) => x.r.id);
   /* Members straight from projections.json when the feed was not extended
      (the projections switch is per phone; this row is shown to everyone,
@@ -146,7 +203,7 @@ export function lookAhead(g, { resorts, season, metric, projections = null }) {
   };
   const feedRows = ids.map((id) => resorts.find((r) => r.id === id)).filter(Boolean)
     .map((r) => (r.projMembers ? r : { ...r, projMembers: membersFor(r.id) }));
-  return [forecastRow(feedRows, metric), ensembleRow(feedRows, metric), noaaRow(ids, season), ensoRow(season)].filter(Boolean);
+  return [forecastRow(feedRows, metric), ensembleRow(feedRows, metric), noaaRow(ids, season), ensoRow(season, g.name, start)].filter(Boolean);
 }
 
 export const CONF = {

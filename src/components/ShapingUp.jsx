@@ -51,7 +51,7 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
             </p>
 
             {(() => {
-              const rows = lookAhead(g, { resorts, season, metric, projections });
+              const rows = lookAhead(g, { resorts, season, metric, projections, start: trip?.start ?? null });
               if (!rows.length) return null;
               return (
                 <div className="su-la">

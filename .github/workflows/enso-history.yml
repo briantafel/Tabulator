@@ -1,0 +1,46 @@
+name: Build El Niño history by region
+
+# What past El Niño / La Niña winters did to each region's snowpack, from
+# NOAA's ONI and our station history (scripts/season/enso-history.js).
+# Monthly, after the normals; commits scripts/season/enso-history.json and
+# rebuilds season.json so the app picks it up.
+
+on:
+  schedule:
+    - cron: "17 8 4 * *"
+  push:
+    branches: [main]
+    paths: ["scripts/season/enso-history.js", ".github/workflows/enso-history.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: enso-history
+  cancel-in-progress: false
+
+jobs:
+  enso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build scripts/season/enso-history.json
+        run: node scripts/season/enso-history.js
+      - name: Commit
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add scripts/season/enso-history.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "enso history: $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+      - name: Rebuild season.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run season.yml --ref main

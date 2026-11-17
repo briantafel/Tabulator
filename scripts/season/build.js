@@ -338,6 +338,11 @@ async function main() {
   const avalanche = await collectAvalanche(resorts, today);
   const outlook = await collectOutlook(resorts);
   const enso = await collectEnso();
+  /* What past ENSO winters did per region (scripts/season/enso-history.js,
+     monthly). Optional: without it the backdrop row says only NOAA's status. */
+  let ensoHistory = null;
+  try { ensoHistory = JSON.parse(await readFile(`${root}scripts/season/enso-history.json`, "utf8")); }
+  catch { console.log("::warning::no scripts/season/enso-history.json yet — the El Niño row will carry NOAA's status only"); }
 
   const n = Object.keys(out).length;
   console.log(`season: ${n} resorts from ${ids.length} stations`);
@@ -356,6 +361,7 @@ async function main() {
     avalanche,
     outlook,
     enso,
+    ensoHistory,
     resorts: out,
   };
   await writeFile(`${outDir}/season.json`, JSON.stringify(doc));
