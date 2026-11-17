@@ -14,6 +14,10 @@ on:
         type: choice
         options: ["51101", "51001"]
         default: "51101"
+      compare:
+        description: "Optional second buoy for the overlap section (e.g. 51101)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -32,6 +36,7 @@ jobs:
       - run: node scripts/research/buoy-study.js
         env:
           BUOY: ${{ inputs.buoy }}
+          COMPARE: ${{ inputs.compare }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

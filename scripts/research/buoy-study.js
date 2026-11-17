@@ -23,6 +23,12 @@ import {
    per buoy. */
 const BUOY = process.env.BUOY ?? "51101";
 if (!/^\d{5}$/.test(BUOY)) throw new Error(`BUOY must be a 5-digit NDBC station id, got "${BUOY}"`);
+/* COMPARE (optional, added 2026-11-17): a second buoy. The report then adds an
+   overlap section: which of BUOY's pops the other buoy also flagged (±MATCH_POP
+   days), and the Wasatch score of the shared and the unshared pops separately,
+   on days both buoys have data. Exploratory: the verdict above is unchanged. */
+const COMPARE = process.env.COMPARE ?? "";
+const MATCH_POP = 3;
 const FIRST_YEAR = Number(process.env.BUOY_FIRST_YEAR ?? 2008);
 const LAST_WINTER_END = process.env.LAST_WINTER_END ?? "2026-04-30";
 const AWDB = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
@@ -62,11 +68,11 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 /** Every year's file; for the current year (not yet archived as a yearly
  *  file) the monthly files. */
-async function buoyReadings() {
+async function buoyReadings(id = BUOY) {
   const now = new Date();
   const readings = [], coverage = [];
   for (let y = FIRST_YEAR; y < now.getUTCFullYear(); y++) {
-    const gz = await get(`https://www.ndbc.noaa.gov/data/historical/stdmet/${BUOY}h${y}.txt.gz`, { binary: true });
+    const gz = await get(`https://www.ndbc.noaa.gov/data/historical/stdmet/${id}h${y}.txt.gz`, { binary: true });
     if (!gz) { coverage.push(`${y}: no yearly file`); continue; }
     const r = parseNdbc(gunzipSync(gz).toString("utf8"));
     readings.push(...r);
@@ -74,8 +80,8 @@ async function buoyReadings() {
   }
   const y = now.getUTCFullYear();
   for (let m = 0; m < now.getUTCMonth(); m++) {
-    const gz = await get(`https://www.ndbc.noaa.gov/data/stdmet/${MONTHS[m]}/${BUOY}${m + 1}${y}.txt.gz`, { binary: true });
-    const text = gz ? gunzipSync(gz).toString("utf8") : await get(`https://www.ndbc.noaa.gov/data/stdmet/${MONTHS[m]}/${BUOY}.txt`);
+    const gz = await get(`https://www.ndbc.noaa.gov/data/stdmet/${MONTHS[m]}/${id}${m + 1}${y}.txt.gz`, { binary: true });
+    const text = gz ? gunzipSync(gz).toString("utf8") : await get(`https://www.ndbc.noaa.gov/data/stdmet/${MONTHS[m]}/${id}.txt`);
     if (!text) { coverage.push(`${y}-${MONTHS[m]}: no monthly file`); continue; }
     const r = parseNdbc(text);
     readings.push(...r);
@@ -198,6 +204,31 @@ async function main() {
   L(`| a storm in the 7 days before | ${pct(ps.afterStorm.pop.p)} (n ${ps.afterStorm.pop.n}) | ${pct(ps.afterStorm.base.p)} (n ${ps.afterStorm.base.n}) |`);
   L(`| no storm in the 7 days before | ${pct(ps.afterQuiet.pop.p)} (n ${ps.afterQuiet.pop.n}) | ${pct(ps.afterQuiet.base.p)} (n ${ps.afterQuiet.base.n}) |`);
   L();
+
+  if (COMPARE && COMPARE !== BUOY) {
+    const other = dailyMax((await buoyReadings(COMPARE)).readings);
+    const both = new Map([...wave].filter(([d]) => other.has(d)));
+    const mine = findPops(both, PRIMARY), theirs = findPops(new Map([...other].filter(([d]) => wave.has(d))), PRIMARY);
+    const near = (d, xs) => xs.some((x) => Math.abs(Date.parse(x) - Date.parse(d)) <= MATCH_POP * 864e5);
+    const shared = mine.filter((d) => near(d, theirs)), onlyMine = mine.filter((d) => !near(d, theirs));
+    const onlyTheirs = theirs.filter((d) => !near(d, mine));
+    const hMine = (xs) => xs.length ? (xs.reduce((a, d) => a + both.get(d), 0) / xs.length).toFixed(1) : "–";
+    L(`## Overlap with buoy ${COMPARE} (exploratory — days both buoys have data)`);
+    L(`Do the two buoys flag the same swells? A pop "matches" if the other buoy popped within ±${MATCH_POP} days. ${both.size} shared days.`);
+    L();
+    L(`| pops | count | mean wave height at ${BUOY} (m) | ${PRIMARY_REGION}: after a pop | comparable days | difference (90% range) |`);
+    L("| :-- | --: | --: | --: | --: | --: |");
+    for (const [label, xs] of [[`all ${BUOY} pops`, mine], [`${BUOY} pops ${COMPARE} also flagged`, shared],
+                               [`${BUOY} pops ${COMPARE} missed`, onlyMine], [`all ${COMPARE} pops`, theirs],
+                               [`${COMPARE} pops ${BUOY} missed`, onlyTheirs]]) {
+      const sc = xs.length >= 10 ? score(xs, regions[PRIMARY_REGION].daily, PRIMARY) : null;
+      const h = label.startsWith(`all ${COMPARE}`) || label.startsWith(`${COMPARE} pops`) ? "–" : hMine(xs);
+      L(`| ${label} | ${xs.length} | ${h} | ${sc ? pct(sc.pPop) : "–"} | ${sc ? pct(sc.pBase) : "–"} | ${sc ? `${pp(sc.diff)} (${range(sc.diff90)})` : "too few"} |`);
+    }
+    L();
+    await writeFile(`${OUT}/overlap.csv`, "date,group\n" + [...shared.map((d) => `${d},shared`), ...onlyMine.map((d) => `${d},only-${BUOY}`),
+      ...onlyTheirs.map((d) => `${d},only-${COMPARE}`)].join("\n") + "\n");
+  }
 
   L("## Data");
   for (const [name, r] of Object.entries(regions)) L(`- ${name}: ${r.stations.length} SNOTEL stations (${r.stations.join(", ")}), ${r.daily.size} region-days.`);
