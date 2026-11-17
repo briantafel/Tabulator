@@ -107,7 +107,9 @@ def open_grid(raw: bytes, work: Path, name: str):
 
 def find_var(ds):
     """The snowfall variable: the one 2-D (or 3-D with a length-1 time) data variable on lat/lon."""
-    cands = [v for k, v in ds.variables.items() if v.ndim >= 2 and k.lower() not in ("lat", "lon", "latitude", "longitude", "crs")]
+    # Checked 2026-11-17 (probe run 44096687882): Data(lat, lon) in metres, plus lat_bounds / lon_bounds.
+    cands = [v for k, v in ds.variables.items() if v.ndim >= 2 and not k.lower().endswith("_bounds")
+             and k.lower() not in ("lat", "lon", "latitude", "longitude", "crs")]
     if len(cands) != 1:
         raise RuntimeError(f"expected one data variable, found {[(v.name, v.dimensions) for v in cands]}")
     return cands[0]
