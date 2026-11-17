@@ -1,0 +1,55 @@
+name: Build season to date
+
+# The "Shaping up" numbers for trips past the forecast
+# (claude/calendar-shaping-up-plan.md): per US resort, snowpack vs the
+# 1991–2020 median, recent snow, and what the surface has been through, from
+# NRCS SNOTEL (public). Writes public/season.json, commits it, redeploys.
+# The app only reads it behind the `season` switch. ~5 AWDB requests a run.
+
+on:
+  schedule:
+    - cron: "17 14 * * *"   # SNOTEL's daily values for yesterday are in by mid-morning Mountain
+  push:
+    branches: [main]
+    paths: ["scripts/season/**", ".github/workflows/season.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # commits public/season.json (only)
+  actions: write   # to redeploy the site after that commit
+
+concurrency:
+  group: season
+  cancel-in-progress: false
+
+jobs:
+  season:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build public/season.json
+        run: node scripts/season/build.js public
+
+      - name: Commit season.json
+        id: commit
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add public/season.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "season: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            sleep 10
+          done
+
+      - name: Redeploy the site
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
