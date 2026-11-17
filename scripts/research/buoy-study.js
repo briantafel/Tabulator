@@ -205,6 +205,35 @@ async function main() {
   L(`| no storm in the 7 days before | ${pct(ps.afterQuiet.pop.p)} (n ${ps.afterQuiet.pop.n}) | ${pct(ps.afterQuiet.base.p)} (n ${ps.afterQuiet.base.n}) |`);
   L();
 
+  // Winter by winter (added 2026-11-17): is the edge steady, or carried by a few winters?
+  // Each winter scored on its own days (base = that winter's comparable days), plus the overall
+  // difference with that winter left out. Exploratory; the verdict above is unchanged.
+  {
+    const daily = regions[PRIMARY_REGION].daily;
+    const winters = [...new Set(pops.map(seasonOf))].sort();
+    L(`### Winter by winter, ${PRIMARY_REGION} (exploratory)`);
+    L("A real signal should lift most winters a little. One driven by chance usually rests on a few big winters, and the leave-one-out column swings when they are dropped.");
+    L();
+    L("| winter | pops | storm after a pop | comparable days (same winter) | difference | overall difference without this winter |");
+    L("| :-- | --: | --: | --: | --: | --: |");
+    const wrows = [];
+    for (const w of winters) {
+      const wp = pops.filter((d) => seasonOf(d) === w);
+      const wd = new Map([...daily].filter(([d]) => seasonOf(d) === w));
+      const one = score(wp, wd, PRIMARY, { boot: 0 });
+      const rest = score(pops.filter((d) => seasonOf(d) !== w), new Map([...daily].filter(([d]) => seasonOf(d) !== w)), PRIMARY, { boot: 0 });
+      wrows.push({ w, n: wp.length, ...one, lo: rest.diff });
+      L(`| ${w} | ${wp.length} | ${pct(one.pPop)} | ${pct(one.pBase)} | ${pp(one.diff)} | ${pp(rest.diff)} |`);
+    }
+    const ok = wrows.filter((r) => Number.isFinite(r.diff));
+    const up = ok.filter((r) => r.diff > 0).length;
+    L();
+    L(`${up} of ${ok.length} winters with pops have a positive difference. Leave-one-out range: ${pp(Math.min(...ok.map((r) => r.lo)))} to ${pp(Math.max(...ok.map((r) => r.lo)))}.`);
+    L();
+    await writeFile(`${OUT}/winters.csv`, "winter,pops,p_pop,p_base,diff,diff_without\n" +
+      wrows.map((r) => [r.w, r.n, r.pPop, r.pBase, r.diff, r.lo].join(",")).join("\n") + "\n");
+  }
+
   if (COMPARE && COMPARE !== BUOY) {
     const other = dailyMax((await buoyReadings(COMPARE)).readings);
     const both = new Map([...wave].filter(([d]) => other.has(d)));
