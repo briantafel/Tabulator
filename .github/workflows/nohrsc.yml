@@ -1,0 +1,83 @@
+name: NOHRSC snowfall analysis (snow truth)
+
+# Added 2026-11-17 (scripts/archive/nohrsc.py). NOAA NOHRSC's 24 h gridded
+# snowfall analysis (ending 12 UTC) at our US resort points: second-tier snow
+# truth beside SNOTEL and CoCoRaHS boards. Daily, after the 12 UTC analysis;
+# each run re-fetches the last 6 days (analyses are re-issued for 72 h) and
+# marks a day done once it is 3 days old. Past winters: run by hand with
+# from/to (one winter per run fits the time limit; days already done are skipped).
+on:
+  schedule:
+    - cron: "40 15 * * *"
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Print the file's variables and units for the latest day; write nothing"
+        type: boolean
+        default: false
+      dry_run:
+        type: boolean
+        default: false
+      from:
+        description: "Backfill start, YYYY-MM-DD (optional)"
+        type: string
+        default: ""
+      to:
+        description: "Backfill end, YYYY-MM-DD (optional)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: nohrsc
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install netCDF4 numpy duckdb==2.0.0
+      - name: Collect
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          PROBE: ${{ inputs.probe }}
+          DRY: ${{ inputs.dry_run }}
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+        run: |
+          args=(work)
+          [ "$PROBE" = "true" ] && args+=(--probe)
+          [ "$DRY" = "true" ] && args+=(--dry-run)
+          [ -n "$FROM" ] && args+=(--from "$FROM" --to "$TO")
+          python3 scripts/archive/nohrsc.py "${args[@]}"
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\n\nNOHRSC snowfall collection failed. NOHRSC keeps its archive online, so the next run retries; the summary says which day failed and why.`;
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "nohrsc-failure" });
+            if (existing.length) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing[0].number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo,
+                title: "NOHRSC snowfall collection failed", body, labels: ["nohrsc-failure"] });
+            }
