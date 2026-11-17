@@ -1515,7 +1515,7 @@ body { background: #F2F2F2; }
    dates in the red — the design's "past the forecast" line. */
 .far-note p {
   margin: 0; font-size: calc(23.5 * var(--u)); line-height: calc(28 * var(--u));
-  font-weight: 700; letter-spacing: -.04em; color: #8A8A8A;
+  font-weight: 700; letter-spacing: -.04em; color: var(--fill);
 }
 .far-note b { font-weight: 700; color: var(--mark-red); }
 .far-actions {
@@ -1540,10 +1540,9 @@ body { background: #F2F2F2; }
 }
 .td-names button { padding: 0; font: inherit; color: inherit; text-align: left; }
 
-/* A verdict-styled line with no verdict behind it (countdown, coverage):
-   darker prose than the verdict's --fill, which only works when red clauses
-   carry the eye. */
-.td-verdict.td-note { color: #8A8A8A; }
+/* Countdown and coverage lines: the radar statement's light grey (--fill)
+   with the numbers in red — Brian, 2026-11-17, reverting a darker grey. */
+.td-verdict.td-note { color: var(--fill); }
 
 /* Shaping up (components/ShapingUp.jsx), per the design canvas 2026-11-17. */
 .su { margin-top: calc(22 * var(--u)); padding-bottom: calc(24 * var(--u)); }
