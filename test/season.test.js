@@ -19,9 +19,15 @@ test("new snow comes from SWE gain, never from a missing reading", () => {
   assert.equal(dayNewSnowCm(a, { sweMm: 110, tmaxC: 6, tminC: 2 }, SLR), 0, "a warm day's water is rain");
 });
 
+test("one 0.1-inch step of pillow drift is not snow; with depth rising it is", () => {
+  const a = { sweMm: 100, depthCm: 50, tmaxC: -4, tminC: -10 };
+  assert.equal(dayNewSnowCm(a, { ...a, sweMm: 102.54 }, SLR), 0);
+  assert.ok(dayNewSnowCm(a, { ...a, sweMm: 102.54, depthCm: 53 }, SLR) > 0);
+});
+
 test("the gauge stands in when the pillow is missing", () => {
   const prev = { sweMm: null, precipMm: 200 };
-  const day = { sweMm: null, precipMm: 205, tmaxC: -5, tminC: -9 };
+  const day = { sweMm: null, precipMm: 206, tmaxC: -5, tminC: -9 };
   assert.ok(dayNewSnowCm(prev, day, SLR) > 0);
 });
 

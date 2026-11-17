@@ -37,6 +37,13 @@ export function dayNewSnowCm(prev, day, slr) {
   if (water == null && num(day.precipMm) && num(prev.precipMm)) water = day.precipMm - prev.precipMm;
   if (water == null) return null;
   if (water <= 0) return 0;
+  /* SNOTEL reports SWE and precipitation in steps of 0.1" (2.54 mm). One
+     step of pillow drift times an SLR of ~12 became ~3 cm of snow that never
+     fell (Crested Butte, Steamboat, Sun Valley against 0 reported, checked
+     2026-11-17). A day counts only with two steps, or one step and the snow
+     depth rising with it. */
+  const depthRose = num(day.depthCm) && num(prev.depthCm) && day.depthCm - prev.depthCm >= 1;
+  if (water < 5 && !depthRose) return 0;
   const t = mean(day.tmaxC, day.tminC);
   if (num(t) && t > 1) return 0;
   return (water * slrAt(t, slr)) / 10;
