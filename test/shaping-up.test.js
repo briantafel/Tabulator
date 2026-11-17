@@ -71,3 +71,16 @@ test("avalanche: one entry per zone, hashed Canadian zone names read as the cent
   assert.deepEqual(z[0].resorts, ["A", "B"]);
   assert.equal(z[1].zone, null);
 });
+
+import { vsNormal } from "../src/lib/season.js";
+test("vs normal: % when meaningful, else the season's rank, else early season", () => {
+  assert.equal(vsNormal({ pctReliable: true, swePctMedian: 120 }), "120% of normal");
+  assert.equal(vsNormal({ pctReliable: false, swePctMedian: 300, rank: { position: 2, of: 36 } }), "2nd-biggest start of 36");
+  assert.equal(vsNormal({ rank: { position: 3, of: 36 } }, { short: true }), "3rd of 36");
+  assert.equal(vsNormal({}), "early season");
+});
+test("paragraph uses the rank when % of normal is not yet meaningful", () => {
+  const t = regionParagraph({ name: "the Sierra", swePctMedian: null, rankShare: 1 / 36, rankOf: 36, depthPctMedian: 180 }, false).map((s) => s.t).join("");
+  assert.match(t, /The Sierra is having its biggest start in 36 seasons/);
+  assert.match(t, /180% of its normal depth/);
+});

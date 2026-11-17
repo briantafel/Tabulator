@@ -1,4 +1,4 @@
-import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER } from "../lib/season.js";
+import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER, vsNormal } from "../lib/season.js";
 import { snowpack } from "../lib/depths.js";
 import { lookAhead, CONF } from "../lib/lookahead.js";
 import { snowWithUnit } from "../lib/units.js";
@@ -85,9 +85,7 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                 <button key={r.id} className="su-card" onClick={() => onOpenResort?.(byId(r.id))}>
                   <div className="su-card-h">
                     <span className={`su-name${i === 0 ? " hot" : ""}`}>{r.name}</span>
-                    <span className="su-pct">
-                      {s.pctReliable && typeof s.swePctMedian === "number" ? `${s.swePctMedian}% of normal` : "early season"}
-                    </span>
+                    <span className="su-pct">{vsNormal(s)}</span>
                   </div>
                   <div className="su-stats">
                     <div><i>Base / top</i><b>{sfKnown ? `${sf.base ? sw(sf.base) : "—"} / ${sf.top ? sw(sf.top) : "—"}` : "—"}</b></div>
@@ -103,7 +101,10 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                     })()}
                   </div>
                   {chips.length > 0 && <div className="su-chips">{chips.map((c) => <span key={c}>{c}</span>)}</div>}
-                  <p className="su-small">vs {s.station.name} station{s.station.elevationM ? ` (${Math.round(metric ? s.station.elevationM : s.station.elevationM * 3.28084).toLocaleString()} ${metric ? "m" : "ft"})` : ""}</p>
+                  <p className="su-small">
+                    vs {s.station.name} station{s.station.elevationM ? ` (${Math.round(metric ? s.station.elevationM : s.station.elevationM * 3.28084).toLocaleString()} ${metric ? "m" : "ft"})` : ""}
+                    {s.depthCm != null && s.depthPctMedian != null ? `: ${sw(s.depthCm)} deep, ${s.depthPctMedian}% of its normal depth for the date` : ""}
+                  </p>
                 </button>
               );
             })}
@@ -116,7 +117,7 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                 {g.rows.map(({ r, s }, i) => (
                   <div key={r.id} className={`su-tr${i === 0 ? " hot" : ""}`}>
                     <span>{r.name}</span>
-                    <span>{s.pctReliable && typeof s.swePctMedian === "number" ? `${s.swePctMedian}%` : "—"}</span>
+                    <span>{vsNormal(s, { short: true })}</span>
                     <span>{s.new14Cm != null ? sw(s.new14Cm) : "—"}</span>
                     <span>{s.lastDump ? shortDate(s.lastDump) : "—"}</span>
                   </div>

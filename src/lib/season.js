@@ -56,6 +56,12 @@ export function regionTable(resorts, season, { minResorts = 2 } = {}) {
       freezeThaw: median(rows.map((x) => x.s.sinceDump?.freezeThaw)),
       rainOnSnow: median(rows.map((x) => x.s.sinceDump?.rainOnSnow)),
       asOf: rows.map((x) => x.s.asOf).filter(Boolean).sort().pop() ?? null,
+      /* Rank as a share of seasons (1 = best), so stations with different
+         record lengths combine: the region's median, turned back into a
+         place out of the typical record length. */
+      rankShare: median(rows.filter((x) => x.s.rank).map((x) => x.s.rank.position / x.s.rank.of)),
+      rankOf: median(rows.filter((x) => x.s.rank).map((x) => x.s.rank.of)),
+      depthPctMedian: median(rows.map((x) => x.s.depthPctMedian)),
     });
   }
   const k = (x) => (typeof x === "number" ? x : -Infinity);
@@ -103,8 +109,15 @@ export function regionParagraph(g, metric) {
   const name = cap(g.name);
   if (typeof g.swePctMedian === "number") {
     segs.push({ t: `${name} is running at ` }, { t: `${Math.round(g.swePctMedian)}% of its normal snowpack`, hot: true }, { t: " to date." });
+  } else if (typeof g.rankShare === "number" && g.rankOf) {
+    const pos = Math.max(1, Math.round(g.rankShare * g.rankOf));
+    segs.push({ t: `${name} is having its ` }, { t: pos === 1 ? "biggest start" : `${ordinal(pos)}-biggest start`, hot: pos <= 5 },
+      { t: ` in ${Math.round(g.rankOf)} seasons at a typical station here, for the date.` });
   } else {
     segs.push({ t: `${name}: it is too early in the season for a fair comparison with normal.` });
+  }
+  if (typeof g.depthPctMedian === "number") {
+    segs.push({ t: ` Snow on the ground is ${g.depthPctMedian}% of its normal depth for the date.` });
   }
   if (typeof g.new14Cm === "number") {
     segs.push({ t: " About " }, { t: snowWithUnit(g.new14Cm, metric), hot: true }, { t: " of new snow has fallen in the last two weeks at a typical station here" });
@@ -150,4 +163,17 @@ export function regionAvalanche(rows, season) {
     out.get(key).resorts.push(r.name);
   }
   return [...out.values()].sort((a, b) => (b.max ?? -1) - (a.max ?? -1));
+}
+
+const ordinal = (n) => {
+  const t = ["th", "st", "nd", "rd"], v = n % 100;
+  return n + (t[(v - 20) % 10] || t[v] || t[0]);
+};
+
+/** How a resort stands against normal, in a few words, for cards and rows:
+ *  % of median SWE once that is meaningful, else the season's rank. */
+export function vsNormal(s, { short = false } = {}) {
+  if (s?.pctReliable && typeof s.swePctMedian === "number") return short ? `${s.swePctMedian}%` : `${s.swePctMedian}% of normal`;
+  if (s?.rank) return short ? `${ordinal(s.rank.position)} of ${s.rank.of}` : `${ordinal(s.rank.position)}-biggest start of ${s.rank.of}`;
+  return short ? "—" : "early season";
 }
