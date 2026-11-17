@@ -127,7 +127,7 @@ async function main() {
   const doc = {
     generatedAt: now.toISOString(),
     waterYearStart: waterYearStart(now),
-    source: "NRCS SNOTEL (AWDB), daily; medians are AWDB's 1991–2020 central tendency",
+    source: "NRCS SNOTEL (AWDB), daily; medians are AWDB's 1991–2020 central tendency (served for SWE and precipitation, not for snow depth — depthMedianCm stays null until another source supplies it)",
     notes: [
       "newNCm is estimated fresh snow: SWE gain × our SLR at the day's mean station temperature (public/slr.json). Unknown days are skipped; a window with under half its days known is null.",
       "sinceDump counts days since the last ≥15 cm day: warm = high > +2 °C; freezeThaw = high > 0 and low < −2 °C; rainOnSnow = ≥2.5 mm water at mean > +1 °C onto snow.",

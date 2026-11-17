@@ -1544,3 +1544,34 @@ body { background: #F2F2F2; }
    darker prose than the verdict's --fill, which only works when red clauses
    carry the eye. */
 .td-verdict.td-note { color: #8A8A8A; }
+
+/* Shaping up (components/ShapingUp.jsx), per the design canvas 2026-11-17. */
+.su { margin-top: calc(22 * var(--u)); padding-bottom: calc(24 * var(--u)); }
+.su-small { margin: calc(8 * var(--u)) 0 0; font-size: calc(11 * var(--u)); line-height: calc(15 * var(--u)); color: #6B6B6B; }
+.su-dynamic { margin: 0 0 calc(14 * var(--u)); font-size: calc(12 * var(--u)); }
+.su-region + .su-region { margin-top: calc(30 * var(--u)); }
+.su-h { display: flex; justify-content: space-between; align-items: baseline; }
+.su-h h3 { margin: 0; font-size: calc(13 * var(--u)); font-weight: 700; letter-spacing: -.01em; }
+.su-h span { font-size: calc(10.5 * var(--u)); color: #6B6B6B; }
+.su-h2 { margin: calc(26 * var(--u)) 0 calc(12 * var(--u)); }
+.su-prose { margin: calc(8 * var(--u)) 0 0; font-size: calc(15 * var(--u)); line-height: calc(21 * var(--u)); letter-spacing: -.01em; color: #333; }
+.su-prose b { font-weight: 700; color: var(--mark-red); }
+.su-card {
+  display: flex; flex-direction: column; gap: calc(10 * var(--u)); width: 100%; text-align: left;
+  border: 1px solid var(--line); border-radius: 14px; padding: calc(14 * var(--u)); margin-bottom: calc(12 * var(--u));
+}
+.su-card-h { display: flex; justify-content: space-between; align-items: baseline; }
+.su-name { font-size: calc(17 * var(--u)); font-weight: 700; letter-spacing: -.03em; }
+.su-name.hot { color: var(--mark-red); }
+.su-pct { font-size: calc(11 * var(--u)); color: #6B6B6B; }
+.su-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(8 * var(--u)); }
+.su-stats div { display: flex; flex-direction: column; gap: 3px; }
+.su-stats i { font-style: normal; font-size: 9px; }
+.su-stats b { font-size: calc(15 * var(--u)); font-weight: 600; }
+.su-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.su-chips span { font-size: 11px; padding: 4px 9px; border-radius: 999px; background: #F2F2F2; }
+.su-table { font-size: 13px; }
+.su-tr { display: grid; grid-template-columns: minmax(0, 1.6fr) 0.8fr 0.8fr 0.8fr; height: 31px; align-items: center; }
+.su-th { font-size: 9px; height: 24px; }
+.su-tr.hot { color: var(--mark-red); }
+.su-sources { margin-top: calc(26 * var(--u)); padding-top: calc(14 * var(--u)); border-top: 1px solid var(--line); }

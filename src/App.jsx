@@ -71,6 +71,8 @@ export default function Tabulator() {
   const [projOverride, setProjOverride] = useState(() => loadSaved("projections", null));
   /* Same for our temperature model (lib/temps.js). */
   const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
+  /* And for Shaping up (lib/season.js). */
+  const [seasonOverride, setSeasonOverride] = useState(() => loadSaved("season", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -124,6 +126,9 @@ export default function Tabulator() {
   const tempsMode = feedRaw?.flags?.temps ?? "off";
   const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
   const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
+  const seasonMode = feedRaw?.flags?.season ?? "off";
+  const seasonOn = effectiveFlag(seasonMode, seasonOverride) && !!feedRaw?.season;
+  const chooseSeason = (on) => setSeasonOverride(nextOverride(on, seasonMode));
   /* Days 7–10 snow from our fitted ratio — ACTIVE, no Settings choice (Brian,
      2026-11-15: "We decided not to put things behind a switch. Instead it's
      just active."). Used whenever the projections file was built with a ratio;
@@ -172,6 +177,7 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("wxSource", wxSource); }, [wxSource]);
   useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
   useEffect(() => { saveLocal("temps", tempsOverride); }, [tempsOverride]);
+  useEffect(() => { saveLocal("season", seasonOverride); }, [seasonOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -349,6 +355,13 @@ export default function Tabulator() {
               <span className="pill sm">
                 <button className={!tempsOn ? "on" : ""} onClick={() => chooseTemps(false)}>Snow-Forecast</button>
                 <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Tabulator model</button>
+              </span>
+            </div>}
+            {canChoose(seasonMode) && feedRaw?.season && <div className="set">
+              <span className="set-label">Shaping up</span>
+              <span className="pill sm">
+                <button className={!seasonOn ? "on" : ""} onClick={() => chooseSeason(false)}>Off</button>
+                <button className={seasonOn ? "on" : ""} onClick={() => chooseSeason(true)}>On</button>
               </span>
             </div>}
             {/* Brian, 2026-11-11: at the bottom, a grey pill, red text. */}
@@ -582,6 +595,7 @@ export default function Tabulator() {
                   onOpenResort={(r) => setOpen(tripData.find((x) => x.name === r.name) ?? scoreFull(r))}
                   data={tripData}
                   win={win}
+                  season={seasonOn ? feedRaw.season : null}
                   countdown={tripCountdown(t, dates, localToday())}
                   dates={dates}
                   favs={favs}

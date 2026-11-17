@@ -6,6 +6,7 @@ import { useResortSearch } from "../lib/useResortSearch.js";
 import { GLASS, CAL_FRAME, CAL_PLUS, CAL_X } from "./tripIcons.js";
 import { tripVerdict } from "../lib/verdict.js";
 import { shortDate, rangeLabel } from "../lib/dates.js";
+import ShapingUp from "./ShapingUp.jsx";
 
 /** One trip: its name, its window, and the resorts in it on the same results
  *  table the rest of the app uses.
@@ -17,7 +18,7 @@ import { shortDate, rangeLabel } from "../lib/dates.js";
  *  fallen out of the feed simply does not appear; showing a stale row would be
  *  worse than showing one fewer. */
 export default function TripDetail({
-  trip, data, win = {}, countdown = null, dates = [], favs, metric, onOpen, onClose,
+  trip, data, win = {}, countdown = null, dates = [], season = null, favs, metric, onOpen, onClose,
   catalog = [], onAddResort, onRemoveResort, onOpenResort,
 }) {
   /* Adding from inside the trip. Brian, 2026-10-31: "there needs to be a way
@@ -43,6 +44,9 @@ export default function TripDetail({
     .filter(Boolean);
   const verdict = tripVerdict(rows, metric);
   const { beyond, partial, past } = win;
+  /* Shaping up stands in for days the forecast has not reached: the whole
+     trip when it is beyond, the rest of it when partial. */
+  const shaping = !!season && !past && (beyond || partial);
 
   /* What stands in for the forecast it does not have yet. Brian, 2026-11-17:
      "Leading up to the trip, this should continue to provide information...
@@ -143,7 +147,7 @@ export default function TripDetail({
       {/* Empty means the trip has no resorts — not that the forecast has
           nothing for them yet. A trip past the forecast used to land here and
           tell you it was empty while holding five resorts. */}
-      {trip.resorts.length === 0 ? (
+      {shaping && beyond ? null : trip.resorts.length === 0 ? (
         <p className="fav-empty">
           Nothing in this trip yet. Tap the search above to add a resort, or add a
           whole region from its sheet on the radar.
@@ -161,6 +165,9 @@ export default function TripDetail({
         </ul>
       ) : (
         <Table data={rows} metric={metric} onOpen={onOpen} favs={favs} />
+      )}
+      {shaping && (
+        <ShapingUp trip={trip} season={season} resorts={catalog} metric={metric} onOpenResort={onOpenResort} />
       )}
       </>
       )}

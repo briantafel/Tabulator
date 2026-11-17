@@ -86,7 +86,12 @@ export function summarise(series, { slr, today } = {}) {
     depthMedianCm: num(last.depthMedCm) ? Math.round(last.depthMedCm) : null,
     depthPctMedian: pct(last.depthCm, last.depthMedCm),
     sweMm: num(last.sweMm) ? Math.round(last.sweMm) : null,
+    sweMedianMm: num(last.sweMedMm) ? Math.round(last.sweMedMm) : null,
     swePctMedian: pct(last.sweMm, last.sweMedMm),
+    /* Early in the season the median is a few millimetres and the ratio
+       swings wildly (Vail read 18% with 10 mm of normal). Below 25 mm of
+       median SWE the app shows amounts, not the percentage. */
+    pctReliable: num(last.sweMedMm) && last.sweMedMm >= 25,
     new7Cm: window(7),
     new14Cm: window(14),
     new30Cm: window(30),

@@ -57,7 +57,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
    sky). Hidden by default since 2026-11-11 (Brian); "preview" brings it back. */
 /* slr (2026-11-15): days 7–10 snow from Open-Meteo rescaled by our fitted
    snow-to-liquid ratio instead of its flat 7:1. Needs projections on. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off" });
+/* season (2026-11-17): Shaping up on trips past the forecast, from
+   public/season.json (scripts/season). */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

@@ -52,6 +52,8 @@ test("summary: totals, last dump and what the surface has been through since", (
   const r = summarise(s, { slr: SLR });
   assert.equal(r.asOf, "2026-11-20");
   assert.equal(r.swePctMedian, 120);
+  assert.equal(r.sweMedianMm, 100);
+  assert.equal(r.pctReliable, true);
   assert.equal(r.depthPctMedian, 110);
   assert.equal(r.lastDump, "2026-11-11");
   assert.equal(r.daysSinceDump, 9);

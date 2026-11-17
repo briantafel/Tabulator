@@ -160,6 +160,9 @@ export async function loadForecast() {
      Snow-Forecast's days. "off" in flags.json is the site-wide stop. */
   const blend = flags.blend === "off" || preset ? null : await getJson("blend-forecast.json", null);
 
+  /* Season to date (scripts/season → lib/season.js), same rule. */
+  const season = flags.season === "off" || preset ? null : await getJson("season.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -179,6 +182,7 @@ export async function loadForecast() {
     projections,
     temps,
     blend,
+    season,
   };
 }
 
