@@ -43,10 +43,17 @@ jobs:
           git add public/season.json
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "season: $(date -u +%Y-%m-%dT%H:%MZ)"
+          # Two builds can overlap (a push and a dispatch a few seconds apart).
+          # Both write season.json; on a conflict ours is the newer build, so
+          # it wins (-X theirs = the commit being replayed). A push that never
+          # lands fails the run: failures must be loud.
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            if git pull --rebase -X theirs -q origin main && git push; then pushed=true; echo "pushed=true" >> "$GITHUB_OUTPUT"; break; fi
+            git rebase --abort 2>/dev/null || true
             sleep 10
           done
+          if [ "$pushed" != true ]; then echo "::error::season.json was built but never pushed"; exit 1; fi
 
       - name: Redeploy the site
         if: steps.commit.outputs.pushed == 'true'
