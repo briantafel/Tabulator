@@ -17,6 +17,11 @@ on:
   schedule:
     - cron: "20 0 * * *"    # 00:20 UTC
   workflow_dispatch:
+    inputs:
+      only:
+        description: "Run only pieces whose key starts with this (optional), e.g. snotel-hourly-snow-"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -56,6 +61,7 @@ jobs:
           AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          BACKFILL_ONLY: ${{ inputs.only }}
         run: node scripts/archive/backfill-runner.js work
 
       - name: Open an issue on failure

@@ -223,7 +223,10 @@ pieces.unshift(...livePieces);
 
 const done = doneKeys();
 const doneKeyOf = (p) => p.doneKey ?? p.key;
-const pending = pieces.filter((p) => !done.has(doneKeyOf(p)));
+// BACKFILL_ONLY=<key prefix> (workflow input "only"): run just those pieces, e.g. snotel-hourly-snow-.
+const ONLY = process.env.BACKFILL_ONLY || "";
+const pending = pieces.filter((p) => !done.has(doneKeyOf(p)) && p.key.startsWith(ONLY));
+if (ONLY) log(`backfill: only pieces starting "${ONLY}"`);
 log(`backfill: ${pieces.length} pieces, ${done.size} already done, ${pending.length} to go`);
 
 let stations = null;
