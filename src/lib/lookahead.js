@@ -165,17 +165,27 @@ export function ensoHistoryLine(region, season, start) {
   if (!g?.n || g.n < 3) return null;
   const pcts = g.years.map(([, , p]) => p);
   const lo = Math.min(...pcts), hi = Math.max(...pcts);
-  const Name = region.charAt(0).toUpperCase() + region.slice(1);
+  const poss = /s$/.test(region) ? `${region}'` : `${region}'s`;
   const share = g.above / g.n;
-  const verdict = share >= 0.75 && g.median >= 110 ? `Past ${CLASS_NAME[key]} winters have tended to favor ${region}.`
-    : share <= 0.25 && g.median <= 90 ? `Past ${CLASS_NAME[key]} winters have tended to leave ${region} short.`
+  const lean = share >= 0.75 && g.median >= 110 ? "favor" : share <= 0.25 && g.median <= 90 ? "short" : null;
+  const verdict = lean === "favor" ? `Past ${CLASS_NAME[key]} winters have tended to favor ${region}.`
+    : lean === "short" ? `Past ${CLASS_NAME[key]} winters have tended to leave ${region} short.`
       : `Here it has gone either way: ${CLASS_NAME[key]} has not decided the season.`;
+  const since = at.all?.years?.[0]?.[0] ?? g.years[0][0];
   const segs = [
-    { t: ` In the ${g.n} ${CLASS_NAME[key]} winters since ${g.years[0][0]}, ${Name}'s snowpack on ${CHECK_LABEL[md]} ran ` },
+    { t: ` In the ${g.n} ${CLASS_NAME[key]} winters since ${since}, ${poss} snowpack on ${CHECK_LABEL[md]} ran ` },
     { t: `${lo}–${hi}% of normal`, hot: true },
     { t: `, ${g.above} of ${g.n} at or above it. ${verdict}` },
   ];
-  if (g.n < 8) segs.push({ t: ` ${g.n} winters is a small sample.` });
+  /* Strong winters are few; the wider El Niño set says whether the lean holds. */
+  const wide = key === "strongElNino" ? at?.elNino : null;
+  if (wide?.n >= 8) {
+    const ws = wide.above / wide.n;
+    const agrees = (lean === "favor" && ws >= 0.65) || (lean === "short" && ws <= 0.35);
+    const tail = lean && !agrees ? ", so the lean is weak" : lean ? ", the same lean" : "";
+    segs.push({ t: ` Counting all ${wide.n} El Niño winters, ${wide.above} of ${wide.n} were at or above normal on ${CHECK_LABEL[md]}${tail}.` });
+  }
+  else if (g.n < 8) segs.push({ t: ` ${g.n} winters is a small sample.` });
   return { segs, years: g.years, checkpoint: md, key };
 }
 

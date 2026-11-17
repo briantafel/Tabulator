@@ -47,8 +47,11 @@ const text = (l) => l.segs.map((s) => s.t).join("");
 
 test("either way when the past is split, and a small sample is named", () => {
   const l = ensoHistoryLine("the Sierra", season([62, 166, 107, 110, 85]), "2027-03-01");
-  assert.match(text(l), /The Sierra's snowpack on Apr 1 ran 62–166% of normal, 3 of 5 at or above it\. Here it has gone either way/);
+  assert.match(text(l), /the Sierra's snowpack on Apr 1 ran 62–166% of normal, 3 of 5 at or above it\. Here it has gone either way/);
   assert.match(text(l), /5 winters is a small sample/);
+  const wider = season([62, 166, 107, 110, 85]);
+  wider.ensoHistory.regions["the Sierra"]["04-01"].elNino = { n: 12, median: 109, above: 8, years: [] };
+  assert.match(text(ensoHistoryLine("the Sierra", wider, null)), /Counting all 12 El Niño winters, 8 of 12 were at or above normal on Apr 1\./);
 });
 
 test("favor and short only on a lopsided record", () => {
@@ -59,4 +62,13 @@ test("favor and short only on a lopsided record", () => {
 test("no history, no line (never a guess)", () => {
   assert.equal(ensoHistoryLine("the Wasatch", season([100, 100, 100]), null), null);
   assert.equal(ensoHistoryLine("the Sierra", season([100, 120]), null), null);
+});
+
+test("plural regions take a bare apostrophe; a split wider record weakens the lean", () => {
+  const s = season([70, 80, 60, 105]);
+  s.ensoHistory.regions["the Cascades"] = s.ensoHistory.regions["the Sierra"];
+  s.ensoHistory.regions["the Cascades"]["04-01"].elNino = { n: 12, median: 98, above: 6, years: [] };
+  const t = text(ensoHistoryLine("the Cascades", s, null));
+  assert.match(t, /the Cascades' snowpack/);
+  assert.match(t, /6 of 12 were at or above normal on Apr 1, so the lean is weak\./);
 });
