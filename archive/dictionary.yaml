@@ -296,6 +296,15 @@ sources:
       - The monthly history has no daily figures. It is a scale check, not a daily truth.
       - Skier reports are parsed into rows (text, photo URL). Reporter names are not archived.
       - Covers all 40 resorts, including the four Canadian ones. Resort figures are self-reported and unaudited.
+  open-meteo-forecast:
+    name: Open-Meteo forecast API — ECMWF IFS 0.25°, GFS, GEM (live, once a day)
+    kind: forecast
+    url: https://api.open-meteo.com/v1/forecast
+    coverage: every app resort (not archiveOnly), 11 days ahead, daily from 2026-11-17 (blend.yml, 07:07 UTC), parser om-fc-1
+    notes:
+      - The live copy of the three models our blend (blend-v1) is fitted on. Previous Runs gives the same models after the fact for scoring; this is what the app's own number is built from, archived exactly as fetched.
+      - 6-hour blocks (precip, temp_min, temp_max) plus one `temp` row per hour. issued_at = fetch time (the API doesn't say which run it served). Requested at the Snow-Forecast mid elevation.
+      - A model that doesn't offer a variable gives no rows for it — never zeros.
   open-meteo-previous-runs:
     name: Open-Meteo Previous Runs API (one-time backfill)
     kind: forecast

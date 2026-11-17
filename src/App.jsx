@@ -20,6 +20,7 @@ import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
 import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
+import { applyOurs } from "./lib/ours.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -129,7 +130,8 @@ export default function Tabulator() {
   const base = useMemo(() => (tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw), [tempsOn, feedRaw]);
   const feed = useMemo(() => {
     const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
-    return tempsOn ? applyTemps(f, feedRaw.temps) : f;
+    const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
+    return applyOurs(g, feedRaw?.blend);
   }, [projections, tempsOn, slrOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;

@@ -42,6 +42,7 @@ jobs:
           ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           aws s3 cp "s3://$R2_BUCKET/verify/latest/temp-model.json" /tmp/temp-model.json --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/slr.json" /tmp/slr.json --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/blend.json" /tmp/blend.json --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/temps_report.md" /tmp/temps_report.md --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/slr_report.md" /tmp/slr_report.md --endpoint-url "$ENDPOINT" --only-show-errors
       - name: Show the public-data judgement (no paid rows)
@@ -69,11 +70,25 @@ jobs:
           else:
               print(f"SLR: NOT shipped — promoted leads {sorted(k for k, v in prom.items() if v)} of {sorted(prom)}")
           PY
+      - name: Blend — ship the judged water blend (public models only)
+        run: |
+          python3 - <<'PY' 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          p = json.load(open("/tmp/blend.json"))
+          need = ("weights", "factors", "pooled_factors")
+          if not all(p.get(k) for k in need):
+              raise SystemExit("blend.json has no weights/factors — not shipped")
+          keep = {k: p[k] for k in ("version", "models", "leads", "weights", "factors", "pooled_factors",
+                                    "best_single_on_train", "fitted_on") if k in p}
+          keep.setdefault("version", "blend-v1")
+          json.dump(keep, open("public/blend.json", "w"), indent=1); open("public/blend.json", "a").write("\n")
+          print(f"Blend: shipped {keep['version']} ({len(keep['factors'])} region factors, leads {sorted(keep['weights'])})")
+          PY
       - name: Commit
         run: |
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
-          git add public/temp-model.json public/slr.json 2>/dev/null || git add public/temp-model.json
+          git add public/temp-model.json public/slr.json public/blend.json
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "models: promote judged temperature / SLR from verify/latest"
           for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done

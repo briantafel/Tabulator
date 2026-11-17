@@ -23,6 +23,10 @@ import { coldLow } from "../lib/temps.js";
 const W = 358;
 const RED = "#EF4A38";
 const PUR = "#9B59D0";
+/* Our own number on Snow-Forecast's days (lib/ours.js): white where it falls
+   inside the drawn band, the app's light gray (--ghost) outside it, so it is
+   always visible but never louder than theirs (Brian, 2026-11-16). */
+const OURS_IN = "#FFFFFF", OURS_OUT = "#C6C6C6";
 const PANEL = "#EDF1F6";
 const MARK_AMBER = "#FFCC00";
 
@@ -81,7 +85,7 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
 
   // Scale: the tallest bar reaches the top of the plot (its value label sits
   // 16 below the legend). Guides step with the week — see lib/guides.js.
-  const maxV = Math.max(1, ...days.map((d) => disp(d.range?.p90 ?? d.snow ?? 0, metric)));
+  const maxV = Math.max(1, ...days.map((d) => Math.max(disp(d.range?.p90 ?? d.snow ?? 0, metric), d.ours != null ? disp(d.ours, metric) : 0)));
   const LEG_B = 28.5, BASE = 196, PLOT_TOP = 46;
   const BAR_TOP = LEG_B + 16 + 16 + 3;
   const y = (v) => BASE - (v / maxV) * (BASE - BAR_TOP);
@@ -137,6 +141,10 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
         const h80 = Math.max(3, y(p10) - y(p90));
         const h50 = y(p25) - y(p75);
         const cx = x(i);
+        const hasOurs = !d.projected && d.ours != null;
+        const yo = hasOurs ? y(disp(d.ours, metric)) : null;
+        const inBand = hasOurs && yo >= y(p10) - h80 - 0.5 && yo <= y(p10) + 0.5;
+        const labelY = Math.min(y(p10) - h80, hasOurs ? yo - 1.25 : Infinity) - 5;
         const ts = tempSeverity(d.tempMax, coldLow(d)), ws = windSeverity(d.windMax);
         const cell = (txt, kind, yb) => kind
           ? <g><Marker kind={kind} x={cx - 11} y={yb - 4} /><text x={cx - 5.5} y={yb}>{txt}</text></g>
@@ -145,8 +153,9 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
           <g key={d.date}>
             <rect x={cx - barW / 2} y={y(p10) - h80} width={barW} height={h80} rx="2" fill={c} fillOpacity=".18" />
             {h50 > 0.5 && <rect x={cx - barW / 2} y={y(p75)} width={barW} height={h50} rx="2" fill={c} fillOpacity={d.projected ? 0.49 : 0.5} />}
+            {hasOurs && <rect x={cx - tickW / 2} y={yo - 1.25} width={tickW} height="2.5" rx="1.25" fill={inBand ? OURS_IN : OURS_OUT} />}
             <rect x={cx - tickW / 2} y={y(v) - 1.25} width={tickW} height="2.5" rx="1.25" fill={c} />
-            <text x={cx} y={y(p10) - h80 - 5} textAnchor="middle" fontSize="13" fontWeight="600" fill="#111">{label(d)}</text>
+            <text x={cx} y={labelY} textAnchor="middle" fontSize="13" fontWeight="600" fill="#111">{label(d)}</text>
             <text x={cx} y={BASE + 20} textAnchor="middle" fontSize="11.5" fill="#8A8A8A">{weekdayShort(d.date)}</text>
             <g fontSize="11.5" fill="#9A9A9A">
               {cell(`${tempTxt(d.tempMax, metric)}°`, ts, BASE + 46)}

@@ -156,6 +156,10 @@ export async function loadForecast() {
   /* Our temperature model (scripts/temps → lib/temps.js), same rule. */
   const temps = flags.temps === "off" || preset ? null : await getJson("temps.json", null);
 
+  /* Our own forecast (scripts/blend → lib/ours.js): drawn as a light mark on
+     Snow-Forecast's days. "off" in flags.json is the site-wide stop. */
+  const blend = flags.blend === "off" || preset ? null : await getJson("blend-forecast.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -174,6 +178,7 @@ export async function loadForecast() {
     flags,
     projections,
     temps,
+    blend,
   };
 }
 

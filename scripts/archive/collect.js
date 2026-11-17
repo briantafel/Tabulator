@@ -19,6 +19,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { rowSink } from "./common.js";
 import * as sf from "./snow-forecast.js";
 import * as ens from "./ensembles.js";
+import * as omfc from "./om-forecast.js";
 import * as snotel from "./snotel.js";
 import * as bcasws from "./bc-asws.js";
 import * as slf from "./slf.js";
@@ -76,6 +77,10 @@ let savedElevations = {};
 try { savedElevations = JSON.parse(await readFile(`${root}src/data/sf-elevations.json`, "utf8")); } catch { /* none yet */ }
 await run("open-meteo-ensemble", (sink, rawDir) =>
   ens.collect({ resorts, elevations: { ...savedElevations, ...(sfResult?.elevations ?? {}) }, sink, rawDir, fetchedAt, runId, log }));
+
+// Live ECMWF / GFS / GEM for the blend (2026-11-16): own daily job, blend.yml.
+await run("open-meteo-forecast", (sink, rawDir) =>
+  omfc.collect({ resorts, elevations: { ...savedElevations, ...(sfResult?.elevations ?? {}) }, sink, rawDir, fetchedAt, runId, log }));
 
 await run("snotel", (sink, rawDir) =>
   snotel.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
