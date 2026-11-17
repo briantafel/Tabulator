@@ -227,6 +227,9 @@ body { background: #F2F2F2; }
    the phone frame's own white background, which paints them out entirely. */
 .cal-d i { font-style: normal; position: relative; z-index: 1; }
 .cal-d.off { color: var(--ghost); cursor: default; }
+/* Past the forecast: tappable (a trip or watchlist can be saved for it), a
+   step lighter than forecast days so the forecast's edge still reads. */
+.cal-d.far { color: #8A8A8A; }
 
 /* Selection, measured off Tabulator — Calendar selection.pdf.
    ::before is the band — a plain rectangle filling the cell, so neighbouring
@@ -1503,3 +1506,23 @@ body { background: #F2F2F2; }
   .sheet-total-tap .st-grad { animation: none; }
   .rn-strip { transition: none; }
 }
+
+/* A range past the forecast, on the mountains screen: what is and is not
+   covered, and the two ways to keep it. Quiet grey prose; the actions in the
+   app's red, like Edit. */
+.far-note { margin-top: calc(24 * var(--u)); }
+.far-note p {
+  margin: 0; font-size: calc(12.5 * var(--u)); line-height: calc(16 * var(--u)); color: #8A8A8A;
+}
+.far-actions { display: flex; gap: calc(18 * var(--u)); margin-top: calc(10 * var(--u)); }
+.far-actions button {
+  padding: 0; font-size: calc(13 * var(--u)); font-weight: 500; color: var(--mark-red);
+}
+/* A trip's resorts before the forecast reaches it: names only, no numbers
+   to stand behind yet. */
+.td-names { list-style: none; margin: calc(17 * var(--u)) 0 0; padding: 0; }
+.td-names li {
+  padding: calc(10 * var(--u)) 0; border-bottom: 1px solid var(--line);
+  font-size: calc(15 * var(--u));
+}
+.td-names button { padding: 0; font: inherit; color: inherit; text-align: left; }

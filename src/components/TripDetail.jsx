@@ -5,6 +5,7 @@ import ResortSearch from "./ResortSearch.jsx";
 import { useResortSearch } from "../lib/useResortSearch.js";
 import { GLASS, CAL_FRAME, CAL_PLUS, CAL_X } from "./tripIcons.js";
 import { tripVerdict } from "../lib/verdict.js";
+import { shortDate, rangeLabel } from "../lib/dates.js";
 
 /** One trip: its name, its window, and the resorts in it on the same results
  *  table the rest of the app uses.
@@ -16,7 +17,7 @@ import { tripVerdict } from "../lib/verdict.js";
  *  fallen out of the feed simply does not appear; showing a stale row would be
  *  worse than showing one fewer. */
 export default function TripDetail({
-  trip, data, beyond, favs, metric, onOpen, onClose,
+  trip, data, win = {}, countdown = null, dates = [], favs, metric, onOpen, onClose,
   catalog = [], onAddResort, onRemoveResort, onOpenResort,
 }) {
   /* Adding from inside the trip. Brian, 2026-10-31: "there needs to be a way
@@ -41,6 +42,22 @@ export default function TripDetail({
     .map((r) => data.find((d) => d.name === r.name))
     .filter(Boolean);
   const verdict = tripVerdict(rows, metric);
+  const { beyond, partial, past } = win;
+
+  /* What stands in for the forecast it does not have yet. Brian, 2026-11-17:
+     "Leading up to the trip, this should continue to provide information...
+     When the dates enter the forecast window, data can then appear." The
+     season-to-date report (claude/calendar-shaping-up-plan.md) goes here;
+     until it exists, say plainly how far off the forecast is. */
+  const note = past
+    ? "This trip is over."
+    : beyond && countdown
+      ? `${countdown.daysOut} days out. The ${countdown.horizon}-day forecast reaches this trip around ${shortDate(countdown.reach)}.`
+      : beyond
+        ? "These dates are past the forecast. Check back closer to the trip."
+        : partial
+          ? `The forecast covers ${rangeLabel(dates[win.ta], dates[win.tb])} so far. The rest of the trip fills in as it arrives.`
+          : null;
 
   return (
     <div className="tripdetail">
@@ -96,9 +113,9 @@ export default function TripDetail({
           so is the only honest option: the alternative was showing whatever
           window the mountains screen happened to be on, which is the bug this
           replaces. */}
-      {beyond && (
+      {note && (
         <>
-          <p className="td-verdict"><span>These dates are beyond the six-day forecast. Check back closer to the trip.</span></p>
+          <p className="td-verdict"><span>{note}</span></p>
           <div className="td-rule td-rule-2" />
         </>
       )}
@@ -115,10 +132,24 @@ export default function TripDetail({
         </>
       )}
 
-      {rows.length === 0 ? (
+      {/* Empty means the trip has no resorts — not that the forecast has
+          nothing for them yet. A trip past the forecast used to land here and
+          tell you it was empty while holding five resorts. */}
+      {trip.resorts.length === 0 ? (
         <p className="fav-empty">
           Nothing in this trip yet. Tap the search above to add a resort.
         </p>
+      ) : rows.length === 0 ? (
+        <ul className="td-names">
+          {trip.resorts.map((r) => {
+            const hit = catalog.find((c) => c.name === r.name);
+            return (
+              <li key={r.name}>
+                {hit ? <button onClick={() => onOpenResort?.(hit)}>{r.name}</button> : r.name}
+              </li>
+            );
+          })}
+        </ul>
       ) : (
         <Table data={rows} metric={metric} onOpen={onOpen} favs={favs} />
       )}

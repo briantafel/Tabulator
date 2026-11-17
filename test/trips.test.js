@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   addResort, addPlace, removePlace, removeResort, holdsPlace, isDirect,
-  toWatchlist, withDates, tripWindow, WATCH_LABEL,
+  toWatchlist, withDates, tripWindow, tripCountdown, WATCH_LABEL,
 } from "../src/lib/trips.js";
 
 const R = (name) => ({ name, total: 10 });
@@ -71,22 +71,45 @@ test("a watchlist is scored over every day there is data for", () => {
   assert.equal(w.start, null);
   assert.equal(w.end, null);
   assert.equal(w.label, WATCH_LABEL);
-  assert.deepEqual(tripWindow(w, DATES), { ta: 0, tb: 5, beyond: false });
+  assert.deepEqual(tripWindow(w, DATES), { ta: 0, tb: 5, beyond: false, partial: false });
 });
 
 test("a watchlist follows the horizon when the feed is shorter or longer", () => {
   const w = toWatchlist({ id: "t", resorts: [] });
-  assert.deepEqual(tripWindow(w, DATES.slice(0, 3)), { ta: 0, tb: 2, beyond: false });
-  assert.deepEqual(tripWindow(w, [...DATES, "2026-11-07"]), { ta: 0, tb: 6, beyond: false });
+  assert.deepEqual(tripWindow(w, DATES.slice(0, 3)), { ta: 0, tb: 2, beyond: false, partial: false });
+  assert.deepEqual(tripWindow(w, [...DATES, "2026-11-07"]), { ta: 0, tb: 6, beyond: false, partial: false });
 });
 
 test("giving a watchlist dates makes it a dated trip again", () => {
   const t = withDates(toWatchlist({ id: "t", resorts: [] }), "2026-11-02", "2026-11-04", "Nov 2–Nov 4");
   assert.equal(t.watch, false);
-  assert.deepEqual(tripWindow(t, DATES), { ta: 1, tb: 3, beyond: false });
+  assert.deepEqual(tripWindow(t, DATES), { ta: 1, tb: 3, beyond: false, partial: false });
 });
 
 test("dated trips keep their old windows", () => {
   assert.deepEqual(tripWindow({ start: "2027-01-21", end: "2027-01-24" }, DATES).beyond, true);
-  assert.deepEqual(tripWindow({}, DATES), { ta: 0, tb: 3, beyond: false });
+  assert.deepEqual(tripWindow({}, DATES), { ta: 0, tb: 3, beyond: false, partial: false });
+});
+
+test("a trip whose first days are forecast scores those days, not nothing", () => {
+  // Brian, 2026-11-17: data appears as the dates enter the window.
+  const w = tripWindow({ start: "2026-11-04", end: "2026-11-09" }, DATES);
+  assert.deepEqual(w, { ta: 3, tb: 5, beyond: false, partial: true });
+});
+
+test("a trip that started before the feed scores what is left of it", () => {
+  const w = tripWindow({ start: "2026-10-29", end: "2026-11-02" }, DATES);
+  assert.deepEqual(w, { ta: 0, tb: 1, beyond: false, partial: true });
+});
+
+test("a finished trip is beyond and says it is past", () => {
+  const w = tripWindow({ start: "2026-10-01", end: "2026-10-05" }, DATES);
+  assert.equal(w.beyond, true);
+  assert.equal(w.past, true);
+});
+
+test("the countdown names when the forecast reaches the trip", () => {
+  const c = tripCountdown({ start: "2026-12-20", end: "2026-12-27" }, DATES, "2026-11-17");
+  assert.deepEqual(c, { daysOut: 33, reach: "2026-12-15", horizon: 6 });
+  assert.equal(tripCountdown(toWatchlist({ id: "t", resorts: [] }), DATES, "2026-11-17"), null);
 });

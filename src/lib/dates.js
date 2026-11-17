@@ -17,3 +17,14 @@ export const weekdayShort = (s) =>
  *  Both calendars (mountains and the trip editor) take it from here so they
  *  cannot disagree. */
 export const leadingBlanks = (firstOfMonth) => firstOfMonth.getDay();
+
+/** Today's date in the phone's own time zone, as YYYY-MM-DD — the key format
+ *  history.json uses. toISOString() would give tomorrow's date to anyone west
+ *  of UTC in the evening. */
+export function localToday(now = new Date()) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
+/** "Dec 20" or "Dec 20–Dec 27": how a range is written everywhere. */
+export const rangeLabel = (a, b) => (!b || a === b ? shortDate(a) : `${shortDate(a)}–${shortDate(b)}`);

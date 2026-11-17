@@ -22,10 +22,10 @@ import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
 import { applyOurs } from "./lib/ours.js";
 import { bySnow } from "./lib/rank.js";
-import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow } from "./lib/trips.js";
+import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
-import { fromIso, monthName, shortDate } from "./lib/dates.js";
+import { fromIso, monthName, shortDate, localToday, rangeLabel } from "./lib/dates.js";
 
 /* ------------------------------------------------------------------ *
  * Tabulator
@@ -50,10 +50,12 @@ const ICON = {
 };
 const TABS = ["trips", "mountains", "radar"];
 
-/* The calendar pages one month either side of the forecast's own month —
-   the same three the dots offered. */
+/* The calendar pages one month back and six forward. Forward used to stop
+   at one, which was all a forecast-bound calendar could use. Brian,
+   2026-11-17: far dates now save a trip or watchlist that fills in as the
+   forecast reaches it, so the calendar reaches through the season. */
 const MONTH_MIN = -1;
-const MONTH_MAX = 1;
+const MONTH_MAX = 6;
 
 export default function Tabulator() {
   const [feedRaw, setFeed] = useState(null);
@@ -77,8 +79,11 @@ export default function Tabulator() {
      ghost themselves at the ends — no capability lost, none invented. */
   const [mOff, setMOff] = useState(0);
   const [days, setDays] = useState(4);
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(3);
+  /* The calendar's range, as dates rather than indexes into the forecast —
+     a range past the forecast has no index. Null until picked: the first
+     four forecast days. */
+  const [ca, setCa] = useState(null);
+  const [cb, setCb] = useState(null);
 
   const [shown, setShown] = useState(false);
   const [page, setPage] = useState(0); // 0 table, 1 chart
@@ -147,8 +152,15 @@ export default function Tabulator() {
   // Days mode runs from the first forecast day; calendar mode sets the window
   // explicitly. Both clamp to the horizon.
   const last = Math.max(0, dates.length - 1);
+  const cs = ca ?? dates[0];
+  const ce = cb ?? dates[Math.min(3, last)];
+  /* How much of the calendar range the forecast covers: all of it, the first
+     part of it (`partial`), or none (`beyond`). Same rules as a trip. */
+  const calWin = mode === "calendar" && cs ? tripWindow({ start: cs, end: ce }, dates) : null;
+  const calFar = !!calWin && (calWin.beyond || calWin.partial);
   const [wa, wb] =
-    mode === "days" ? [0, Math.min(days - 1, last)] : [Math.min(a, last), Math.min(b, last)];
+    mode === "days" ? [0, Math.min(days - 1, last)]
+      : calWin && !calWin.beyond ? [calWin.ta, calWin.tb] : [0, 0];
 
   /* The things worth remembering. Written on change rather than on
      unload: iOS kills a backgrounded home-screen app without firing
@@ -175,16 +187,18 @@ export default function Tabulator() {
     [feed, wa, wb]
   );
 
-  const pick = (i) => {
-    if (i < 0) return;
-    if (a === b && i > a) { setB(i); return; }
-    setA(i);
-    setB(i);
+  /* First tap sets the start; the next one closes the range unless it lands
+     before the start, in which case it starts again. */
+  const pick = (d) => {
+    if (cs === ce && d > cs) { setCa(cs); setCb(d); return; }
+    setCa(d);
+    setCb(d);
   };
 
-  const label = dates.length
-    ? `${shortDate(dates[wa])}${wb > wa ? `–${shortDate(dates[wb])}` : ""}`
-    : "";
+  /* What the pill says and what a saved trip is labelled: the range picked,
+     which in calendar mode may run past the forecast. */
+  const [rs, re] = mode === "calendar" ? [cs, ce] : [dates[wa], dates[wb]];
+  const label = rs ? rangeLabel(rs, re) : "";
 
   /* A trip is a NAMED container with its own date range and a list of resorts
      in it — "VSC trip 2027 · Jan 21–Jan 24", per the Add-to-trip design. It is
@@ -203,11 +217,28 @@ export default function Tabulator() {
          four-day trip reported six days of snow. The label is a rendering of
          the range; these are the range. */
       return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
-                      start: dates?.[wa], end: dates?.[wb],
+                      start: rs, end: re,
                       // One resort from its sheet, or a whole place from the radar.
                       resorts: place ? addPlace([], resort, place)
                         : resort ? addResort([], resort) : [] }];
     });
+
+  /* Saving a range past the forecast from the mountains screen. Brian,
+     2026-11-17: it should "create that continuously updating trip or
+     watchlist". A trip keeps the dates and fills in as the forecast reaches
+     them; a watchlist drops them and follows the whole forecast. Either way
+     it opens on the Trips screen, where resorts and places get added. The id
+     is made here, not from the list length, so the screen can open it. */
+  const saveFar = (watch) => {
+    const id = `trip-${Date.now().toString(36)}`;
+    setTrips((t) => {
+      const base = { id, name: `Trip ${t.length + 1}`, resorts: [] };
+      return [...t, watch ? toWatchlist(base) : withDates(base, cs, ce, rangeLabel(cs, ce))];
+    });
+    setTab("trips");
+    setEditing(null);
+    setViewing({ id });
+  };
 
   const removeTrip = (id) => setTrips((t) => t.filter((x) => x.id !== id));
 
@@ -395,8 +426,8 @@ export default function Tabulator() {
                 {mode === "days" ? (
                   <DaysWheel key={projections ? "p" : "f"} value={days} horizon={projections ? Math.max(HORIZON_DAYS, Math.min(10, dates.length)) : HORIZON_DAYS} onChange={(n) => { setDays(n); setShown(false); }} />
                 ) : (
-                  <MonthGrid dates={dates} a={wa} b={wb} offset={mOff}
-                             onPick={(i) => { pick(i); setShown(false); }} />
+                  <MonthGrid dates={dates} start={cs} end={ce} offset={mOff}
+                             onPick={(d) => { pick(d); setShown(false); }} />
                 )}
               </div>
 
@@ -429,7 +460,25 @@ export default function Tabulator() {
                 <button className="arrow" onClick={() => setShown(true)} aria-label="Show results">→</button>
               </div>
 
-              {shown && (
+              {/* Past the forecast, wholly or in part. Nothing to rank for
+                  those days yet, so the honest answer is to say so and offer
+                  to keep the range: as a trip that fills in, or a watchlist. */}
+              {shown && calFar && (
+                <div className="far-note">
+                  <p>
+                    {calWin.beyond
+                      ? `${label} is past the ${dates.length}-day forecast, which reaches ${shortDate(cs)} around ${shortDate(tripCountdown({ start: cs }, dates, localToday()).reach)}.`
+                      : `The forecast covers ${rangeLabel(dates[calWin.ta], dates[calWin.tb])} so far. The rest of ${label} fills in as it arrives.`}
+                    {" "}Save it and it updates as the forecast moves.
+                  </p>
+                  <div className="far-actions">
+                    <button onClick={() => saveFar(false)}>Save as a trip</button>
+                    <button onClick={() => saveFar(true)}>Start a watchlist</button>
+                  </div>
+                </div>
+              )}
+
+              {shown && !(calWin?.beyond) && (
                 <>
                   <div className="viewtoggle" role="group" aria-label="Results view">
                     <button className={page === 0 ? "on" : ""} onClick={() => setPage(0)} aria-label="Table">
@@ -499,7 +548,8 @@ export default function Tabulator() {
             /* Which days the trip covers — its own dates, the whole horizon
                for a watchlist, or nothing yet if it is past the forecast.
                The cases are spelled out in lib/trips.js tripWindow. */
-            const { ta, tb, beyond } = tripWindow(t, dates);
+            const win = tripWindow(t, dates);
+            const { ta, tb, beyond } = win;
             const tripData = beyond || !feed
               ? []
               : feed.resorts
@@ -519,7 +569,9 @@ export default function Tabulator() {
                      forecast; the full forecast when it is beyond it. */
                   onOpenResort={(r) => setOpen(tripData.find((x) => x.name === r.name) ?? scoreFull(r))}
                   data={tripData}
-                  beyond={beyond}
+                  win={win}
+                  countdown={tripCountdown(t, dates, localToday())}
+                  dates={dates}
                   favs={favs}
                   metric={metric}
                   onOpen={setOpen}

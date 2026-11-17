@@ -91,16 +91,41 @@ export const withDates = (trip, start, end, label) =>
  *
  *   watchlist                 -> every day there is data for
  *   dated, inside the horizon -> exactly those days
- *   dated, outside it         -> `beyond`: nothing to score yet
+ *   dated, partly inside      -> the days that are in range (`partial`);
+ *                                the rest arrive as the forecast reaches them.
+ *                                Brian, 2026-11-17: "when the dates enter the
+ *                                forecast window, data can then appear" — a
+ *                                trip used to say nothing until its LAST day
+ *                                was forecast, losing most of a week.
+ *   dated, outside it         -> `beyond`: nothing to score yet (`past` when
+ *                                the trip is over rather than not started)
  *   no dates, not a watchlist -> a trip saved before trips carried their
  *                                window; the app's default four days, so the
  *                                page means the same thing every time
  */
 export function tripWindow(trip, dates) {
   const last = Math.max(0, dates.length - 1);
-  if (trip.watch) return { ta: 0, tb: last, beyond: false };
-  if (trip.start == null || trip.end == null) return { ta: 0, tb: Math.min(3, last), beyond: false };
-  const ta = dates.indexOf(trip.start);
-  const tb = dates.indexOf(trip.end);
-  return { ta, tb, beyond: ta === -1 || tb === -1 };
+  if (trip.watch) return { ta: 0, tb: last, beyond: false, partial: false };
+  if (trip.start == null || trip.end == null) return { ta: 0, tb: Math.min(3, last), beyond: false, partial: false };
+  const inside = dates.flatMap((d, i) => (d >= trip.start && d <= trip.end ? [i] : []));
+  if (!inside.length) {
+    const past = dates.length > 0 && trip.end < dates[0];
+    return { ta: -1, tb: -1, beyond: true, partial: false, ...(past ? { past: true } : {}) };
+  }
+  const ta = inside[0];
+  const tb = inside[inside.length - 1];
+  return { ta, tb, beyond: false, partial: trip.start < dates[ta] || trip.end > dates[tb] };
+}
+
+/** How far off a trip is, for the line that stands in for the forecast:
+ *  days until it starts (from `today`, YYYY-MM-DD), and roughly the day the
+ *  forecast's far edge will reach its first day — the horizon is a moving
+ *  window `dates.length` days long. Null for a watchlist or an undated trip. */
+export function tripCountdown(trip, dates, today) {
+  if (trip.watch || !trip.start || !dates.length || !today) return null;
+  const day = 864e5;
+  const t = (s) => Date.parse(`${s}T12:00:00Z`);
+  const daysOut = Math.round((t(trip.start) - t(today)) / day);
+  const reach = new Date(t(trip.start) - (dates.length - 1) * day).toISOString().slice(0, 10);
+  return { daysOut, reach, horizon: dates.length };
 }

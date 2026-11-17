@@ -1,20 +1,26 @@
 import { iso, fromIso, leadingBlanks } from "../lib/dates.js";
 
 /** Month grid, no weekday headers — tap a start date, tap an end date.
- *  Dates outside the forecast horizon are ghosted and disabled. With a 6-day
- *  horizon that is most of the month, which is honest: the app can only answer
- *  for days it has a forecast for.
+ *
+ *  Brian, 2026-11-17: "Find me snow outside the 10 day window should allow
+ *  you to create that continuously updating trip or watchlist." So days past
+ *  the forecast are no longer ghosted and disabled: they answer a tap, drawn
+ *  a step lighter than forecast days (`far`) so the edge of the forecast still
+ *  reads. Only days before the forecast starts are off — there is nothing to
+ *  plan in the past. The selection is held as dates, not as indexes into the
+ *  forecast, because a far range has no index.
  *
  *  Selection follows Brian's Calendar selection PDF: the two ends of the range
  *  are darker circles, and a lighter band runs between them, unbroken across
  *  cells and continued to the row edges where the range wraps a line.
  *
- *  Month paging is NOT here any more. The three dots under the grid are gone
- *  and the < > that replaced them live on the question line above, so the
- *  month being shown is decided by the caller and arrives as `offset`. */
-export default function MonthGrid({ dates, a, b, offset = 0, onPick }) {
+ *  The month being shown is decided by the caller (the < > on the question
+ *  line) and arrives as `offset`. */
+export default function MonthGrid({ dates, start, end, offset = 0, onPick }) {
   const anchor = fromIso(dates[0]);
   const cursor = new Date(anchor.getFullYear(), anchor.getMonth() + offset, 1);
+  const first = dates[0];
+  const lastForecast = dates[dates.length - 1];
 
   const pad = leadingBlanks(cursor); // Sunday-first
   const count = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
@@ -41,22 +47,22 @@ export default function MonthGrid({ dates, a, b, offset = 0, onPick }) {
         {cells.map((d, i) => {
           if (!d) return <span key={`p${i}`} />;
           const day = fromIso(d).getDate();
-          const idx = dates.indexOf(d);
-          const avail = idx >= 0;
-          const inRange = avail && idx >= a && idx <= b;
+          const off = d < first;
+          const far = d > lastForecast;
+          const inRange = !!start && !!end && d >= start && d <= end;
           const cls = [
             "cal-d",
-            avail ? "" : "off",
+            off ? "off" : "",
+            far ? "far" : "",
             inRange ? "in" : "",
-            avail && idx === a ? "sel-a" : "",
-            avail && idx === b ? "sel-b" : "",
+            d === start ? "sel-a" : "",
+            d === end ? "sel-b" : "",
             /* Brian: "let's always have today's date appear with a red circle
-               behind it." Always — selected or not, inside the horizon or
-               past the end of it. */
+               behind it." Always — selected or not. */
             d === todayKey ? "today" : "",
           ].filter(Boolean).join(" ");
           return (
-            <button key={d} className={cls} disabled={!avail} onClick={() => onPick(idx)}>
+            <button key={d} className={cls} disabled={off} onClick={() => onPick(d)}>
               <i>{day}</i>
             </button>
           );
