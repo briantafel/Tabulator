@@ -25,7 +25,7 @@ import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
-import { CAL_FRAME, CAL_PLUS, BINOCULARS } from "./components/tripIcons.js";
+import { CAL_FRAME, CAL_PLUS } from "./components/tripIcons.js";
 import { fromIso, monthName, shortDate, localToday, rangeLabel } from "./lib/dates.js";
 
 /* ------------------------------------------------------------------ *
@@ -224,17 +224,16 @@ export default function Tabulator() {
                         : resort ? addResort([], resort) : [] }];
     });
 
-  /* Saving a range past the forecast from the mountains screen. Brian,
-     2026-11-17: it should "create that continuously updating trip or
-     watchlist". A trip keeps the dates and fills in as the forecast reaches
-     them; a watchlist drops them and follows the whole forecast. Either way
-     it opens on the Trips screen, where resorts and places get added. The id
+  /* Saving a range past the forecast from the mountains screen as a trip
+     that keeps the dates and fills in as the forecast reaches them (Brian,
+     2026-11-17). It opens on the Trips screen, where resorts and places get
+     added. The id
      is made here, not from the list length, so the screen can open it. */
-  const saveFar = (watch) => {
+  const saveFar = () => {
     const id = `trip-${Date.now().toString(36)}`;
     setTrips((t) => {
       const base = { id, name: `Trip ${t.length + 1}`, resorts: [] };
-      return [...t, watch ? toWatchlist(base) : withDates(base, cs, ce, rangeLabel(cs, ce))];
+      return [...t, withDates(base, cs, ce, rangeLabel(cs, ce))];
     });
     setTab("trips");
     setEditing(null);
@@ -472,17 +471,16 @@ export default function Tabulator() {
                       : `The forecast covers ${rangeLabel(dates[calWin.ta], dates[calWin.tb])} so far. The rest of ${label} fills in as it arrives.`}
                     {" "}Save it and it updates as the forecast moves.
                   </p>
-                  {/* Brian's own trip and watchlist glyphs, not pills — the
-                      same glyph-over-label pattern as the editor's Watchlist
-                      toggle (Brian, 2026-11-17). */}
+                  {/* Brian's own trip glyph, not a pill — the same
+                      glyph-over-label pattern as the editor's Watchlist toggle.
+                      Trip only: a watchlist is a trip with no dates, so
+                      offering one after dates were picked contradicted itself
+                      (Brian, 2026-11-17). Watchlists are still made from the
+                      trip editor. */}
                   <div className="far-actions">
-                    <button onClick={() => saveFar(false)} aria-label={`Save ${label} as a trip`}>
+                    <button onClick={saveFar} aria-label={`Save ${label} as a trip`}>
                       <svg viewBox="349 33 24 26" aria-hidden="true"><path d={CAL_FRAME} /><path d={CAL_PLUS} /></svg>
                       <span>Save as a trip</span>
-                    </button>
-                    <button onClick={() => saveFar(true)} aria-label="Start a watchlist">
-                      <svg viewBox="189 487 25 21" aria-hidden="true"><path d={BINOCULARS} /></svg>
-                      <span>Add to watchlist</span>
                     </button>
                   </div>
                 </div>
