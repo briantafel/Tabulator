@@ -25,6 +25,7 @@ import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
+import { CAL_FRAME, CAL_PLUS, BINOCULARS } from "./components/tripIcons.js";
 import { fromIso, monthName, shortDate, localToday, rangeLabel } from "./lib/dates.js";
 
 /* ------------------------------------------------------------------ *
@@ -471,9 +472,18 @@ export default function Tabulator() {
                       : `The forecast covers ${rangeLabel(dates[calWin.ta], dates[calWin.tb])} so far. The rest of ${label} fills in as it arrives.`}
                     {" "}Save it and it updates as the forecast moves.
                   </p>
+                  {/* Brian's own trip and watchlist glyphs, not pills — the
+                      same glyph-over-label pattern as the editor's Watchlist
+                      toggle (Brian, 2026-11-17). */}
                   <div className="far-actions">
-                    <button onClick={() => saveFar(false)}>Save as a trip</button>
-                    <button onClick={() => saveFar(true)}>Start a watchlist</button>
+                    <button onClick={() => saveFar(false)} aria-label={`Save ${label} as a trip`}>
+                      <svg viewBox="349 33 24 26" aria-hidden="true"><path d={CAL_FRAME} /><path d={CAL_PLUS} /></svg>
+                      <span>Save as a trip</span>
+                    </button>
+                    <button onClick={() => saveFar(true)} aria-label="Start a watchlist">
+                      <svg viewBox="189 487 25 21" aria-hidden="true"><path d={BINOCULARS} /></svg>
+                      <span>Add to watchlist</span>
+                    </button>
                   </div>
                 </div>
               )}

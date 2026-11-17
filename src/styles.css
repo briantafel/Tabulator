@@ -1514,9 +1514,18 @@ body { background: #F2F2F2; }
 .far-note p {
   margin: 0; font-size: calc(12.5 * var(--u)); line-height: calc(16 * var(--u)); color: #8A8A8A;
 }
-.far-actions { display: flex; gap: calc(18 * var(--u)); margin-top: calc(10 * var(--u)); }
+.far-actions {
+  display: flex; justify-content: center; gap: calc(36 * var(--u));
+  margin-top: calc(16 * var(--u));
+}
 .far-actions button {
-  padding: 0; font-size: calc(13 * var(--u)); font-weight: 500; color: var(--mark-red);
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 96px; min-height: 64px; padding: 6px 0; color: var(--ink);
+}
+.far-actions svg { display: block; height: calc(25 * var(--u)); width: auto; fill: currentColor; }
+.far-actions span {
+  margin-top: calc(12 * var(--u)); font-size: calc(12.5 * var(--u));
+  line-height: calc(12.5 * var(--u)); color: #6B6B6B;
 }
 /* A trip's resorts before the forecast reaches it: names only, no numbers
    to stand behind yet. */
