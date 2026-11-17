@@ -1,4 +1,4 @@
-import { tripRegions, regionParagraph, surfaceChips } from "../lib/season.js";
+import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER } from "../lib/season.js";
 import { snowpack } from "../lib/depths.js";
 import { snowWithUnit } from "../lib/units.js";
 import { shortDate } from "../lib/dates.js";
@@ -72,7 +72,14 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
                     <div><i>Base / top</i><b>{sfKnown ? `${sf.base ? sw(sf.base) : "—"} / ${sf.top ? sw(sf.top) : "—"}` : "—"}</b></div>
                     <div><i>Last 7 / 14 d, est.</i><b>{s.new7Cm != null ? sw(s.new7Cm) : "—"} / {s.new14Cm != null ? sw(s.new14Cm) : "—"}</b></div>
                     <div><i>Since a big day</i><b>{s.lastDump ? (s.daysSinceDump === 0 ? shortDate(s.lastDump) : `${s.daysSinceDump} days`) : "None yet"}</b></div>
-                    <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>
+                    {(() => {
+                      /* Avalanche when the zone has a rating (the design's
+                         fourth stat); the station's depth until then. */
+                      const a = season?.avalanche?.[r.id];
+                      return a?.max != null
+                        ? <div><i>Avalanche</i><b className={`su-av-${a.max}`}>{a.max} · {DANGER[a.max].slice(0, 5)}{DANGER[a.max].length > 5 ? "." : ""}</b></div>
+                        : <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>;
+                    })()}
                   </div>
                   {chips.length > 0 && <div className="su-chips">{chips.map((c) => <span key={c}>{c}</span>)}</div>}
                   <p className="su-small">vs {s.station.name} station{s.station.elevationM ? ` (${Math.round(metric ? s.station.elevationM : s.station.elevationM * 3.28084).toLocaleString()} ${metric ? "m" : "ft"})` : ""}</p>
@@ -96,13 +103,51 @@ export default function ShapingUp({ trip, season, resorts, metric, onOpenResort 
               </div>
               <p className="su-small">A dash means no reading or too early to compare, never zero.</p>
             </>)}
+            {(() => {
+              const zones = regionAvalanche(g.rows, season);
+              if (!zones.length) return null;
+              return (
+                <div className="su-av">
+                  <div className="su-h su-h2"><h3>Avalanche</h3></div>
+                  {zones.map((z) => (
+                    <div key={`${z.center}${z.zone}`} className="su-av-zone">
+                      <div className="su-h">
+                        <span className="su-av-name">{z.zone ?? z.center}</span>
+                        {z.link ? <a href={z.link} target="_blank" rel="noreferrer">{z.center}</a> : <span>{z.center}</span>}
+                      </div>
+                      {z.max == null ? (
+                        <p className="su-small">No rating yet{z.offSeason ? ": the center is between seasons" : ": forecasts start when the center opens for the season"}.</p>
+                      ) : (
+                        <>
+                          {[["Above treeline", z.bands?.upper], ["Near treeline", z.bands?.middle], ["Below treeline", z.bands?.lower]].map(([label, v]) => (
+                            <div key={label} className="su-av-band">
+                              <span>{label}</span>
+                              <span className="su-av-track"><i className={`su-av-bg-${v ?? 0}`} style={{ width: `${((v ?? 0) / 5) * 100}%` }} /></span>
+                              <b>{v ? `${v} ${DANGER[v]}` : "—"}</b>
+                            </div>
+                          ))}
+                          {z.problems?.length > 0 && (
+                            <p className="su-prose su-av-p">
+                              <b className="ink">{z.problems.join(", ")}</b>
+                              {z.persistent ? ". A persistent layer like this can last for weeks, so it is worth watching all the way to your trip." : "."}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                  <p className="su-small">Ratings are for the backcountry. Inside the resort, ski patrol controls the terrain; this matters for sidecountry and anything past the gates.</p>
+                </div>
+              );
+            })()}
           </section>
         );
       })}
 
       <p className="su-small su-sources">
         Snowpack, new snow and surface: NRCS SNOTEL, against the 1991–2020 median. New snow is estimated from
-        snow water and our snow-to-liquid ratio. Base and top depths: Snow-Forecast.
+        snow water and our snow-to-liquid ratio. Base and top depths: Snow-Forecast. Avalanche: avalanche.org
+        and Avalanche Canada.
       </p>
     </div>
   );

@@ -1574,3 +1574,18 @@ body { background: #F2F2F2; }
 .su-th { font-size: 9px; height: 24px; }
 .su-tr.hot { color: var(--mark-red); }
 .su-sources { margin-top: calc(26 * var(--u)); padding-top: calc(14 * var(--u)); border-top: 1px solid var(--line); }
+
+/* Avalanche, colours from the North American danger scale. */
+.su-av { margin-top: calc(4 * var(--u)); }
+.su-av-zone + .su-av-zone { margin-top: calc(14 * var(--u)); }
+.su-av-name { font-size: calc(12.5 * var(--u)) !important; color: var(--ink) !important; font-weight: 600; }
+.su-av a { font-size: calc(11 * var(--u)); color: var(--mark-red); text-decoration: none; }
+.su-av-band { display: grid; grid-template-columns: 112px minmax(0, 1fr) 104px; align-items: center; gap: 10px; margin-top: 6px; font-size: 12px; }
+.su-av-band b { font-weight: 600; }
+.su-av-track { height: 10px; border-radius: 5px; background: #F2F2F2; overflow: hidden; }
+.su-av-track i { display: block; height: 100%; border-radius: 5px; }
+.su-av-bg-1 { background: #9BCB86; } .su-av-bg-2 { background: #F5DC6A; } .su-av-bg-3 { background: #F0B429; }
+.su-av-bg-4 { background: #E5533D; } .su-av-bg-5 { background: #222; }
+.su-av-p { font-size: calc(13.5 * var(--u)); line-height: calc(19 * var(--u)); }
+.su-av-p b.ink { color: var(--ink); }
+.su-av-3, .su-av-4, .su-av-5 { color: #B4570B; }

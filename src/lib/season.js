@@ -133,3 +133,21 @@ export function surfaceChips(s) {
   if (x.rainOnSnow) out.push(plural(x.rainOnSnow, "rain-on-snow day"));
   return out;
 }
+
+export const DANGER = [null, "Low", "Moderate", "Considerable", "High", "Extreme"];
+
+/** The avalanche forecasts behind a region's resorts, one per zone (resorts
+ *  in the same zone share one forecast). Zones Avalanche Canada names with a
+ *  hash read as the center alone. */
+export function regionAvalanche(rows, season) {
+  const out = new Map();
+  for (const { r } of rows) {
+    const a = season?.avalanche?.[r.id];
+    if (!a) continue;
+    const zone = a.zone && !/^[0-9a-f]{20,}$/i.test(a.zone) && a.zone !== "CAIC zone" ? a.zone : null;
+    const key = `${a.center}|${zone ?? ""}`;
+    if (!out.has(key)) out.set(key, { ...a, zone, resorts: [] });
+    out.get(key).resorts.push(r.name);
+  }
+  return [...out.values()].sort((a, b) => (b.max ?? -1) - (a.max ?? -1));
+}

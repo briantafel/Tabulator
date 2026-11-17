@@ -57,3 +57,17 @@ test("the paragraph only states what the numbers carry", () => {
 test("surface chips", () => {
   assert.deepEqual(surfaceChips({ sinceDump: { warmDays: 2, freezeThaw: 1, rainOnSnow: 0 } }), ["2 warm days", "1 freeze–thaw"]);
 });
+
+import { regionAvalanche } from "../src/lib/season.js";
+test("avalanche: one entry per zone, hashed Canadian zone names read as the center", () => {
+  const rows = [{ r: { id: "a", name: "A" } }, { r: { id: "b", name: "B" } }, { r: { id: "c", name: "C" } }];
+  const season = { avalanche: {
+    a: { center: "SAC", zone: "Central Sierra Nevada", max: 2 },
+    b: { center: "SAC", zone: "Central Sierra Nevada", max: 2 },
+    c: { center: "Avalanche Canada", zone: "53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed", max: null },
+  } };
+  const z = regionAvalanche(rows, season);
+  assert.equal(z.length, 2);
+  assert.deepEqual(z[0].resorts, ["A", "B"]);
+  assert.equal(z[1].zone, null);
+});
