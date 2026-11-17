@@ -120,6 +120,13 @@ def main():
         rows.append(row(source="snotel", kind="observation", station_id="766:UT:SNTL", fetched_at=fetched,
                         valid_start=t, valid_end=t, period_label="hourly", variable="temp",
                         value=-15.0 if h == 3 else -12.0 if h == 9 else -5.0))
+    # SNOTEL hourly depth Jan 3 (local): 150 cm until 11:00, 180 from 16:00 to 20:00, settled to 175 by 23:00.
+    # Daily gain says 25; the peak gain is 30.
+    for h in range(24):
+        v = 150.0 if h <= 11 else 160.0 if h <= 13 else 170.0 if h <= 15 else 180.0 if h <= 20 else 175.0
+        rows.append(row(source="snotel", kind="observation", station_id="766:UT:SNTL", fetched_at=fetched,
+                        valid_start=local(3, h, MST), valid_end=local(3, h, MST), period_label="hourly",
+                        variable="snow_depth", value=v))
     # NWS hourly temperature, 5 °C all day Jan 7, grid cell at 2,520 m, issued Jan 6 → lead 1.
     nws_issued = local(6, 12, MST)
     for h in range(0, 48):
@@ -187,6 +194,14 @@ def main():
                             fetched_at=fetched, valid_start=t6, valid_end=t6, period_label="instant",
                             variable=var, value=v, unit=u))
 
+    # NOHRSC gridded snowfall: 24 h ending 12 UTC at Alta's cell (+ 5x5 max), no station mapping.
+    for d in range(2, 7):
+        end = datetime(2025, 1, d, 12, tzinfo=UTC)
+        for var, v in (("snowfall_24h", 15.0 if d == 4 else 0.0), ("snowfall_24h_max_5x5", 22.0 if d == 4 else 0.0)):
+            rows.append(row(source="nohrsc-snowfall", kind="analysis", resort_id="alta", station_id="nohrsc:alta",
+                            fetched_at=fetched, valid_start=end - timedelta(days=1), valid_end=end, period_label="24h",
+                            variable=var, value=v, unit="cm"))
+
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         write_archive(rows, tmp / "archive")
@@ -198,6 +213,9 @@ def main():
         one = lambda sql: q.execute(sql).fetchone()
 
         assert stats["alignment"]["used"] == "start", stats["alignment"]
+        pk = q.execute("SELECT DISTINCT obs_depth_peak_gain_cm, obs_depth_gain_cm FROM p WHERE resort_id = 'alta' "
+                       "AND local_date = DATE '2025-01-03' AND obs_depth_peak_gain_cm IS NOT NULL").fetchall()
+        assert pk == [(30.0, 25.0)], pk
         # Pro-rata: the 12–18 UTC block is 05–11 MST, all inside Jan 3.
         fc, obs = one("SELECT fc_amount, obs FROM p WHERE source_label = 'open-meteo-previous-runs:ecmwf_ifs025' "
                       "AND space = 'liquid' AND issue_key = 'previous_day0' AND local_date = DATE '2025-01-03'")
@@ -272,6 +290,9 @@ def main():
         er = q.execute(f"SELECT ratio_to_slope, elev_class FROM read_csv_auto('{tmp / 'out' / 'elevation_ratios.csv'}') "
                        "WHERE product = 'cocorahs' AND region = 'ALL' AND space = 'liquid'").fetchall()
         assert er == [(0.5, "valley")], er
+        tp = (tmp / "out" / "truth_pairs.csv").read_text()
+        assert any(l.startswith("alta,nohrsc,nohrsc-snowfall,nohrsc:alta,") and l.endswith(",grid") for l in tp.splitlines()), tp
+        assert any(l.startswith("alta,nohrsc-max5x5,") for l in tp.splitlines()), tp
         assert (tmp / "out" / "truth_windows.md").exists() and (tmp / "out" / "matched_scores.csv").exists()
 
         log = (tmp / "out" / "log.txt").read_text()

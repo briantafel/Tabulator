@@ -56,7 +56,13 @@ TRUTH = {
     # so scoring models against it partly scores them against a model. Kept,
     # labelled; the assimilated snowpack gains below are the better truth.
     ("snodas", "snowfall_water_24h"): ("liquid", "mm", "snodas-forcing"),
+    # NOHRSC 24 h gridded snowfall analysis (added 2026-11-17, scripts/archive/nohrsc.py): new snow,
+    # no settling, at the resort cell and the 5x5 max. Gridded like SNODAS (class 'grid'); built partly
+    # from CoCoRaHS reports, so not independent of the boards.
+    ("nohrsc-snowfall", "snowfall_24h"): ("snow", "cm", "nohrsc"),
+    ("nohrsc-snowfall", "snowfall_24h_max_5x5"): ("snow", "cm", "nohrsc-max5x5"),
 }
+GRID_SOURCES = ("snodas", "nohrsc-snowfall")   # one cell per resort: no station mapping, class 'grid'
 # SNODAS instants → 24 h gains between consecutive 06 UTC snapshots.
 SNODAS_GAINS = {
     "swe": ("liquid", "mm", "snodas-swe-gain"),
@@ -65,7 +71,7 @@ SNODAS_GAINS = {
     "snow_depth_max_5x5": ("snow", "cm", "snodas-depth-gain-max5x5"),
 }
 SNODAS_UNITS = {"swe": "mm", "swe_max_5x5": "mm", "snow_depth": "cm", "snow_depth_max_5x5": "cm"}
-WINDOW_SOURCES = ("cocorahs", "amedas", "slf", "snodas")
+WINDOW_SOURCES = ("cocorahs", "amedas", "slf", "snodas", "nohrsc-snowfall")
 SLOPE_M = 300.0          # height band for "slope"
 MAX_GAIN = {"liquid": 150.0, "snow": 150.0}   # a 24 h gain above this is a sensor/analysis fault
 FULL_CLASSES = ("slope", "upper", "grid")      # amounts comparable to a mid-mountain forecast
@@ -75,6 +81,7 @@ MATCH_MIN = 30           # a matched sample smaller than this is not reported
 
 def window_truth(con, out: Path, log, thresholds: dict, paid_list: str, thin_events: int) -> dict:
     srcs = ", ".join(f"'{s}'" for s in WINDOW_SOURCES)
+    grid = ", ".join(f"'{s}'" for s in GRID_SOURCES)
     have = {r[0] for r in con.execute(f"SELECT DISTINCT source FROM raw WHERE source IN ({srcs})").fetchall()}
     if not have:
         log("window truth: no CoCoRaHS / SNODAS / AMeDAS / SLF rows in the archive yet")
@@ -133,7 +140,7 @@ def window_truth(con, out: Path, log, thresholds: dict, paid_list: str, thin_eve
     SELECT m.resort_id, m.station_id, m.source AS truth_source,
            arg_max(m.value, m.fetched_at) AS km, arg_max(m.elevation_m, m.fetched_at) AS st_elev,
            arg_max(m.value_text, m.fetched_at) AS station_name
-    FROM raw m WHERE m.kind = 'mapping' AND m.source IN ({srcs}) AND m.source <> 'snodas'
+    FROM raw m WHERE m.kind = 'mapping' AND m.source IN ({srcs}) AND m.source NOT IN ({grid})
     GROUP BY m.resort_id, m.station_id, m.source""")
     con.execute("""
     CREATE TABLE tiers AS
@@ -145,7 +152,7 @@ def window_truth(con, out: Path, log, thresholds: dict, paid_list: str, thin_eve
     con.execute(f"""
     CREATE TABLE truth_pairs AS
     WITH station_products AS (
-      SELECT DISTINCT product, truth_source, station_id FROM tw0 WHERE truth_source <> 'snodas'
+      SELECT DISTINCT product, truth_source, station_id FROM tw0 WHERE truth_source NOT IN ({grid})
     ), c AS (
       SELECT c.resort_id, p.product, c.truth_source, c.station_id, c.station_name, c.km, c.st_elev,
              t.bot_elev, t.mid_elev, c.st_elev - t.mid_elev AS delev_mid,
@@ -161,17 +168,17 @@ def window_truth(con, out: Path, log, thresholds: dict, paid_list: str, thin_eve
     QUALIFY row_number() OVER (PARTITION BY resort_id, product
       ORDER BY km / 25 + coalesce(abs(delev_mid), 2 * {SLOPE_M}) / {SLOPE_M}) = 1
     UNION ALL
-    SELECT DISTINCT row_resort, product, 'snodas', station_id, 'SNODAS cell', 0.0, NULL::INTEGER,
+    SELECT DISTINCT row_resort, product, truth_source, station_id, upper(truth_source) || ' cell', 0.0, NULL::INTEGER,
            t.bot_elev, t.mid_elev, NULL::INTEGER, 'grid'
-    FROM tw0 LEFT JOIN tiers t ON t.resort_id = tw0.row_resort WHERE truth_source = 'snodas'""")
+    FROM tw0 LEFT JOIN tiers t ON t.resort_id = tw0.row_resort WHERE truth_source IN ({grid})""")
     con.execute(f"COPY (SELECT * FROM truth_pairs ORDER BY resort_id, product) TO '{out / 'truth_pairs.csv'}' (HEADER)")
 
-    con.execute("""
+    con.execute(f"""
     CREATE TABLE tw AS
     SELECT p.resort_id, r.region, r.tz, w.product, w.truth_source, w.space, w.station_id,
            p.km AS station_km, p.st_elev, p.delev_mid, p.elev_class, w.ws, w.we, w.obs
     FROM tw0 w JOIN truth_pairs p ON p.product = w.product AND p.station_id = w.station_id
-      AND (w.truth_source <> 'snodas' OR p.resort_id = w.row_resort)
+      AND (w.truth_source NOT IN ({grid}) OR p.resort_id = w.row_resort)
     JOIN resorts r ON r.resort_id = p.resort_id""")
 
     # ------------------------------------------------------------ forecasts summed over each window

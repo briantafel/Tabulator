@@ -344,6 +344,33 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
       (d_swe > {MAX_SWE_GAIN_MM} OR d_depth > {MAX_DEPTH_GAIN_CM}) AS sensor_flag
     FROM truth""")
 
+    # SNOTEL peak depth gain (2026-11-17): the day's highest hourly depth (3-hour running median,
+    # sensor noise is ±1–2 cm) minus the depth at local midnight. New snow settles within hours, so
+    # the midnight-to-midnight change undercounts it; the peak catches most of what fell. Needs hourly
+    # depth (live collector; past winters from the snotel-hourly-snow backfill) and ≥ 20 readings
+    # that day. Missing is NULL. A second snow truth beside obs_depth_gain_cm, not a replacement.
+    con.execute(f"""
+    CREATE TABLE sn_peak AS
+    WITH h AS (
+      SELECT station_id, valid_start, value FROM raw
+      WHERE source = 'snotel' AND kind = 'observation' AND period_label = 'hourly'
+        AND variable = 'snow_depth' AND value IS NOT NULL
+      QUALIFY row_number() OVER (PARTITION BY station_id, valid_start ORDER BY fetched_at DESC) = 1
+    ), s AS (
+      SELECT p.resort_id, p.tier, h.station_id, timezone(r.tz, h.valid_start) AS lt,
+             median(h.value) OVER (PARTITION BY p.resort_id, p.tier, h.station_id ORDER BY h.valid_start
+                                   ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS v
+      FROM h JOIN station_pairs p USING (station_id) JOIN resorts r USING (resort_id)
+      WHERE p.truth_source = 'snotel'
+    )
+    SELECT resort_id, tier, CAST(lt AS DATE) AS local_date,
+           CASE WHEN max(v) - arg_min(v, lt) > {MAX_DEPTH_GAIN_CM} THEN NULL
+                ELSE greatest(max(v) - arg_min(v, lt), 0) END AS obs_depth_peak_gain_cm
+    FROM s GROUP BY resort_id, tier, CAST(lt AS DATE)
+    HAVING count(*) >= 20 AND hour(min(lt)) = 0""")
+    n_peak = con.execute("SELECT count(*) FROM sn_peak").fetchone()[0]
+    log(public_log, f"SNOTEL peak depth gain: {n_peak} resort-tier-days with ≥ 20 hourly readings")
+
     # ---------------------------------------------------------------- resort reports (flagged)
     con.execute("""
     CREATE TABLE ots AS
@@ -368,7 +395,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
            f.resort_id, f.region, f.tier, f.model, f.member, f.space, f.issue_key, f.issue_ts,
            f.lead_day, f.lead_hours, f.local_date, f.fc_amount, ft.fc_temp_c,
            p.station_id, p.truth_source, p.pair_quality, p.km AS station_km, p.delev AS station_delev_m,
-           t.obs_swe_gain_mm, t.obs_depth_gain_cm, t.obs_precip_gain_mm, t.sensor_flag,
+           t.obs_swe_gain_mm, t.obs_depth_gain_cm, pk.obs_depth_peak_gain_cm, t.obs_precip_gain_mm, t.sensor_flag,
            CASE WHEN t.obs_swe_gain_mm >= 5 THEN t.obs_depth_gain_cm * 10 / t.obs_swe_gain_mm END AS obs_slr,
            CASE f.space WHEN 'liquid' THEN t.obs_swe_gain_mm ELSE t.obs_depth_gain_cm END AS obs,
            o.ots_reported_cm, o.ots_next_day,
@@ -378,6 +405,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
       AND ft.model = f.model AND ft.member = f.member AND ft.issue_key = f.issue_key AND ft.local_date = f.local_date
     LEFT JOIN station_pairs p ON p.resort_id = f.resort_id AND p.tier = f.tier
     LEFT JOIN truth2 t ON t.resort_id = f.resort_id AND t.tier = f.tier AND t.local_date = f.local_date
+    LEFT JOIN sn_peak pk ON pk.resort_id = f.resort_id AND pk.tier = f.tier AND pk.local_date = f.local_date
     LEFT JOIN ots o ON o.resort_id = f.resort_id AND o.local_date = f.local_date""")
     con.execute("""
     ALTER TABLE pairs ADD COLUMN split VARCHAR;
