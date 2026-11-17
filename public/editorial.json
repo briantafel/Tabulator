@@ -1,12 +1,12 @@
 {
- "generatedAt": "2026-11-16T16:52:34.114Z",
- "forecastGeneratedAt": "2026-11-16T16:46:12.048Z",
+ "generatedAt": "2026-11-17T03:55:18.215Z",
+ "forecastGeneratedAt": "2026-11-17T03:48:57.857Z",
  "quiet": false,
  "writer": "template",
  "window": {
-  "from": "2026-11-16",
+  "from": "2026-11-17",
   "to": "2026-11-21",
-  "days": 6,
+  "days": 5,
   "toLabel": "Saturday Nov 21"
  },
  "overview": null,
@@ -14,47 +14,42 @@
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 59\", 31\" of it Wednesday. Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. Winter Storm Watch at Kirkwood from Tuesday night to Friday."
+   "text": "Sugar Bowl is forecast for about 55\", 28\" of it Wednesday. Palisades and Kirkwood follow. The National Weather Service has heavy snow at Sugar Bowl Tuesday night and Wednesday. Winter Storm Warning at Sugar Bowl from Tuesday night to Friday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 42\". The National Weather Service has heavy snow at Mammoth Wednesday and Wednesday night. The NWS is calling for more at Mammoth: 46 to 69 inches Monday through Thursday night. Winter Storm Warning at Mammoth from Wednesday to Friday."
+   "text": "Mammoth is forecast for about 33\". The National Weather Service has heavy snow at Mammoth Wednesday and Wednesday night. The NWS is calling for more at Mammoth: 47 to 70 inches Tuesday night through Thursday night. Winter Storm Warning at Mammoth from Wednesday to Friday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Snowbird is forecast for about 16\", 9\" of it Tuesday. Alta and Snowbasin follow. The NWS is calling for more at Snowbird: 22 to 45 inches Tuesday through Friday night."
+   "text": "Powder Mountain is forecast for about 22\". Snowbasin and Alta follow. The National Weather Service has rain mixed in at Snowbasin Tuesday. The NWS is calling for more at Powder Mountain: 25 to 48 inches Tuesday through Friday night. Winter Weather Advisory at Powder Mountain from Tuesday to Wednesday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 11\", 8\" of it Tuesday. Big Sky and Jackson Hole follow. The NWS is calling for more at Grand Targhee: 12 to 25 inches Tuesday through Friday night."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Telluride is forecast for about 9\". Crested Butte and Steamboat follow. The NWS is calling for more at Telluride: 8 to 15 inches Tuesday through Friday."
+   "text": "Grand Targhee is forecast for about 16\", 9\" of it Tuesday. Jackson Hole and Sun Valley follow. The NWS is calling for more at Grand Targhee: 15 to 31 inches Tuesday through Saturday night. Winter Weather Advisory at Grand Targhee from Tuesday to Wednesday."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 9\", 5\" of it Friday. Taos follows. The NWS is calling for more at Wolf Creek: 17 to 33 inches Tuesday through Friday night."
+   "text": "Wolf Creek is forecast for about 7\", 4\" of it Tuesday. Taos follows. The NWS is calling for more at Wolf Creek: 12 to 26 inches Tuesday through Friday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-16T16:46:12.048Z"
+   "issuedAt": "2026-11-17T03:48:57.857Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-16T16:52:33.865Z"
+   "issuedAt": "2026-11-17T03:55:17.975Z"
   }
  ],
  "api": {
-  "day": "2026-11-16",
-  "calls": 5
+  "day": "2026-11-17",
+  "calls": 2
  }
 }
