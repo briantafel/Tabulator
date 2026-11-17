@@ -77,5 +77,6 @@ with tempfile.TemporaryDirectory() as tmp:
     assert abs(rock["a_raw"] - 12) < 1.0 and abs(rock["b_raw"] + 0.6) < 0.1, rock
     assert p["promote"].get("1") is True, p["promote"]
     rep = (out / "slr_report.md").read_text()
+    assert "Over-forecast by station height" in rep and "| ALL |" in rep.split("Over-forecast")[1], rep
     assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep and "OWN LINE promoted" in rep, rep
 print("slr: all checks passed")

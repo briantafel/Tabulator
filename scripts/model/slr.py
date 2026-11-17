@@ -292,6 +292,32 @@ def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict], list[dict]]:
     return rows, promote, vs, region_rows
 
 
+def by_height(con, p: dict) -> list[dict]:
+    """Is the over-forecast real, or the slope forecast graded against lower stations? (2026-11-17)
+    Test winter, leads 1–3, by the board station's height class: water volume (forecast ÷ measured),
+    snow volume, frequency bias and CSI at 10 / 15 cm. Forecast water is at the resort's mid elevation;
+    if 'slope' stations sit near 1.0 and 'base' / 'valley' run high, the gap is height, not error."""
+    r = con.execute("""SELECT elev_class, macro, fc_water, water_mm, t_st, snow_cm FROM d
+                       WHERE split = 'test' AND lead_day BETWEEN 1 AND 3""").fetchnumpy()
+    if not len(r["fc_water"]):
+        return []
+    ours = r["fc_water"] * slr_of(r["t_st"], p, r["macro"]) / 10 * (r["t_st"] <= MAX_T_C + 2)
+    rows = []
+    for cls in list(np.unique(r["elev_class"])) + ["ALL"]:
+        m = np.ones(len(ours), bool) if cls == "ALL" else r["elev_class"] == cls
+        row = {"cls": cls, "n": int(m.sum()),
+               "wvol": float(r["fc_water"][m].sum() / max(r["water_mm"][m].sum(), 1e-9)),
+               "svol": float(ours[m].sum() / max(r["snow_cm"][m].sum(), 1e-9))}
+        for thr in (10.0, 15.0):
+            f, o = ours[m] >= thr, r["snow_cm"][m] >= thr
+            h, fa, mi = int((f & o).sum()), int((f & ~o).sum()), int((~f & o).sum())
+            row[f"ev{int(thr)}"] = h + mi
+            row[f"fb{int(thr)}"] = (h + fa) / max(h + mi, 1)
+            row[f"csi{int(thr)}"] = h / max(h + fa + mi, 1)
+        rows.append(row)
+    return rows
+
+
 def md_table(rows: list[dict], cols: list[tuple[str, str]]) -> str:
     f = lambda v: f"{v:.2f}" if isinstance(v, (float, np.floating)) else str(v)
     lines = ["| " + " | ".join(h for h, _ in cols) + " |", "|" + "---|" * len(cols)]
@@ -337,6 +363,12 @@ def main(pairs: Path, out: Path) -> None:
                        ("7:1 bias", "flat_bias"), ("ours CSI", "slr_csi"), ("ours bias", "slr_bias"),
                        ("gain", "gain"), ("gain range", "gain_range")]),
         f"\nPROMOTE by lead (10 cm gain above 0, no threshold worse): {json.dumps(promote)}\n",
+        "\n## Over-forecast by station height (test winter, leads 1–3, all three models' rows)\n",
+        "Forecast water is at the resort's mid elevation; the board is at the station. volume = forecast ÷ measured.\n",
+        md_table(by_height(con, params),
+                 [("height class", "cls"), ("windows", "n"), ("water volume", "wvol"), ("snow volume", "svol"),
+                  ("≥10 events", "ev10"), ("freq bias ≥10", "fb10"), ("CSI ≥10", "csi10"),
+                  ("≥15 events", "ev15"), ("freq bias ≥15", "fb15"), ("CSI ≥15", "csi15")]),
         "\n## Ours (ECMWF water × SLR v2) vs Snow-Forecast on the same windows\n",
         md_table(vs, [("Snow-Forecast", "sf"), ("lead", "lead"), ("≥ cm", "thr"), ("windows", "windows"),
                       ("events", "events"), ("ours CSI", "ours_csi"), ("SF CSI", "sf_csi"), ("ours − SF", "diff"),
