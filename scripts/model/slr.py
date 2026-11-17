@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Snow-to-liquid ratio (SLR) v2: fitted on same-station snow + water (2026-11-15).
+"""Snow-to-liquid ratio (SLR) v3: same-station snow + water, one line per climate region (2026-11-16).
 
     python3 scripts/model/slr.py <pairs.parquet> <outDir>      (reads <outDir>/wpairs.parquet too)
 
@@ -56,19 +56,35 @@ PREV = "open-meteo-previous-runs"
 HINDCAST = "snow-forecast-hindcast"
 TRUTH = ("cocorahs", "amedas", "slf")
 RESORTS = Path(__file__).resolve().parents[2] / "src/data/resorts.json"
+# v3 (2026-11-16, Brian): one line per CLIMATE REGION. The pooled line is mostly
+# inland CoCoRaHS stations; maritime snow near 0 °C is denser than it says.
+# A region gets its own line, pulled toward the pooled one by SHRINK_DAYS
+# (few days → nearly pooled), and keeps it only if it beats the pooled line
+# on the judge winter. Everything else stays pooled, so nothing gets worse.
+MACRO = {
+    "California": "Sierra & Cascades", "Nevada": "Sierra & Cascades", "Oregon": "Sierra & Cascades",
+    "Washington": "Sierra & Cascades", "British Columbia": "Coast & Interior BC",
+    "Colorado": "Rockies", "Utah": "Rockies", "Wyoming": "Rockies", "Idaho": "Rockies", "Montana": "Rockies",
+    "New Mexico": "Rockies", "Alberta": "Rockies",
+    "Vermont": "Northeast", "New York": "Northeast", "Quebec": "Northeast", "Ontario": "Northeast",
+    "Switzerland": "Alps", "Austria": "Alps", "France": "Alps", "Italy": "Alps", "Japan": "Japan",
+}
+SHRINK_DAYS = 200
+MIN_REGION_DAYS = 150
 
 
 def load(con, pairs: Path, wpairs: Path) -> None:
     meta = json.loads(RESORTS.read_text())["resorts"]
-    con.execute("CREATE TABLE rz(resort_id VARCHAR, tz VARCHAR)")
-    con.executemany("INSERT INTO rz VALUES (?, ?)", [(r["id"], r["tz"]) for r in meta])
+    con.execute("CREATE TABLE rz(resort_id VARCHAR, tz VARCHAR, macro VARCHAR)")
+    con.executemany("INSERT INTO rz VALUES (?, ?, ?)",
+                    [(r["id"], r["tz"], MACRO.get(r["region"], r["region"])) for r in meta])
     srcs = ", ".join(f"'{s}'" for s in TRUTH)
     # One row per station-window with both its water and its new snow.
     con.execute(f"""
     CREATE TABLE obs AS
     WITH w AS (SELECT DISTINCT truth_source, product, resort_id, station_id, elev_class, delev_mid, ws, we, space, obs, split
                FROM read_parquet('{wpairs}') WHERE truth_source IN ({srcs}))
-    SELECT l.truth_source, l.product, l.resort_id, l.station_id, l.elev_class, coalesce(l.delev_mid, 0) AS delev_mid,
+    SELECT l.truth_source, l.product, l.resort_id, z.macro, l.station_id, l.elev_class, coalesce(l.delev_mid, 0) AS delev_mid,
            l.ws, l.we, l.split, l.obs AS water_mm, s.obs AS snow_cm,
            CAST(timezone(z.tz, l.ws + (l.we - l.ws) / 2) AS DATE) AS mid_date, CAST(l.we AS DATE) AS end_date
     FROM w l JOIN w s ON s.space = 'snow' AND s.truth_source = l.truth_source AND s.station_id = l.station_id
@@ -102,23 +118,43 @@ def load(con, pairs: Path, wpairs: Path) -> None:
     WHERE f.source = '{PREV}'""")
 
 
-def fit(con) -> dict:
-    r = con.execute(f"""
-      SELECT t_st AS t, snow_cm * 10 / water_mm AS slr, truth_source, elev_class
-      FROM d WHERE split = 'train' AND lead_day BETWEEN 1 AND 3
-        AND water_mm >= {MIN_WATER_MM} AND snow_cm > 0 AND t_st <= {MAX_T_C}
-        AND snow_cm * 10 / water_mm BETWEEN 1 AND 50""").fetchnumpy()
-    t, slr = r["t"], r["slr"]
-    if len(t) < 200:
-        raise SystemExit(f"slr v2: only {len(t)} training station-days with snow + water — too few to fit")
+def line(t: np.ndarray, slr: np.ndarray):
+    """Robust line: median SLR per 1 °C bin (≥ 10 days), count-weighted fit through the medians."""
     bins = np.floor(t).astype(int)
     xs, ys, ws = [], [], []
     for b in np.unique(bins):
         m = bins == b
         if m.sum() >= 10:
             xs.append(b + 0.5); ys.append(float(np.median(slr[m]))); ws.append(int(m.sum()))
+    if len(xs) < 3:
+        return None
     xs, ys, ws = map(np.array, (xs, ys, ws))
     b_, a_ = np.polyfit(xs, ys, 1, w=np.sqrt(ws))
+    return float(a_), float(b_), xs, ys, ws
+
+
+def fit(con) -> dict:
+    r = con.execute(f"""
+      SELECT t_st AS t, snow_cm * 10 / water_mm AS slr, truth_source, elev_class, macro
+      FROM d WHERE split = 'train' AND lead_day BETWEEN 1 AND 3
+        AND water_mm >= {MIN_WATER_MM} AND snow_cm > 0 AND t_st <= {MAX_T_C}
+        AND snow_cm * 10 / water_mm BETWEEN 1 AND 50""").fetchnumpy()
+    t, slr = r["t"], r["slr"]
+    if len(t) < 200:
+        raise SystemExit(f"slr: only {len(t)} training station-days with snow + water — too few to fit")
+    a_, b_, xs, ys, ws = line(t, slr)
+    regions = {}
+    for reg in np.unique(r["macro"]):
+        m = r["macro"] == reg
+        n = int(m.sum())
+        entry = {"n": n, "median": round(float(np.median(slr[m])), 1)}
+        fit_r = line(t[m], slr[m]) if n >= MIN_REGION_DAYS else None
+        if fit_r:
+            # Shrink toward the pooled line by sample size, like the temperature corrections.
+            w = n / (n + SHRINK_DAYS)
+            entry.update(a_raw=round(fit_r[0], 3), b_raw=round(fit_r[1], 3),
+                         a=round(w * fit_r[0] + (1 - w) * a_, 3), b=round(w * fit_r[1] + (1 - w) * b_, 3))
+        regions[str(reg)] = entry
     by_src = {s: {"n": int((r["truth_source"] == s).sum()),
                   "median": round(float(np.median(slr[r["truth_source"] == s])), 1)}
               for s in np.unique(r["truth_source"])}
@@ -126,8 +162,9 @@ def fit(con) -> dict:
                     "median": round(float(np.median(slr[r["elev_class"] == c])), 1)}
                 for c in np.unique(r["elev_class"])}
     return {
-        "version": "slr-v2", "form": "SLR = a + b*T, clamped", "a": round(float(a_), 3), "b": round(float(b_), 3),
-        "clamp": [SLR_MIN, SLR_MAX],
+        "version": "slr-v3", "form": "SLR = a + b*T, clamped; per region where regions[r].promoted, else pooled",
+        "a": round(float(a_), 3), "b": round(float(b_), 3), "clamp": [SLR_MIN, SLR_MAX],
+        "regions": regions, "region_of": {rid: m for rid, m in con.execute("SELECT resort_id, macro FROM rz").fetchall()},
         "temperature": "forecast 2 m, precipitation-weighted, at the point being converted (°C); "
                        "fitted at station height, applied at the slope",
         "fitted_on": f"2024-25, leads 1-3, CoCoRaHS / SLF plots / AMeDAS same-window new snow + water, "
@@ -138,8 +175,55 @@ def fit(con) -> dict:
     }
 
 
-def slr_of(t: np.ndarray, p: dict) -> np.ndarray:
-    return np.clip(p["a"] + p["b"] * t, *p["clamp"])
+def slr_of(t: np.ndarray, p: dict, macro: np.ndarray | None = None) -> np.ndarray:
+    """Pooled line, or the region's own line where it is promoted (the app does the same)."""
+    a = np.full(len(t), p["a"], dtype=float); b = np.full(len(t), p["b"], dtype=float)
+    if macro is not None:
+        for reg, e in p.get("regions", {}).items():
+            if e.get("promoted") and "a" in e:
+                m = macro == reg
+                a[m], b[m] = e["a"], e["b"]
+    return np.clip(a + b * t, *p["clamp"])
+
+
+def judge_regions(con, p: dict, rng) -> list[dict]:
+    """Each region's own line vs the pooled line on the test winter, leads 1–5 together (per-region samples
+    are small). Promoted = 10 cm gain range above 0 and no threshold's range below 0."""
+    r = con.execute("""SELECT macro, end_date, fc_water, t_st, snow_cm
+                       FROM d WHERE split = 'test' AND lead_day BETWEEN 1 AND 5""").fetchnumpy()
+    rows = []
+    for reg, e in p["regions"].items():
+        if "a" not in e:
+            e["promoted"] = False
+            rows.append({"region": reg, "status": f"pooled (only {e['n']} training days)"}); continue
+        m = r["macro"] == reg
+        if m.sum() < 50:
+            e["promoted"] = False
+            rows.append({"region": reg, "status": f"pooled ({int(m.sum())} test windows — too few to judge)"}); continue
+        ud, inv = np.unique(r["end_date"][m], return_inverse=True)
+        idx = rng.integers(0, len(ud), size=(N_BOOT, len(ud)))
+        water, t, obs = r["fc_water"][m], r["t_st"][m], r["snow_cm"][m]
+        cold = t <= MAX_T_C + 2
+        pooled = water * np.clip(p["a"] + p["b"] * t, *p["clamp"]) / 10 * cold
+        own = water * np.clip(e["a"] + e["b"] * t, *p["clamp"]) / 10 * cold
+        ok, worse, cells = None, False, {}
+        for thr in THRESHOLDS_CM:
+            o = obs >= thr
+            c0, _, bc0 = csi_boot(pooled >= thr, o, inv, len(ud), idx)
+            c1, _, bc1 = csi_boot(own >= thr, o, inv, len(ud), idx)
+            d = bc1 - bc0
+            lo, hi = float(np.percentile(d, 5)), float(np.percentile(d, 95))
+            cells[thr] = (c0, c1, lo, hi, int(o.sum()))
+            if thr == KEY_THRESHOLD:
+                ok = lo > 0
+            if hi < 0:
+                worse = True
+        e["promoted"] = bool(ok) and not worse
+        c = cells[KEY_THRESHOLD]
+        rows.append({"region": reg, "line": f"{e['a']} + {e['b']}·T", "events10": c[4],
+                     "pooled_csi": c[0], "own_csi": c[1], "range": f"{c[2]:+.2f} to {c[3]:+.2f}",
+                     "status": "OWN LINE promoted" if e["promoted"] else ("pooled (worse)" if worse else "pooled (no real gain)")})
+    return rows
 
 
 def csi_boot(f: np.ndarray, o: np.ndarray, inv: np.ndarray, nd: int, idx: np.ndarray) -> tuple[float, float, np.ndarray]:
@@ -151,9 +235,10 @@ def csi_boot(f: np.ndarray, o: np.ndarray, inv: np.ndarray, nd: int, idx: np.nda
     return float(csi(H.sum(), FA.sum(), M.sum())), float(bias), csi(H[idx].sum(1), FA[idx].sum(1), M[idx].sum(1))
 
 
-def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict]]:
+def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict], list[dict]]:
     rng = np.random.default_rng(SEED)
-    r = con.execute("""SELECT source_label, lead_day, end_date, fc_water, t_slope, t_st, snow_cm
+    region_rows = judge_regions(con, p, rng)   # sets p["regions"][r]["promoted"] before the pooled judgement
+    r = con.execute("""SELECT source_label, lead_day, end_date, fc_water, t_slope, t_st, snow_cm, macro
                        FROM d WHERE split = 'test' AND lead_day BETWEEN 1 AND 7""").fetchnumpy()
     rows, promote = [], {}
     for lead in range(1, 8):
@@ -165,7 +250,7 @@ def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict]]:
         water, t, obs = r["fc_water"][m], r["t_st"][m], r["snow_cm"][m]
         # Judge at the STATION (that is where the board is): same temperature transfer as the fit.
         flat = water * 0.7
-        ours = water * slr_of(t, p) / 10 * (t <= MAX_T_C + 2)  # warm windows: rain, no ratio applies
+        ours = water * slr_of(t, p, r["macro"][m]) / 10 * (t <= MAX_T_C + 2)  # warm windows: rain, no ratio applies
         ok, any_worse = None, False
         for thr in THRESHOLDS_CM:
             o = obs >= thr
@@ -183,7 +268,7 @@ def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict]]:
     # Paid benchmark on the same windows: Snow-Forecast hindcast (lead 0) and live Snow-Forecast, as they come.
     vs = []
     sf = con.execute(f"""
-      SELECT s.source, s.lead_day, o.end_date, o.snow_cm, s.fc_snow, w.fc_water, d.t_st
+      SELECT s.source, s.lead_day, o.end_date, o.snow_cm, s.fc_snow, w.fc_water, d.t_st, o.macro
       FROM obs o JOIN fs s USING (resort_id, station_id, ws, we)
       JOIN d ON d.resort_id = o.resort_id AND d.station_id = o.station_id AND d.ws = o.ws AND d.we = o.we
         AND d.lead_day = s.lead_day AND d.source_label = '{PREV}:ecmwf_ifs025'
@@ -195,7 +280,7 @@ def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict]]:
             m = (sf["source"] == src) & (sf["lead_day"] == lead)
             ud, inv = np.unique(sf["end_date"][m], return_inverse=True)
             idx = rng.integers(0, len(ud), size=(N_BOOT, len(ud)))
-            ours = sf["fc_water"][m] * slr_of(sf["t_st"][m], p) / 10 * (sf["t_st"][m] <= MAX_T_C + 2)
+            ours = sf["fc_water"][m] * slr_of(sf["t_st"][m], p, sf["macro"][m]) / 10 * (sf["t_st"][m] <= MAX_T_C + 2)
             for thr in THRESHOLDS_CM:
                 o = sf["snow_cm"][m] >= thr
                 a, ab, ba = csi_boot(ours >= thr, o, inv, len(ud), idx)
@@ -204,7 +289,7 @@ def evaluate(con, p: dict) -> tuple[list[dict], dict, list[dict]]:
                 vs.append({"sf": src, "lead": int(lead), "thr": thr, "events": int(o.sum()), "windows": int(m.sum()),
                            "ours_csi": a, "sf_csi": b, "diff": a - b,
                            "range": f"{np.percentile(dd, 5):+.2f} to {np.percentile(dd, 95):+.2f}"})
-    return rows, promote, vs
+    return rows, promote, vs, region_rows
 
 
 def md_table(rows: list[dict], cols: list[tuple[str, str]]) -> str:
@@ -223,12 +308,12 @@ def main(pairs: Path, out: Path) -> None:
     con.execute("SET TimeZone = 'UTC'")
     load(con, pairs, wp)
     params = fit(con)
-    res, promote, vs = evaluate(con, params)
+    res, promote, vs, region_rows = evaluate(con, params)
     params["promote"] = promote
     (out / "slr.json").write_text(json.dumps(params, indent=2) + "\n")
     calm = {k: v for k, v in params["by_height_class"].items()}
     parts = [
-        "# SLR v2 — same-station new snow + water; fitted on 2024-25, judged on 2025-26\n",
+        "# SLR v3 — same-station new snow + water, one line per climate region; fitted on 2024-25, judged on 2025-26\n",
         "PRIVATE (contains paid-source comparison).\n",
         f"Fit: SLR = {params['a']} + {params['b']} × T, clamped {params['clamp']}; {params['n_days']} station-days; "
         f"median observed SLR {params['median_observed_slr']} (v1 on settled depth: 6.7).\n",
@@ -238,6 +323,15 @@ def main(pairs: Path, out: Path) -> None:
         md_table([{"k": k, **v} for k, v in calm.items()], [("height class", "k"), ("days", "n"), ("median SLR", "median")]),
         "Exposed (upper / slope) stations under-catch more in wind → higher ratios there would point to gauge bias, "
         "not real snow density.\n",
+        "\n## Regions: own line vs the pooled line (test winter, leads 1–5, ≥ 10 cm)\n",
+        "A region keeps its own line only where it beats the pooled line; otherwise it uses the pooled line.\n",
+        md_table([{"line": "—", "events10": "—", "pooled_csi": "—", "own_csi": "—", "range": "—", **r} for r in region_rows],
+                 [("region", "region"), ("line", "line"), ("≥10 events", "events10"), ("pooled CSI", "pooled_csi"),
+                  ("own CSI", "own_csi"), ("own − pooled", "range"), ("status", "status")]),
+        md_table([{"region": k, **{kk: v.get(kk, "—") for kk in ("n", "median", "a_raw", "b_raw", "a", "b")}}
+                  for k, v in params["regions"].items()],
+                 [("region", "region"), ("train days", "n"), ("median SLR", "median"), ("a (raw)", "a_raw"),
+                  ("b (raw)", "b_raw"), ("a (shrunk)", "a"), ("b (shrunk)", "b")]),
         "\n## Ours vs a flat 7:1, test winter, on new-snow boards (CSI; ranges = 90%, paired by date)\n",
         md_table(res, [("lead", "lead"), ("≥ cm", "thr"), ("events", "events"), ("7:1 CSI", "flat_csi"),
                        ("7:1 bias", "flat_bias"), ("ours CSI", "slr_csi"), ("ours bias", "slr_bias"),
@@ -250,7 +344,9 @@ def main(pairs: Path, out: Path) -> None:
         "\nHindcast is lead 0 (model spin-up handicaps ours). Live Snow-Forecast rows are this season only: thin.\n",
     ]
     (out / "slr_report.md").write_text("\n".join(parts))
-    print(f"SLR v2 fitted on {params['n_days']} training station-days; report written", file=sys.stderr)
+    prom = [k for k, v in params["regions"].items() if v.get("promoted")]
+    print(f"SLR v3 fitted on {params['n_days']} training station-days; own line for {prom or 'no region'}; "
+          "report written", file=sys.stderr)
 
 
 if __name__ == "__main__":

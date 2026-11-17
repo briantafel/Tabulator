@@ -57,13 +57,15 @@ jobs:
           import json
           p = json.load(open("/tmp/slr.json"))
           prom = p.get("promote") or {}
-          if p.get("version") != "slr-v2" or not prom:
+          if p.get("version") not in ("slr-v2", "slr-v3") or not prom:
               print(f"SLR: {p.get('version')} has no per-lead judgement — not shipped")
           elif all(prom.values()):
               keep = {k: p[k] for k in ("version", "form", "a", "b", "clamp", "temperature", "fitted_on", "n_days",
-                                        "median_observed_slr", "promote")}
+                                        "median_observed_slr", "promote", "regions", "region_of") if k in p}
               json.dump(keep, open("public/slr.json", "w"), indent=2); open("public/slr.json", "a").write("\n")
-              print(f"SLR: shipped {p['version']}: SLR = {p['a']} + {p['b']}·T (promoted at every lead)")
+              own = {r: f"{e['a']} + {e['b']}·T" for r, e in (p.get("regions") or {}).items() if e.get("promoted")}
+              print(f"SLR: shipped {p['version']}: pooled SLR = {p['a']} + {p['b']}·T (promoted at every lead); "
+                    f"own regional lines: {own or 'none'}")
           else:
               print(f"SLR: NOT shipped — promoted leads {sorted(k for k, v in prom.items() if v)} of {sorted(prom)}")
           PY

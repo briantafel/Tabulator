@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  localDate, dailyByMember, wQuantile, pool, summarize, runEvidence, learn, correct, projectionDates,
+  localDate, dailyByMember, slrLineFor, wQuantile, pool, summarize, runEvidence, learn, correct, projectionDates,
 } from "../scripts/projections/lib.js";
 
 /* A tiny Open-Meteo-shaped response: `hours` hourly steps from a UTC start,
@@ -123,4 +123,13 @@ test("fitted SLR rescales each hour by SLR(T) ÷ 7; without one, no snowSlr", ()
   const s = summarize(pool({ m: dailyByMember(fake({ hours: 48, temp: -5 }), "UTC", slr) }).get("2026-11-03"));
   assert.ok(s.snowSlr.p50 > s.snow.p50, s);
   assert.equal(summarize(pool({ m: dailyByMember(fake({ hours: 48 }), "UTC") }).get("2026-11-03")).snowSlr, undefined);
+});
+
+test("slr-v3: a promoted region line for its resorts, pooled for the rest", () => {
+  const p = { a: 11.6, b: -0.37, clamp: [5, 25], region_of: { kirkwood: "Sierra & Cascades", alta: "Rockies" },
+    regions: { "Sierra & Cascades": { a: 9.1, b: -0.2, promoted: true }, Rockies: { a: 12, b: -0.5, promoted: false } } };
+  assert.deepEqual(slrLineFor(p, "kirkwood"), { a: 9.1, b: -0.2, clamp: [5, 25], region: "Sierra & Cascades" });
+  assert.deepEqual(slrLineFor(p, "alta"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null });
+  assert.deepEqual(slrLineFor(p, "nowhere"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null });
+  assert.equal(slrLineFor(null, "alta"), null);
 });

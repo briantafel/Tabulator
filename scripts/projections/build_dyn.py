@@ -58,8 +58,11 @@ def frozen_fraction(t_c: np.ndarray, frozen_pct: np.ndarray | None) -> np.ndarra
     return np.where(np.isfinite(frozen_pct), np.clip(frozen_pct / 100.0, 0.0, 1.0), by_temp)
 
 
-def slr_of(t_c: np.ndarray, p: dict) -> np.ndarray:
-    return np.clip(p["a"] + p["b"] * t_c, *p["clamp"])
+def slr_of(t_c: np.ndarray, p: dict, resort_id: str | None = None) -> np.ndarray:
+    """slr-v3: the resort's region line where it was promoted, else the pooled line."""
+    e = (p.get("regions") or {}).get((p.get("region_of") or {}).get(resort_id, ""), {})
+    a, b = (e["a"], e["b"]) if e.get("promoted") and "a" in e else (p["a"], p["b"])
+    return np.clip(a + b * t_c, *p["clamp"])
 
 
 def daily_from_blocks(blocks, resorts, cell_elev, target_elev, slr):
@@ -84,7 +87,7 @@ def daily_from_blocks(blocks, resorts, cell_elev, target_elev, slr):
             liquid = v["precip"][:, r]
             fp = v.get("frozen_pct_mean")
             frac = frozen_fraction(tmean, fp[:, r] if fp is not None else None)
-            snow = liquid * frac * slr_of(tmean, slr) / 10.0
+            snow = liquid * frac * slr_of(tmean, slr, resort["id"]) / 10.0
             date = mid_utc.astimezone(ZoneInfo(resort["tz"])).date().isoformat()
             d = out.setdefault(resort["id"], {}).setdefault(date, {"n": 0, "snow": 0.0, "liquid": 0.0,
                                                                     "tmax": None, "tmin": None, "wind": None})

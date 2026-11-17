@@ -13,7 +13,7 @@
 
 import { readFile, writeFile, access } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
-import {
+import { slrLineFor,
   dailyByMember, pool, summarize, runEvidence, learn, correct, projectionDates, PROJECTION_DAYS, EWMA_ALPHA,
 } from "./lib.js";
 
@@ -37,15 +37,19 @@ const prevCal = await readJson(`${pub}/calibration.json`, { resorts: {} });
 /* A judged SLR (promote-temps.yml writes public/slr.json only when every lead
    was promoted). Anything else → no snowSlr, and the app keeps 7:1. */
 const slrRaw = await readJson(`${pub}/slr.json`, null);
-const slr = slrRaw?.version === "slr-v2" && Number.isFinite(slrRaw.a) && Number.isFinite(slrRaw.b) &&
+const slr = ["slr-v2", "slr-v3"].includes(slrRaw?.version) && Number.isFinite(slrRaw.a) && Number.isFinite(slrRaw.b) &&
   Object.values(slrRaw.promote ?? {}).length && Object.values(slrRaw.promote).every(Boolean) ? slrRaw : null;
-log(slr ? `SLR: ${slr.version} (SLR = ${slr.a} + ${slr.b}·T)` : "SLR: none judged — snowSlr not built (app keeps 7:1)");
+log(slr ? `SLR: ${slr.version} (pooled ${slr.a} + ${slr.b}·T; own line: ${
+  Object.entries(slr.regions ?? {}).filter(([, e]) => e.promoted).map(([r, e]) => `${r} ${e.a} + ${e.b}·T`).join(", ") || "none"})`
+  : "SLR: none judged — snowSlr not built (app keeps 7:1)");
 
 const generatedAt = new Date().toISOString();
 const projections = { generatedAt, sfGeneratedAt: forecast.generatedAt, days: PROJECTION_DAYS,
   units: { snow: "cm", temp: "C", wind: "km/h" }, models: MODELS,
   // snowSlr / membersSlr: Open-Meteo snow rescaled by this ratio (the app's `slr` switch).
-  slr: slr ? { version: slr.version, a: slr.a, b: slr.b, clamp: slr.clamp } : null, resorts: {} };
+  slr: slr ? { version: slr.version, a: slr.a, b: slr.b, clamp: slr.clamp,
+    regions: Object.fromEntries(Object.entries(slr.regions ?? {}).filter(([, e]) => e.promoted)
+      .map(([r, e]) => [r, { a: e.a, b: e.b }])) } : null, resorts: {} };
 const calibration = { updatedAt: generatedAt, method: `EWMA α=${EWMA_ALPHA} of per-run medians; wind = SF ÷ ensemble, temp = SF − ensemble`,
   // Resorts missing from this run keep what they had learned.
   resorts: { ...(prevCal.resorts ?? {}) } };
@@ -61,7 +65,8 @@ for (const resort of resorts) {
     const p = `${outDir}/raw/open-meteo-ensemble/${resort.id}-${model}.json.gz`;
     if (!(await exists(p))) continue;
     try {
-      byModel[model] = dailyByMember(JSON.parse(gunzipSync(await readFile(p)).toString("utf8")), tz, slr);
+      byModel[model] = dailyByMember(JSON.parse(gunzipSync(await readFile(p)).toString("utf8")), tz,
+        slrLineFor(slr, resort.id));
     } catch (e) { log(`  ✗ ${resort.id}/${model}: ${e.message}`); }
   }
   if (!Object.keys(byModel).length) { skipped.push(`${resort.id}: no ensemble data`); continue; }

@@ -233,12 +233,20 @@ def snowfall(con, out: Path) -> str:
         FROM read_parquet('{pp}') WHERE source = 'open-meteo-previous-runs' AND space = 'liquid' AND tier = 'mid'
           AND fc_temp_c IS NOT NULL GROUP BY ALL""")
         lo_, hi_ = sl["clamp"]
+        # slr-v3: a resort's region line where promoted, else pooled (same as the app).
+        con.execute("CREATE TABLE sline(resort_id VARCHAR, a DOUBLE, b DOUBLE)")
+        lines = [(rid, e["a"], e["b"]) for rid, reg in (sl.get("region_of") or {}).items()
+                 for e in [(sl.get("regions") or {}).get(reg, {})] if e.get("promoted") and "a" in e]
+        if lines:
+            con.executemany("INSERT INTO sline VALUES (?, ?, ?)", lines)
         con.execute(f"""
         INSERT INTO sd
         SELECT 'ours (blend × SLR)', false, 'snow', o.split, o.resort_id, o.region, o.macro, o.local_date, o.lead,
-               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest({sl['a']} + {sl['b']} * t.t, {lo_}), {hi_}) / 10 END,
+               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest(coalesce(l.a, {sl['a']}) + coalesce(l.b, {sl['b']}) * t.t,
+                                                                  {lo_}), {hi_}) / 10 END,
                s.obs
         FROM sd o JOIN stemp t USING (resort_id, local_date, lead, split)
+        LEFT JOIN sline l ON l.resort_id = o.resort_id
         JOIN (SELECT DISTINCT resort_id, local_date, lead, split, obs FROM sd WHERE space = 'snow') s
           USING (resort_id, local_date, lead, split)
         WHERE o.source_label = 'ours (blend-v1)'""")

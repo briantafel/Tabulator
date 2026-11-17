@@ -37,6 +37,15 @@ const MIN_WIND_KMH = 5;                   // below this a ratio is noise
    hour's 2 m temperature at the Snow-Forecast mid elevation. Open-Meteo's own
    rain/snow split is kept. Brian, 2026-11-15: days 7–10, behind the `slr` switch. */
 export const OM_SLR = 7;
+/* slr-v3: a region's own line where the judge winter promoted it, else the pooled line. */
+export function slrLineFor(p, resortId) {
+  if (!p) return null;
+  const reg = p.region_of?.[resortId];
+  const e = reg ? p.regions?.[reg] : null;
+  return e?.promoted && Number.isFinite(e.a) && Number.isFinite(e.b)
+    ? { a: e.a, b: e.b, clamp: p.clamp, region: reg }
+    : { a: p.a, b: p.b, clamp: p.clamp, region: null };
+}
 export function slrOf(tC, p) {
   const [lo, hi] = p.clamp ?? [5, 25];
   return Math.min(hi, Math.max(lo, p.a + p.b * tC));

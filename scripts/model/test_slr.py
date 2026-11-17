@@ -35,11 +35,13 @@ def make_tables(out: Path) -> None:
     for split, start in (("train", date(2024, 12, 1)), ("test", date(2025, 12, 1))):
         for d in range(140):
             day = start + timedelta(days=d)
-            for resort in ("alta", "snowbird", "vail", "jackson-hole"):
-                t_mid = rng.uniform(-18, -3)
+            for resort in ("alta", "snowbird", "vail", "jackson-hole", "kirkwood", "heavenly"):
+                maritime = resort in ("kirkwood", "heavenly")
+                t_mid = rng.uniform(-12, -3) if maritime else rng.uniform(-18, -3)
                 t_st = t_mid + 0.0065 * 800
                 water = float(rng.choice([0, 0, 1, 4, 8, 15, 25]))
-                snow = water * (12 - 0.6 * t_st) / 10 * rng.uniform(0.9, 1.1) if t_st <= 0 else 0.0
+                true = (8 - 0.3 * t_st) if maritime else (12 - 0.6 * t_st)
+                snow = water * true / 10 * rng.uniform(0.9, 1.1) if t_st <= 0 else 0.0
                 ws = datetime(day.year, day.month, day.day, 14, tzinfo=timezone.utc)
                 we = ws + timedelta(hours=24)
                 st = f"cocorahs:{resort}"
@@ -66,10 +68,14 @@ with tempfile.TemporaryDirectory() as tmp:
     make_tables(out)
     main(out / "pairs.parquet", out)
     p = json.loads((out / "slr.json").read_text())
-    assert p["version"] == "slr-v2", p
-    # Recovered at STATION temperature (not the slope's): a ≈ 12, b ≈ −0.6.
-    assert abs(p["a"] - 12) < 1.0 and abs(p["b"] + 0.6) < 0.1, p
+    assert p["version"] == "slr-v3", p
+    # The Sierra gets its own (shrunk) line, lower than the Rockies', and it is promoted.
+    sierra, rock = p["regions"]["Sierra & Cascades"], p["regions"]["Rockies"]
+    assert sierra["promoted"] is True and sierra["a"] < rock["a"], p["regions"]
+    assert p["region_of"]["kirkwood"] == "Sierra & Cascades"
+    # The Rockies line is recovered at STATION temperature (not the slope's): a ≈ 12, b ≈ −0.6.
+    assert abs(rock["a_raw"] - 12) < 1.0 and abs(rock["b_raw"] + 0.6) < 0.1, rock
     assert p["promote"].get("1") is True, p["promote"]
     rep = (out / "slr_report.md").read_text()
-    assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep, rep
+    assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep and "OWN LINE promoted" in rep, rep
 print("slr: all checks passed")
