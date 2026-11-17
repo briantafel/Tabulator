@@ -84,3 +84,8 @@ test("paragraph uses the rank when % of normal is not yet meaningful", () => {
   assert.match(t, /The Sierra is having its biggest start in 36 seasons/);
   assert.match(t, /180% of its normal depth/);
 });
+
+test("a big % of normal carries the rank beside it", () => {
+  const t = regionParagraph({ name: "the Sierra", swePctMedian: 236, rankShare: 11 / 37, rankOf: 37 }, false).map((s) => s.t).join("");
+  assert.match(t, /236% of its normal snowpack to date, its 11th-biggest start in 37 seasons\./);
+});

@@ -108,7 +108,15 @@ export function regionParagraph(g, metric) {
   const segs = [];
   const name = cap(g.name);
   if (typeof g.swePctMedian === "number") {
-    segs.push({ t: `${name} is running at ` }, { t: `${Math.round(g.swePctMedian)}% of its normal snowpack`, hot: true }, { t: " to date." });
+    segs.push({ t: `${name} is running at ` }, { t: `${Math.round(g.swePctMedian)}% of its normal snowpack`, hot: true });
+    /* The rank keeps a big early percentage honest: 236% of a small November
+       normal was only the 11th-biggest start in 37 seasons. */
+    if (typeof g.rankShare === "number" && g.rankOf) {
+      const pos = Math.max(1, Math.round(g.rankShare * g.rankOf));
+      segs.push({ t: ` to date, its ${pos === 1 ? "biggest start" : `${ordinal(pos)}-biggest start`} in ${Math.round(g.rankOf)} seasons.` });
+    } else {
+      segs.push({ t: " to date." });
+    }
   } else if (typeof g.rankShare === "number" && g.rankOf) {
     const pos = Math.max(1, Math.round(g.rankShare * g.rankOf));
     segs.push({ t: `${name} is having its ` }, { t: pos === 1 ? "biggest start" : `${ordinal(pos)}-biggest start`, hot: pos <= 5 },
