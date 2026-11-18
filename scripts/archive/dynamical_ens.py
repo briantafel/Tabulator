@@ -258,7 +258,7 @@ def read_init(ds, model: str, cfg: dict, init: datetime, resorts: list[dict], la
     return blocks, (pts.latitude.values, pts.longitude.values, elev)
 
 
-def write_and_upload(work: Path, model: str, init: datetime, rows, run_id: str, dry: bool) -> int:
+def write_and_upload(work: Path, model: str, init: datetime, suf: str, rows, run_id: str, dry: bool) -> int:
     d = work / run_id
     (d / "rows").mkdir(parents=True, exist_ok=True)
     n = 0
@@ -277,7 +277,7 @@ def write_and_upload(work: Path, model: str, init: datetime, rows, run_id: str, 
     r = bucket("cp", str(d / "up"), f"s3://{b}/", "--recursive")
     if r.returncode:
         raise RuntimeError(f"upload failed: {r.stderr[-300:]}")
-    r = bucket("cp", str(marker), f"s3://{b}/dynamical/done/{model}-{init:%Y%m%d%H}.json")
+    r = bucket("cp", str(marker), f"s3://{b}/dynamical/done/{model}-{init:%Y%m%d%H}{suf}.json")
     if r.returncode:
         raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
     import shutil
@@ -296,8 +296,20 @@ def main() -> int:
     work, mode = Path(a[0]), a[1]
     dry = "--dry-run" in a
     only = a[a.index("--only") + 1] if "--only" in a else None
+    # --resorts park-city: history for resorts added after the history load
+    # finished. Done markers are per init, written before those resorts
+    # existed, so here each init is read again for the named resorts only,
+    # under its own marker (<model>-<init>@park-city). Added 2026-11-18.
+    refill = [x for x in a[a.index("--resorts") + 1].split(",") if x] if "--resorts" in a else []
+    suf = f"@{'+'.join(refill)}" if refill else ""
     started = time.time()
     resorts = [r for r in json.loads((ROOT / "src/data/resorts.json").read_text())["resorts"] if r.get("latlon") or r.get("nws")]
+    if refill:
+        unknown = [x for x in refill if x not in {r["id"] for r in resorts}]
+        if unknown:
+            raise SystemExit(f"--resorts names resorts not in resorts.json (or without coordinates): {', '.join(unknown)}")
+        resorts = [r for r in resorts if r["id"] in refill]
+        log(f"refill for {', '.join(refill)} only (markers …{suf})")
     lat = xr.DataArray([(r.get("latlon") or r["nws"])[0] for r in resorts], dims="resort")
     lon = xr.DataArray([(r.get("latlon") or r["nws"])[1] for r in resorts], dims="resort")
     done = done_markers()
@@ -320,22 +332,22 @@ def main() -> int:
             continue
         ds = dc.open(cfg["id"])
         inits = [datetime.fromtimestamp(t.astype("datetime64[s]").astype(int), timezone.utc) for t in ds.init_time.values]
-        todo = [t for t in inits if lo <= t <= hi and f"{model}-{t:%Y%m%d%H}" not in done
+        todo = [t for t in inits if lo <= t <= hi and f"{model}-{t:%Y%m%d%H}{suf}" not in done
                 and (windows is None or any(w0 <= t <= w1 for w0, w1 in windows))]
         log(f"{model}: {len(todo)} init(s) to collect in {iso(lo)} … {iso(hi)}")
         for init in sorted(todo, reverse=(mode in ("live", "history"))):
             if time.time() - started > TIME_LIMIT_S:
                 left += 1
                 continue
-            key = f"{model}-{init:%Y%m%d%H}"
+            key = f"{model}-{init:%Y%m%d%H}{suf}"
             t = time.time()
             try:
-                run_id = f"{init:%Y-%m-%dT%H%M}Z-{model}-{gh}"
+                run_id = f"{init:%Y-%m-%dT%H%M}Z-{model}-{gh}" + (f"-{'+'.join(refill)}" if refill else "")
                 blocks, (clat, clon, elev) = read_init(ds, model, cfg, init, resorts, lat, lon, fetched_at, run_id)
                 if not blocks:
                     raise RuntimeError("no complete 6-hour blocks")
                 check_plausible(blocks)
-                n = write_and_upload(work, model, init,
+                n = write_and_upload(work, model, init, suf,
                                      iter_rows(blocks, model, init, resorts, clat, clon, elev, fetched_at, run_id),
                                      run_id, dry)
                 ok.append(f"{key}: {n} rows")
@@ -351,7 +363,7 @@ def main() -> int:
     if left:
         lines.append(f"  … {left} init(s) left for the next run (time limit)")
     elif mode == "history" and not failures:
-        lines.append("  HISTORY COMPLETE: every init in the configured winters is archived")
+        lines.append("  HISTORY COMPLETE: every init in the configured winters is archived" + (f" for {', '.join(refill)}" if refill else ""))
     lines += [f"  ✗ {f}" for f in failures]
     report = "\n".join(lines)
     log("\n" + report)

@@ -39,4 +39,9 @@ jobs:
           AWS_DEFAULT_REGION: auto
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
           AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
-        run: python3 scripts/archive/dynamical_ens.py work history
+        run: |
+          python3 scripts/archive/dynamical_ens.py work history
+          # Resorts added after the history load finished (src/data/history-refill.json).
+          # Remove an id once its run summary says HISTORY COMPLETE for it.
+          refill=$(python3 -c "import json;print(','.join(json.load(open('src/data/history-refill.json'))))")
+          if [ -n "$refill" ]; then python3 scripts/archive/dynamical_ens.py work history --resorts "$refill"; fi

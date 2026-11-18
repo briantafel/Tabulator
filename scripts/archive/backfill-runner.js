@@ -74,7 +74,14 @@ const wintersFor = (r) => (coordsOf(r)?.[0] < 0 ? SOUTH_WINTERS : WINTERS);
    ensembles take the whole free Open-Meteo allowance until they move to
    dynamical.org (Phase 1). Nothing is lost: Previous Runs data stays
    available. Raise to ~6000 once the ensembles leave Open-Meteo. */
-const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET ?? 0);
+/* REFILL_RESORTS=park-city (workflow input "resorts"): load every past winter
+   for resorts added after the backfill finished. Pieces keyed per winter or
+   month were marked done before those resorts existed, so here they run again
+   for the named resorts only, under their own markers (key@park-city). Per-
+   resort pieces (om-, ots-history-) keep their keys. Past-winter Open-Meteo
+   gets its own small budget (~190 calls for one resort). Added 2026-11-18. */
+const REFILL = (process.env.REFILL_RESORTS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+const OM_DAILY_BUDGET = Number(process.env.OM_DAILY_BUDGET || (REFILL.length ? 600 : 0));
 const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
 /* This season's Previous Runs (see the header). Northern season only; the
    app resorts first, since they are the ones Snow-Forecast and the app share. */
@@ -144,7 +151,14 @@ async function finish(piece, source, rows, raws) {
 }
 
 // ---- inputs -------------------------------------------------------------------
-const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
+let { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
+const SUF = REFILL.length ? `@${REFILL.join("+")}` : "";
+if (REFILL.length) {
+  const unknown = REFILL.filter((id) => !resorts.some((r) => r.id === id));
+  if (unknown.length) throw new Error(`REFILL_RESORTS names resorts not in resorts.json: ${unknown.join(", ")}`);
+  resorts = resorts.filter((r) => REFILL.includes(r.id));
+  console.error(`backfill: refill for ${REFILL.join(", ")} only (markers …${SUF})`);
+}
 let elevations = {};
 try {
   const f = JSON.parse(await readFile(`${root}public/forecast.json`, "utf8"));
@@ -181,26 +195,26 @@ function monthsOf([from, to]) {
 }
 
 const pieces = [
-  ...WINTERS.map((w) => ({ key: `snotel-${year(w)}`, kind: "snotel", winter: w })),
+  ...WINTERS.map((w) => ({ key: `snotel-${year(w)}${SUF}`, kind: "snotel", winter: w })),
   // Added 2026-11-10: daily highs/lows, the truth for scoring forecast temperatures.
-  ...WINTERS.map((w) => ({ key: `snotel-temp-${year(w)}`, kind: "snotel", winter: w, elements: DAILY_TEMP_ELEMENTS })),
+  ...WINTERS.map((w) => ({ key: `snotel-temp-${year(w)}${SUF}`, kind: "snotel", winter: w, elements: DAILY_TEMP_ELEMENTS })),
   // Added 2026-11-11 (claude/temp-wind-plan.md T1): hourly TOBS for the lift-hours
   // low (coldest 08–16 local), same rows as the live hourly collector. One month a
   // piece: a whole winter of hourly values per 20 stations is a very large response.
-  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-temp-${m[0].slice(0, 7)}`, kind: "snotel",
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-temp-${m[0].slice(0, 7)}${SUF}`, kind: "snotel",
     winter: m, elements: ["TOBS"], duration: "HOURLY" }))),
   // Added 2026-11-17 (claude/state-2026-11-16-blend-gap.md): hourly snow depth and SWE, so
   // verify can score new snow as the day's peak depth gain instead of the settled
   // midnight-to-midnight change. Same shape as the hourly temperature pieces.
-  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-snow-${m[0].slice(0, 7)}`, kind: "snotel",
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snotel-hourly-snow-${m[0].slice(0, 7)}${SUF}`, kind: "snotel",
     winter: m, elements: ["SNWD", "WTEQ"], duration: "HOURLY" }))),
   // Added 2026-11-11: CoCoRaHS and SNODAS past winters (claude/verify-truth-contract.md),
   // one calendar month a piece. SNODAS's first month starts a day early so the
   // 24 h gain on Nov 1 has its Oct 31 snapshot.
-  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `cocorahs-${m[0].slice(0, 7)}`, kind: "cocorahs", winter: m }))),
-  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snodas-${m[0].slice(0, 7)}`, kind: "snodas",
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `cocorahs-${m[0].slice(0, 7)}${SUF}`, kind: "cocorahs", winter: m }))),
+  ...WINTERS.flatMap((w) => monthsOf(w).map((m) => ({ key: `snodas-${m[0].slice(0, 7)}${SUF}`, kind: "snodas",
     winter: [m[0] === w[0] ? new Date(Date.parse(m[0]) - 864e5).toISOString().slice(0, 10) : m[0], m[1]] }))),
-  { key: "bc-asws-history", kind: "bcasws" },
+  ...(REFILL.length ? [] : [{ key: "bc-asws-history", kind: "bcasws" }]), // BC resorts: refill by hand
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
   // resorts included) is fetched before the first GEM piece, so a GEM model

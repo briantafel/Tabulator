@@ -22,6 +22,10 @@ on:
         description: "Run only pieces whose key starts with this (optional), e.g. snotel-hourly-snow-"
         type: string
         default: ""
+      resorts:
+        description: "Refill past winters for newly added resorts only, comma-separated ids (optional), e.g. park-city"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -62,6 +66,7 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           BACKFILL_ONLY: ${{ inputs.only }}
+          REFILL_RESORTS: ${{ inputs.resorts }}
         run: node scripts/archive/backfill-runner.js work
 
       - name: Open an issue on failure
