@@ -60,7 +60,9 @@ export function extendFeed(feed, now = Date.now(), { slr = false } = {}) {
     const days = r.days.map((d) => {
       const s = p.spread?.[d.date];
       const range = s ? bandAround(d.snow, s) : null;
-      return range ? { ...d, range } : d;
+      /* `spread` is kept so the band can be re-centred if the day's number is
+         replaced later (lib/ours.js applySnowfall, 2026-11-18). */
+      return range ? { ...d, range, spread: s } : d;
     });
     /* Our snow-to-liquid ratio (the `slr` switch): only when this resort's
        entry has it for every projected day AND its members, so one resort

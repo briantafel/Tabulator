@@ -1,3 +1,4 @@
+import { bandAround } from "./projections.js";
 /* Our own snowfall number (scripts/blend → public/blend-forecast.json), set
    as `ours` (cm) on Snow-Forecast's days so the range chart can draw it as a
    light mark beside theirs (Brian, 2026-11-16). Nothing else reads it: the
@@ -60,7 +61,13 @@ export function applySnowfall(feed, blend, now = Date.now()) {
         days: r.days.map((d) => {
           if (d.projected) return d;
           const { ours: _drop, ...rest } = d;
-          return { ...rest, snow: byDate.get(d.date), sfSnow: d.snow };
+          const snow = byDate.get(d.date);
+          /* Re-centre the likely/possible band on OUR number. It was built
+             around Snow-Forecast's, so a day where the two disagreed drew our
+             line far outside its own band, with the value label stuck at the
+             band (Snowbird Thu 11-19: ours 9.2", SF 2.4"; Brian 2026-11-18). */
+          const range = d.spread ? bandAround(snow, d.spread) : undefined;
+          return { ...rest, snow, sfSnow: d.snow, ...(range ? { range } : { range: undefined }) };
         }),
       };
     }),
