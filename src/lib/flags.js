@@ -61,7 +61,8 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
    public/season.json (scripts/season). */
 /* snowfall (2026-11-18): our snowfall (lib/ours.js applySnowfall) in place of
    Snow-Forecast's on its six days. Needs blend not "off". */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off" });
+/* bands (2026-11-18): calibrated likely/possible bands for our forecast; "off" reverts to the ensemble spread. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

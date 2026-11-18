@@ -52,6 +52,7 @@ jobs:
           python3 scripts/verify/test_build.py
           python3 scripts/model/test_slr.py
           python3 scripts/model/test_blend.py
+          python3 scripts/model/test_bands.py
           python3 scripts/model/test_temps.py
           python3 scripts/model/test_temps.py
 
@@ -73,6 +74,11 @@ jobs:
       # Corrected, lead-weighted model blend: fit 2024-25, judge 2025-26. Sealed report only.
       - name: Fit and judge blend v1
         run: python3 scripts/model/blend.py out/pairs.parquet out
+
+      # Likely / possible bands for our blend from our own past misses (2026-11-18).
+      # Fit 2024-25, judge coverage on 2025-26. Public models + public truth only.
+      - name: Fit and judge bands v1
+        run: python3 scripts/model/bands.py out/pairs.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
 
       # Temperature model: per-resort high correction + lead weights. Fit 2024-25, judge 2025-26.
       - name: Fit and judge the temperature model

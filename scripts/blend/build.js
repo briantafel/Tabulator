@@ -21,6 +21,10 @@ const exists = async (p) => { try { await access(p); return true; } catch { retu
 
 const params = await readJson(`${pub}/blend.json`, null);
 const slr = await readJson(`${pub}/slr.json`, null);
+/* Calibrated bands (bands.py), only when judged and promoted; else none — the
+   app then falls back to the ensemble-spread band. */
+const bandsDoc = await readJson(`${pub}/bands.json`, null);
+const bands = bandsDoc?.promote === true && bandsDoc.version === "bands-v1" ? bandsDoc : null;
 if (!params?.weights || !params?.factors) { log("✗ public/blend.json missing or not a judged blend — nothing built"); process.exit(1); }
 if (!slr?.a || !slr?.b) { log("✗ public/slr.json missing — nothing built"); process.exit(1); }
 const manifest = await readJson(`${outDir}/manifest.json`, {});
@@ -29,6 +33,7 @@ const fetchedAt = manifest.fetchedAt ?? new Date().toISOString();
 const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "utf8"));
 const app = resorts.filter((r) => !r.archiveOnly);
 const out = { generatedAt: new Date().toISOString(), fetchedAt, version: params.version ?? "blend-v1", slr: slr.version,
+  bands: bands ? bands.version : null,
   models: Object.keys(params.weights[Object.keys(params.weights)[0]] ?? {}),
   note: "Our forecast: blend-v1 water (ECMWF, GFS, GEM; corrected, lead-weighted) × our snow-to-liquid ratio. cm.",
   resorts: {} };
@@ -39,7 +44,7 @@ for (const r of app) {
   try {
     const json = JSON.parse(gunzipSync(await readFile(p)).toString("utf8"));
     const days = resortDays({ time: json.hourly.time, byModel: splitModels(json), tz: r.tz, region: r.region,
-      issueDate: localDate(Date.parse(fetchedAt), r.tz), params, slr, resortId: r.id });
+      issueDate: localDate(Date.parse(fetchedAt), r.tz), params, slr, resortId: r.id, bands });
     if (days.length) out.resorts[r.id] = { days };
     else missed.push(`${r.id} (no complete days)`);
   } catch (e) { missed.push(`${r.id} (${e.message})`); }

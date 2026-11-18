@@ -45,7 +45,7 @@ export function blendFresh(blend, now = Date.now()) {
    - Stale or missing file: the feed comes back unchanged and `snowfall`
      stays unset, so Settings can say so. Never an old number as today's.
    Projected days (7–10) are ours already and are left alone. */
-export function applySnowfall(feed, blend, now = Date.now()) {
+export function applySnowfall(feed, blend, now = Date.now(), { bands = true } = {}) {
   if (!feed || !blendFresh(blend, now)) return feed;
   return {
     ...feed,
@@ -54,6 +54,7 @@ export function applySnowfall(feed, blend, now = Date.now()) {
       const days = blend.resorts[r.id]?.days;
       if (!days?.length) return r;
       const byDate = new Map(days.filter((d) => d.snow != null).map((d) => [d.date, d.snow]));
+      const bandBy = new Map(days.filter((d) => d.band).map((d) => [d.date, d.band]));
       if (!r.days.every((d) => d.projected || byDate.has(d.date))) return r;
       return {
         ...r,
@@ -66,7 +67,11 @@ export function applySnowfall(feed, blend, now = Date.now()) {
              around Snow-Forecast's, so a day where the two disagreed drew our
              line far outside its own band, with the value label stuck at the
              band (Snowbird Thu 11-19: ours 9.2", SF 2.4"; Brian 2026-11-18). */
-          const range = d.spread ? bandAround(snow, d.spread) : undefined;
+          /* Bands v1 (2026-11-18): calibrated from our own past misses when the
+             blend file carries them and flags.json `bands` isn't "off";
+             otherwise the ensemble spread re-centred on our number. */
+          const cal = bands ? bandBy.get(d.date) : null;
+          const range = cal ? { ...cal } : d.spread ? bandAround(snow, d.spread) : undefined;
           return { ...rest, snow, sfSnow: d.snow, ...(range ? { range } : { range: undefined }) };
         }),
       };

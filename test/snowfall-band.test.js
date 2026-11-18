@@ -24,3 +24,11 @@ test("a day with no spread keeps no band rather than Snow-Forecast's", () => {
   const blend = { fetchedAt: "2026-11-18T16:21:21Z", resorts: { x: { days: [{ date: "2026-11-19", snow: 20 }] } } };
   assert.equal(applySnowfall(feed, blend, NOW).resorts[0].days[0].range, undefined);
 });
+
+test("calibrated band from the blend file wins; bands off falls back to the spread", () => {
+  const feed = { resorts: [{ id: "s", days: [{ date: "2026-11-19", snow: 6.1, range: bandAround(6.1, spread), spread }] }] };
+  const band = { p10: 5, p25: 14, p75: 30, p90: 44 };
+  const blend = { fetchedAt: "2026-11-18T16:21:21Z", resorts: { s: { days: [{ date: "2026-11-19", snow: 23.4, band }] } } };
+  assert.deepEqual(applySnowfall(feed, blend, NOW).resorts[0].days[0].range, band);
+  assert.deepEqual(applySnowfall(feed, blend, NOW, { bands: false }).resorts[0].days[0].range, bandAround(23.4, spread));
+});

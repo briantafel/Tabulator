@@ -43,6 +43,7 @@ jobs:
           aws s3 cp "s3://$R2_BUCKET/verify/latest/temp-model.json" /tmp/temp-model.json --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/slr.json" /tmp/slr.json --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/blend.json" /tmp/blend.json --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/bands.json" /tmp/bands.json --endpoint-url "$ENDPOINT" --only-show-errors || echo "no bands.json yet"
           aws s3 cp "s3://$R2_BUCKET/verify/latest/temps_report.md" /tmp/temps_report.md --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp "s3://$R2_BUCKET/verify/latest/slr_report.md" /tmp/slr_report.md --endpoint-url "$ENDPOINT" --only-show-errors
       - name: Show the public-data judgement (no paid rows)
@@ -70,6 +71,25 @@ jobs:
           else:
               print(f"SLR: NOT shipped — promoted leads {sorted(k for k, v in prom.items() if v)} of {sorted(prom)}")
           PY
+      # Bands v1 (2026-11-18): ship only if every lead group's coverage passed.
+      # Revert: flags.json "bands": "off" (the app goes back to the ensemble-spread band).
+      - name: Bands — ship only if calibrated
+        run: |
+          python3 - <<'PY' 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, os
+          if not os.path.exists("/tmp/bands.json"):
+              print("Bands: no judged file in verify/latest yet — not shipped")
+          else:
+              b = json.load(open("/tmp/bands.json"))
+              rows = {r["group"]: r for r in b.get("coverage", [])}
+              cov = ", ".join(f"{g}: likely {r['likely']:.0%}, possible {r['possible']:.0%}" for g, r in rows.items())
+              if b.get("version") == "bands-v1" and b.get("promote") is True:
+                  json.dump(b, open("public/bands.json", "w"), indent=2); open("public/bands.json", "a").write("\n")
+                  print(f"Bands: shipped bands-v1 ({cov})")
+              else:
+                  print(f"Bands: NOT shipped — coverage outside ±{b.get('tolerance', 0):.0%} of target ({cov})")
+          PY
+
       - name: Blend — ship the judged water blend (public models only)
         run: |
           python3 - <<'PY' 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
@@ -89,10 +109,14 @@ jobs:
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
           git add public/temp-model.json public/slr.json public/blend.json
+          if [ -f public/bands.json ]; then git add public/bands.json; fi
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "models: promote judged temperature / SLR from verify/latest"
           for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
       - name: Rebuild temperatures with the promoted model
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run temps.yml --ref main
+        run: |
+          gh workflow run temps.yml --ref main
+          # Our forecast picks up new bands (or blend weights) on its next build; start one now.
+          gh workflow run blend.yml --ref main

@@ -134,6 +134,9 @@ export default function Tabulator() {
   /* Snowfall: our number or Snow-Forecast's on the six forecast days
      (lib/ours.js applySnowfall). Needs the blend file loaded. */
   const snowMode = feedRaw?.flags?.snowfall ?? "off";
+  /* Calibrated bands (Brian, 2026-11-18: "Let's try it. Make sure we can
+     revert."): no Settings row; flags.json `bands: "off"` reverts everyone. */
+  const bandsOn = (feedRaw?.flags?.bands ?? "off") !== "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
@@ -155,13 +158,13 @@ export default function Tabulator() {
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
   const base = useMemo(() => {
     const b = tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw;
-    return snowOn ? applySnowfall(b, feedRaw.blend) : b;
-  }, [tempsOn, snowOn, feedRaw]);
+    return snowOn ? applySnowfall(b, feedRaw.blend, Date.now(), { bands: bandsOn }) : b;
+  }, [tempsOn, snowOn, bandsOn, feedRaw]);
   const feed = useMemo(() => {
     const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
     const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
-    return snowOn ? applySnowfall(g, feedRaw.blend) : applyOurs(g, feedRaw?.blend);
-  }, [projections, tempsOn, slrOn, snowOn, feedRaw]);
+    return snowOn ? applySnowfall(g, feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend);
+  }, [projections, tempsOn, slrOn, snowOn, bandsOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
   /* Switching projections off with a 7–10 day window picked: back to six,
