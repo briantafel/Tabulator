@@ -2,12 +2,13 @@ name: Map style sketch (one-off)
 
 # Design sketch for in-app maps (claude/maps-sketch.md). Manual only; not part of the app.
 # Renders a white relief base of the Wasatch with editable vector layers and the latest
-# raw ECMWF IFS 5-day snow, and uploads them as a run artifact. Writes nothing to R2.
+# raw ECMWF IFS 5-day snow. Uploads them as a run artifact and force-pushes them to the
+# `maps-sketch` branch (a single orphan commit; main and the app are untouched). Nothing in R2.
 on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   render:
@@ -29,3 +30,12 @@ jobs:
           name: maps-sketch
           path: out/
           retention-days: 14
+      - name: Publish to the maps-sketch branch
+        run: |
+          cd out
+          git init -q -b maps-sketch
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Map sketch from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" maps-sketch
