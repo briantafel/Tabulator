@@ -20,7 +20,7 @@ import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
 import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
-import { applyOurs } from "./lib/ours.js";
+import { applyOurs, applySnowfall, blendFresh } from "./lib/ours.js";
 import { bySnow } from "./lib/rank.js";
 import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
@@ -73,6 +73,7 @@ export default function Tabulator() {
   const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
   /* And for Shaping up (lib/season.js). */
   const [seasonOverride, setSeasonOverride] = useState(() => loadSaved("season", null));
+  const [snowOverride, setSnowOverride] = useState(() => loadSaved("snowfall", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -129,6 +130,12 @@ export default function Tabulator() {
   const seasonMode = feedRaw?.flags?.season ?? "off";
   const seasonOn = effectiveFlag(seasonMode, seasonOverride) && !!feedRaw?.season;
   const chooseSeason = (on) => setSeasonOverride(nextOverride(on, seasonMode));
+  /* Snowfall: our number or Snow-Forecast's on the six forecast days
+     (lib/ours.js applySnowfall). Needs the blend file loaded. */
+  const snowMode = feedRaw?.flags?.snowfall ?? "off";
+  const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
+  const snowStale = snowOn && !blendFresh(feedRaw.blend);
+  const chooseSnow = (on) => setSnowOverride(nextOverride(on, snowMode));
   /* Days 7–10 snow from our fitted ratio — ACTIVE, no Settings choice (Brian,
      2026-11-15: "We decided not to put things behind a switch. Instead it's
      just active."). Used whenever the projections file was built with a ratio;
@@ -138,12 +145,15 @@ export default function Tabulator() {
   /* Our temperatures go in AFTER the projected days are appended, so days
      1–10 all carry the same temperature. Off: untouched. */
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
-  const base = useMemo(() => (tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw), [tempsOn, feedRaw]);
+  const base = useMemo(() => {
+    const b = tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw;
+    return snowOn ? applySnowfall(b, feedRaw.blend) : b;
+  }, [tempsOn, snowOn, feedRaw]);
   const feed = useMemo(() => {
     const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
     const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
-    return applyOurs(g, feedRaw?.blend);
-  }, [projections, tempsOn, slrOn, feedRaw]);
+    return snowOn ? applySnowfall(g, feedRaw.blend) : applyOurs(g, feedRaw?.blend);
+  }, [projections, tempsOn, slrOn, snowOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
   /* Switching projections off with a 7–10 day window picked: back to six,
@@ -178,6 +188,7 @@ export default function Tabulator() {
   useEffect(() => { saveLocal("projections", projOverride); }, [projOverride]);
   useEffect(() => { saveLocal("temps", tempsOverride); }, [tempsOverride]);
   useEffect(() => { saveLocal("season", seasonOverride); }, [seasonOverride]);
+  useEffect(() => { saveLocal("snowfall", snowOverride); }, [snowOverride]);
   /* The browser's own chrome follows the grey panel while it is open. */
   useEffect(() => {
     const m = document.querySelector('meta[name="theme-color"]');
@@ -357,6 +368,14 @@ export default function Tabulator() {
                 <button className={tempsOn ? "on" : ""} onClick={() => chooseTemps(true)}>Tabulator model</button>
               </span>
             </div>}
+            {canChoose(snowMode) && feedRaw?.blend && <div className="set">
+              <span className="set-label">Snowfall</span>
+              <span className="pill sm">
+                <button className={!snowOn ? "on" : ""} onClick={() => chooseSnow(false)}>Snow-Forecast</button>
+                <button className={snowOn ? "on" : ""} onClick={() => chooseSnow(true)}>Tabulator model</button>
+              </span>
+              {snowStale && <span className="stamp warn">Tabulator snowfall is out of date. Showing Snow-Forecast.</span>}
+            </div>}
             {canChoose(seasonMode) && feedRaw?.season && <div className="set">
               <span className="set-label">Shaping up</span>
               <span className="pill sm">
@@ -528,7 +547,7 @@ export default function Tabulator() {
             <Radar resorts={base.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
               gridResorts={projections ? feed.resorts : base.resorts}
               gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
-              editorial={feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
+              editorial={feed.snowfall ? null /* written from Snow-Forecast's numbers, not the ones on screen */ : feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}
 

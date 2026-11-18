@@ -22,3 +22,47 @@ export function applyOurs(feed, blend, now = Date.now()) {
     }),
   };
 }
+
+/** Is the blend file recent enough to use? Same 36 h rule as the mark. */
+export function blendFresh(blend, now = Date.now()) {
+  if (!blend?.resorts) return false;
+  const t = Date.parse(blend.fetchedAt ?? blend.generatedAt);
+  return Number.isFinite(t) && now - t <= MAX_AGE_H * 3600e3;
+}
+
+/* The Snowfall switch (Brian, 2026-11-18): our number IN PLACE OF
+   Snow-Forecast's on its six days, so the totals, the radar ranking, the
+   verdicts and the chart all read ours. Why now: on the Wasatch storm of
+   11-17 to 11-21 Snow-Forecast had Alta at ~6" Wed–Sat against NWS Salt
+   Lake's 23–37" and our ~25". Not yet proven head-to-head; flags.json
+   `snowfall` reverts it for everyone.
+   - All or nothing per resort: a resort keeps Snow-Forecast's numbers unless
+     ours covers every one of its forecast days, so one resort's total never
+     mixes two sources. (New resorts, e.g. Park City, until the blend has them.)
+   - Snow-Forecast's figure is kept as `sfSnow` for anyone debugging; nothing
+     draws it, and the light `ours` mark is dropped (it would equal the bar).
+   - Stale or missing file: the feed comes back unchanged and `snowfall`
+     stays unset, so Settings can say so. Never an old number as today's.
+   Projected days (7–10) are ours already and are left alone. */
+export function applySnowfall(feed, blend, now = Date.now()) {
+  if (!feed || !blendFresh(blend, now)) return feed;
+  return {
+    ...feed,
+    snowfall: "tabulator",
+    resorts: feed.resorts.map((r) => {
+      const days = blend.resorts[r.id]?.days;
+      if (!days?.length) return r;
+      const byDate = new Map(days.filter((d) => d.snow != null).map((d) => [d.date, d.snow]));
+      if (!r.days.every((d) => d.projected || byDate.has(d.date))) return r;
+      return {
+        ...r,
+        snowfall: "tabulator",
+        days: r.days.map((d) => {
+          if (d.projected) return d;
+          const { ours: _drop, ...rest } = d;
+          return { ...rest, snow: byDate.get(d.date), sfSnow: d.snow };
+        }),
+      };
+    }),
+  };
+}

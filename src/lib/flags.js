@@ -59,7 +59,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
    snow-to-liquid ratio instead of its flat 7:1. Needs projections on. */
 /* season (2026-11-17): Shaping up on trips past the forecast, from
    public/season.json (scripts/season). */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off" });
+/* snowfall (2026-11-18): our snowfall (lib/ours.js applySnowfall) in place of
+   Snow-Forecast's on its six days. Needs blend not "off". */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

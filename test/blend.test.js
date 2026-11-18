@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { dailyFromHourly, blendDay, snowFrom, resortDays } from "../scripts/blend/lib.js";
 import { splitModels, forecastToRows } from "../scripts/archive/om-forecast.js";
-import { applyOurs } from "../src/lib/ours.js";
+import { applyOurs, applySnowfall } from "../src/lib/ours.js";
+import { parseFlags } from "../src/lib/flags.js";
 
 const hours = (n, start = "2026-11-17T01:00") =>
   Array.from({ length: n }, (_, i) => new Date(Date.parse(`${start}Z`) + i * 3600e3).toISOString().slice(0, 16));
@@ -74,4 +75,34 @@ test("applyOurs: our snow on Snow-Forecast's days only, and never from a stale f
   assert.equal("ours" in out[1], false);
   assert.equal("ours" in applyOurs(feed, blend, now + 40 * 3600e3).resorts[0].days[0], false);
   assert.equal(applyOurs(feed, null), feed);
+});
+
+test("applySnowfall: our number replaces Snow-Forecast's, whole resorts only", () => {
+  const now = Date.parse("2026-11-18T12:00:00Z");
+  const feed = { resorts: [
+    { id: "alta", days: [{ date: "2026-11-18", snow: 0, ours: 2 }, { date: "2026-11-19", snow: 7 }, { date: "2026-11-25", snow: 6, projected: true }] },
+    { id: "park-city", days: [{ date: "2026-11-18", snow: 3 }, { date: "2026-11-19", snow: 5 }] },
+    { id: "brighton", days: [{ date: "2026-11-18", snow: 1 }, { date: "2026-11-19", snow: 4 }] },
+  ] };
+  const blend = { fetchedAt: "2026-11-18T07:20:00Z", resorts: {
+    alta: { days: [{ date: "2026-11-18", snow: 2 }, { date: "2026-11-19", snow: 21 }, { date: "2026-11-25", snow: 30 }] },
+    brighton: { days: [{ date: "2026-11-18", snow: 3 }] },  // misses 11-19 → stays Snow-Forecast
+  } };
+  const out = applySnowfall(feed, blend, now);
+  assert.equal(out.snowfall, "tabulator");
+  const [alta, pc, brighton] = out.resorts;
+  assert.deepEqual(alta.days.map((d) => d.snow), [2, 21, 6]);   // projected day untouched
+  assert.deepEqual(alta.days.map((d) => d.sfSnow), [0, 7, undefined]);
+  assert.equal("ours" in alta.days[0], false);
+  assert.equal(alta.snowfall, "tabulator");
+  assert.equal(pc, feed.resorts[1]);                              // not in the blend
+  assert.equal(brighton, feed.resorts[2]);                        // partial coverage
+  assert.equal(applySnowfall(feed, blend, now + 40 * 3600e3), feed); // stale → unchanged
+  assert.equal(applySnowfall(feed, null, now), feed);
+});
+
+test("snowfall flag: known modes only, off by default", () => {
+  assert.equal(parseFlags({}).snowfall, "off");
+  assert.equal(parseFlags({ snowfall: "on" }).snowfall, "on");
+  assert.equal(parseFlags({ snowfall: "yes" }).snowfall, "off");
 });
