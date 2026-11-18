@@ -671,8 +671,11 @@ body { background: #F2F2F2; }
 .tp-check svg path { fill: currentColor; }
 
 /* tabs */
+/* z-index: above the page (the trip rows sit at z 1 for swipe-to-remove and
+   painted over the bar, Brian 2026-11-18), level with the header, below the
+   sheets and dialogs (50, 60). */
 .tabs {
-  position: sticky; bottom: 0; background: #fff;
+  position: sticky; bottom: 0; z-index: 20; background: #fff;
   display: grid; grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--line); padding: 12px 0 26px;
 }
