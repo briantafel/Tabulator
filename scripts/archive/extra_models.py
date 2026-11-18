@@ -263,12 +263,12 @@ def probe_aigefs() -> None:
     """Print AIGEFS's layout on NOMADS (first probe 2026-11-18: aigefs.YYYYMMDD/HH/
     mem000…mem030 + ensstat/), so the collector can be written against it."""
     now = datetime.now(timezone.utc)
-    links = lambda text: [x for x in re.findall(r"href=[\"']?([^\"' >]+)", text) if not x.startswith(("?", "/", "http"))]
+    links = lambda text: [x for x in re.findall(r"href=[\"']?([^\"' >]+)", text, flags=re.I) if not x.startswith(("?", "/", "http"))]
     day = sorted(x for x in links(http(f"{NOMADS}/aigefs/prod/", retries=1).decode()) if x.startswith("aigefs."))[-1]
     hours = sorted(links(http(f"{NOMADS}/aigefs/prod/{day}", retries=1).decode()))
     log(f"{day}: {hours}")
     for hh in hours[:1]:
-        for mem in ("mem000/", "mem001/", "ensstat/"):
+        for mem in ("mem001/",):
             path = f"{NOMADS}/aigefs/prod/{day}{hh}{mem}"
             for _ in range(6):
                 text = http(path, retries=1).decode(errors="replace")
@@ -279,11 +279,11 @@ def probe_aigefs() -> None:
                     log("  raw listing:\n" + text[:1500])
                     break
                 if files:
-                    log(f"  {len(files)} files: {files[:8]} … {files[-6:]}")
-                    idx = next((f for f in files if f.endswith(".idx")), None)
-                    if idx:
+                    kinds = sorted({re.sub(r"\.f\d{3}", ".fFFF", f) for f in files})
+                    log(f"  {len(files)} files, kinds: {kinds}")
+                    for idx in [f for f in files if f.endswith(".f024.grib2.idx")][:3]:
                         lines = http(path + idx, retries=1).decode(errors="replace").splitlines()
-                        log(f"  {idx}: {len(lines)} lines\n    " + "\n    ".join(lines[:60]))
+                        log(f"  {idx}: {len(lines)} lines\n    " + "\n    ".join(l for l in lines if not re.search(r":(\d+) mb:", l) or re.search(r":(1000|850|700|500) mb:", l)))
                     break
                 path += ls[0]
     log(f"probe done {iso(now)}")
