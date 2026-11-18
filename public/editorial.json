@@ -1,124 +1,65 @@
 {
- "generatedAt": "2026-11-18T02:59:11.167Z",
- "forecastGeneratedAt": "2026-11-18T02:52:50.992Z",
+ "generatedAt": "2026-11-18T15:13:53.284Z",
+ "forecastGeneratedAt": "2026-11-18T15:07:23.863Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-18",
-  "to": "2026-11-22",
-  "days": 5,
-  "toLabel": "Sunday Nov 22"
+  "to": "2026-11-23",
+  "days": 6,
+  "toLabel": "Monday Nov 23"
  },
- "overview": "A string of Pacific storms keeps the West wet this week. The first, arriving Tuesday night, brings the heaviest snow to the Sierra and western Nevada, with another wave Thursday and Friday across Utah, Wyoming and Colorado.",
+ "overview": null,
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A strong storm arrives Tuesday night and runs through Thursday, with heavy mountain snow, strong south winds and snow levels rising to 4500 to 5500 feet Wednesday. Kirkwood leads with 48 inches, 29 of them Wednesday. The NWS is calling for more, 62 to 95 inches Wednesday through Sunday night. A Winter Storm Warning runs from Tuesday night to Friday."
+   "text": "Kirkwood is forecast for about 56\". Sugar Bowl and Palisades follow. The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. The NWS is calling for more at Kirkwood: 62 to 91 inches Wednesday through Sunday night. Winter Storm Warning at Kirkwood from Wednesday to Friday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "The same storm reaches the eastern Sierra late Tuesday night and Wednesday, with winds near 100 mph over ridges and whiteout conditions. Mammoth should see 38 inches, 19 of them Wednesday. The NWS is calling for more, 60 to 84 inches Wednesday through Sunday night. Passes may stay difficult until the storm clears Friday."
-  },
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "A cold front brings strong gusts and mountain snow to western Wyoming and Idaho, with another system Thursday into Saturday. Grand Targhee leads with 9 inches. A Winter Weather Advisory covers Tuesday night into Wednesday."
+   "text": "Mammoth is forecast for about 41\", 21\" of it Wednesday. The National Weather Service has heavy snow at Mammoth Wednesday and Wednesday night. The NWS is calling for more at Mammoth: 62 to 86 inches Wednesday through Sunday night. Winter Storm Warning at Mammoth from Wednesday to Friday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A cold front brings snow to the Wasatch Tuesday, and a larger storm Thursday into Friday pushes snow levels near 5000 feet. Powder Mountain leads with 8 inches, and the NWS is calling for more, 18 to 34 inches Wednesday night through Friday night."
+   "text": "Snowbasin is forecast for about 12\", 10\" of it Friday. Powder Mountain and Snowbird follow. The NWS is calling for more at Snowbasin: 10 to 20 inches Thursday through Friday night."
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Grand Targhee is forecast for about 9\", 5\" of it Friday. Sun Valley and Jackson Hole follow. The NWS is calling for more at Grand Targhee: 7 to 20 inches Wednesday through Monday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A line of rain, thunderstorms and high-elevation snow crosses the region Tuesday, with the snow mostly falling in the evening. A second system Friday into Saturday is uncertain, with models disagreeing on strength and timing. Telluride leads with 8 inches, most of it Friday."
+   "text": "Telluride is forecast for about 9\", 6\" of it Monday. Steamboat and Crested Butte follow. The NWS is calling for more at Steamboat: 3 to 9 inches Thursday night through Monday night."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek is forecast for about 8\", 5\" of it Friday. Taos follows. The NWS is calling for more at Wolf Creek: 3 to 12 inches Thursday night through Monday."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says a Pacific trough keeps California wet and unsettled through next Tuesday, with another trough reaching the coast around Tuesday Nov 24. The Climate Prediction Center expects deep, slow troughing over the West Nov 23 to 27.",
-  "sources": [
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-17T20:08:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-17T23:35:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-18T01:20:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
-   },
-   {
-    "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-11-18T00:54:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-17T23:59:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-17T19:57:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-17T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-18T02:52:50.992Z"
+   "issuedAt": "2026-11-18T15:07:23.863Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-18T02:59:10.972Z"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-17T20:08:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-17T21:46:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-17T23:35:00+00:00"
-  },
-  {
-   "name": "NWS PIH Area Forecast Discussion",
-   "issuedAt": "2026-11-18T01:20:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-18T00:54:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-17T23:59:00+00:00"
+   "issuedAt": "2026-11-18T15:13:52.964Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-18T02:59:11.167Z"
+   "issuedAt": "2026-11-18T15:13:53.284Z"
   }
  ],
  "api": {
   "day": "2026-11-18",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
