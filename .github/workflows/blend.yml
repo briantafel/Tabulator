@@ -1,15 +1,17 @@
-name: Our forecast (live blend, once a day)
+name: Our forecast (live blend, twice a day)
 # 2026-11-16 (Brian). Fetches today's ECMWF / GFS / GEM from Open-Meteo's
 # forecast API (one request per app resort, all three models: ~56 calls,
 # paced 10 s apart, ~10 min), archives them exactly as fetched, and builds
 # public/blend-forecast.json: blend-v1 water x our snow-to-liquid ratio
 # (scripts/blend). The app draws it as a light mark on days 1-6.
-# Started by the Cloudflare scheduler at 07:07 UTC, an hour before the
-# Open-Meteo ensemble pass, so the two never overlap.
+# Started by the Cloudflare scheduler at 07:07 UTC (after the 00z runs, an
+# hour before the Open-Meteo ensemble pass) and 21:07 UTC (after the 12z
+# runs) — twice a day like Snow-Forecast (Brian, 2026-11-18).
 
 on:
   schedule:
     - cron: "17 7 * * *"
+    - cron: "17 21 * * *"
   workflow_dispatch:
 
 permissions:

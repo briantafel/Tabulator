@@ -28,7 +28,12 @@ export const SCHEDULE = [
   // asked). verify after the 02:30 archive run and the 08:13 ensemble pass;
   // temps after each main model cycle, as temps.yml's own cron says.
   // 2026-11-16: our live forecast (blend), an hour before the ensemble pass.
+  // Our forecast twice a day, on Snow-Forecast's rhythm (Brian, 2026-11-18:
+  // "Same times as snow-forecast... Their schedule is perfect for skiers").
+  // 07 UTC rather than SF's 06: ECMWF's 00z isn't on Open-Meteo until ~07.
+  // 21 UTC = 4:07 PM ET, all three 12z runs are out.
   { file: "blend.yml", every: 24, offset: 7 },
+  { file: "blend.yml", every: 24, offset: 21 },
   { file: "verify.yml", every: 24, offset: 9 },
   { file: "temps.yml", every: 6, offset: 5 },
 ];

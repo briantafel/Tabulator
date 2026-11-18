@@ -25,5 +25,6 @@ time from Cloudflare's cron instead. GitHub's own cron lines stay as a backup.
 ## What it starts (UTC)
 - every hour: watchdog, dynamical-history (until it is disabled)
 - every 3 h: regional-eps (01, 04, …), dynamical-ens and nbm (02, 05, …), upper-air (00, 03, …)
-- daily: blend (07:07, our live forecast), ensembles-om (08:07), verify (09:07, the scoring job + daily digest), projections-dyn (10:07)
+- twice daily: blend (07:07 and 21:07, our live forecast)
+- daily: ensembles-om (08:07), verify (09:07, the scoring job + daily digest), projections-dyn (10:07)
 - every 6 h: temps (05, 11, 17, 23 :07)

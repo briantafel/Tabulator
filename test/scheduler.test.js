@@ -16,6 +16,11 @@ test("daily jobs start once a day, at their hour (2026-11-11)", () => {
   assert.deepEqual(hours("projections-dyn.yml"), [10]);
   // 2026-11-16: the scoring job and the temperature build, skipped by GitHub's cron.
   assert.deepEqual(hours("verify.yml"), [9]);
-  assert.deepEqual(hours("blend.yml"), [7]);
+  assert.deepEqual(hours("blend.yml"), [7, 21]); // twice a day since 2026-11-18
   assert.deepEqual(hours("temps.yml"), [5, 11, 17, 23]);
+});
+
+test("our blend runs twice a day, 07 and 21 UTC (2026-11-18)", () => {
+  const hours = [...Array(24).keys()].filter((h) => due(h).includes("blend.yml"));
+  assert.deepEqual(hours, [7, 21]);
 });
