@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-18T17:56:58.165Z",
+ "generatedAt": "2026-11-18T18:32:16.702Z",
  "forecastGeneratedAt": "2026-11-18T17:50:07.047Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-18T16:33:08.927Z",
+ "blendGeneratedAt": "2026-11-18T18:32:13.620Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -12,59 +12,49 @@
   "days": 6,
   "toLabel": "Monday Nov 23"
  },
- "overview": "A series of systems keeps pushing through the West this week. Heavy Sierra snow and a winter storm hit Wednesday through Friday, then a second system follows late in the weekend, with more active weather into Thanksgiving week.",
+ "overview": "A series of troughs and fronts keeps moving through the West. Snow and rain come in waves: Wednesday to Friday for the Sierra and Utah, Thursday to Saturday for the Rockies, and a weekend system for the Pacific Northwest.",
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A strong system brings heavy snow and gusty south winds through Friday morning. Winter Storm Warnings cover higher elevations, and thunderstorms are possible in the Valley and foothills Thursday. Kirkwood leads with 72\" in total. Friday afternoon brings a brief lull before lighter snow returns Saturday, with active weather continuing into the holiday week."
+   "text": "A strong system brings heavy rain and mountain snow, with gusty south-southeast winds that favor the Sierra. Kirkwood leads with 69\" total, its biggest day Thursday. Winter Storm Warning above 4000 feet runs from tonight until 4 AM Friday, with another from Tuesday. Forecasters expect a lighter weekend system before a more active pattern for Thanksgiving week."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "A winter storm arrives Wednesday and runs through Friday, bringing heavy Sierra snow and strong gusty winds. Mammoth leads the region with 53\" in total. The National Weather Service is calling for more, 62 to 86 inches over Wednesday through Sunday night. Lowering snow levels Thursday bring snow into western Nevada valleys and foothill commutes."
+   "text": "A winter storm brings heavy snow to the Sierra Wednesday through Friday, with strong, gusty winds. Mammoth has 50\" total, with its biggest day Thursday. Snow levels drop Thursday, bringing snow to valley and foothill commutes in western Nevada. The NWS is calling for more, 62 to 86 inches over Wednesday through Sunday night. A Winter Storm Warning runs through Friday morning."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Another storm arrives Thursday and runs into Friday, with snow levels falling near or below 5000 feet by Friday. Snowbasin leads the region with 44\" in total, and its biggest day is Friday with 25\". The system comes in piecemeal, so widespread heavy precipitation looks unlikely. Freezing temperatures near Zion are likely Saturday and Sunday mornings."
+   "text": "A longer storm arrives in pieces from Thursday through Saturday morning. Friday evening into Saturday, colder air should bring snow down to valley floors, with winds favoring the northern mountains. Snowbasin leads with 49\" total, its biggest day Friday at 27\". Freezing temperatures are likely in the Virgin River corridor near Zion Saturday and Sunday mornings."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A cold front brought the Bighorns snow through this morning, with winter travel on the passes. Another system arrives Thursday through Friday, with precipitation becoming more widespread Friday night. Grand Targhee leads with 26\" in total. The Sawtooths and Sun Valley may get a Winter Weather Advisory starting tonight."
+   "text": "A cold front has moved east, and the Bighorns are getting the last of the snow today. A new trough arrives Thursday, bringing light snow to western Wyoming and Idaho. The main trough reaches Friday, with more widespread precipitation Friday night. Grand Targhee leads with 32\" total, its biggest day Friday. Sun Valley sees Thursday's heaviest snow, with a possible winter weather advisory tonight."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Snow ends across the mountains early today, then another round of light snow arrives Thursday night and Friday along the Continental Divide. Gusty winds and a stronger system arrive Saturday, with a cool down through early next week. Wolf Creek leads with 17\" in total, and its biggest day is Friday with 7\"."
+   "text": "A progressive trough brings snow to the Continental Divide, with a brief lull after that. Another system arrives Thursday night into Friday with light accumulations along the Divide. Saturday brings stronger wind and light rain or snow showers. Wolf Creek leads with 21\" total, with its biggest day Monday. Cooler weather runs through the weekend, with another system possible Monday or Tuesday."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Rain and snow taper early Wednesday, leaving slick mountain passes. Another storm brings measurable snow Friday and Saturday, with the best totals likely in the central mountains of Colorado. Telluride leads with 10\" in total. Cold air behind the system keeps afternoon highs below normal."
+   "text": "Snow on the Divide tapers early Wednesday, with clearing skies and slick passes. A new storm brings snow to the mountains Thursday night through Saturday, with the best totals favoring the central Colorado mountains. Telluride leads with 12\" total, with its biggest day Monday. Cold air keeps afternoon highs below normal, and desert valleys see their first freezing temperatures of the season."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A low moves through Wednesday with mountain snow and lowland rain, then precipitation eases Thursday night. Friday is mostly dry before another system arrives over the weekend. Snow levels near 2500 feet mean snow on the passes. Mt. Bachelor leads with 11\" in total, and Crystal Mountain has a possible increase to 3 to 10 inches Wednesday through Monday night."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Flurries are likely Thursday and again through the weekend, with a mix of sun and cloud on Sunday. Fernie leads with 6\" in total. A stronger snow chance arrives Monday night, and temperatures stay near or below freezing."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "A mix of sun and cloud gives way to showers and flurries this weekend, with rain by Monday. Cypress Mountain leads with 6\" in total, with its biggest day Sunday at 4\"."
+   "text": "A low moving south brings mountain snow and lowland rain to Oregon today, with a breezy Blue Mountains. Dense fog is likely in the Columbia Basin into mid-morning. Mt. Bachelor leads with 10\" total, with its biggest day Wednesday. Precipitation eases Thursday and Friday is mostly dry. The weekend brings another low, with snow levels near 2500 feet and likely snow on the passes."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-18T16:33:08.927Z"
+   "issuedAt": "2026-11-18T18:32:13.620Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -80,7 +70,7 @@
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-18T12:11:00+00:00"
+   "issuedAt": "2026-11-18T18:20:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
@@ -96,7 +86,7 @@
   },
   {
    "name": "NWS ABQ Area Forecast Discussion",
-   "issuedAt": "2026-11-18T11:36:00+00:00"
+   "issuedAt": "2026-11-18T18:04:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
@@ -104,7 +94,7 @@
   },
   {
    "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-18T13:00:00+00:00"
+   "issuedAt": "2026-11-18T17:55:00+00:00"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
@@ -112,12 +102,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-18T17:56:58.165Z"
+   "issuedAt": "2026-11-18T18:32:16.702Z"
   }
  ],
  "api": {
   "day": "2026-11-18",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
