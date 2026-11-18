@@ -1618,3 +1618,6 @@ body { background: #F2F2F2; }
   line-height: calc(23.5 * var(--u)); letter-spacing: -.04em;
 }
 .su-av-trend { margin-top: calc(6 * var(--u)); }
+
+/* The avalanche center named in a region's paragraph links to its forecast. */
+.su-prose a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }

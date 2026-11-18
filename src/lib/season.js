@@ -191,6 +191,26 @@ export function avalancheTrend(history) {
   return `${DANGER[now]} for ${n} forecasts in a row.`;
 }
 
+/** Trips past the forecast carry no danger ratings: a rating is for today
+ *  and tomorrow, and weeks out it reads as a prediction it is not (Brian,
+ *  2026-11-18). A persistent weak layer is different: it can last weeks or
+ *  the season, so it is the one avalanche fact that carries to a trip. One
+ *  sentence per center listing one; null when none does. */
+export function persistentLayerSegs(rows, season) {
+  const zones = regionAvalanche(rows, season).filter((z) => z.persistent);
+  if (!zones.length) return null;
+  const centers = [...new Map(zones.map((z) => [z.center, z])).values()];
+  const segs = [{ t: " " }];
+  centers.forEach((z, i) => {
+    if (i) segs.push({ t: i === centers.length - 1 ? " and " : ", " });
+    /* "The Sierra Avalanche Center", but "Avalanche Canada". */
+    const name = /center$/i.test(z.center) && !/^the /i.test(z.center) ? `the ${z.center}` : z.center;
+    segs.push({ t: i === 0 ? name.charAt(0).toUpperCase() + name.slice(1) : name, href: z.link ?? null });
+  });
+  segs.push({ t: `${centers.length > 1 ? " are" : " is"} tracking a persistent weak layer. These can last for weeks, so it is worth watching all the way to your trip.` });
+  return segs;
+}
+
 const ordinal = (n) => {
   const t = ["th", "st", "nd", "rd"], v = n % 100;
   return n + (t[(v - 20) % 10] || t[v] || t[0]);

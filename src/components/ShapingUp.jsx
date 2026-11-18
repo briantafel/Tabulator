@@ -1,5 +1,4 @@
-import { tripRegions, regionParagraph, surfaceChips, regionAvalanche, DANGER, vsNormal } from "../lib/season.js";
-import { AvalancheZone, BACKCOUNTRY_NOTE } from "./Avalanche.jsx";
+import { tripRegions, regionParagraph, surfaceChips, persistentLayerSegs, vsNormal } from "../lib/season.js";
 import { snowpack } from "../lib/depths.js";
 import { lookAhead, CONF } from "../lib/lookahead.js";
 import { snowWithUnit } from "../lib/units.js";
@@ -10,7 +9,8 @@ import { shortDate } from "../lib/dates.js";
  *  2026-11-17). Behind the `season` switch.
  *
  *  The regional paragraph, Looking ahead, the top mountains, every resort's
- *  numbers and the avalanche forecasts behind them. */
+ *  numbers. Avalanche ratings live on the resort sheets; here only a
+ *  persistent weak layer is named (it lasts; a rating does not). */
 export default function ShapingUp({ trip, season, projections = null, resorts, metric, onOpenResort }) {
   const { regions } = tripRegions(trip, resorts, season);
   if (!regions.length) {
@@ -47,7 +47,10 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
               {asOf && <span>as of {shortDate(asOf)}</span>}
             </div>
             <p className="su-prose">
-              {regionParagraph(g, metric).map((s, i) => (s.hot ? <b key={i}>{s.t}</b> : <span key={i}>{s.t}</span>))}
+              {[...regionParagraph(g, metric), ...(persistentLayerSegs(g.rows, season) ?? [])].map((s, i) => (
+                s.hot ? <b key={i}>{s.t}</b>
+                  : s.href ? <a key={i} href={s.href} target="_blank" rel="noreferrer">{s.t}</a>
+                    : <span key={i}>{s.t}</span>))}
             </p>
 
             {(() => {
@@ -91,14 +94,7 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                     <div><i>Base / top</i><b>{sfKnown ? `${sf.base ? sw(sf.base) : "—"} / ${sf.top ? sw(sf.top) : "—"}` : "—"}</b></div>
                     <div><i>Last 7 / 14 d, est.</i><b>{s.new7Cm != null ? sw(s.new7Cm) : "—"} / {s.new14Cm != null ? sw(s.new14Cm) : "—"}</b></div>
                     <div><i>Since a big day</i><b>{s.lastDump ? (s.daysSinceDump === 0 ? shortDate(s.lastDump) : `${s.daysSinceDump} days`) : "None yet"}</b></div>
-                    {(() => {
-                      /* Avalanche when the zone has a rating (the design's
-                         fourth stat); the station's depth until then. */
-                      const a = season?.avalanche?.[r.id];
-                      return a?.max != null
-                        ? <div><i>Avalanche</i><b className={`su-av-${a.max}`}>{a.max} · {DANGER[a.max].slice(0, 5)}{DANGER[a.max].length > 5 ? "." : ""}</b></div>
-                        : <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>;
-                    })()}
+                    <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>
                   </div>
                   {chips.length > 0 && <div className="su-chips">{chips.map((c) => <span key={c}>{c}</span>)}</div>}
                   <p className="su-small">
@@ -125,19 +121,6 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
               </div>
               <p className="su-small">A dash means no reading or too early to compare, never zero.</p>
             </>)}
-            {(() => {
-              const zones = regionAvalanche(g.rows, season);
-              if (!zones.length) return null;
-              return (
-                <div className="su-av">
-                  <div className="su-h su-h2"><h3>Avalanche</h3></div>
-                  {zones.map((z) => (
-                    <AvalancheZone key={`${z.center}${z.zone}`} z={z} />
-                  ))}
-                  <p className="su-small">{BACKCOUNTRY_NOTE}</p>
-                </div>
-              );
-            })()}
           </section>
         );
       })}

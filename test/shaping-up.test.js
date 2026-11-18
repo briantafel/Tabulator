@@ -89,3 +89,20 @@ test("a big % of normal carries the rank beside it", () => {
   const t = regionParagraph({ name: "the Sierra", swePctMedian: 236, rankShare: 11 / 37, rankOf: 37 }, false).map((s) => s.t).join("");
   assert.match(t, /236% of its normal snowpack to date, its 11th-biggest start in 37 seasons\./);
 });
+
+import { persistentLayerSegs } from "../src/lib/season.js";
+test("trips name a persistent weak layer only, never a rating", () => {
+  const rows = [{ r: { id: "a", name: "A" } }, { r: { id: "b", name: "B" } }, { r: { id: "c", name: "C" } }];
+  const txt = (s) => s.map((x) => x.t).join("");
+  const season = { avalanche: {
+    a: { center: "Sierra Avalanche Center", zone: "Central Sierra Nevada", max: 2, persistent: true, link: "https://x" },
+    b: { center: "Sierra Avalanche Center", zone: "Central Sierra Nevada", max: 2, persistent: true, link: "https://x" },
+  } };
+  const segs = persistentLayerSegs(rows, season);
+  assert.equal(txt(segs), " The Sierra Avalanche Center is tracking a persistent weak layer. These can last for weeks, so it is worth watching all the way to your trip.");
+  assert.equal(segs[1].href, "https://x");
+  assert.doesNotMatch(txt(segs), /Moderate|\b2\b/);
+  season.avalanche.c = { center: "Avalanche Canada", zone: null, max: 3, persistent: true, link: "https://y" };
+  assert.match(txt(persistentLayerSegs(rows, season)), /Avalanche Canada and the Sierra Avalanche Center are tracking/);
+  assert.equal(persistentLayerSegs(rows, { avalanche: { a: { center: "Utah Avalanche Center", max: 3, persistent: false } } }), null);
+});
