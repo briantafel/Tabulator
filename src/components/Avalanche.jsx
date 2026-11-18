@@ -16,7 +16,7 @@ export function AvalancheZone({ z, trend = null, trip = true }) {
         <p className="su-small">No rating yet{z.offSeason ? ": the center is between seasons" : ": forecasts start when the center opens for the season"}.</p>
       ) : (
         <>
-          <DangerBands bands={z.bands} />
+          <DangerBands bands={z.bands} max={z.max} />
           {trend && <p className="su-small su-av-trend">{trend}</p>}
           {z.problems?.length > 0 && (
             <p className="su-prose su-av-p">
@@ -33,8 +33,14 @@ export function AvalancheZone({ z, trend = null, trip = true }) {
 /** Danger by elevation band: five steps, lit up to the level in that level's
  *  colour — danger is a 1–5 rating, not an amount, so no proportional bar
  *  (2026-11-18). Shared by the resort sheet and each zone on a region sheet. */
-export function DangerBands({ bands }) {
-  return [["Above treeline", bands?.upper], ["Near treeline", bands?.middle], ["Below treeline", bands?.lower]].map(([label, v]) => (
+export function DangerBands({ bands, max = null }) {
+  /* A center that publishes no elevation breakdown (Utah: avalanche.org has
+     its overall level only, and UAC's own feed refuses us, 2026-11-18) gets
+     one row: the highest rating anywhere in the zone, labelled as such. */
+  const rows = bands && Object.values(bands).some((v) => v != null)
+    ? [["Above treeline", bands.upper], ["Near treeline", bands.middle], ["Below treeline", bands.lower]]
+    : max != null ? [["Highest in zone", max]] : [];
+  return rows.map(([label, v]) => (
     <div key={label} className="su-av-band">
       <span>{label}</span>
       <span className="su-av-steps" aria-hidden="true">
@@ -110,7 +116,7 @@ export function PlaceAvalanche({ zones }) {
           </p>
           {/* The elevation chart for every rated zone, as on the resort sheet
               (Brian, 2026-11-18: "Avalanche chart is missing from here"). */}
-          {z.bands && <DangerBands bands={z.bands} />}
+          <DangerBands bands={z.bands} max={z.max} />
         </div>
       ))}
       {unrated.length > 0 && (
