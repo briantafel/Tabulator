@@ -18,6 +18,8 @@ export const SCHEDULE = [
   { file: "dynamical-ens.yml", every: 3, offset: 2 },
   { file: "nbm.yml", every: 3, offset: 2 },
   { file: "upper-air.yml", every: 3, offset: 0 },
+  // 2026-11-18: HRRR precipitation, Canada's HRDPS (Datamart keeps ~1 day), NOAA AIGEFS.
+  { file: "extra-models.yml", every: 1, offset: 0 },
   // Daily (2026-11-11): one paced Open-Meteo ensemble pass (~90 min) after
   // ECMWF's 00z is on Open-Meteo, then the dynamical.org shadow build, which
   // compares itself against that pass.
