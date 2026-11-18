@@ -87,7 +87,7 @@ export function PlaceAvalanche({ zones }) {
   return (
     <section className="su-av rs-av ps-av" aria-label="Avalanche">
       <h3>Avalanche</h3>
-      <p className="su-small ps-av-lead">{zones.length} forecast zones cover these resorts, each rated on its own.</p>
+      <p className="su-small ps-av-lead">These resorts sit in different forecast areas, each rated on its own; there is no single rating for the region.</p>
       {rated.map((z) => (
         <div className="ps-av-row" key={`${z.center}|${z.zone}|${z.resorts.join(",")}`}>
           <div className="ps-av-top">
