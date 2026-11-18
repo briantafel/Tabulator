@@ -39,7 +39,7 @@ const OUT = "out";
    archive uses (within 30 km, up to three per resort). The Wasatch is the
    region the method was built on and the one the verdict rests on. */
 const REGIONS = {
-  Wasatch: ["alta", "snowbird", "brighton", "solitude", "snowbasin", "powder-mountain"],
+  Wasatch: ["alta", "snowbird", "brighton", "solitude", "park-city", "snowbasin", "powder-mountain"],
   Colorado: ["vail", "breckenridge", "arapahoe-basin", "steamboat", "aspen-highlands", "crested-butte", "telluride", "wolf-creek"],
   Tetons: ["jackson-hole", "grand-targhee"],
   Tahoe: ["palisades", "northstar", "sugar-bowl", "kirkwood", "heavenly", "mt-rose", "sierra-at-tahoe", "homewood"],

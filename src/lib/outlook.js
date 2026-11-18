@@ -56,6 +56,7 @@ export const RANGES = {
   homewood: { range: "the Sierra", sub: "Tahoe", state: "California", warnIn: 12 },
   brighton: { range: "the Wasatch", state: "Utah", warnIn: 18 },
   solitude: { range: "the Wasatch", state: "Utah", warnIn: 18 },
+  "park-city": { range: "the Wasatch", state: "Utah", warnIn: 18 },
   snowbasin: { range: "the Wasatch", state: "Utah", warnIn: 18 },
   "powder-mountain": { range: "the Wasatch", state: "Utah", warnIn: 18 },
   vail: { range: "the Rockies", sub: "the central Rockies", state: "Colorado", warnIn: 12 },

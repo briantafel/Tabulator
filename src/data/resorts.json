@@ -14,7 +14,8 @@
       "`tz` (every resort) and `latlon` (the four Canadian resorts, which have no `nws` point) were added 2026-10-29 for the forecast archive: tz turns Snow-Forecast's local AM/PM/night periods into UTC, latlon is where the Open-Meteo ensembles are requested. The Canadian points are approximate mid-mountain coordinates from memory, not fetched; Open-Meteo is also given the Snow-Forecast mid elevation, so a few hundred metres of error in position matters little.",
       "`eccc` (the four Canadian resorts, added 2026-10-31) names the Environment and Climate Change Canada city-page forecast nearest the resort — a town, so a valley forecast: Revelstoke bc-65, Whistler bc-86, Banff ab-49 for Lake Louise, Golden bc-34 for Kicking Horse. Site ids read from the API on Brian's Mac. Alerts are looked up at the resort's own `latlon`; ECCC alert areas are forecast regions tens of kilometres across, so the approximate coordinates are close enough.",
       "Sixteen Canadian resorts added 2026-10-31 at Brian's pick (Fernie, RED Mountain, Whitewater, Panorama, Kimberley, Big White, SilverStar, Sun Peaks, Sunshine Village, Norquay, Marmot Basin, Cypress, Tremblant, Le Massif, Mont-Sainte-Anne, Blue Mountain). Every Snow-Forecast slug was fetched (WebFetch reaches the site; curl does not) and its mid page's title and location checked. Sunshine Village is `Sunshine`, Norquay is `Banff-Norquay`, Le Massif is `Le-Massif-Ski-Area` — the obvious guesses 404. OnTheSnow paths are read off each province's ski-resorts index; Sunshine has two OnTheSnow entries and `sunshine-village` is the one still updated (banff-sunshine last updated in July). `eccc` sites are the nearest town with a city-page forecast: s-codes from dd.weather.gc.ca site_list_en.csv mapped to city codes by ECCC-MSC/msc-pygeoapi resources/wxo_lookup.json — the same lookup reproduces the original four exactly. Fernie uses Sparwood (Cranbrook is ~95 km away), RED uses Trail, Le Massif uses Baie-Saint-Paul, Mont-Sainte-Anne uses Québec, Blue Mountain uses Collingwood. `latlon` is Snow-Forecast's own resort point where its page shows one; Fernie, RED, Panorama and Kimberley are approximate, from memory. Fernie, Panorama and Kimberley keep Mountain time (America/Edmonton) like Kicking Horse; the Quebec and Ontario resorts are America/Toronto.",
-      "2026-11-10: 51 resorts outside the US and Canada added with `archiveOnly: true` (Europe, Japan, Chile/Argentina, Georgia, Norway/Sweden). They are ARCHIVED (Snow-Forecast all tiers, Open-Meteo ensembles, Previous Runs backfill) but NOT shown in the app: forecast.js, scrape.js, scrape-reports.js, projections and the dev fixture skip them. Slugs found via snow-forecast.com country pages and search results, not fetched from the sandbox (it cannot reach the site); a wrong one shows as a loud 404 in the archive run. `latlon` is an approximate mid-mountain point (Open-Meteo is given Snow-Forecast's mid elevation). `country` is ISO-3166 alpha-2; resorts without it are the original US/Canada set. Plan: claude/europe-plan.md in the Tabulator project."
+      "2026-11-10: 51 resorts outside the US and Canada added with `archiveOnly: true` (Europe, Japan, Chile/Argentina, Georgia, Norway/Sweden). They are ARCHIVED (Snow-Forecast all tiers, Open-Meteo ensembles, Previous Runs backfill) but NOT shown in the app: forecast.js, scrape.js, scrape-reports.js, projections and the dev fixture skip them. Slugs found via snow-forecast.com country pages and search results, not fetched from the sandbox (it cannot reach the site); a wrong one shows as a loud 404 in the archive run. `latlon` is an approximate mid-mountain point (Open-Meteo is given Snow-Forecast's mid elevation). `country` is ISO-3166 alpha-2; resorts without it are the original US/Canada set. Plan: claude/europe-plan.md in the Tabulator project.",
+      "2026-11-18: Park City added (Brian). One entry, two Snow-Forecast slugs, Park-City and The-Canyons: the lift-connected Park City Mountain and Canyons Village, combined by the max rule like Palisades. Both slugs and the OnTheSnow path fetched with WebFetch and checked (title, location, elevations: Park-City 2102/2574/3047 m, The-Canyons 2073/2559/3045 m). The `nws` point is mid-slope on the Park City side, set from the map, not verified against api.weather.gov (blocked here); fetch-weather.js rejects it loudly if its grid sits below the base."
     ]
   },
   "tier": "mid",
@@ -358,6 +359,21 @@
       "nws": [
         40.612,
         -111.598
+      ]
+    },
+    {
+      "id": "park-city",
+      "name": "Park City",
+      "region": "Utah",
+      "tz": "America/Denver",
+      "slugs": [
+        "Park-City",
+        "The-Canyons"
+      ],
+      "otsPath": "utah/park-city-mountain-resort",
+      "nws": [
+        40.638,
+        -111.528
       ]
     },
     {

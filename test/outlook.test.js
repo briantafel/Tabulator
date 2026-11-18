@@ -65,7 +65,7 @@ test("the ranges and the closing place are tappable, nothing else is", () => {
   const kirk = segs.find((s) => s.t === "Kirkwood").link;
   assert.deepEqual(membersOf(kirk), ["kirkwood"]);
   assert.deepEqual(membersOf({ kind: "range", key: "the Wasatch" }).sort(),
-    ["alta", "brighton", "powder-mountain", "snowbasin", "snowbird", "solitude"]);
+    ["alta", "brighton", "park-city", "powder-mountain", "snowbasin", "snowbird", "solitude"]);
 });
 
 test("a state or a part of the Rockies opens just those resorts", () => {
