@@ -18,6 +18,7 @@ import { score } from "./lib/scoring.js";
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
 import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
+import { oursReadoutMatches } from "./lib/readout.js";
 import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
 import { applyOurs, applySnowfall, blendFresh } from "./lib/ours.js";
@@ -73,7 +74,7 @@ export default function Tabulator() {
   const [tempsOverride, setTempsOverride] = useState(() => loadSaved("temps", null));
   /* And for Shaping up (lib/season.js). */
   const [seasonOverride, setSeasonOverride] = useState(() => loadSaved("season", null));
-  const [snowOverride, setSnowOverride] = useState(() => loadSaved("snowfall", null));
+  const [snowOverride] = useState(() => loadSaved("snowfall", null));
   const [settings, setSettings] = useState(false);
 
   const [tab, setTab] = useState("mountains");
@@ -135,7 +136,14 @@ export default function Tabulator() {
   const snowMode = feedRaw?.flags?.snowfall ?? "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
-  const chooseSnow = (on) => setSnowOverride(nextOverride(on, snowMode));
+  /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
+     screen, the written read-out included, comes from one set of numbers. */
+  const chooseSnow = (on) => {
+    const next = nextOverride(on, snowMode);
+    if (next === snowOverride) return;
+    saveLocal("snowfall", next);
+    window.location.reload();
+  };
   /* Days 7–10 snow from our fitted ratio — ACTIVE, no Settings choice (Brian,
      2026-11-15: "We decided not to put things behind a switch. Instead it's
      just active."). Used whenever the projections file was built with a ratio;
@@ -547,7 +555,9 @@ export default function Tabulator() {
             <Radar resorts={base.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
               gridResorts={projections ? feed.resorts : base.resorts}
               gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
-              editorial={feed.snowfall ? null /* written from Snow-Forecast's numbers, not the ones on screen */ : feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
+              editorial={feed.snowfall
+                ? (oursReadoutMatches(feed.editorialOurs, feedRaw?.blend) ? feed.editorialOurs : null) /* written from our numbers, or nothing */
+                : feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
           )}
 

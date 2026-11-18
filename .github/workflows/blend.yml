@@ -73,6 +73,17 @@ jobs:
         continue-on-error: true
         run: node scripts/blend/build.js out public
 
+      # A new blend changes the numbers the Tabulator read-out was written
+      # from, so rewrite it (public/editorial-ours.json).
+      - name: Write the radar read-out (Tabulator snowfall)
+        id: readout_ours
+        if: steps.projections.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run readout:ours
+
       - name: Commit our forecast
         id: projcommit
         if: always() && steps.collect.outcome != 'skipped'
@@ -81,6 +92,7 @@ jobs:
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
           git add public/blend-forecast.json
+          [ -f public/editorial-ours.json ] && git add public/editorial-ours.json
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "blend-forecast: $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do

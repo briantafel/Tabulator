@@ -414,6 +414,11 @@ export function validateReadout(out, facts) {
 /** Only show a read-out written from the forecast on screen. A run that
  *  failed after the scrape leaves the old file behind; this hides it rather
  *  than letting it contradict the radar above. */
+/** The Tabulator read-out also has to be written from the blend now loaded. */
+export const oursReadoutMatches = (editorial, blend) =>
+  !!editorial && editorial.snowfall === "tabulator" && !!blend &&
+  editorial.blendGeneratedAt === (blend.generatedAt ?? blend.fetchedAt ?? null);
+
 export const readoutMatches = (editorial, generatedAt) =>
   !!editorial && !editorial.quiet && !!editorial.regions?.length &&
   !!generatedAt && editorial.forecastGeneratedAt === generatedAt;

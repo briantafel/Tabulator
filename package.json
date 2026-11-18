@@ -16,6 +16,7 @@
     "scrape:reports": "node scripts/scrape-reports.js",
     "weather": "node scripts/fetch-weather.js",
     "readout": "node scripts/write-readout.js",
+    "readout:ours": "node scripts/write-readout.js ours",
     "archive": "node scripts/archive/collect.js out",
     "fixture": "node scripts/make-dev-fixture.js"
   },

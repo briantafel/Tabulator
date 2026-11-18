@@ -144,6 +144,8 @@ export async function loadForecast() {
   /* The radar read-out. Optional, and never for the embedded demo — its
      dates are shifted, so a real read-out would describe a different week. */
   const editorial = preset ? null : await getJson("editorial.json", null);
+  /* The same read-out written from our blend's numbers (Settings → Snowfall). */
+  const editorialOurs = preset ? null : await getJson("editorial-ours.json", null);
 
   /* Site-wide switches (see lib/flags.js). Optional like the rest: no file,
      a 404 or bad JSON all mean "everything off", i.e. the app as it was. */
@@ -178,6 +180,7 @@ export async function loadForecast() {
     reports,
     weather: rolled.weather,
     editorial,
+    editorialOurs,
     flags,
     projections,
     temps,

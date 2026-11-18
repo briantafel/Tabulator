@@ -27,6 +27,20 @@ import { readoutFacts, factsForWriter, templateReadout, validateReadout } from "
 import { callClaude, parseReply, HAIKU, SONNET } from "./readout-api.js";
 import { gatherAhead } from "./discussions.js";
 import { buoyNow } from "./buoy-now.js";
+import { applySnowfall, blendFresh } from "../src/lib/ours.js";
+
+/* Two read-outs (Brian, 2026-11-18: the Snowfall switch should "rewrite the
+   editorial"): editorial.json from Snow-Forecast's numbers, and
+   editorial-ours.json from our blend's (`variant: "ours"`), each written from
+   exactly the numbers the radar shows under that setting. The app picks the
+   one that matches the switch and reloads when it is flipped. */
+export const VARIANTS = {
+  sf: { file: "editorial.json", totals: "Snow-Forecast (totals)", debug: "" },
+  ours: { file: "editorial-ours.json", totals: "Tabulator model (totals)", debug: "ours-" },
+};
+/** The blend stamp a read-out was written from; the app shows it only if
+ *  the blend it has loaded carries the same stamp. */
+export const blendStamp = (blend) => blend?.generatedAt ?? blend?.fetchedAt ?? null;
 
 export const MAX_ATTEMPTS = 2;
 export const DAILY_CAP = 6;
@@ -67,11 +81,24 @@ export async function run({
   gather = gatherAhead,
   buoy = null, // the CLI passes buoyNow; tests stay offline
   log = console.error,
+  variant = "sf",
 } = {}) {
-  const forecast = await readJson(`${root}public/forecast.json`, null);
+  const V = VARIANTS[variant];
+  if (!V) throw new Error(`unknown read-out variant "${variant}"`);
+  let forecast = await readJson(`${root}public/forecast.json`, null);
   if (!forecast?.resorts?.length) throw new Error("public/forecast.json missing or empty — nothing to write about");
+  let blend = null;
+  if (variant === "ours") {
+    blend = await readJson(`${root}public/blend-forecast.json`, null);
+    if (!blendFresh(blend, now.getTime())) {
+      // The app shows Snow-Forecast (and its read-out) when the blend is stale.
+      log("readout (ours): no fresh blend-forecast.json — nothing written");
+      return { editorial: null, status: { fatal: null, warnings: ["no fresh blend — Tabulator read-out not written"] }, debug: null };
+    }
+    forecast = applySnowfall(forecast, blend, now.getTime());
+  }
   const weather = await readJson(`${root}public/weather.json`, { resorts: {} });
-  const prev = await readJson(`${root}public/editorial.json`, {});
+  const prev = await readJson(`${root}public/${V.file}`, {});
 
   const day = now.toISOString().slice(0, 10);
   const api = { day, calls: prev?.api?.day === day ? prev.api.calls ?? 0 : 0 };
@@ -150,6 +177,7 @@ export async function run({
   const editorial = {
     generatedAt: now.toISOString(),
     forecastGeneratedAt: forecast.generatedAt,
+    ...(variant === "ours" ? { snowfall: "tabulator", blendGeneratedAt: blendStamp(blend) } : {}),
     quiet: facts.quiet,
     writer,
     ...(model ? { model } : {}),
@@ -160,7 +188,7 @@ export async function run({
       ? { text: out.ahead, sources: facts.ahead.map(({ source, issuedAt, url }) => ({ name: source, issuedAt, url })) }
       : null,
     sources: [
-      { name: "Snow-Forecast (totals)", issuedAt: forecast.generatedAt },
+      { name: V.totals, issuedAt: variant === "ours" ? blendStamp(blend) : forecast.generatedAt },
       ...(weather.generatedAt ? [{ name: "National Weather Service point forecasts", issuedAt: weather.generatedAt }] : []),
       // The discussions each region drew on, when a model wrote it.
       ...(writer === "claude"
@@ -176,19 +204,20 @@ export async function run({
     if (b.block) editorial.sources.push({ name: "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)", issuedAt: now.toISOString() });
     if (b.warning) status.warnings.push(b.warning);
   }
-  await writeFile(`${root}public/editorial.json`, JSON.stringify(editorial, null, 1));
+  await writeFile(`${root}public/${V.file}`, JSON.stringify(editorial, null, 1));
 
   await mkdir(`${root}readout-debug`, { recursive: true });
-  await writeFile(`${root}readout-debug/facts.json`, JSON.stringify(facts, null, 1));
-  await writeFile(`${root}readout-debug/attempts.json`, JSON.stringify(debug, null, 1));
+  await writeFile(`${root}readout-debug/${V.debug}facts.json`, JSON.stringify(facts, null, 1));
+  await writeFile(`${root}readout-debug/${V.debug}attempts.json`, JSON.stringify(debug, null, 1));
 
-  log(`readout: ${facts.quiet ? "quiet week" : `${editorial.regions.length} regions`} by ${writer}${model ? ` (${model})` : ""}; API calls today ${api.calls}/${DAILY_CAP}`);
+  log(`readout${variant === "ours" ? " (ours)" : ""}: ${facts.quiet ? "quiet week" : `${editorial.regions.length} regions`} by ${writer}${model ? ` (${model})` : ""}; API calls today ${api.calls}/${DAILY_CAP}`);
   return { editorial, status, debug };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   try {
-    const { status } = await run({ buoy: buoyNow });
+    const variant = process.argv[2] === "ours" ? "ours" : "sf";
+    const { status } = await run({ buoy: buoyNow, variant });
     for (const w of status.warnings) console.log(`::warning::Radar read-out: ${w}`);
     if (status.fatal) {
       console.log(`::error::Radar read-out fell back to the template: ${status.fatal}`);

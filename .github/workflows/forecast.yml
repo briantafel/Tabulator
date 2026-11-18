@@ -74,6 +74,16 @@ jobs:
           READOUT_COMPARE_UNTIL: "2026-11-08"
         run: npm run readout
 
+      # The same read-out from our blend's numbers, for phones with
+      # Settings → Snowfall on "Tabulator model" (public/editorial-ours.json).
+      - name: Write the radar read-out (Tabulator snowfall)
+        id: readout_ours
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run readout:ours
+
       - name: Keep what the read-out was given and wrote
         if: always() && steps.readout.outcome != 'skipped'
         uses: actions/upload-artifact@v4
@@ -89,6 +99,7 @@ jobs:
           git config user.name  "tabulator-bot"
           git config user.email "actions@github.com"
           git add public/forecast.json public/history.json public/reports.json public/weather.json public/editorial.json
+          [ -f public/editorial-ours.json ] && git add public/editorial-ours.json
           if git diff --staged --quiet; then
             echo "no change"
           else
