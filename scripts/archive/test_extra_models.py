@@ -69,3 +69,8 @@ def test_hrdps_url():
     u = em.hrdps_url(em.MSC_ROOTS[0], C, 6, "APCP", "Sfc")
     assert u == ("https://dd.weather.gc.ca/20261118/WXO-DD/model_hrdps/continental/2.5km/12/006/"
                  "20261118T12Z_MSC_HRDPS_APCP_Sfc_RLatLon0.0225_PT006H.grib2")
+
+
+def test_hrrr_day_style_accumulation_label():
+    idx = HRRR_IDX.replace("6 hour fcst", "24 hour fcst").replace("0-6 hour acc fcst", "0-1 day acc fcst").replace("5-6 hour acc", "23-24 hour acc")
+    assert {v for _, v, _, _ in em.hrrr_picks(parse_noaa_idx(idx), 24)} == {"t", "u", "v", "precip", "snow"}

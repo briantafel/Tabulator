@@ -109,7 +109,8 @@ def build_blocks(cycle: datetime, acc: dict[int, dict[str, np.ndarray]], inst: d
 # ---------------------------------------------------------------- HRRR (wrfsfc)
 def hrrr_picks(idx: list[dict], lead: int) -> list[tuple[dict, str, str, object]]:
     inst_fc = {"anl", "0 hour fcst"} if lead == 0 else {f"{lead} hour fcst"}
-    acc_fc = f"0-{lead} hour acc fcst"
+    # wgrib2 writes whole-day accumulations in days: f24 → "0-1 day acc fcst" (live run 2026-11-18).
+    acc_fc = {f"0-{lead} hour acc fcst"} | ({f"0-{lead // 24} day acc fcst"} if lead % 24 == 0 else set())
     out = []
     for e in idx:
         key = (e["var"], e["level"])
@@ -117,9 +118,9 @@ def hrrr_picks(idx: list[dict], lead: int) -> list[tuple[dict, str, str, object]
             out.append((e, "t", "C", lambda a: a - 273.15))
         elif e["fcst"] in inst_fc and key in (("UGRD", "10 m above ground"), ("VGRD", "10 m above ground")):
             out.append((e, e["var"][0].lower(), "m/s", lambda a: a))
-        elif lead % BLOCK_H == 0 and e["fcst"] == acc_fc and key == ("APCP", "surface"):
+        elif lead % BLOCK_H == 0 and e["fcst"] in acc_fc and key == ("APCP", "surface"):
             out.append((e, "precip", "mm", lambda a: a))
-        elif lead % BLOCK_H == 0 and e["fcst"] == acc_fc and key == ("ASNOW", "surface"):
+        elif lead % BLOCK_H == 0 and e["fcst"] in acc_fc and key == ("ASNOW", "surface"):
             out.append((e, "snow", "cm", lambda a: a * 100.0))  # m → cm
     return out
 
@@ -250,7 +251,7 @@ def collect_hrdps(cfg, cycle, resorts, deadline):
                 missing.append(f"{name}@{l}h")
             else:
                 vals.setdefault(l, {})[name] = arr
-    log(f"    {len(ids)} resorts on the grid ({root.split('/')[3] if '{d}' in root else 'legacy path'}); "
+    log(f"    {len(ids)} resorts on the grid ({'dated' if '{d}' in root else 'legacy'} Datamart path); "
         f"fetched {nbytes / 1e6:.0f} MB in {time.time() - t0:.0f} s")
     if missing:
         raise RuntimeError(f"{len(missing)} files missing from a complete cycle (first: {missing[0]})")
@@ -259,48 +260,32 @@ def collect_hrdps(cfg, cycle, resorts, deadline):
 
 # ---------------------------------------------------------------- AIGEFS (NOMADS)
 def probe_aigefs() -> None:
-    """Print what NOMADS (and any AWS mirror) holds for AIGEFS, so the
-    collector can be written against the real layout."""
-    import html
+    """Print AIGEFS's layout on NOMADS (first probe 2026-11-18: aigefs.YYYYMMDD/HH/
+    mem000…mem030 + ensstat/), so the collector can be written against it."""
     now = datetime.now(timezone.utc)
-    for name in ("aigefs", "aigfs", "hgefs"):
-        u = f"{NOMADS}/{name}/prod/"
-        try:
-            text = http(u, retries=1).decode(errors="replace")
-            dirs = re.findall(r'href="([^"?/][^"]*/)"', text)
-            log(f"{u}: {dirs[-4:]}")
-        except Exception as e:
-            log(f"{u}: {e}")
-            continue
-        if not dirs:
-            continue
-        day = dirs[-1]
-        try:
-            sub = http(u + day, retries=1).decode(errors="replace")
-            hours = re.findall(r'href="([^"?/][^"]*/)"', sub)
-            log(f"  {day}: {hours}")
-            path = u + day + (hours[0] if hours else "")
-            for _ in range(5):  # walk down the first branch to the files
-                sub = http(path, retries=1).decode(errors="replace")
-                links = [html.unescape(x) for x in re.findall(r'href="([^"?][^"]*)"', sub) if not x.startswith("/")]
-                files = [x for x in links if not x.endswith("/")]
-                log(f"  {path}: {len(links)} entries; first {links[:8]}")
+    links = lambda text: [x for x in re.findall(r"href=[\"']?([^\"' >]+)", text) if not x.startswith(("?", "/", "http"))]
+    day = sorted(x for x in links(http(f"{NOMADS}/aigefs/prod/", retries=1).decode()) if x.startswith("aigefs."))[-1]
+    hours = sorted(links(http(f"{NOMADS}/aigefs/prod/{day}", retries=1).decode()))
+    log(f"{day}: {hours}")
+    for hh in hours[:1]:
+        for mem in ("mem000/", "mem001/", "ensstat/"):
+            path = f"{NOMADS}/aigefs/prod/{day}{hh}{mem}"
+            for _ in range(6):
+                text = http(path, retries=1).decode(errors="replace")
+                ls = links(text)
+                files = [x for x in ls if not x.endswith("/")]
+                log(f"  {path}: {len(ls)} links")
+                if not ls:
+                    log("  raw listing:\n" + text[:1500])
+                    break
                 if files:
-                    log(f"  sample files: {files[:6]} … {files[-4:]}")
+                    log(f"  {len(files)} files: {files[:8]} … {files[-6:]}")
                     idx = next((f for f in files if f.endswith(".idx")), None)
                     if idx:
-                        text = http(path + idx, retries=1).decode(errors="replace")
-                        log("  sample .idx:\n    " + "\n    ".join(text.splitlines()[:40]))
+                        lines = http(path + idx, retries=1).decode(errors="replace").splitlines()
+                        log(f"  {idx}: {len(lines)} lines\n    " + "\n    ".join(lines[:60]))
                     break
-                path += links[0]
-        except Exception as e:
-            log(f"  walk failed: {e}")
-    for b in ("noaa-nws-aigefs-pds", "noaa-aigefs-pds", "noaa-nws-aigfs-pds", "noaa-aigfs-pds", "noaa-oar-mlwp-data"):
-        try:
-            text = http(f"https://{b}.s3.amazonaws.com/?list-type=2&max-keys=5&delimiter=/", retries=0).decode()
-            log(f"s3 {b}: {re.findall(r'<Prefix>([^<]*)</Prefix>', text)[:8]}")
-        except Exception as e:
-            log(f"s3 {b}: {e}")
+                path += ls[0]
     log(f"probe done {iso(now)}")
 
 
