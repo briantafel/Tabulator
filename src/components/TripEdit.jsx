@@ -98,6 +98,10 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
     setNaming(false);
   };
 
+  /* Keyed like the cells: midday LOCAL, then a string (iso() is UTC). */
+  const now = new Date();
+  const todayKey = iso(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12));
+
   return (
     <div className="tripedit">
       {/* The slide lives on an inner wrapper, not on .tripedit itself. A
@@ -148,7 +152,9 @@ export default function TripEdit({ trip, onSave, onRename, onDelete, onClose }) 
           if (!d) return <span key={`p${i}`} />;
           const inRange = !watch && a && b && d >= a && d <= b;
           const end = (x) => !watch && d === x;
-          const cls = ["cal-d", inRange ? "in" : "", end(a) ? "sel-a" : "", end(b) ? "sel-b" : ""]
+          /* Today's red circle, as on the Find me snow calendar (Brian,
+             2026-11-17: changing a trip's dates should still show it). */
+          const cls = ["cal-d", inRange ? "in" : "", end(a) ? "sel-a" : "", end(b) ? "sel-b" : "", d === todayKey ? "today" : ""]
             .filter(Boolean).join(" ");
           return (
             <button key={d} className={cls} onClick={() => pick(d)}>

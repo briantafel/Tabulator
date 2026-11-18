@@ -1109,6 +1109,14 @@ body { background: #F2F2F2; }
 .te-grid .cal-d.in::before { height: calc(36 * var(--u)); }
 .te-grid .cal-d.sel-a::after,
 .te-grid .cal-d.sel-b::after { width: calc(36 * var(--u)); height: calc(36 * var(--u)); }
+/* Today, scaled from the Find me snow calendar (29.4 inside a 33 band) to
+   this 36 band: 32 across, the same ring of grey when it ends the trip. */
+.te-grid .cal-d.today::after { width: calc(32 * var(--u)); height: calc(32 * var(--u)); }
+.te-grid .cal-d.today.in.sel-a::before { left: calc(50% - 18 * var(--u)); border-radius: calc(18 * var(--u)) 0 0 calc(18 * var(--u)); }
+.te-grid .cal-d.today.in.sel-b::before { right: calc(50% - 18 * var(--u)); border-radius: 0 calc(18 * var(--u)) calc(18 * var(--u)) 0; }
+.te-grid .cal-d.today.in.sel-a.sel-b::before { left: calc(50% - 18 * var(--u)); right: calc(50% - 18 * var(--u)); border-radius: 50%; }
+/* Watchlist on: the calendar ghosts, today with it. */
+.te-grid.ghost .cal-d.today::after { background: #D9D9D9; }
 
 /* 44.5 across, centred, 52.75 below the grid.
    The favourites picker's own check (.fs-check) is the same control in a
