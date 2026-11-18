@@ -74,3 +74,12 @@ def test_hrdps_url():
 def test_hrrr_day_style_accumulation_label():
     idx = HRRR_IDX.replace("6 hour fcst", "24 hour fcst").replace("0-6 hour acc fcst", "0-1 day acc fcst").replace("5-6 hour acc", "23-24 hour acc")
     assert {v for _, v, _, _ in em.hrrr_picks(parse_noaa_idx(idx), 24)} == {"t", "u", "v", "precip", "snow"}
+
+
+def test_aigefs_url_and_member_rows():
+    assert em.aigefs_url(C, 7, 24).endswith("aigefs.20261118/12/mem007/model/atmos/grib2/aigefs.t12z.sfc.f024.grib2")
+    members = {3: {6: {"precip": np.array([1.0])}, 12: {"precip": np.array([3.5])}}}
+    rows = em.to_rows("aigefs", {**em.MODELS["aigefs"], "last": 12}, C, ["alta"], {"alta": (0, 40.6, -111.6)},
+                      members, "2026-11-18T23:00:00Z", "rid")
+    assert [(r["member"], r["valid_start"], r["value"]) for r in rows] == [
+        (3, "2026-11-18T12:00:00Z", 1.0), (3, "2026-11-18T18:00:00Z", 2.5)]

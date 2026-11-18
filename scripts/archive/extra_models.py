@@ -13,9 +13,10 @@ accuracy (global ICON was judged low value and left out):
   msc-hrdps / hrdps    Canada's HRDPS 2.5 km (MSC Datamart), 00/06/12/18z to
                        48 h, every resort on its grid (Canada + northern US).
                        The Datamart keeps about a day: collected live only.
-  noaa-aigefs / aigefs NOAA's AI GEFS (operational Dec 2025), NOMADS. NOMADS
-                       keeps about a month: collected live only. (--probe
-                       prints its file layout; see AIGEFS below.)
+  noaa-aigefs / aigefs NOAA's AI GEFS (operational Dec 2025), 0.25°, 31 members
+                       (member 0..30), 00z+12z to 240 h, from NOMADS, which
+                       keeps ~2 days: collected live only. Precipitation only.
+                       Paced to ≤ 80 requests/min (NOMADS blocks heavy users).
 
 Rows match the NBM collector (6 h blocks ending 00/06/12/18 UTC, period_label
 null), so the verification table scores them with no special case:
@@ -65,7 +66,8 @@ NOMADS = "https://nomads.ncep.noaa.gov/pub/data/nccf/com"
 MODELS = {
     "hrrr": dict(source="noaa-hrrr", cycles=(0, 6, 12, 18), last=48, ready_h=3, max_km=3.0, keep_days=3),
     "hrdps": dict(source="msc-hrdps", cycles=(0, 6, 12, 18), last=48, ready_h=5, max_km=3.0, keep_days=1),
-    "aigefs": dict(source="noaa-aigefs", cycles=(0, 6, 12, 18), last=240, ready_h=6, max_km=20.0, keep_days=5),
+    "aigefs": dict(source="noaa-aigefs", cycles=(0, 12), last=240, ready_h=5, max_km=20.0, keep_days=2,
+                   members=31, per_minute=80),
 }
 PLAUSIBLE = {"precip": (0, 300), "snow": (0, 400), "temp_min": (-60, 45), "temp_max": (-60, 45),
              "wind_speed_max": (0, 400)}
@@ -143,8 +145,9 @@ def collect_hrrr(cfg, cycle, resorts, deadline):
             raise RuntimeError(f"f{l:02d}: missing {sorted(need - have)} in the .idx — the inventory format may have changed")
     e0 = picks[1][0][0]
     lat, lon = grid_from(get_range(url(1), e0["start"], e0["end"]))
-    return fetch_points(cfg, resorts, lat, lon,
-                        [(l, url(l), g) for l, p in picks.items() for g in merge_ranges(p)], deadline)
+    ids, pts, vals = fetch_points(cfg, resorts, lat, lon,
+                                  [(l, url(l), g) for l, p in picks.items() for g in merge_ranges(p)], deadline)
+    return ids, pts, {None: vals}
 
 
 def fetch_points(cfg, resorts, lat, lon, jobs, deadline, workers=16):
@@ -255,7 +258,7 @@ def collect_hrdps(cfg, cycle, resorts, deadline):
         f"fetched {nbytes / 1e6:.0f} MB in {time.time() - t0:.0f} s")
     if missing:
         raise RuntimeError(f"{len(missing)} files missing from a complete cycle (first: {missing[0]})")
-    return ids, pts, vals
+    return ids, pts, {None: vals}
 
 
 # ---------------------------------------------------------------- AIGEFS (NOMADS)
@@ -289,19 +292,88 @@ def probe_aigefs() -> None:
     log(f"probe done {iso(now)}")
 
 
+AIGEFS_ROOT = f"{NOMADS}/aigefs/prod"
+
+
+def aigefs_url(cycle: datetime, member: int, lead: int) -> str:
+    return (f"{AIGEFS_ROOT}/aigefs.{cycle:%Y%m%d}/{cycle:%H}/mem{member:03d}/model/atmos/grib2/"
+            f"aigefs.t{cycle:%H}z.sfc.f{lead:03d}.grib2")
+
+
+AIGEFS_SHORT = {"tp": "precip6", "10u": "u", "10v": "v", "2t": "t"}  # eccodes short names (PRMSL ignored)
+
+
+def aigefs_fields(raw: bytes, lead: int) -> dict[str, np.ndarray]:
+    """The 5-message sfc file (probe 2026-11-18): UGRD/VGRD 10 m, TMP 2 m, PRMSL,
+    APCP as the 6 h accumulation ending at the lead. Matched by eccodes short name."""
+    out, seen = {}, []
+    for keys, values in grib_messages(raw):
+        seen.append(keys.get("shortName"))
+        name = AIGEFS_SHORT.get(keys.get("shortName"))
+        if name:
+            out[name] = np.asarray(values, dtype=float)
+    if "precip6" not in out:
+        raise RuntimeError(f"f{lead:03d}: no precipitation message (short names seen: {seen})")
+    return out
+
+
 def collect_aigefs(cfg, cycle, resorts, deadline):
-    raise RuntimeError("AIGEFS collection is not written yet — run --probe and implement against the layout it prints")
+    """31 members × 6-hourly sfc files, whole file each (~4 MB, 5 messages), paced
+    under NOMADS's request limit. Precipitation only (one instant per 6 h block
+    is too few for a low/high or a peak wind)."""
+    leads = list(range(BLOCK_H, cfg["last"] + 1, BLOCK_H))
+    members = range(cfg["members"])
+    if not exists(aigefs_url(cycle, cfg["members"] - 1, cfg["last"])):
+        raise FileNotFoundError("cycle not complete on NOMADS yet (or older than its ~2 days)")
+    first = http(aigefs_url(cycle, 0, BLOCK_H))
+    lat, lon = grid_from(first)
+    pts = nearest(lat, lon, resorts, cfg["max_km"])
+    ids = list(pts)
+    cells = np.array([pts[i][0] for i in ids])
+    del lat, lon
+    gap = 60.0 / cfg["per_minute"]
+    workers = 4
+    jobs = [(m, l) for m in members for l in leads]
+
+    def fetch(job):
+        m, l = job
+        t = time.time()
+        if t > deadline:
+            raise TimeoutError("time limit")
+        raw = first if (m, l) == (0, BLOCK_H) else http(aigefs_url(cycle, m, l))
+        f = aigefs_fields(raw, l)
+        time.sleep(max(0.0, gap * workers - (time.time() - t)))  # pace: ≤ per_minute requests overall
+        return m, l, {k: np.where(np.abs(v[cells]) > 1e19, np.nan, v[cells]) for k, v in f.items()}, len(raw)
+
+    by_member: dict[int, dict[int, dict[str, np.ndarray]]] = {}
+    nbytes, t0 = 0, time.time()
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for m, l, f, n in pool.map(fetch, jobs):
+            nbytes += n
+            by_member.setdefault(m, {})[l] = f
+    log(f"    {len(ids)} resorts; {len(jobs)} files, {nbytes / 1e6:.0f} MB in {time.time() - t0:.0f} s")
+    out = {}
+    for m, per_lead in by_member.items():
+        total, vals = np.zeros(len(ids)), {}
+        for l in leads:  # 6 h amounts → run totals, so build_blocks treats every model alike
+            total = total + per_lead[l]["precip6"]
+            vals[l] = {"precip": total.copy()}
+        out[m] = vals
+    return ids, pts, out
 
 
 COLLECT = {"hrrr": collect_hrrr, "hrdps": collect_hrdps, "aigefs": collect_aigefs}
 
 
 # ---------------------------------------------------------------- rows
-def to_rows(model, cfg, cycle, ids, pts, vals, fetched_at, run_id):
-    acc, inst = split(vals)
-    blocks = build_blocks(cycle, acc, inst, cfg["last"])
+def to_rows(model, cfg, cycle, ids, pts, members, fetched_at, run_id):
+    """members: {member (None for deterministic): {lead: fields}}."""
+    blocks = []
+    for member, vals in members.items():
+        acc, inst = split(vals)
+        blocks += [(member, *b) for b in build_blocks(cycle, acc, inst, cfg["last"])]
     rows, bad = [], []
-    for start, end, var, unit, arr in blocks:
+    for member, start, end, var, unit, arr in blocks:
         fin = arr[np.isfinite(arr)]
         lo, hi = PLAUSIBLE[var]
         if fin.size and (fin.min() < lo or fin.max() > hi):
@@ -315,7 +387,7 @@ def to_rows(model, cfg, cycle, ids, pts, vals, fetched_at, run_id):
                 "lat": round(pts[rid][1], 4), "lon": round(pts[rid][2], 4), "station_id": None,
                 "issued_at": iso(cycle), "fetched_at": fetched_at, "valid_start": iso(start), "valid_end": iso(end),
                 "period_label": None, "variable": var, "value": round(v, 2), "value_text": None, "unit": unit,
-                "model": model, "member": None, "run_id": run_id, "parser_version": PARSER_VERSION,
+                "model": model, "member": member, "run_id": run_id, "parser_version": PARSER_VERSION,
             })
     if bad:
         raise RuntimeError("implausible values — not archived: " + "; ".join(sorted(set(bad))))
@@ -358,8 +430,6 @@ def main() -> int:
     for model, cfg in MODELS.items():
         if only and model != only:
             continue
-        if model == "aigefs" and not only:
-            continue  # not written yet (see probe)
         if "--cycle" in a:
             cands = [datetime.strptime(a[a.index("--cycle") + 1], "%Y%m%d%H").replace(tzinfo=timezone.utc)]
         else:
@@ -378,8 +448,8 @@ def main() -> int:
             log(f"  {key}:")
             try:
                 run_id = f"{cycle:%Y-%m-%dT%H%M}Z-{model}-sfc-{gh}"
-                ids, pts, vals = COLLECT[model](cfg, cycle, resorts, started + TIME_LIMIT_S)
-                rows = to_rows(model, cfg, cycle, ids, pts, vals, fetched_at, run_id)
+                ids, pts, members = COLLECT[model](cfg, cycle, resorts, started + TIME_LIMIT_S)
+                rows = to_rows(model, cfg, cycle, ids, pts, members, fetched_at, run_id)
                 d = work / run_id
                 (d / "rows").mkdir(parents=True, exist_ok=True)
                 with gzip.open(d / "rows" / f"{cfg['source']}.ndjson.gz", "wt") as f:
