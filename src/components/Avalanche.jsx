@@ -60,3 +60,45 @@ export default function AvalancheSection({ a, stormCm = null }) {
     </section>
   );
 }
+
+/** The region sheet (Brian, 2026-11-18). A region is not one avalanche
+ *  forecast: Tahoe sits in one zone, the Cascades in four from three
+ *  centers. One zone → the full block, as on the resort sheet. Several →
+ *  one compact row per zone, highest danger first, each naming its resorts,
+ *  so nothing reads as a rating for the whole region. `zones` comes from
+ *  regionAvalanche(). */
+export function PlaceAvalanche({ zones }) {
+  if (!zones?.length) return null;
+  if (zones.length === 1) {
+    const z = zones[0];
+    return (
+      <section className="su-av rs-av ps-av" aria-label="Avalanche">
+        <h3>Avalanche</h3>
+        <AvalancheZone z={z} trend={avalancheTrend(z.history)} trip={false} />
+        <p className="su-small">{BACKCOUNTRY_NOTE}</p>
+      </section>
+    );
+  }
+  return (
+    <section className="su-av rs-av ps-av" aria-label="Avalanche">
+      <h3>Avalanche</h3>
+      <p className="su-small ps-av-lead">{zones.length} forecast zones cover these resorts, each rated on its own.</p>
+      {zones.map((z) => (
+        <div className="ps-av-row" key={`${z.center}|${z.zone}|${z.resorts.join(",")}`}>
+          <div className="ps-av-top">
+            <span className="su-av-name">{z.zone ?? z.center}</span>
+            <b className={z.max != null ? `su-av-${z.max}` : "ps-av-none"}>
+              {z.max != null ? `${z.max} ${DANGER[z.max]}` : "No rating yet"}
+            </b>
+          </div>
+          <p className="su-small">
+            {z.link ? <a href={z.link} target="_blank" rel="noreferrer">{z.center}</a> : z.center}
+            {z.max != null && z.problems?.length > 0 && ` · ${z.problems.join(", ")}`}
+            {` · ${z.resorts.join(", ")}`}
+          </p>
+        </div>
+      ))}
+      <p className="su-small">{BACKCOUNTRY_NOTE}</p>
+    </section>
+  );
+}

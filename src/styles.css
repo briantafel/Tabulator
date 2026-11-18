@@ -1621,3 +1621,15 @@ body { background: #F2F2F2; }
 
 /* The avalanche center named in a region's paragraph links to its forecast. */
 .su-prose a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+
+/* Avalanche on the region sheet (2026-11-18). The sheet body now scrolls,
+   since a region's table plus its zones can outgrow the 86vh card. */
+.place-sheet .sheet-body { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.ps-av { border-bottom: 0; }
+.ps-av-lead { margin-top: 0; }
+.ps-av-row { padding: calc(10 * var(--u)) 0; border-top: 1px solid var(--line); }
+.ps-av-row .su-small { margin-top: calc(3 * var(--u)); }
+.ps-av-row a { color: var(--mark-red); text-decoration: none; }
+.ps-av-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ps-av-top b { font-size: calc(12.5 * var(--u)); font-weight: 600; white-space: nowrap; }
+.ps-av-none { color: #8A8A8A; font-weight: 400 !important; }

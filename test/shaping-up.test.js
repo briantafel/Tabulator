@@ -106,3 +106,19 @@ test("trips name a persistent weak layer only, never a rating", () => {
   assert.match(txt(persistentLayerSegs(rows, season)), /Avalanche Canada and the Sierra Avalanche Center are tracking/);
   assert.equal(persistentLayerSegs(rows, { avalanche: { a: { center: "Utah Avalanche Center", max: 3, persistent: false } } }), null);
 });
+
+test("avalanche zones: CAIC resorts split when ratings differ; Canada's hashed zones stay apart", () => {
+  const rows = ["v", "b", "t", "x", "y"].map((id) => ({ r: { id, name: id.toUpperCase() } }));
+  const season = { avalanche: {
+    v: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 1, bands: { upper: 1, middle: 1, lower: 1 } },
+    b: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 1, bands: { upper: 1, middle: 1, lower: 1 } },
+    t: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 2, bands: { upper: 2, middle: 2, lower: 1 } },
+    x: { center: "Avalanche Canada", zone: "53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed", max: null },
+    y: { center: "Avalanche Canada", zone: "afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf", max: null },
+  } };
+  const z = regionAvalanche(rows, season);
+  assert.equal(z.length, 4);
+  assert.deepEqual(z[0].resorts, ["T"]);
+  assert.deepEqual(z[1].resorts, ["V", "B"]);
+  assert.ok(z.slice(2).every((x) => x.zone === null && x.resorts.length === 1));
+});

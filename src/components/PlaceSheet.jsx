@@ -3,6 +3,8 @@ import TripWhen from "./TripWhen.jsx";
 import Table from "./Table.jsx";
 import { shortDate } from "../lib/dates.js";
 import { holdsPlace } from "../lib/trips.js";
+import { regionAvalanche } from "../lib/season.js";
+import { PlaceAvalanche } from "./Avalanche.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 
 /** A range, part of a range or a state, opened from the radar's paragraph.
@@ -23,7 +25,7 @@ import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./trip
  *  of them, where Remove takes back out what the place added — resorts added
  *  from their own sheets stay (lib/trips.js). */
 export default function PlaceSheet({
-  place, metric, favs, onClose, onOpen, trips = [], onAddToTrip, onNewTrip, onRemoveFromTrip,
+  place, metric, favs, onClose, onOpen, trips = [], onAddToTrip, onNewTrip, onRemoveFromTrip, season = null,
 }) {
   const shown = !!place?.rows?.length;
   const fromScrim = useRef(false);
@@ -106,6 +108,9 @@ export default function PlaceSheet({
 
         <div className="sheet-body">
           <Table data={place.rows} metric={metric} favs={favs} onOpen={onOpen} />
+          {/* Avalanche by forecast zone, never one rating for the region
+              (season.json, so it follows the Shaping up switch). */}
+          {season?.avalanche && <PlaceAvalanche zones={regionAvalanche(place.rows.map((r) => ({ r })), season)} />}
         </div>
 
         {removing && (

@@ -689,6 +689,7 @@ export default function Tabulator() {
         onAddToTrip={(id, list) => place && addToTrip(id, list, place.title)}
         onNewTrip={(list, named) => place && newTrip(list, named, place.title)}
         onRemoveFromTrip={(id) => place && removeFromTrip(id, null, place.title)}
+        season={seasonOn ? feedRaw.season : null}
       />
 
       <Detail
