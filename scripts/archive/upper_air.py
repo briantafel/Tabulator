@@ -559,7 +559,7 @@ def bounds(variable: str):
     if variable.startswith("t_"):
         return (-90, 45)
     if variable.startswith("rh_"):
-        return (-5, 130)  # ECMWF r is over ice in cold air (can exceed 100 %); down to ~−3 % is packing noise in dry air
+        return (-5, 160)  # ECMWF r is over ice in cold air; ice-supersaturated layers reach ~150 % (132.9 seen 2026-11-16 00z); down to ~−3 % is packing noise in dry air
     if variable.startswith("q_"):
         return (0, 40)
     if variable.startswith("z_"):

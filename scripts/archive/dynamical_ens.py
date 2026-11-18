@@ -74,9 +74,13 @@ DATASETS = {
 NH_WINTERS = [("2025-11-01", "2026-04-30"), ("2024-11-01", "2025-04-30"), ("2023-11-01", "2024-04-30"),
               ("2022-11-01", "2023-04-30"), ("2021-11-01", "2022-04-30"), ("2020-11-01", "2021-04-30")]
 
+# Bounds catch unit and packing mistakes (Kelvin, fractions), not rare weather.
+# dewpoint lower bound -90 (was -70): IFS ENS history 2021-01-23 00z has a
+# member mean of -79.5 °C, which very dry, cold air at a high model point can
+# produce; it blocked the whole history queue from 2026-11-18 02:07Z.
 PLAUSIBLE = {"precip": (0, 300), "temp": (-60, 45), "temp_min": (-60, 45), "temp_max": (-60, 45), "wind_speed_max": (0, 400),
              "gust_max": (0, 500), "temp_850_mean": (-60, 40), "temp_925_mean": (-60, 45),
-             "dewpoint_2m_mean": (-70, 40), "rh_2m_mean": (0, 100.5), "frozen_pct_mean": (-0.5, 100.5)}
+             "dewpoint_2m_mean": (-90, 40), "rh_2m_mean": (0, 100.5), "frozen_pct_mean": (-0.5, 100.5)}
 
 
 def log(msg: str) -> None:
