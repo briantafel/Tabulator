@@ -29,7 +29,7 @@ const reducedMotion = () =>
 
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
-  reports, weather, wxSource = "nws", history, projections = false, avalanche = null,
+  reports, weather, wxSource = "nws", history, projections = false, avalanche = null, reportedSnow = undefined,
 }) {
   const [adding, setAdding] = useState(false);
   /* Which total the headline shows (projections only): it rests on the
@@ -397,7 +397,15 @@ export default function Detail({
               {pack.top != null && <span>Top: <b>{depth(pack.top)}</b></span>}
               {/* Brian, 2026-10-31: the amount goes just before the date,
                   same bold as Base and Top depth — 'Last: 5.5" Oct 29'. */}
-              {pack.last && (
+              {/* "Last" is the resort's own report where we have one (US,
+                  season.json), the same source as the trip cards
+                  (2026-11-18); Snow-Forecast's field elsewhere. A resort
+                  that is not reporting yet shows no "Last" at all. */}
+              {reportedSnow !== undefined ? (
+                reportedSnow && !reportedSnow.notReporting && reportedSnow.lastDay && (
+                  <span>Last: <b>{`${snowWithUnit(reportedSnow.lastDayCm, metric)} `}{shortDate(reportedSnow.lastDay)}</b></span>
+                )
+              ) : pack.last && (
                 <span>Last: <b>
                   {pack.fresh != null && `${snowWithUnit(pack.fresh, metric)} `}
                   {shortDate(pack.last)}

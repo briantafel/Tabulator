@@ -20,13 +20,42 @@ const median = (xs) => {
   return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
 };
 
+/** Recent snow as the resort itself reported it (OnTheSnow, carried in
+ *  season.json): the one recent-snow number shown anywhere (Brian,
+ *  2026-11-18: our SNOTEL estimate ran 2x the reports and disagreed with the
+ *  resort sheet). Seven days is all the report carries.
+ *
+ *  A resort that reports zero all week while its station measured 10 cm or
+ *  more is not reporting yet (closed, or between seasons): that is missing,
+ *  never zero. Null when there is no report at all. */
+export function reported(s) {
+  const r = s?.reported;
+  if (!r || typeof r.last7Cm !== "number") return null;
+  if (r.last7Cm === 0 && (s.new7Cm ?? 0) >= 10) return { notReporting: true, last7Cm: null };
+  const days = (r.days ?? []).filter(([, v]) => typeof v === "number");
+  const big = days.filter(([, v]) => v >= 15).pop() ?? null;
+  const any = days.filter(([, v]) => v > 0).pop() ?? null;
+  const end = days.length ? days[days.length - 1][0] : null;
+  const since = (d) => (d && end ? Math.round((Date.parse(end) - Date.parse(d)) / 86400000) : null);
+  return {
+    notReporting: false,
+    last7Cm: Math.round(r.last7Cm),
+    lastBigDay: big ? big[0] : null,
+    daysSinceBig: big ? since(big[0]) : null,
+    lastDay: any ? any[0] : null,
+    lastDayCm: any ? any[1] : null,
+    through: end,
+  };
+}
+
 /** Rank resorts within a region: recent snow first (what a powder chaser
  *  is buying), snowpack against normal as the tie-break. Missing values sort
  *  last, never as zero. */
 export function rankResorts(rows) {
   const k = (x) => (typeof x === "number" ? x : -Infinity);
+  const r7 = (x) => reported(x.s)?.last7Cm;
   return [...rows].sort((a, b) =>
-    k(b.s.new14Cm) - k(a.s.new14Cm) || k(b.s.swePctMedian) - k(a.s.swePctMedian));
+    k(r7(b)) - k(r7(a)) || k(b.s.swePctMedian) - k(a.s.swePctMedian));
 }
 
 /** Every region with season data, best first, each with its resorts.
@@ -49,6 +78,11 @@ export function regionTable(resorts, season, { minResorts = 2 } = {}) {
       name, rows: ranked,
       new14Cm: median(rows.map((x) => x.s.new14Cm)),
       new7Cm: median(rows.map((x) => x.s.new7Cm)),
+      /* What the resorts reported: median over those reporting. */
+      rep7Cm: median(rows.map((x) => reported(x.s)?.last7Cm)),
+      repCount: rows.filter((x) => typeof reported(x.s)?.last7Cm === "number").length,
+      repBigDay: rows.map((x) => reported(x.s)?.lastBigDay).filter(Boolean).sort().pop() ?? null,
+      repThrough: rows.map((x) => reported(x.s)?.through).filter(Boolean).sort().pop() ?? null,
       swePctMedian: median(rows.filter((x) => x.s.pctReliable).map((x) => x.s.swePctMedian)),
       depthCm: median(rows.map((x) => x.s.depthCm)),
       daysSinceDump: median(rows.map((x) => x.s.daysSinceDump)),
@@ -65,7 +99,7 @@ export function regionTable(resorts, season, { minResorts = 2 } = {}) {
     });
   }
   const k = (x) => (typeof x === "number" ? x : -Infinity);
-  return out.sort((a, b) => k(b.new14Cm) - k(a.new14Cm) || k(b.swePctMedian) - k(a.swePctMedian));
+  return out.sort((a, b) => k(b.rep7Cm) - k(a.rep7Cm) || k(b.swePctMedian) - k(a.swePctMedian));
 }
 
 /** Which regions a trip shows, in order.
@@ -127,20 +161,27 @@ export function regionParagraph(g, metric) {
   if (typeof g.depthPctMedian === "number") {
     segs.push({ t: ` Snow on the ground is ${g.depthPctMedian}% of its normal depth for the date.` });
   }
-  if (typeof g.new14Cm === "number") {
-    segs.push({ t: " About " }, { t: snowWithUnit(g.new14Cm, metric), hot: true }, { t: " of new snow has fallen in the last two weeks at a typical station here" });
-    segs.push({ t: typeof g.new7Cm === "number" ? `, ${snowWithUnit(g.new7Cm, metric)} of it in the last seven days.` : "." });
+  /* Recent snow: the resorts' own reports, never the station estimate. */
+  if (typeof g.rep7Cm === "number") {
+    segs.push({ t: g.repCount > 1 ? " Resorts here reported about " : " The resort reported " }, { t: snowWithUnit(g.rep7Cm, metric), hot: true },
+      { t: ` of new snow over the last seven days${g.repCount > 1 ? " (the middle of " + g.repCount + " reports)" : ""}.` });
+    if (g.repBigDay) {
+      const d = g.repThrough ? Math.round((Date.parse(g.repThrough) - Date.parse(g.repBigDay)) / 86400000) : null;
+      segs.push({ t: ` The last big day reported (${metric ? "15 cm" : '6"'} or more) was ` }, { t: shortDate(g.repBigDay), hot: d != null && d <= 3 }, { t: "." });
+    } else {
+      segs.push({ t: ` No resort here reported a ${metric ? "15 cm" : '6"'} day this week.` });
+    }
   }
+  /* The surface since the last big snowfall at the stations: measured
+     temperatures, not snow amounts. */
   if (typeof g.daysSinceDump === "number") {
     const d = Math.round(g.daysSinceDump);
-    segs.push({ t: ` The last big snow day (${metric ? "15 cm" : '6"'} or more) was ${d === 0 && g.asOf ? "on " : ""}` },
-      { t: d === 0 ? (g.asOf ? shortDate(g.asOf) : "the latest day reported") : `${plural(d, "day")} ago`, hot: d <= 3 }, { t: "." });
     const bits = [];
     if (g.warmDays >= 1) bits.push(plural(Math.round(g.warmDays), "warm day"));
     if (g.freezeThaw >= 1) bits.push(plural(Math.round(g.freezeThaw), "freeze–thaw cycle"));
     if (g.rainOnSnow >= 1) bits.push(plural(Math.round(g.rainOnSnow), "day") + " of rain on snow");
-    if (bits.length) segs.push({ t: ` Since then: ${bits.join(", ")}, so expect ` }, { t: "firmer or crusted snow", hot: true }, { t: " on sunny and lower slopes until it snows again." });
-    else if (d > 0) segs.push({ t: " It has stayed cold since, so that snow should have kept well." });
+    if (bits.length) segs.push({ t: ` Since the last big snowfall: ${bits.join(", ")}, so expect ` }, { t: "firmer or crusted snow", hot: true }, { t: " on sunny and lower slopes until it snows again." });
+    else if (d > 0) segs.push({ t: " It has stayed cold since the last big snowfall, so that snow should have kept well." });
   }
   return segs;
 }

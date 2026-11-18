@@ -5,7 +5,12 @@ import { regionTable, tripRegions, regionParagraph, surfaceChips, rankResorts, r
 const R = (id, name, region) => ({ id, name, region });
 const resorts = [R("alta", "Alta", "Utah"), R("snowbird", "Snowbird", "Utah"), R("brighton", "Brighton", "Utah"),
   R("palisades", "Palisades", "California"), R("kirkwood", "Kirkwood", "California"), R("vail", "Vail", "Colorado")];
-const S = (new14Cm, extra = {}) => ({ new7Cm: new14Cm / 2, new14Cm, swePctMedian: 100, pctReliable: true, daysSinceDump: 3, sinceDump: { warmDays: 0, freezeThaw: 0, rainOnSnow: 0 }, asOf: "2026-11-16", ...extra });
+/* Recent snow is the resort's own report (2026-11-18): `rep` cm over the last
+   seven days, with a 15 cm day on Nov 13 when the week holds one. */
+const days = (rep) => ["2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16"]
+  .map((d) => [d, d === "2026-11-13" ? rep : 0]);
+const S = (rep, extra = {}) => ({ new7Cm: rep, new14Cm: rep, swePctMedian: 100, pctReliable: true, daysSinceDump: 3, sinceDump: { warmDays: 0, freezeThaw: 0, rainOnSnow: 0 }, asOf: "2026-11-16",
+  reported: { last7Cm: rep, days: days(rep) }, ...extra });
 const regionOfVail = regionOf({ id: "vail", region: "Colorado" });
 const season = { resorts: { alta: S(30), snowbird: S(28), brighton: S(20), palisades: S(60), kirkwood: S(50), vail: S(90) } };
 
@@ -39,19 +44,21 @@ test("a pinned resort whose region has one station still shows", () => {
 });
 
 test("missing values sort last, not as zero", () => {
-  const rows = rankResorts([{ s: { new14Cm: null } }, { s: { new14Cm: 0 } }, { s: { new14Cm: 5 } }]);
-  assert.deepEqual(rows.map((x) => x.s.new14Cm), [5, 0, null]);
+  const r = (v) => ({ s: { new7Cm: 0, reported: v == null ? undefined : { last7Cm: v, days: [] } } });
+  const rows = rankResorts([r(null), r(0), r(5)]);
+  assert.deepEqual(rows.map((x) => x.s.reported?.last7Cm ?? null), [5, 0, null]);
 });
 
 test("the paragraph only states what the numbers carry", () => {
   const g = regionTable(resorts, season).find((x) => x.name === "the Wasatch");
   const t = regionParagraph(g, false).map((s) => s.t).join("");
   assert.match(t, /100% of its normal snowpack/);
-  assert.match(t, /3 days ago/);
+  assert.match(t, /Resorts here reported about/);
+  assert.match(t, /last big day reported \(6" or more\) was Nov 13/);
   assert.match(t, /stayed cold/);
   const early = regionParagraph({ ...g, swePctMedian: null, daysSinceDump: null }, false).map((s) => s.t).join("");
   assert.match(early, /too early/);
-  assert.doesNotMatch(early, /last big snow day/);
+  assert.doesNotMatch(early, /stayed cold/);
 });
 
 test("surface chips", () => {
@@ -121,4 +128,16 @@ test("avalanche zones: CAIC resorts split when ratings differ; Canada's hashed z
   assert.deepEqual(z[0].resorts, ["T"]);
   assert.deepEqual(z[1].resorts, ["V", "B"]);
   assert.ok(z.slice(2).every((x) => x.zone === null && x.resorts.length === 1));
+});
+
+import { reported } from "../src/lib/season.js";
+test("reported recent snow: zeros all week while the station saw a storm = not reporting, never 0", () => {
+  const closed = { new7Cm: 61, reported: { last7Cm: 0, days: [["2026-11-17", 0]] } };
+  assert.equal(reported(closed).last7Cm, null);
+  assert.equal(reported(closed).notReporting, true);
+  const dry = { new7Cm: 2, reported: { last7Cm: 0, days: [["2026-11-17", 0]] } };
+  assert.equal(reported(dry).last7Cm, 0);
+  const r = reported({ reported: { last7Cm: 61, days: [["2026-11-14", 35.56], ["2026-11-16", 12.7], ["2026-11-17", 12.7]] } });
+  assert.deepEqual([r.last7Cm, r.lastBigDay, r.daysSinceBig, r.lastDay], [61, "2026-11-14", 3, "2026-11-17"]);
+  assert.equal(reported({}), null);
 });

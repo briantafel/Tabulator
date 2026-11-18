@@ -5,6 +5,7 @@ import MonthGrid from "./components/MonthGrid.jsx";
 import Table from "./components/Table.jsx";
 import Chart from "./components/Chart.jsx";
 import Radar from "./components/Radar.jsx";
+import { reported } from "./lib/season.js";
 import Detail from "./components/Detail.jsx";
 import PlaceSheet from "./components/PlaceSheet.jsx";
 import Trips from "./components/Trips.jsx";
@@ -712,6 +713,7 @@ export default function Tabulator() {
         history={feed?.history}
         projections={projections}
         avalanche={seasonOn && open ? feedRaw.season?.avalanche?.[open.id] ?? null : null}
+        reportedSnow={open && feedRaw?.season?.resorts?.[open.id] ? reported(feedRaw.season.resorts[open.id]) : undefined}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}
         onFav={() => open && toggleFav(open.name)}

@@ -1,4 +1,4 @@
-import { tripRegions, regionParagraph, surfaceChips, persistentLayerSegs, vsNormal } from "../lib/season.js";
+import { tripRegions, regionParagraph, surfaceChips, persistentLayerSegs, vsNormal, reported } from "../lib/season.js";
 import { snowpack } from "../lib/depths.js";
 import { lookAhead, CONF } from "../lib/lookahead.js";
 import { snowWithUnit } from "../lib/units.js";
@@ -80,6 +80,7 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
             </div>
             {top.map(({ r, s }, i) => {
               const sf = snowpack(byId(r.id));
+              const rep = reported(s);
               /* Snow-Forecast prints 0 / 0 before a resort reports; that is
                  "not reported", not a bare mountain. */
               const sfKnown = (sf.base ?? 0) > 0 || (sf.top ?? 0) > 0;
@@ -92,8 +93,10 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
                   </div>
                   <div className="su-stats">
                     <div><i>Base / top</i><b>{sfKnown ? `${sf.base ? sw(sf.base) : "—"} / ${sf.top ? sw(sf.top) : "—"}` : "—"}</b></div>
-                    <div><i>Last 7 / 14 d, est.</i><b>{s.new7Cm != null ? sw(s.new7Cm) : "—"} / {s.new14Cm != null ? sw(s.new14Cm) : "—"}</b></div>
-                    <div><i>Since a big day</i><b>{s.lastDump ? (s.daysSinceDump === 0 ? shortDate(s.lastDump) : `${s.daysSinceDump} ${s.daysSinceDump === 1 ? "day" : "days"}`) : "None yet"}</b></div>
+                    {/* Recent snow as the resort reported it, the same number
+                        everywhere (2026-11-18). A dash: not reporting yet. */}
+                    <div><i>Last 7 d, reported</i><b>{rep?.last7Cm != null ? sw(rep.last7Cm) : "—"}</b></div>
+                    <div><i>Since a big day</i><b>{rep?.last7Cm == null ? "—" : rep.lastBigDay ? (rep.daysSinceBig === 0 ? shortDate(rep.lastBigDay) : `${rep.daysSinceBig} ${rep.daysSinceBig === 1 ? "day" : "days"}`) : "Over a week"}</b></div>
                     <div><i>Station depth</i><b>{s.depthCm != null ? sw(s.depthCm) : "—"}</b></div>
                   </div>
                   {chips.length > 0 && <div className="su-chips">{chips.map((c) => <span key={c}>{c}</span>)}</div>}
@@ -109,13 +112,13 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
             {g.rows.length > top.length && (<>
             <div className="su-h su-h2"><h3>Every resort</h3></div>
               <div className="su-table">
-                <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>14 days</span><span>Last big day</span></div>
+                <div className="su-tr su-th"><span>Resort</span><span>vs normal</span><span>7 days, reported</span><span>Last big day</span></div>
                 {g.rows.map(({ r, s }, i) => (
                   <div key={r.id} className={`su-tr${i === 0 ? " hot" : ""}`}>
                     <span>{r.name}</span>
                     <span>{vsNormal(s, { short: true })}</span>
-                    <span>{s.new14Cm != null ? sw(s.new14Cm) : "—"}</span>
-                    <span>{s.lastDump ? shortDate(s.lastDump) : "—"}</span>
+                    <span>{reported(s)?.last7Cm != null ? sw(reported(s).last7Cm) : "—"}</span>
+                    <span>{reported(s)?.last7Cm == null ? "—" : reported(s).lastBigDay ? shortDate(reported(s).lastBigDay) : "Over a week"}</span>
                   </div>
                 ))}
               </div>
@@ -126,8 +129,8 @@ export default function ShapingUp({ trip, season, projections = null, resorts, m
       })}
 
       <p className="su-small su-sources">
-        Snowpack, new snow and surface: NRCS SNOTEL, against the 1991–2020 median. New snow is estimated from
-        snow water and our snow-to-liquid ratio. Base and top depths: Snow-Forecast. Avalanche: avalanche.org
+        Snowpack and surface: NRCS SNOTEL, against the 1991–2020 median. Recent snow: the resorts' own reports
+        (OnTheSnow), last seven days. Base and top depths: Snow-Forecast. Avalanche: avalanche.org
         and Avalanche Canada. Looking ahead: our forecast, the ECMWF and GFS ensembles, NOAA CPC.
       </p>
     </div>
