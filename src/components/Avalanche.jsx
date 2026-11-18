@@ -19,7 +19,11 @@ export function AvalancheZone({ z, trend = null, trip = true }) {
           {[["Above treeline", z.bands?.upper], ["Near treeline", z.bands?.middle], ["Below treeline", z.bands?.lower]].map(([label, v]) => (
             <div key={label} className="su-av-band">
               <span>{label}</span>
-              <span className="su-av-track"><i className={`su-av-bg-${v ?? 0}`} style={{ width: `${((v ?? 0) / 5) * 100}%` }} /></span>
+              {/* Five steps, lit up to the level in that level's colour: danger is a
+                  1–5 rating, not an amount, so no proportional bar (2026-11-18). */}
+              <span className="su-av-steps" aria-hidden="true">
+                {[1, 2, 3, 4, 5].map((n) => <i key={n} className={v && n <= v ? `su-av-bg-${v}` : ""} />)}
+              </span>
               <b>{v ? `${v} ${DANGER[v]}` : "—"}</b>
             </div>
           ))}

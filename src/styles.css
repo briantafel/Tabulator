@@ -1591,10 +1591,15 @@ body { background: #F2F2F2; }
 .su-av a { font-size: calc(11 * var(--u)); color: var(--mark-red); text-decoration: none; }
 .su-av-band { display: grid; grid-template-columns: 112px minmax(0, 1fr) 104px; align-items: center; gap: 10px; margin-top: 6px; font-size: 12px; }
 .su-av-band b { font-weight: 600; }
-.su-av-track { height: 10px; border-radius: 5px; background: #F2F2F2; overflow: hidden; }
-.su-av-track i { display: block; height: 100%; border-radius: 5px; }
-.su-av-bg-1 { background: #9BCB86; } .su-av-bg-2 { background: #F5DC6A; } .su-av-bg-3 { background: #F0B429; }
-.su-av-bg-4 { background: #E5533D; } .su-av-bg-5 { background: #222; }
+/* Five steps, lit up to the level. Colours are the North American Public
+   Avalanche Danger Scale's (Low green, Moderate yellow, Considerable orange,
+   High red, Extreme black), the ones every center's own page uses; the
+   Moderate yellow is a touch deeper than print so it holds on white. */
+.su-av-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+.su-av-steps i { display: block; height: 10px; border-radius: 2px; background: #E4E4E4; }
+.su-av-bg-1 { background: #50B848 !important; } .su-av-bg-2 { background: #F2D50F !important; }
+.su-av-bg-3 { background: #F7941E !important; } .su-av-bg-4 { background: #ED1C24 !important; }
+.su-av-bg-5 { background: #231F20 !important; }
 .su-av-p { font-size: calc(13.5 * var(--u)); line-height: calc(19 * var(--u)); }
 .su-av-p b.ink { color: var(--ink); }
 .su-av-3, .su-av-4, .su-av-5 { color: #B4570B; }
