@@ -340,3 +340,24 @@ test("the workflow runs the read-out after the weather, with its key and a timeo
   assert.equal(ro.env.ANTHROPIC_API_KEY, "${{ secrets.ANTHROPIC_API_KEY }}");
   assert.match(steps[at("Commit if changed")].run, /public\/editorial\.json/);
 });
+
+test("drafts that fail only on the look-ahead ship without it, not as the template", async () => {
+  const root = await sandbox();
+  // No discussions were gathered, so any "ahead" fails ("no fresh discussion").
+  const draft = { ...JSON.parse(goodText()), ahead: "A storm arrives early next week." };
+  const api = fakeApi(() => ({ text: JSON.stringify(draft) }));
+  const { editorial, status } = await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(api.calls.length, MAX_ATTEMPTS, "it still retries for a clean draft first");
+  assert.equal(editorial.writer, "claude");
+  assert.equal(editorial.ahead, null);
+  assert.match(status.warnings.join(), /shipped without it/);
+});
+
+test("a draft with a region problem still falls back to the template", async () => {
+  const root = await sandbox();
+  const bad = JSON.parse(goodText());
+  bad.regions[0].text += ' Somewhere gets 999".';
+  const api = fakeApi(() => ({ text: JSON.stringify(bad) }));
+  const { editorial } = await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(editorial.writer, "template");
+});

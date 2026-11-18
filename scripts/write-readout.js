@@ -23,7 +23,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { readoutFacts, factsForWriter, templateReadout, validateReadout } from "../src/lib/readout.js";
+import { readoutFacts, factsForWriter, templateReadout, validateReadout, onlyAheadProblems } from "../src/lib/readout.js";
 import { callClaude, parseReply, HAIKU, SONNET } from "./readout-api.js";
 import { gatherAhead } from "./discussions.js";
 import { buoyNow } from "./buoy-now.js";
@@ -115,6 +115,7 @@ export async function run({
   }
 
   let out = null, writer = "template", model = null;
+  let noAhead = null; // a draft whose only problems were in "ahead", kept without it
   const key = env.ANTHROPIC_API_KEY;
   const fitted = facts.quiet ? null : fitForWriter(facts);
 
@@ -137,6 +138,7 @@ export async function run({
         const parsed = parseReply(res.text);
         const problems = validateReadout(parsed, facts);
         rec.problems = problems;
+        if (onlyAheadProblems(problems) && !noAhead) noAhead = { ...parsed, ahead: null };
         if (problems.length) {
           user = `Fact sheet:\n${fitted.text}\n\nYour previous reply was rejected:\n- ${problems.join("\n- ")}\nWrite it again, fixing those.`;
         } else {
@@ -147,6 +149,13 @@ export async function run({
         if (e.fatal) status.fatal = e.message;
       }
       debug.attempts.push(rec);
+    }
+    /* The regions passed; only the look-ahead didn't. Ship them without it
+       rather than fall back to the template (2026-11-18: 3 of 3 drafts failed
+       only on "ahead"). */
+    if (!out && noAhead && !validateReadout(noAhead, facts).length) {
+      out = noAhead; writer = "claude";
+      status.warnings.push("the look-ahead did not pass the check — read-out shipped without it");
     }
     if (!out && !status.fatal) status.warnings.push("the API's read-out did not pass the check — template used (see the readout-debug artifact)");
 

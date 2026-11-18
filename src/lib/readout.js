@@ -164,7 +164,12 @@ function alertSpan(a) {
  *                 the `pattern` of the regions its office covers.
  */
 export function readoutFacts({ resorts, weather = {}, generatedAt = null, now = new Date(), ahead: discussions = [] }) {
-  const ahead = discussions.filter((d) => d.excerpt).map(({ source, issuedAt, url, excerpt }) => ({ source, issuedAt, url, excerpt }));
+  /* coversThrough tells the writer the last date each source speaks to: on
+     2026-11-18 Haiku twice credited WPC (valid to Nov 25) with Nov 27–28. */
+  const ahead = discussions.filter((d) => d.excerpt).map(({ source, issuedAt, url, excerpt }) => {
+    const end = coverageEnd({ issuedAt, excerpt });
+    return { source, issuedAt, url, excerpt, ...(end ? { coversThrough: end } : {}) };
+  });
   const nowByOffice = new Map(discussions.filter((d) => d.office && d.now).map((d) => [d.office, d]));
   const rows = snowRows(resorts, now);
   const all = rows.map((r) => r.days.map((d) => d.date)).find((d) => d.length) ?? [];
@@ -343,6 +348,10 @@ export function coverageEnd(src) {
   return null;
 }
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** True when every problem is with "ahead": the regions and overview are
+ *  fine, so the read-out can ship without its look-ahead. */
+export const onlyAheadProblems = (problems) => problems.length > 0 && problems.every((p) => p.startsWith("ahead:"));
 
 /** Every reason a writer's output may not ship. Empty means it may. */
 export function validateReadout(out, facts) {
