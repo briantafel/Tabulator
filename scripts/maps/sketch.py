@@ -141,13 +141,16 @@ def read_grib_ll(path):
             raise SystemExit("empty GRIB")
         ni, nj = eccodes.codes_get(h, "Ni"), eccodes.codes_get(h, "Nj")
         la1, la2 = eccodes.codes_get(h, "latitudeOfFirstGridPointInDegrees"), eccodes.codes_get(h, "latitudeOfLastGridPointInDegrees")
-        lo1, lo2 = eccodes.codes_get(h, "longitudeOfFirstGridPointInDegrees"), eccodes.codes_get(h, "longitudeOfLastGridPointInDegrees")
+        lo1 = eccodes.codes_get(h, "longitudeOfFirstGridPointInDegrees")
+        if eccodes.codes_get(h, "gridType") != "regular_ll" or round(ni * eccodes.codes_get(h, "iDirectionIncrementInDegrees")) != 360:
+            raise SystemExit("expected a global regular lat-lon grid")
         v = eccodes.codes_get_values(h).reshape(nj, ni)
         units = eccodes.codes_get(h, "units")
         eccodes.codes_release(h)
     lats = np.linspace(la1, la2, nj)
-    lons = np.linspace(lo1, lo2, ni)
-    lons = np.where(lons > 180, lons - 360, lons)
+    # The grid can start at 180 and wrap (last point 179.75); build data-order longitudes
+    # from the step, then fold into [-180, 180) and sort columns to match.
+    lons = (lo1 + np.arange(ni) * (360.0 / ni) + 180.0) % 360.0 - 180.0
     order = np.argsort(lons)
     return lats, lons[order], v[:, order], units
 
