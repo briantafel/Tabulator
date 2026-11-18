@@ -170,7 +170,8 @@ export function regionAvalanche(rows, season) {
        though they show as the center). CAIC answers per point under one
        label, so its resorts group only when rating and problems match: rows
        that rate differently must never merge into one. */
-    const key = `${a.center}|${a.zone ?? ""}|${a.zone === "CAIC zone" ? JSON.stringify([a.max, a.problems ?? []]) : ""}`;
+    // Bands too (2026-11-18): each row now draws its elevation chart.
+    const key = `${a.center}|${a.zone ?? ""}|${a.zone === "CAIC zone" ? JSON.stringify([a.max, a.problems ?? [], a.bands ?? null]) : ""}`;
     if (!out.has(key)) out.set(key, { ...a, zone, resorts: [] });
     out.get(key).resorts.push(r.name);
   }

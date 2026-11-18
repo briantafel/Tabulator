@@ -90,3 +90,37 @@ export function withHistory(prevEntry, today, max) {
   hist.push([today, max]);
   return hist.slice(-14);
 }
+
+/* Utah Avalanche Center (2026-11-18). UAC's zones come through avalanche.org's
+ * map layer with an overall level only; its product there has no danger, so
+ * the elevation chart was empty. UAC publishes its own documented feed:
+ * https://utahavalanchecenter.org/docs/api/forecast →
+ * https://utahavalanchecenter.org/forecast/<region>/json, with
+ * `overall_danger_rose`: 24 values, 3 elevation rings × 8 aspects, starting
+ * at the HIGHEST ring, north, clockwise. 0 none, 1 pockets of Low, 2 Low,
+ * 3 pockets of Moderate, 4 Moderate … 9 pockets of Extreme, 10 Extreme.
+ * A ring's band is its worst aspect; "pockets of X" counts as X (rounding up,
+ * the safe direction). */
+export const uacSlug = (link) => (link ?? "").match(/utahavalanchecenter\.org\/forecast\/([a-z-]+)/)?.[1] ?? null;
+
+function findKey(o, key, depth = 0) {
+  if (!o || typeof o !== "object" || depth > 6) return undefined;
+  if (key in o) return o[key];
+  for (const v of Object.values(o)) {
+    const r = findKey(v, key, depth + 1);
+    if (r !== undefined) return r;
+  }
+  return undefined;
+}
+
+export function parseUacForecast(json) {
+  const raw = findKey(json, "overall_danger_rose");
+  const rose = (Array.isArray(raw) ? raw : String(raw ?? "").split(/[,\s]+/)).map(Number).filter((n) => Number.isFinite(n));
+  if (rose.length !== 24) return null;
+  const ring = (i) => {
+    const m = Math.max(...rose.slice(i * 8, i * 8 + 8));
+    return m > 0 ? Math.min(5, Math.ceil(m / 2)) : null;
+  };
+  const bands = { upper: ring(0), middle: ring(1), lower: ring(2) };
+  return Object.values(bands).some((v) => v != null) ? { bands, issued: findKey(json, "date_issued") ?? null } : null;
+}

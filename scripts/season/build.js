@@ -20,7 +20,7 @@ import { gunzipSync } from "node:zlib";
 import { fetchText, sleep } from "../archive/common.js";
 import { skireportToRows } from "../archive/onthesnow.js";
 import { coordsOf } from "../archive/common.js";
-import { zoneFor, parseAvorgProduct, parseAvcanProduct, maxBand, withHistory } from "./avalanche.js";
+import { zoneFor, parseAvorgProduct, parseAvcanProduct, maxBand, withHistory, parseUacForecast, uacSlug } from "./avalanche.js";
 import { pickStations, toMetric } from "../archive/snotel.js";
 import { summarise, pickPrimary, againstHistory } from "./season.js";
 
@@ -145,7 +145,26 @@ async function collectAvalanche(resorts, today) {
       products.set(key, parsed);
       await sleep(500);
     }
-    const p = products.get(key);
+    let p = products.get(key);
+    /* Utah: avalanche.org carries no elevation bands for UAC; its own feed
+       does (avalanche.js parseUacForecast). Once per zone; a failure warns
+       and leaves the overall level, never a guess. */
+    if (!p?.bands && /Utah Avalanche Center/i.test(z.center ?? "") && uacSlug(z.link)) {
+      const ukey = `uac/${uacSlug(z.link)}`;
+      if (!products.has(ukey)) {
+        let u = null;
+        try {
+          const res = await fetchText(`https://utahavalanchecenter.org/forecast/${uacSlug(z.link)}/json`);
+          if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+          u = parseUacForecast(JSON.parse(res.text));
+          if (!u) console.log(`::warning::UAC ${ukey}: no 24-value overall_danger_rose in the feed`);
+        } catch (e) { console.log(`::warning::UAC ${ukey}: ${e.message}`); }
+        products.set(ukey, u);
+        await sleep(500);
+      }
+      const u = products.get(ukey);
+      if (u) p = { ...(p ?? {}), bands: u.bands, issued: p?.issued ?? u.issued };
+    }
     const bands = p?.bands ?? null;
     const max = maxBand(bands) ?? z.mapLevel;
     out[r.id] = {

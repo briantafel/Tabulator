@@ -42,3 +42,16 @@ test("history keeps 14 days, one per day", () => {
   assert.equal(h.length, 14);
   assert.equal(withHistory({ history: h }, "2026-12-16", 3).length, 14, "same day replaces");
 });
+
+test("UAC danger rose → elevation bands; pockets of X count as X (2026-11-18)", async () => {
+  const { parseUacForecast, uacSlug } = await import("../scripts/season/avalanche.js");
+  // high ring: Considerable on N–E (6), pockets of considerable elsewhere (5)
+  // mid ring: Moderate (4); low ring: pockets of moderate (3) and low (2)
+  const rose = [6, 6, 6, 5, 5, 5, 5, 6, 4, 4, 4, 4, 4, 4, 4, 4, 3, 2, 2, 2, 2, 2, 2, 3];
+  const json = { advisories: [{ advisory: { date_issued: "Wednesday, November 18, 2026 - 5:41am", overall_danger_rose: rose.join(",") } }] };
+  assert.deepEqual(parseUacForecast(json).bands, { upper: 3, middle: 2, lower: 2 });
+  assert.equal(parseUacForecast({ advisories: [{ advisory: { overall_danger_rose: "0,0" } }] }), null);
+  assert.equal(parseUacForecast({ advisories: [{ advisory: { overall_danger_rose: Array(24).fill(0).join(",") } }] }), null);
+  assert.equal(uacSlug("https://utahavalanchecenter.org/forecast/salt-lake"), "salt-lake");
+  assert.equal(uacSlug("https://www.sierraavalanchecenter.org/forecasts/x"), null);
+});

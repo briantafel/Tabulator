@@ -16,17 +16,7 @@ export function AvalancheZone({ z, trend = null, trip = true }) {
         <p className="su-small">No rating yet{z.offSeason ? ": the center is between seasons" : ": forecasts start when the center opens for the season"}.</p>
       ) : (
         <>
-          {[["Above treeline", z.bands?.upper], ["Near treeline", z.bands?.middle], ["Below treeline", z.bands?.lower]].map(([label, v]) => (
-            <div key={label} className="su-av-band">
-              <span>{label}</span>
-              {/* Five steps, lit up to the level in that level's colour: danger is a
-                  1–5 rating, not an amount, so no proportional bar (2026-11-18). */}
-              <span className="su-av-steps" aria-hidden="true">
-                {[1, 2, 3, 4, 5].map((n) => <i key={n} className={v && n <= v ? `su-av-bg-${v}` : ""} />)}
-              </span>
-              <b>{v ? `${v} ${DANGER[v]}` : "—"}</b>
-            </div>
-          ))}
+          <DangerBands bands={z.bands} />
           {trend && <p className="su-small su-av-trend">{trend}</p>}
           {z.problems?.length > 0 && (
             <p className="su-prose su-av-p">
@@ -38,6 +28,21 @@ export function AvalancheZone({ z, trend = null, trip = true }) {
       )}
     </div>
   );
+}
+
+/** Danger by elevation band: five steps, lit up to the level in that level's
+ *  colour — danger is a 1–5 rating, not an amount, so no proportional bar
+ *  (2026-11-18). Shared by the resort sheet and each zone on a region sheet. */
+export function DangerBands({ bands }) {
+  return [["Above treeline", bands?.upper], ["Near treeline", bands?.middle], ["Below treeline", bands?.lower]].map(([label, v]) => (
+    <div key={label} className="su-av-band">
+      <span>{label}</span>
+      <span className="su-av-steps" aria-hidden="true">
+        {[1, 2, 3, 4, 5].map((n) => <i key={n} className={v && n <= v ? `su-av-bg-${v}` : ""} />)}
+      </span>
+      <b>{v ? `${v} ${DANGER[v]}` : "—"}</b>
+    </div>
+  ));
 }
 
 export const BACKCOUNTRY_NOTE = "Ratings are for the backcountry. Inside the resort, ski patrol controls the terrain; this matters for sidecountry and anything past the gates.";
@@ -103,6 +108,9 @@ export function PlaceAvalanche({ zones }) {
             {z.problems?.length > 0 && ` · ${z.problems.join(", ")}`}
             {z.zone && ` · ${z.resorts.join(", ")}`}
           </p>
+          {/* The elevation chart for every rated zone, as on the resort sheet
+              (Brian, 2026-11-18: "Avalanche chart is missing from here"). */}
+          {z.bands && <DangerBands bands={z.bands} />}
         </div>
       ))}
       {unrated.length > 0 && (
