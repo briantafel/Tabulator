@@ -49,6 +49,7 @@ BLUE, BROWN, GREY, INK = "#1f5fbf", "#9a5a2e", "#8a8f96", "#2b2f33"
 # Single blue ramp, more snow = deeper and more saturated. Starts clearly off-white.
 FILL = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
 FILL_OP = 0.55
+FILL_FROM_IN = 6      # below this, lines only: color only where it matters
 
 
 def px(lon, lat):
@@ -257,15 +258,15 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode):
             idx = level % INDEX_FT == 0
             col = BLUE if above else BROWN
             body.append(f'<path d="{" ".join(ds)}" fill="none" stroke="{col}" '
-                        f'stroke-opacity="{0.55 if idx else 0.28}" stroke-width="{1.1 if idx else 0.55}" '
+                        f'stroke-opacity="{0.7 if idx else 0.42}" stroke-width="{1.3 if idx else 0.7}" '
                         f'stroke-linejoin="round" data-ft="{int(level)}"/>')
         return body
 
     layer(f"contours above snow line ({SNOW_LINE_FT} ft)", terrain_group(True))
     layer("contours below snow line", terrain_group(False))
 
-    fill_body = [f'<path d="{d}" fill="{FILL[min(i, len(FILL)-1)]}" fill-opacity="{FILL_OP}" '
-                 f'fill-rule="evenodd" stroke="none" data-in="{lv}"/>' for i, (lv, d) in enumerate(fill) if d]
+    fill_body = [f'<path d="{d}" fill="{FILL[min(i + 1, len(FILL)-1)]}" fill-opacity="{FILL_OP}" '
+                 f'fill-rule="evenodd" stroke="none" data-in="{lv}"/>' for i, (lv, d) in enumerate(fill) if d and lv >= FILL_FROM_IN]
     layer("snow fill", fill_body, hidden=(mode == "lines"))
 
     line_body = []
