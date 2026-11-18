@@ -1,0 +1,104 @@
+{
+ "generatedAt": "2026-11-18T17:22:18.226Z",
+ "forecastGeneratedAt": "2026-11-18T17:15:34.737Z",
+ "snowfall": "tabulator",
+ "blendGeneratedAt": "2026-11-18T16:33:08.927Z",
+ "quiet": false,
+ "writer": "template",
+ "window": {
+  "from": "2026-11-18",
+  "to": "2026-11-23",
+  "days": 6,
+  "toLabel": "Monday Nov 23"
+ },
+ "overview": null,
+ "regions": [
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Kirkwood is forecast for about 72\". Sugar Bowl and Sierra-at-Tahoe follow. The National Weather Service has heavy snow at Kirkwood Wednesday and Wednesday night. Winter Storm Warning at Kirkwood from Wednesday to Friday."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 53\". The National Weather Service has heavy snow at Mammoth Wednesday and Wednesday night. The NWS is calling for more at Mammoth: 62 to 86 inches Wednesday through Sunday night. Winter Storm Warning at Mammoth from Wednesday to Friday."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Snowbasin is forecast for about 44\", 25\" of it Friday. Powder Mountain and Brighton follow."
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Grand Targhee is forecast for about 26\". Jackson Hole and Sun Valley follow."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek is forecast for about 17\". Taos follows."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride is forecast for about 10\". Steamboat and Crested Butte follow."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Mt. Bachelor is forecast for about 11\", 6\" of it Wednesday. Crystal Mountain and Stevens Pass follow. The NWS is calling for more at Crystal Mountain: 3 to 10 inches Wednesday through Monday night."
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Fernie is forecast for about 6\". Whitewater and RED Mountain follow."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Cypress Mountain is forecast for about 6\", 4\" of it Sunday. Whistler follows. Environment Canada has rain mixed in at Whistler Sunday night."
+  }
+ ],
+ "ahead": null,
+ "sources": [
+  {
+   "name": "Tabulator model (totals)",
+   "issuedAt": "2026-11-18T16:33:08.927Z"
+  },
+  {
+   "name": "National Weather Service point forecasts",
+   "issuedAt": "2026-11-18T17:22:08.828Z"
+  },
+  {
+   "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
+   "issuedAt": "2026-11-18T17:22:18.226Z"
+  }
+ ],
+ "api": {
+  "day": "2026-11-18",
+  "calls": 2
+ },
+ "buoy": {
+  "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
+  "pops": [
+   {
+    "buoy": "51101",
+    "date": "2026-11-11"
+   },
+   {
+    "buoy": "51001",
+    "date": "2026-11-11"
+   },
+   {
+    "buoy": "51101",
+    "date": "2026-11-01"
+   },
+   {
+    "buoy": "51001",
+    "date": "2026-11-01"
+   }
+  ],
+  "link": "https://powderbuoy.com",
+  "experimental": true
+ }
+}

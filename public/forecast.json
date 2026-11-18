@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-18T15:38:07.408Z",
+ "generatedAt": "2026-11-18T17:15:34.737Z",
  "source": "snow-forecast.com",
  "tier": "mid",
  "combineRule": "max",
@@ -5322,7 +5322,7 @@
    },
    "depths": {
     "Top snow depth": "46 cm",
-    "Bottom snow depth": "30 cm",
+    "Bottom snow depth": "5 cm",
     "Fresh snowfall depth": "1 cm",
     "Last snowfall": "17 Nov 2026",
     "Snow Alerts": "Create Alert"
@@ -5589,7 +5589,7 @@
    "depths": {
     "Top snow depth": "0 cm",
     "Bottom snow depth": "0 cm",
-    "Fresh snowfall depth": "22 cm",
+    "Fresh snowfall depth": "48 cm",
     "Last snowfall": "17 Nov 2026",
     "Snow Alerts": "Create Alert"
    },
@@ -9312,7 +9312,7 @@
     "days46": "Days 4-6 weather summary:Mostly dry. Temperatures will be below freezing (max -2°C on Sat morning, min -6°C on Sat night). Wind will be generally light."
    },
    "depths": {
-    "Top snow depth": "25 cm",
+    "Top snow depth": "35 cm",
     "Bottom snow depth": "—",
     "Fresh snowfall depth": "—",
     "Last snowfall": "15 Nov 2026",
@@ -9578,8 +9578,8 @@
     "days46": "Days 4-6 weather summary:Mostly dry. Temperatures will be well below freezing (max -7°C on Sat afternoon, min -13°C on Sun night). Wind will be generally light."
    },
    "depths": {
-    "Top snow depth": "28 cm",
-    "Bottom snow depth": "23 cm",
+    "Top snow depth": "29 cm",
+    "Bottom snow depth": "20 cm",
     "Fresh snowfall depth": "—",
     "Last snowfall": "16 Nov 2026",
     "Snow Alerts": "Create Alert"
@@ -12238,7 +12238,7 @@
     "days46": "Days 4-6 weather summary:Mostly dry. Temperatures will be well below freezing (max -7°C on Sat afternoon, min -12°C on Sun night). Wind will be generally light."
    },
    "depths": {
-    "Top snow depth": "30 cm",
+    "Top snow depth": "50 cm",
     "Bottom snow depth": "30 cm",
     "Fresh snowfall depth": "1 cm",
     "Last snowfall": "17 Nov 2026",
@@ -12504,9 +12504,9 @@
     "days46": "Days 4-6 weather summary:Mostly dry. Temperatures will be below freezing (max -4°C on Sat afternoon, min -11°C on Mon morning). Wind will be generally light."
    },
    "depths": {
-    "Top snow depth": "30 cm",
-    "Bottom snow depth": "20 cm",
-    "Fresh snowfall depth": "2.0 cm",
+    "Top snow depth": "35 cm",
+    "Bottom snow depth": "30 cm",
+    "Fresh snowfall depth": "—",
     "Last snowfall": "17 Nov 2026",
     "Snow Alerts": "Create Alert"
    },
