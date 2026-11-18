@@ -104,6 +104,10 @@ export default function RangeChart({ days, metric, sel = "forecast", projMembers
   const label = (d) => {
     const v = disp(d.snow, metric);
     if (d.projected) return `${Math.round(v)}${u}`;      // projections: whole units
+    /* Inches: nearest half inch (Brian, 2026-11-18). 7.9 → 8", 8.4 → 8.5",
+       0.2 → 0". A tenth of an inch implied precision no forecast has.
+       Centimetres keep the shared formatter. */
+    if (!metric) return `${Math.round(v * 2) / 2}${u}`;
     return `${snowTxt(d.snow, metric)}${u}`;
   };
 
