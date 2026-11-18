@@ -43,7 +43,7 @@ export const VARIANTS = {
 export const blendStamp = (blend) => blend?.generatedAt ?? blend?.fetchedAt ?? null;
 
 export const MAX_ATTEMPTS = 2;
-export const DAILY_CAP = 6;
+export const DAILY_CAP = 10; // was 6; raised 2026-11-18 (Brian) for the two read-outs and manual runs
 export const MAX_INPUT_CHARS = 60000; // the forecasters' discussions roughly double the fact sheet
 export const MAX_TOKENS = 2000;
 export const TIMEOUT_MS = 45000;
