@@ -14,6 +14,7 @@ on:
 permissions:
   contents: write
   actions: write   # to start the Pages deploy after a data commit
+  issues: write    # "Open an issue on failure" (was refused: Resource not accessible by integration)
 
 concurrency:
   group: forecast
