@@ -123,8 +123,9 @@ body { background: #F2F2F2; }
   background: var(--line); height: calc(56 * var(--u));
   margin-bottom: calc(43.1875 * var(--u));
 }
-/* Open, the gear turns white (Brian, 2026-11-11). */
-.bar.open .gear { color: #fff; }
+/* Open, the gear becomes a black X (Brian's export, 2026-11-18; it was a
+   white gear from 2026-11-11). */
+.bar.open .gear { color: #000; }
 /* Laid over the page under the header, out of the flow: it opens on top of
    whatever is on screen and moves nothing (Brian, 2026-11-11). In flow it
    pushed the page down, and opened off-screen for anyone scrolled down. */
