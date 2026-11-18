@@ -168,9 +168,9 @@ export function regionAvalanche(rows, season) {
     const zone = a.zone && !/^[0-9a-f]{20,}$/i.test(a.zone) && a.zone !== "CAIC zone" ? a.zone : null;
     /* Group on the raw zone (Canada's hashed ids are distinct regions even
        though they show as the center). CAIC answers per point under one
-       label, so its resorts group only when their ratings match: rows that
-       rate differently must never merge into one. */
-    const key = `${a.center}|${a.zone ?? ""}|${a.zone === "CAIC zone" ? JSON.stringify([a.max, a.bands]) : ""}`;
+       label, so its resorts group only when rating and problems match: rows
+       that rate differently must never merge into one. */
+    const key = `${a.center}|${a.zone ?? ""}|${a.zone === "CAIC zone" ? JSON.stringify([a.max, a.problems ?? []]) : ""}`;
     if (!out.has(key)) out.set(key, { ...a, zone, resorts: [] });
     out.get(key).resorts.push(r.name);
   }

@@ -79,25 +79,39 @@ export function PlaceAvalanche({ zones }) {
       </section>
     );
   }
+  /* Unrated zones fold into one line at the end; rated ones get a row,
+     titled by the zone, or by its resorts where the center names none
+     (CAIC, Avalanche Canada). */
+  const rated = zones.filter((z) => z.max != null);
+  const unrated = zones.filter((z) => z.max == null);
   return (
     <section className="su-av rs-av ps-av" aria-label="Avalanche">
       <h3>Avalanche</h3>
       <p className="su-small ps-av-lead">{zones.length} forecast zones cover these resorts, each rated on its own.</p>
-      {zones.map((z) => (
+      {rated.map((z) => (
         <div className="ps-av-row" key={`${z.center}|${z.zone}|${z.resorts.join(",")}`}>
           <div className="ps-av-top">
-            <span className="su-av-name">{z.zone ?? z.center}</span>
-            <b className={z.max != null ? `su-av-${z.max}` : "ps-av-none"}>
-              {z.max != null ? `${z.max} ${DANGER[z.max]}` : "No rating yet"}
-            </b>
+            <span className="su-av-name">{z.zone ?? z.resorts.join(", ")}</span>
+            <b className={`su-av-${z.max}`}>{`${z.max} ${DANGER[z.max]}`}</b>
           </div>
           <p className="su-small">
             {z.link ? <a href={z.link} target="_blank" rel="noreferrer">{z.center}</a> : z.center}
-            {z.max != null && z.problems?.length > 0 && ` · ${z.problems.join(", ")}`}
-            {` · ${z.resorts.join(", ")}`}
+            {z.problems?.length > 0 && ` · ${z.problems.join(", ")}`}
+            {z.zone && ` · ${z.resorts.join(", ")}`}
           </p>
         </div>
       ))}
+      {unrated.length > 0 && (
+        <p className="su-small ps-av-unrated">
+          No rating yet: {unrated.map((z, i) => (
+            <span key={`${z.center}|${z.zone}|${z.resorts.join(",")}`}>
+              {i > 0 && "; "}
+              {z.link ? <a href={z.link} target="_blank" rel="noreferrer">{z.zone ?? z.center}</a> : (z.zone ?? z.center)}
+              {` (${z.resorts.join(", ")})`}
+            </span>
+          ))}.
+        </p>
+      )}
       <p className="su-small">{BACKCOUNTRY_NOTE}</p>
     </section>
   );

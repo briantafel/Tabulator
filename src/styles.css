@@ -1633,3 +1633,5 @@ body { background: #F2F2F2; }
 .ps-av-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .ps-av-top b { font-size: calc(12.5 * var(--u)); font-weight: 600; white-space: nowrap; }
 .ps-av-none { color: #8A8A8A; font-weight: 400 !important; }
+.ps-av-unrated { padding-top: calc(10 * var(--u)); border-top: 1px solid var(--line); }
+.ps-av-unrated a { color: var(--mark-red); text-decoration: none; }

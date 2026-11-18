@@ -112,7 +112,7 @@ test("avalanche zones: CAIC resorts split when ratings differ; Canada's hashed z
   const season = { avalanche: {
     v: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 1, bands: { upper: 1, middle: 1, lower: 1 } },
     b: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 1, bands: { upper: 1, middle: 1, lower: 1 } },
-    t: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 2, bands: { upper: 2, middle: 2, lower: 1 } },
+    t: { center: "Colorado Avalanche Information Center", zone: "CAIC zone", max: 2, bands: { upper: 2, middle: 2, lower: 1 }, problems: ["Wind Slab"] },
     x: { center: "Avalanche Canada", zone: "53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed", max: null },
     y: { center: "Avalanche Canada", zone: "afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf", max: null },
   } };
