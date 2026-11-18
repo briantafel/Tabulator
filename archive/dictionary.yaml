@@ -156,6 +156,32 @@ sources:
       - "Ridge-level wind (parser upper-air-2, from 2026-11-11; all three upper-air sources): wspd_850hpa / wspd_700hpa (km/h) and wdir_850hpa / wdir_700hpa (degrees the wind blows FROM, 0 = north), instants like the rest. Built from the model's u/v at that level; raw u/v are NOT stored. HRRR u/v are relative to its Lambert grid and are rotated to earth-relative first (angle = sin(38.5°) × (lon + 97.5°)); GEFS and ECMWF are on lat-lon grids, already earth-relative. 850 hPa ≈ 1.5 km and 700 hPa ≈ 3 km above sea level: compare a tier with the level nearest its elevation (z_<p>hpa gives the exact height). Free-air wind, not the wind at the snow surface, which terrain speeds up or shelters. For claude/temp-wind-plan.md W2/W3."
       - Coverage is the CONUS grid, which reaches southern Canada; its north edge is near 50.5°N in the BC interior, so northern BC/Alberta resorts are outside (the run log names them). Resorts close to the edge sit near the lateral boundary, where HRRR is least reliable.
       - "Licence: NOAA open data, no restrictions. Attribution: NOAA HRRR."
+      - "From 2026-11-18 also SURFACE rows (scripts/archive/extra_models.py, workflow extra-models.yml, parser extra-models-1, run_id …-hrrr-sfc-…, markers extra-models/done/): 6 h blocks ending 00/06/12/18 UTC (period_label null, same as nbm) of precip (mm; difference of HRRR's run-total APCP), snow (cm; HRRR's own ASNOW, variable density), temp_min/temp_max (°C; hourly 2 m, needs ≥ 5 of 6 hours) and wind_speed_max (km/h; hourly 10 m). wrfsfc, 00/06/12/18z to 48 h, nearest cell within 3 km (55 resorts). In FORECAST_SOURCES and TEMP_SOURCES; the variable filter keeps the upper-air instants out of scoring."
+  msc-hrdps:
+    name: Environment and Climate Change Canada HRDPS 2.5 km, continental (MSC Datamart)
+    kind: forecast
+    url: https://dd.weather.gc.ca/
+    models:
+      hrdps: HRDPS continental, 00/06/12/18z to 48 h
+    cadence: workflow extra-models.yml hourly (also in the Cloudflare scheduler table); every cycle from the last day not yet archived
+    since: 2026-11-18
+    raw: not kept. The Datamart keeps about a day, so a cycle not collected within ~24 h is lost (history 2017+ only via CaSPAr, which needs an account).
+    notes:
+      - "Same 6 h block rows as noaa-hrrr's surface rows: precip (difference of run-total APCP_Sfc), temp_min/temp_max (TMP_AGL-2m hourly), wind_speed_max (WIND_AGL-10m hourly, m/s → km/h). No snow variable. Nearest cell within 3 km on the rotated 0.0225° grid: 32 resorts (Canada + northern US). Whole files per variable and lead (~293 MB per cycle)."
+      - "Licence: Open Government Licence – Canada; attribution \"Contains information licensed under the Open Government Licence – Canada\" / Source: Environment and Climate Change Canada. MSC asks for a meaningful User-Agent and moderate load (8 parallel requests)."
+  noaa-aigefs:
+    name: NOAA AI GEFS (AIGEFS v1, operational Dec 2025), NOMADS
+    kind: forecast
+    url: https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigefs/prod/
+    models:
+      aigefs: AIGEFS 0.25°, members 0–30 (mem000–mem030), 00z+12z to 240 h, 6-hourly
+    cadence: workflow extra-models.yml hourly; every 00z/12z cycle from the last 2 days not yet archived
+    since: 2026-11-18
+    raw: not kept. NOMADS keeps about 2 days, so it is collected live only; no AWS mirror found (probe 2026-11-18).
+    notes:
+      - "Precipitation only: 6 h blocks (precip, mm) from the sfc file's APCP (a 6 h accumulation ending at each lead). One instant per block is too few for a low/high or peak wind. The pres files carry T, SPFH, HGT, U/V/VVEL on 13 pressure levels if profiles are wanted later."
+      - Whole sfc file per member and lead (~4 MB, 5 messages), paced to ≤ 80 requests/min because NOMADS blocks heavy users. ~1,240 files per cycle.
+      - "Licence: NOAA open data, no restrictions. Attribution: NOAA NCEP AIGEFS."
   noaa-gefs:
     name: NOAA GEFS 0.5° pressure-level file pgrb2a (AWS noaa-gefs-pds)
     kind: forecast (upper-air profiles only; no precipitation rows)
