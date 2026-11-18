@@ -1,0 +1,31 @@
+name: Map style sketch (one-off)
+
+# Design sketch for in-app maps (claude/maps-sketch.md). Manual only; not part of the app.
+# Renders a white relief base of the Wasatch with editable vector layers and the latest
+# raw ECMWF IFS 5-day snow, and uploads them as a run artifact. Writes nothing to R2.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          sudo apt-get install -y -q fonts-inter >/dev/null || true
+          pip install rasterio cairosvg scipy matplotlib pillow ecmwf-opendata eccodes eccodeslib
+      - name: Render
+        run: python3 scripts/maps/sketch.py out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maps-sketch
+          path: out/
+          retention-days: 14
