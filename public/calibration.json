@@ -1,644 +1,644 @@
 {
- "updatedAt": "2026-11-17T19:15:35.098Z",
+ "updatedAt": "2026-11-18T09:49:20.468Z",
  "method": "EWMA α=0.2 of per-run medians; wind = SF ÷ ensemble, temp = SF − ensemble",
  "resorts": {
   "palisades": {
    "wind": {
-    "factor": 2.192,
-    "runs": 30
+    "factor": 2.128,
+    "runs": 31
    },
    "temp": {
-    "offset": -1.205,
-    "runs": 30
+    "offset": -1.184,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 2.3821102269378134,
-     "days": 6
+     "factor": 1.8716577540106953,
+     "days": 5
     },
     "temp": {
-     "offset": -1.9500000000000002,
-     "days": 6
+     "offset": -1.1,
+     "days": 5
     }
    }
   },
   "heavenly": {
    "wind": {
-    "factor": 1.836,
-    "runs": 30
+    "factor": 1.805,
+    "runs": 31
    },
    "temp": {
-    "offset": -0.34,
-    "runs": 30
+    "offset": -0.352,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.992648225524938,
-     "days": 6
+     "factor": 1.6826923076923077,
+     "days": 5
     },
     "temp": {
-     "offset": -0.9000000000000001,
-     "days": 6
+     "offset": -0.3999999999999999,
+     "days": 5
     }
    }
   },
   "kirkwood": {
    "wind": {
-    "factor": 1.957,
-    "runs": 30
+    "factor": 1.948,
+    "runs": 31
    },
    "temp": {
-    "offset": -0.61,
-    "runs": 30
+    "offset": -0.568,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 2.1353956936779026,
-     "days": 6
+     "factor": 1.9138755980861246,
+     "days": 5
     },
     "temp": {
-     "offset": -0.8999999999999999,
-     "days": 6
+     "offset": -0.40000000000000036,
+     "days": 5
     }
    }
   },
   "sugar-bowl": {
    "wind": {
-    "factor": 2.173,
-    "runs": 30
+    "factor": 2.085,
+    "runs": 31
    },
    "temp": {
-    "offset": -1.1,
-    "runs": 30
+    "offset": -1.06,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 2.335007489646665,
-     "days": 6
+     "factor": 1.7341040462427746,
+     "days": 5
     },
     "temp": {
-     "offset": -1.75,
-     "days": 6
+     "offset": -0.9,
+     "days": 5
     }
    }
   },
   "northstar": {
    "wind": {
-    "factor": 1.905,
-    "runs": 29
+    "factor": 1.871,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.764,
-    "runs": 29
+    "offset": -0.651,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 2.0654105936722362,
-     "days": 6
+     "factor": 1.7341040462427746,
+     "days": 5
     },
     "temp": {
-     "offset": -1.55,
-     "days": 6
+     "offset": -0.2,
+     "days": 5
     }
    }
   },
   "mt-rose": {
    "wind": {
-    "factor": 2.037,
-    "runs": 30
+    "factor": 1.958,
+    "runs": 31
    },
    "temp": {
-    "offset": -0.826,
-    "runs": 30
+    "offset": -0.841,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.986291623185656,
-     "days": 6
+     "factor": 1.6431924882629108,
+     "days": 5
     },
     "temp": {
-     "offset": -1.85,
-     "days": 6
+     "offset": -0.8999999999999999,
+     "days": 5
     }
    }
   },
   "sierra-at-tahoe": {
    "wind": {
-    "factor": 1.702,
-    "runs": 30
+    "factor": 1.671,
+    "runs": 31
    },
    "temp": {
-    "offset": -1.064,
-    "runs": 30
+    "offset": -0.991,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.9476426590469789,
-     "days": 6
+     "factor": 1.5486725663716814,
+     "days": 5
     },
     "temp": {
-     "offset": -1.35,
-     "days": 6
+     "offset": -0.7000000000000002,
+     "days": 5
     }
    }
   },
   "homewood": {
    "wind": {
-    "factor": 1.447,
-    "runs": 30
+    "factor": 1.455,
+    "runs": 31
    },
    "temp": {
-    "offset": -0.194,
-    "runs": 30
+    "offset": 0.025,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.6091764317544148,
-     "days": 6
+     "factor": 1.4851485148514851,
+     "days": 5
     },
     "temp": {
-     "offset": -0.8,
-     "days": 6
+     "offset": 0.8999999999999999,
+     "days": 5
     }
    }
   },
   "mammoth": {
    "wind": {
-    "factor": 1.441,
-    "runs": 30
+    "factor": 1.397,
+    "runs": 31
    },
    "temp": {
-    "offset": 0.221,
-    "runs": 30
+    "offset": 0.177,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.6993006993006992,
-     "days": 6
+     "factor": 1.2195121951219512,
+     "days": 5
     },
     "temp": {
-     "offset": -0.10000000000000009,
-     "days": 6
+     "offset": 0,
+     "days": 5
     }
    }
   },
   "mt-baker": {
    "wind": {
-    "factor": 1.756,
-    "runs": 30
+    "factor": 1.597,
+    "runs": 31
    },
    "temp": {
-    "offset": -0.339,
-    "runs": 30
+    "offset": -0.631,
+    "runs": 31
    },
    "lastRun": {
     "wind": {
-     "factor": 1.2575757575757576,
-     "days": 4
+     "factor": 0.9615384615384615,
+     "days": 3
     },
     "temp": {
-     "offset": -0.95,
-     "days": 6
+     "offset": -1.7999999999999998,
+     "days": 5
     }
    }
   },
   "crystal": {
    "wind": {
-    "factor": 0.932,
-    "runs": 29
+    "factor": 0.957,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.781,
-    "runs": 29
+    "offset": -0.825,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9881230529595016,
-     "days": 6
+     "factor": 1.0582010582010584,
+     "days": 5
     },
     "temp": {
-     "offset": -0.8500000000000001,
-     "days": 6
+     "offset": -1,
+     "days": 5
     }
    }
   },
   "stevens-pass": {
    "wind": {
-    "factor": 0.873,
-    "runs": 29
+    "factor": 0.839,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.613,
-    "runs": 29
+    "offset": -0.49,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.7382586902037702,
-     "days": 6
+     "factor": 0.7042253521126761,
+     "days": 5
     },
     "temp": {
-     "offset": -0.19999999999999996,
-     "days": 6
+     "offset": 0,
+     "days": 5
     }
    }
   },
   "mt-bachelor": {
    "wind": {
-    "factor": 2.127,
-    "runs": 29
+    "factor": 2.169,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.294,
-    "runs": 29
+    "offset": -0.275,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 2.1554341226472378,
-     "days": 6
+     "factor": 2.336448598130841,
+     "days": 5
     },
     "temp": {
-     "offset": -0.5499999999999998,
-     "days": 6
+     "offset": -0.20000000000000018,
+     "days": 5
     }
    }
   },
   "telluride": {
    "wind": {
-    "factor": 1.015,
-    "runs": 29
+    "factor": 1.01,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.456,
-    "runs": 29
+    "offset": -0.425,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 1.0915994304698624,
-     "days": 6
+     "factor": 0.9900990099009901,
+     "days": 5
     },
     "temp": {
-     "offset": -0.24999999999999983,
-     "days": 6
+     "offset": -0.30000000000000004,
+     "days": 5
     }
    }
   },
   "crested-butte": {
    "wind": {
-    "factor": 0.774,
-    "runs": 29
+    "factor": 0.761,
+    "runs": 30
    },
    "temp": {
-    "offset": 1.105,
-    "runs": 29
+    "offset": 1.244,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.8375517717441325,
-     "days": 6
+     "factor": 0.7092198581560284,
+     "days": 5
     },
     "temp": {
-     "offset": 1.9,
-     "days": 6
+     "offset": 1.7999999999999998,
+     "days": 5
     }
    }
   },
   "aspen-highlands": {
    "wind": {
-    "factor": 0.837,
-    "runs": 29
+    "factor": 0.808,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.049,
-    "runs": 29
+    "offset": -0.099,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9478885893980233,
-     "days": 6
+     "factor": 0.6896551724137931,
+     "days": 5
     },
     "temp": {
-     "offset": 0.10000000000000017,
-     "days": 6
+     "offset": -0.3,
+     "days": 5
     }
    }
   },
   "steamboat": {
    "wind": {
-    "factor": 1.67,
-    "runs": 29
+    "factor": 1.706,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.344,
-    "runs": 29
+    "offset": -0.335,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 1.6758241758241756,
-     "days": 6
+     "factor": 1.8518518518518519,
+     "days": 5
     },
     "temp": {
-     "offset": 0.14999999999999997,
-     "days": 6
+     "offset": -0.3,
+     "days": 5
     }
    }
   },
   "vail": {
    "wind": {
-    "factor": 0.792,
-    "runs": 29
+    "factor": 0.752,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.113,
-    "runs": 29
+    "offset": -0.05,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.8287733698130415,
-     "days": 6
+     "factor": 0.591715976331361,
+     "days": 5
     },
     "temp": {
-     "offset": 0.30000000000000004,
-     "days": 6
+     "offset": 0.2,
+     "days": 5
     }
    }
   },
   "breckenridge": {
    "wind": {
-    "factor": 1.193,
-    "runs": 29
+    "factor": 1.146,
+    "runs": 30
    },
    "temp": {
-    "offset": 0.011,
-    "runs": 29
+    "offset": 0.209,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 1.1481117566643884,
-     "days": 6
+     "factor": 0.9569377990430623,
+     "days": 5
     },
     "temp": {
-     "offset": 0.19999999999999973,
-     "days": 6
+     "offset": 1,
+     "days": 5
     }
    }
   },
   "arapahoe-basin": {
    "wind": {
-    "factor": 0.96,
-    "runs": 29
+    "factor": 0.924,
+    "runs": 30
    },
    "temp": {
-    "offset": -0.14,
-    "runs": 29
+    "offset": 0.108,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9293712022939852,
-     "days": 6
+     "factor": 0.778816199376947,
+     "days": 5
     },
     "temp": {
-     "offset": 0.8000000000000003,
-     "days": 6
+     "offset": 1.1,
+     "days": 5
     }
    }
   },
   "snowbird": {
    "wind": {
-    "factor": 2.622,
-    "runs": 29
+    "factor": 2.698,
+    "runs": 30
    },
    "temp": {
-    "offset": 0.528,
-    "runs": 29
+    "offset": 0.302,
+    "runs": 30
    },
    "lastRun": {
     "wind": {
-     "factor": 3.235645933014354,
-     "days": 6
+     "factor": 3.070175438596491,
+     "days": 5
     },
     "temp": {
-     "offset": 0.15000000000000002,
-     "days": 6
+     "offset": -0.6000000000000001,
+     "days": 5
     }
    }
   },
   "alta": {
    "wind": {
-    "factor": 2.782,
-    "runs": 28
+    "factor": 2.826,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.75,
-    "runs": 28
+    "offset": 0.66,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 3.5645933014354068,
-     "days": 6
+     "factor": 3.070175438596491,
+     "days": 5
     },
     "temp": {
-     "offset": 0.5,
-     "days": 6
+     "offset": 0.2999999999999998,
+     "days": 5
     }
    }
   },
   "brighton": {
    "wind": {
-    "factor": 2.709,
-    "runs": 28
+    "factor": 2.767,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.046,
-    "runs": 28
+    "offset": -0.003,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 3.4406565656565657,
-     "days": 6
+     "factor": 3.278688524590164,
+     "days": 5
     },
     "temp": {
-     "offset": 0,
-     "days": 6
+     "offset": -0.20000000000000018,
+     "days": 5
     }
    }
   },
   "solitude": {
    "wind": {
-    "factor": 2.66,
-    "runs": 28
+    "factor": 2.703,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.357,
-    "runs": 28
+    "offset": -0.366,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 3.4406565656565657,
-     "days": 6
+     "factor": 2.873563218390805,
+     "days": 5
     },
     "temp": {
-     "offset": -0.19999999999999996,
-     "days": 6
+     "offset": -0.3999999999999999,
+     "days": 5
     }
    }
   },
   "snowbasin": {
    "wind": {
-    "factor": 2.791,
-    "runs": 28
+    "factor": 2.788,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.223,
-    "runs": 28
+    "offset": 0.178,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 2.906976744186047,
-     "days": 5
+     "factor": 2.778120755648845,
+     "days": 4
     },
     "temp": {
-     "offset": 0.30000000000000004,
-     "days": 6
+     "offset": 0,
+     "days": 5
     }
    }
   },
   "powder-mountain": {
    "wind": {
-    "factor": 2.332,
-    "runs": 28
+    "factor": 2.411,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.054,
-    "runs": 28
+    "offset": -0.183,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 2.769423558897243,
-     "days": 6
+     "factor": 2.727272727272727,
+     "days": 5
     },
     "temp": {
-     "offset": -0.20000000000000018,
-     "days": 6
+     "offset": -0.7000000000000002,
+     "days": 5
     }
    }
   },
   "jackson-hole": {
    "wind": {
-    "factor": 1.651,
-    "runs": 28
+    "factor": 1.671,
+    "runs": 29
    },
    "temp": {
-    "offset": -1.231,
-    "runs": 28
+    "offset": -1.165,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.5615091946734305,
-     "days": 6
+     "factor": 1.7519181585677748,
+     "days": 4
     },
     "temp": {
-     "offset": -1.1500000000000001,
-     "days": 6
+     "offset": -0.8999999999999999,
+     "days": 5
     }
    }
   },
   "grand-targhee": {
    "wind": {
-    "factor": 1.595,
-    "runs": 28
+    "factor": 1.646,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.416,
-    "runs": 28
+    "offset": 0.713,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.2613058224985867,
-     "days": 6
+     "factor": 1.8518518518518519,
+     "days": 5
     },
     "temp": {
-     "offset": 0.6000000000000001,
-     "days": 6
+     "offset": 1.9000000000000004,
+     "days": 5
     }
    }
   },
   "sun-valley": {
    "wind": {
-    "factor": 1.146,
-    "runs": 28
+    "factor": 1.158,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.158,
-    "runs": 28
+    "offset": 0.286,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.2076240360832242,
-     "days": 6
+     "factor": 1.2048192771084336,
+     "days": 5
     },
     "temp": {
-     "offset": 0.25,
-     "days": 6
+     "offset": 0.7999999999999998,
+     "days": 5
     }
    }
   },
   "big-sky": {
    "wind": {
-    "factor": 1.94,
-    "runs": 28
+    "factor": 1.914,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.246,
-    "runs": 28
+    "offset": -0.057,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.6691429102052187,
-     "days": 6
+     "factor": 1.8115942028985506,
+     "days": 5
     },
     "temp": {
-     "offset": 0.09999999999999998,
-     "days": 6
+     "offset": 0.6999999999999993,
+     "days": 5
     }
    }
   },
   "taos": {
    "wind": {
-    "factor": 1.958,
-    "runs": 28
+    "factor": 1.832,
+    "runs": 29
    },
    "temp": {
-    "offset": -1.057,
-    "runs": 28
+    "offset": -1.046,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.7329109062980033,
-     "days": 6
+     "factor": 1.327433628318584,
+     "days": 5
     },
     "temp": {
-     "offset": -0.8999999999999999,
-     "days": 6
+     "offset": -1,
+     "days": 5
     }
    }
   },
   "wolf-creek": {
    "wind": {
-    "factor": 0.92,
-    "runs": 28
+    "factor": 0.874,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.73,
-    "runs": 28
+    "offset": -0.644,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.8930184539940638,
-     "days": 6
+     "factor": 0.6896551724137931,
+     "days": 5
     },
     "temp": {
-     "offset": -0.5,
-     "days": 6
+     "offset": -0.2999999999999998,
+     "days": 5
     }
    }
   },
@@ -648,34 +648,34 @@
     "runs": 15
    },
    "temp": {
-    "offset": 1.366,
-    "runs": 28
+    "offset": 1.733,
+    "runs": 29
    },
    "lastRun": {
     "wind": null,
     "temp": {
-     "offset": 3.1,
-     "days": 6
+     "offset": 3.2,
+     "days": 5
     }
    }
   },
   "whistler": {
    "wind": {
-    "factor": 1.192,
-    "runs": 28
+    "factor": 1.102,
+    "runs": 29
    },
    "temp": {
-    "offset": -1.538,
-    "runs": 28
+    "offset": -1.55,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9615384615384615,
-     "days": 5
+     "factor": 0.7413419913419914,
+     "days": 4
     },
     "temp": {
-     "offset": -1.2,
-     "days": 6
+     "offset": -1.6,
+     "days": 5
     }
    }
   },
@@ -685,17 +685,14 @@
     "runs": 26
    },
    "temp": {
-    "offset": 0.352,
-    "runs": 28
+    "offset": 0.562,
+    "runs": 29
    },
    "lastRun": {
-    "wind": {
-     "factor": 0.9259259259259258,
-     "days": 1
-    },
+    "wind": null,
     "temp": {
-     "offset": 0.35000000000000053,
-     "days": 6
+     "offset": 1.4000000000000004,
+     "days": 5
     }
    }
   },
@@ -705,94 +702,94 @@
     "runs": 24
    },
    "temp": {
-    "offset": 0.784,
-    "runs": 28
+    "offset": 1.047,
+    "runs": 29
    },
    "lastRun": {
     "wind": null,
     "temp": {
-     "offset": 1.35,
-     "days": 6
+     "offset": 2.0999999999999996,
+     "days": 5
     }
    }
   },
   "fernie": {
    "wind": {
-    "factor": 0.776,
-    "runs": 28
+    "factor": 0.768,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.618,
-    "runs": 28
+    "offset": 0.714,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.5882352941176471,
-     "days": 5
+     "factor": 0.7352941176470589,
+     "days": 4
     },
     "temp": {
-     "offset": 1.5000000000000002,
-     "days": 6
+     "offset": 1.0999999999999996,
+     "days": 5
     }
    }
   },
   "red-mountain": {
    "wind": {
-    "factor": 1.217,
-    "runs": 28
+    "factor": 1.155,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.569,
-    "runs": 28
+    "offset": -0.655,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.847457627118644,
-     "days": 1
+     "factor": 0.9093915343915344,
+     "days": 2
     },
     "temp": {
-     "offset": -0.35,
-     "days": 6
+     "offset": -1,
+     "days": 5
     }
    }
   },
   "whitewater": {
    "wind": {
-    "factor": 1.032,
-    "runs": 28
+    "factor": 1.02,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.724,
-    "runs": 28
+    "offset": -0.719,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9259259259259258,
-     "days": 5
+     "factor": 0.9709653092006033,
+     "days": 4
     },
     "temp": {
-     "offset": -0.7999999999999999,
-     "days": 6
+     "offset": -0.7,
+     "days": 5
     }
    }
   },
   "panorama": {
    "wind": {
-    "factor": 0.705,
-    "runs": 28
+    "factor": 0.756,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.928,
-    "runs": 28
+    "offset": 1.262,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.5,
-     "days": 2
+     "factor": 0.9615384615384615,
+     "days": 3
     },
     "temp": {
-     "offset": 1.85,
-     "days": 6
+     "offset": 2.5999999999999996,
+     "days": 5
     }
    }
   },
@@ -802,94 +799,94 @@
     "runs": 28
    },
    "temp": {
-    "offset": 0.52,
-    "runs": 28
+    "offset": 0.516,
+    "runs": 29
    },
    "lastRun": {
-    "wind": {
-     "factor": 0.8333333333333334,
-     "days": 1
-    },
+    "wind": null,
     "temp": {
-     "offset": 1.35,
-     "days": 6
+     "offset": 0.5,
+     "days": 5
     }
    }
   },
   "big-white": {
    "wind": {
-    "factor": 1.067,
-    "runs": 28
+    "factor": 1.117,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.692,
-    "runs": 28
+    "offset": -0.734,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.0952380952380953,
-     "days": 6
+     "factor": 1.3178428992543783,
+     "days": 4
     },
     "temp": {
-     "offset": -0.95,
-     "days": 6
+     "offset": -0.8999999999999999,
+     "days": 5
     }
    }
   },
   "silverstar": {
    "wind": {
-    "factor": 1.975,
-    "runs": 26
+    "factor": 1.78,
+    "runs": 27
    },
    "temp": {
-    "offset": -1.752,
-    "runs": 28
+    "offset": -1.762,
+    "runs": 29
    },
    "lastRun": {
-    "wind": null,
+    "wind": {
+     "factor": 1,
+     "days": 1
+    },
     "temp": {
-     "offset": -2.35,
-     "days": 6
+     "offset": -1.8,
+     "days": 5
     }
    }
   },
   "sun-peaks": {
    "wind": {
-    "factor": 1.091,
-    "runs": 28
+    "factor": 1.05,
+    "runs": 29
    },
    "temp": {
-    "offset": -1.718,
-    "runs": 28
+    "offset": -1.794,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.8696309739866909,
-     "days": 4
+     "factor": 0.8855799373040752,
+     "days": 2
     },
     "temp": {
-     "offset": -2,
-     "days": 6
+     "offset": -2.1,
+     "days": 5
     }
    }
   },
   "sunshine": {
    "wind": {
-    "factor": 0.955,
-    "runs": 28
+    "factor": 0.948,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.237,
-    "runs": 28
+    "offset": 0.37,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.8064516129032258,
-     "days": 5
+     "factor": 0.9175084175084174,
+     "days": 4
     },
     "temp": {
-     "offset": 0.5500000000000003,
-     "days": 6
+     "offset": 0.9000000000000004,
+     "days": 5
     }
    }
   },
@@ -899,14 +896,14 @@
     "runs": 26
    },
    "temp": {
-    "offset": 0.807,
-    "runs": 28
+    "offset": 1.086,
+    "runs": 29
    },
    "lastRun": {
     "wind": null,
     "temp": {
-     "offset": 0.9999999999999999,
-     "days": 6
+     "offset": 2.2,
+     "days": 5
     }
    }
   },
@@ -916,197 +913,194 @@
     "runs": 28
    },
    "temp": {
-    "offset": 2.092,
-    "runs": 28
+    "offset": 2.494,
+    "runs": 29
    },
    "lastRun": {
-    "wind": {
-     "factor": 0.9803921568627452,
-     "days": 1
-    },
+    "wind": null,
     "temp": {
-     "offset": 2.75,
-     "days": 6
+     "offset": 4.1,
+     "days": 5
     }
    }
   },
   "cypress": {
    "wind": {
-    "factor": 1.012,
-    "runs": 28
+    "factor": 0.92,
+    "runs": 29
    },
    "temp": {
-    "offset": -0.632,
-    "runs": 28
+    "offset": -0.826,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.6715506715506716,
-     "days": 6
+     "factor": 0.5524861878453038,
+     "days": 5
     },
     "temp": {
-     "offset": -1.35,
-     "days": 6
+     "offset": -1.6,
+     "days": 5
     }
    }
   },
   "whiteface": {
    "wind": {
-    "factor": 1.594,
-    "runs": 28
+    "factor": 1.614,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.612,
-    "runs": 28
+    "offset": 0.61,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.7117497886728659,
-     "days": 6
+     "factor": 1.6949152542372883,
+     "days": 5
     },
     "temp": {
-     "offset": 1,
-     "days": 6
+     "offset": 0.5999999999999996,
+     "days": 5
     }
    }
   },
   "stowe": {
    "wind": {
-    "factor": 1.983,
-    "runs": 28
+    "factor": 1.923,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.474,
-    "runs": 28
+    "offset": 0.459,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.8416666666666668,
-     "days": 6
+     "factor": 1.680672268907563,
+     "days": 5
     },
     "temp": {
-     "offset": 1.2000000000000002,
-     "days": 6
+     "offset": 0.40000000000000036,
+     "days": 5
     }
    }
   },
   "killington": {
    "wind": {
-    "factor": 1.382,
-    "runs": 28
+    "factor": 1.397,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.79,
-    "runs": 28
+    "offset": 0.852,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.4822134387351777,
-     "days": 6
+     "factor": 1.4563106796116503,
+     "days": 5
     },
     "temp": {
-     "offset": 0.8999999999999999,
-     "days": 6
+     "offset": 1.0999999999999996,
+     "days": 5
     }
    }
   },
   "jay-peak": {
    "wind": {
-    "factor": 1.719,
-    "runs": 28
+    "factor": 1.734,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.778,
-    "runs": 28
+    "offset": 0.842,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.764950166112957,
-     "days": 6
+     "factor": 1.794871794871795,
+     "days": 5
     },
     "temp": {
-     "offset": 1.65,
-     "days": 6
+     "offset": 1.0999999999999996,
+     "days": 5
     }
    }
   },
   "tremblant": {
    "wind": {
-    "factor": 1.366,
-    "runs": 28
+    "factor": 1.385,
+    "runs": 29
    },
    "temp": {
-    "offset": 1.116,
-    "runs": 28
+    "offset": 1.273,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.3891568589619911,
-     "days": 6
+     "factor": 1.4598540145985401,
+     "days": 5
     },
     "temp": {
-     "offset": 1.9499999999999997,
-     "days": 6
+     "offset": 1.9000000000000004,
+     "days": 5
     }
    }
   },
   "le-massif": {
    "wind": {
-    "factor": 1.178,
-    "runs": 28
+    "factor": 1.174,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.834,
-    "runs": 28
+    "offset": 0.927,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.2078422219628895,
-     "days": 6
+     "factor": 1.1574074074074074,
+     "days": 5
     },
     "temp": {
-     "offset": 1.5,
-     "days": 6
+     "offset": 1.3000000000000007,
+     "days": 5
     }
    }
   },
   "mont-sainte-anne": {
    "wind": {
-    "factor": 1.439,
-    "runs": 28
+    "factor": 1.452,
+    "runs": 29
    },
    "temp": {
-    "offset": 1.339,
-    "runs": 28
+    "offset": 1.491,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 1.3889956197648505,
-     "days": 6
+     "factor": 1.506024096385542,
+     "days": 5
     },
     "temp": {
-     "offset": 2.4000000000000004,
-     "days": 6
+     "offset": 2.0999999999999996,
+     "days": 5
     }
    }
   },
   "blue-mountain": {
    "wind": {
-    "factor": 0.966,
-    "runs": 28
+    "factor": 0.913,
+    "runs": 29
    },
    "temp": {
-    "offset": 0.719,
-    "runs": 28
+    "offset": 0.755,
+    "runs": 29
    },
    "lastRun": {
     "wind": {
-     "factor": 0.9437321937321936,
-     "days": 6
+     "factor": 0.6993006993006993,
+     "days": 5
     },
     "temp": {
-     "offset": 1.5,
-     "days": 6
+     "offset": 0.9000000000000004,
+     "days": 5
     }
    }
   }
