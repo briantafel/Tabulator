@@ -439,7 +439,8 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fi
         dx = -16 if name in ("Snowbird", "Alta") else 16
         anchor = "end" if dx < 0 else "start"
         dy = {"Alta": 18, "Brighton": 6, "Solitude": -10}.get(name, 0)
-        mk += halo_text(x + dx, y + dy, name, f'font-size="24" font-weight="500" fill="{INK}" '
+        label = f"{name}  {RANGE_LABELS[name]}" if name in RANGE_LABELS else name
+        mk += halo_text(x + dx, y + dy, label, f'font-size="24" font-weight="500" fill="{INK}" '
                         f'text-anchor="{anchor}" dominant-baseline="middle"')
     for name, la, lo in CITIES:
         x, y = px(lo, la)
@@ -633,6 +634,9 @@ def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0):
     return fine, grad_px
 
 
+RANGE_LABELS = {}   # resort name -> "lo–hi"" shown beside its name
+
+
 def downscale_layers(fine):
     """Resort labels: the range of downscaled snow within 1.5 km (base-to-top proxy)."""
     body = []
@@ -646,8 +650,7 @@ def downscale_layers(fine):
         lo_in, hi_in = np.percentile(fine[m], [5, 95])
         body.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r_px:.1f}" fill="none" stroke="{INK}" '
                     f'stroke-opacity="0.45" stroke-width="1.2" stroke-dasharray="3 5"/>')
-        body += halo_text(x, y + r_px + 22, f'{lo_in:.0f}–{hi_in:.0f}"',
-                          f'font-size="22" font-weight="700" fill="{INK}" text-anchor="middle" dominant-baseline="middle"')
+        RANGE_LABELS[name] = f'{lo_in:.0f}–{hi_in:.0f}"'
     return [("snow range within 1.5 km (in.)", body)]
 
 
