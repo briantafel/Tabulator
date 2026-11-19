@@ -52,6 +52,9 @@ for rid in ids:
     shutil.copy(img, site / f"{rid}-1024.png")
     if crop:
         shutil.copy(crop, site / f"{rid}-crop1to1.png")
+    rc = find(rid, f"preview/{rid}-relief-crop1to1.png")
+    if rc:
+        shutil.copy(rc, site / f"{rid}-relief-crop1to1.png")
     dem, snow, rel, bl = d["dem"], d["snow"], d["relief"], d["blender"]
     rows.append({
         "resort": rid, "dem": f"{dem['source']}, native {dem['native_res_m'][0]} x {dem['native_res_m'][1]} m (heightmap {dem['heightmap_spacing_m']} m)",

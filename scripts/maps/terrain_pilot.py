@@ -608,6 +608,7 @@ def run(out, rid, px=4096, work=None):
     final.save(out / f"{rid}.png", optimize=True)
     final.resize((1024, 1024), Image.LANCZOS).save(out / "preview" / f"{rid}-1024.png")
     final.crop((bx, by, bx + csz, by + csz)).save(out / "preview" / f"{rid}-crop1to1.png")
+    Image.fromarray(relief[by:by + csz, bx:bx + csz]).save(out / "preview" / f"{rid}-relief-crop1to1.png")   # same box, plain plaster: shows the DEM-limited detail
     timing["compose_s"] = round(time.time() - t0)
 
     info = {
