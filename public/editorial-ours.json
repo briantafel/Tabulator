@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-19T13:05:48.788Z",
+ "generatedAt": "2026-11-19T14:20:15.995Z",
  "forecastGeneratedAt": "2026-11-19T12:58:48.485Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-19T07:21:42.369Z",
+ "blendGeneratedAt": "2026-11-19T14:20:13.285Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -12,36 +12,36 @@
   "days": 5,
   "toLabel": "Monday Nov 23"
  },
- "overview": "A storm from the Pacific is moving inland over California and the Great Basin through Friday, then a weaker system follows for the weekend, with active weather into Thanksgiving week. Idaho's southern mountains look dry Saturday and Sunday.",
+ "overview": "A strong storm brings heavy snow to the Sierra, Oregon and Idaho this Thursday and Friday. The Pacific Northwest and Utah get a smaller round of snow in the weekend window, then a drier spell. Another wave of rain and mountain snow is expected in the Thanksgiving week.",
  "regions": [
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A strong storm is moving across the northern Sierra through Friday morning, with heavy mountain snow above 4000 feet and gusty winds. Drier air arrives Friday afternoon. Kirkwood has the biggest total so far, 17 inches, mostly on Thursday. The NWS is calling for more, 23 to 39 inches Thursday night through Sunday night. Winter Storm Warning above 4000 feet until 4 AM Friday."
+   "text": "A strong system is moving through today with heavy mountain snow above 4000 feet and thunderstorm chances, mainly south of I-80. Showers linger into Friday morning, then drier air arrives Friday afternoon. Kirkwood leads with 17 inches, and the National Weather Service is calling for 23 to 39 inches from Thursday night through Sunday night. Winter Storm Warnings run through Friday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "A potent storm brings heavy Sierra snow and strong winds through Friday morning. Mammoth has 14 inches so far, with gusts near 65 mph. Snow showers may renew Thursday evening as a cold front passes. Dry, very cold weather follows Friday afternoon into Saturday morning, before another system arrives Saturday afternoon."
+   "text": "A potent storm brings heavy Sierra snow and strong winds through Friday morning, with snow showers renewed by a passing trough. A brief dry spell follows Friday afternoon into Saturday morning, then another system arrives Saturday afternoon. Mammoth leads with 14 inches, with gusts to 65 mph Thursday, and the National Weather Service is calling for 21 to 32 inches through Thursday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Snow moves in from the west Thursday, with the heaviest snow west of the Divide and near the passes on Friday. Lower valleys see little. Snow showers continue into the weekend, with cooler temperatures and unsettled weather into early next week. Grand Targhee leads with 12 inches so far. The NWS is calling for 12 to 25 inches Thursday night through Monday."
+   "text": "Snow moves in from the west Thursday and grows heavier Friday west of the Divide, with some impacts on mountain passes. Snow tapers and the system shifts east, leaving higher elevations with snow and lower valleys mostly dry. Idaho's central mountains should be drier Saturday, Sunday and Tuesday. Grand Targhee leads with 12 inches, and the National Weather Service is calling for 12 to 25 inches from Thursday through Monday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A longer storm arrives in pieces from early Thursday through Saturday morning, with the heaviest mountain snow in the northern mountains. Snow levels stay near 5 to 6.5 thousand feet Thursday, then fall to near the valley floors Friday evening. Powder Mountain leads with 11 inches so far, and the NWS is calling for 19 to 35 inches Thursday through Monday. Winter Weather Advisory Thursday through Saturday."
+   "text": "A long storm arrives in pieces from Thursday morning through Saturday morning, with the heaviest totals in the northern mountains. A second wave Friday brings snow levels down to the valley floors. Powder Mountain leads with 11 inches, and the National Weather Service is calling for 19 to 35 inches from Thursday through Monday. A Winter Weather Advisory runs from Thursday to Saturday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A deep low off the Oregon coast brings mountain snow through Friday, with fog and freezing fog in valleys. Mostly dry weather returns Friday afternoon before another system arrives Saturday night. Crystal Mountain has 9 inches so far, and snow is likely Saturday into Monday. Confidence in the timing and amounts of the weekend system is low."
+   "text": "A deep low off Oregon brings mountain snow and rain at lower elevations today, with dense fog in central Oregon. Mostly dry weather returns Friday afternoon before a weak system arrives Saturday, with more snow Saturday night into Sunday. Crystal Mountain leads with 9 inches, with a 6-inch Sunday peak. Confidence in details is low."
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center says a trough will bring rain and mountain snow to the West Coast and Intermountain West next week, with possible heavier rain in California from Tuesday into Wednesday, Nov 24 to 25.",
+  "text": "The Weather Prediction Center says a trough will bring rain and mountain snow to the West Coast and Intermountain West next week, with heavier rain possible in California around Tuesday Nov 24 into Wednesday Nov 25.",
   "sources": [
    {
     "name": "NWS STO Area Forecast Discussion",
@@ -93,7 +93,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-19T07:21:42.369Z"
+   "issuedAt": "2026-11-19T14:20:13.285Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -129,12 +129,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-19T13:05:48.788Z"
+   "issuedAt": "2026-11-19T14:20:15.995Z"
   }
  ],
  "api": {
   "day": "2026-11-19",
-  "calls": 4
+  "calls": 5
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
