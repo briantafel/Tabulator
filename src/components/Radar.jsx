@@ -13,7 +13,7 @@ import { useResortSearch } from "../lib/useResortSearch.js";
  *  storm-spotting it did over Open-Meteo's sixteen. Whether it still earns a
  *  tab is an open question — see claude/RESUME-HERE.md. */
 export default function Radar({
-  resorts, dates, metric, onPlace, editorial, generatedAt, weather,
+  resorts, dates, metric, onPlace, editorial, generatedAt, weather, namePeak = false,
   favs = [], onOpen, onToggleFav,
   /* With projections on, the grid alone reaches past Snow-Forecast's six
      days (purple, lightness-matched). The paragraph, the ranking and the
@@ -54,7 +54,7 @@ export default function Radar({
   const max = Math.max(0.5, ...rows.flatMap((r) => r.days.map((d) => d.snow ?? 0)));
   /* Read over every resort, not just the twelve on the grid: a storm in the
      Northeast still belongs in the paragraph. */
-  const said = useMemo(() => outlook(resorts, { metric, weather }), [resorts, metric, weather]);
+  const said = useMemo(() => outlook(resorts, { metric, weather, namePeak }), [resorts, metric, weather, namePeak]);
 
   return (
     <div className="radar">

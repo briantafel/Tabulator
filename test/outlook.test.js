@@ -93,3 +93,21 @@ test("Tahoe names the resort even though Mt. Rose is in Nevada", () => {
   const s = say(outlook(feed({ "mt-rose": [0, 25, 20, 0, 0, 0], northstar: [0, 20, 15, 0, 0, 0] }), { now: NOW }));
   assert.match(s, /best bet for snow is \[Tahoe\], with \[Mt\. Rose\]/);
 });
+
+test("namePeak: the up-to amount names its resort when the best bet is elsewhere", () => {
+  // Kirkwood is the single deepest; the Wasatch wins on its top two.
+  // cm: Kirkwood 100, Mt. Rose 70 (Tahoe 85) vs Brighton 95, Solitude 92 (Wasatch 93.5).
+  const snow = { kirkwood: [75, 3, 0, 13, 1, 8], "mt-rose": [56, 3, 0, 6, 0, 5],
+    brighton: [37, 31, 5, 1, 21, 0], solitude: [33, 30, 5, 1, 23, 0] };
+  const s = say(outlook(feed(snow), { now: NOW, namePeak: true }));
+  assert.match(s, /with up to \[\d+"\] at \[Kirkwood\] falling/);
+  assert.match(s, /best bet for snow is \[the Wasatch\], with \[Brighton\]/);
+  // Off: the old sentence, unchanged.
+  assert.doesNotMatch(say(outlook(feed(snow), { now: NOW })), / at \[/);
+});
+
+test("namePeak: no repeat when the sentence already closes on that resort", () => {
+  const s = say(outlook(feed({ kirkwood: [0, 20, 20, 0, 0, 0], palisades: [0, 10, 5, 0, 0, 0] }), { now: NOW, namePeak: true }));
+  assert.doesNotMatch(s, / at \[Kirkwood\]/);
+  assert.match(s, /with \[Kirkwood\] the strongest move/);
+});

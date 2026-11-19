@@ -138,6 +138,9 @@ export default function Tabulator() {
   /* Calibrated bands (Brian, 2026-11-18: "Let's try it. Make sure we can
      revert."): no Settings row; flags.json `bands: "off"` reverts everyone. */
   const bandsOn = (feedRaw?.flags?.bands ?? "off") !== "off";
+  /* Radar headline names the resort behind "up to N" (2026-11-19). No
+     Settings row; flags.json `peakResort: "off"` reverts everyone. */
+  const peakOn = (feedRaw?.flags?.peakResort ?? "off") !== "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
@@ -564,7 +567,7 @@ export default function Tabulator() {
           )}
 
           {feed && tab === "radar" && (
-            <Radar resorts={base.resorts} dates={sfDates} metric={metric} onPlace={openPlace}
+            <Radar resorts={base.resorts} dates={sfDates} metric={metric} onPlace={openPlace} namePeak={peakOn}
               gridResorts={projections ? feed.resorts : base.resorts}
               gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
               editorial={feed.snowfall

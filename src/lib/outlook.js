@@ -197,9 +197,11 @@ export function unitsOf(rows) {
  * @param opts.metric  amount in cm rather than inches
  * @param opts.weather weather.json `resorts` map — its alerts decide how
  *                     strong the storm is (see stormWord)
+ * @param opts.namePeak name the resort the "up to" amount belongs to
+ *                     (flags.json `peakResort`, Brian 2026-11-19)
  * @returns segments [{ t, hot }] — never null
  */
-export function outlook(resorts, { now = new Date(), metric = false, weather = null } = {}) {
+export function outlook(resorts, { now = new Date(), metric = false, weather = null, namePeak = false } = {}) {
   const rows = snowRows(resorts, now);
 
   const nDays = Math.max(0, ...rows.map((r) => r.snow.length));
@@ -272,11 +274,19 @@ export function outlook(resorts, { now = new Date(), metric = false, weather = n
     through.push(...place(g.name, { kind: "range", key: g.name }));
   });
 
+  /* Brian, 2026-11-19: "up to 39\"" sat beside "the Wasatch, with Brighton"
+     while the 39\" was Kirkwood's, so it read as Brighton's number. Name the
+     resort it belongs to — unless the sentence already closes on that resort. */
+  const peakAt = namePeak && !(closer.link.kind === "resort" && closer.link.id === biggest.id)
+    ? [{ t: " at ", hot: false }, { t: biggest.name, hot: true, link: { kind: "resort", id: biggest.id, key: biggest.name } }]
+    : [];
+
   return [
     { t: `A ${word} storm is moving through `, hot: false },
     ...through,
     { t: ", with up to ", hot: false },
     { t: amount, hot: true },
+    ...peakAt,
     { t: " falling over ", hot: false },
     { t: over, hot: true },
     { t: ". The best bet for snow is ", hot: false },
