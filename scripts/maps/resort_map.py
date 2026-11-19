@@ -41,13 +41,18 @@ def resort(rid):
 
 
 def overpass(q):
+    import time
     data = urllib.parse.urlencode({"data": q}).encode()
-    for url in (OVERPASS, "https://overpass.kumi.systems/api/interpreter"):
-        try:
-            return json.load(urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=180))
-        except Exception as e:
-            print(f"overpass {url}: {e}", file=sys.stderr)
-    sys.exit("Overpass unreachable")
+    urls = (OVERPASS, "https://overpass.private.coffee/api/interpreter",
+            "https://maps.mail.ru/osm/tools/overpass/api/interpreter", "https://overpass.kumi.systems/api/interpreter")
+    for attempt in range(3):
+        for url in urls:
+            try:
+                return json.load(urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=240))
+            except Exception as e:
+                print(f"overpass {url} (try {attempt + 1}): {e}", file=sys.stderr, flush=True)
+        time.sleep(30 * (attempt + 1))
+    sys.exit("Overpass unreachable after 3 rounds of 4 servers")
 
 
 def lines_of(el):
