@@ -276,13 +276,15 @@ def main():
     # then keep the largest piece(s) that survive.
     from scipy.ndimage import label as cc_label
     r_open = 100 / m_px
-    opened = distance_transform_edt(distance_transform_edt(mask) > r_open) <= r_open
+    eroded = distance_transform_edt(mask) > r_open
+    opened = distance_transform_edt(~eroded) <= r_open          # grow the eroded core back
     opened &= mask
     lab_, nlab = cc_label(opened)
     if nlab:
         sizes = np.bincount(lab_.ravel())[1:]
         keep = np.isin(lab_, 1 + np.where(sizes >= 0.05 * sizes.max())[0])
         if keep.sum() > 0.5 * mask.sum():
+            print(f"trimmed strands: {(mask.sum() - keep.sum()) * m_px * m_px / 4046.86:,.0f} acres removed")
             mask = keep
     if mask.mean() < 0.02:
         sys.exit("skiable-terrain mask is nearly empty (no runs mapped?); refusing to draw")
