@@ -576,7 +576,11 @@ export default function Tabulator() {
               editorial={feed.snowfall
                 ? (oursReadoutMatches(feed.editorialOurs, feedRaw?.blend) ? feed.editorialOurs : null) /* written from our numbers, or nothing */
                 : feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
-              favs={favs} onToggleFav={toggleFav} onOpen={(r) => setOpen(scoreFull(r))} />
+              favs={favs} onToggleFav={toggleFav}
+              /* The radar lists base resorts (forecast days only); open the
+                 projected copy so the sheet shows the full horizon. Bug
+                 2026-11-19: Alta from search showed 6 days. */
+              onOpen={(r) => setOpen(scoreFull(feed?.resorts.find((x) => x.id === r.id) ?? r))} />
           )}
 
           {feed && tab === "trips" && !editing && !viewing && (
