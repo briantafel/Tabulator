@@ -472,6 +472,7 @@ def main():
     ap.add_argument("--bbox", help="W,S,E,N (default: the Wasatch)")
     ap.add_argument("--width", type=int, default=0, help="px width for --bbox")
     ap.add_argument("--cells", action="store_true", help="NBM only: draw the raw 2.5 km cells with values")
+    ap.add_argument("--downscale", action="store_true", help="NBM only: terrain-downscaled sketch")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     if a.bbox:
@@ -527,6 +528,19 @@ def main():
                  extra=nbm_cells_layer(lat, lon, total), hide_snow=True)
         open(os.path.join(a.out, "cells.svg"), "w").write(sv)
         cairosvg.svg2png(bytestring=sv.encode(), write_to=os.path.join(a.out, "cells.png"))
+    if a.downscale:
+        if a.source != "nbm":
+            raise SystemExit("--downscale needs --source nbm")
+        fine, _ = downscale(dem, lat, lon, total, to_in)
+        lines, fill = snow_shapes(fine, [3, 6, 12, 18, 24, 30, 36], smooth=1.2, min_pts=6)
+        cap = ("5-day snow · NBM downscaled by elevation (sketch, not yet scored)",
+               f"NOAA NBM {run:%b %-d %HZ} 2.5 km cells, split by 30 m terrain using each area's own snow-vs-height "
+               f"slope · rings: range within 1.5 km")
+        sv = svg(base_png, dem_ft, terrain, lines, fill, run, "all", "nbm", fill_from=3, caption=cap,
+                 extra=downscale_layers(fine))
+        open(os.path.join(a.out, "downscaled.svg"), "w").write(sv)
+        cairosvg.svg2png(bytestring=sv.encode(), write_to=os.path.join(a.out, "downscaled.png"))
+        np.save(os.path.join(a.out, "fine.npy"), fine.astype("float32")) if os.environ.get("KEEP_NPY") else None
     if a.animate:
         if a.source != "nbm":
             raise SystemExit("--animate needs --source nbm (6 h blocks)")
@@ -564,6 +578,77 @@ def nbm_cells_layer(lat, lon, total_m):
                     labels += halo_text(x, y, txt, f'font-size="19" font-weight="600" fill="{INK}" '
                                                   f'text-anchor="middle" dominant-baseline="middle"')
     return [("nbm cells (2.5 km, 5-day in.)", shapes), ("cell values (in.)", labels)]
+
+
+def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0):
+    """Sketch of terrain downscaling, from NBM alone (no PRISM yet, not yet scored).
+
+    1. Assign every map pixel to its nearest NBM cell; a cell's terrain height = mean of
+       the 30 m DEM over its footprint (stands in for the model's smoothed terrain).
+    2. For each cell, fit snow vs cell height over the cells within `radius_km`
+       (weighted least squares): the local "inches per 1,000 ft". Never negative.
+    3. Fine snow = smooth NBM field + gradient x (pixel height - smoothed cell height).
+       The added term averages ~0 over a cell, so cell totals are kept.
+    Returns (inches per pixel, gradient in in/1000 ft per pixel)."""
+    from scipy.spatial import cKDTree
+    k = math.cos(math.radians(LAT0)) * 111.32
+    box = (lat > S - 0.15) & (lat < N + 0.15) & (lon > W - 0.2) & (lon < E + 0.2)
+    clat, clon, cval = lat[box], lon[box], total_m[box] * 39.3701
+    tree = cKDTree(np.column_stack([clon * k, clat * 111.32]))
+    LA, LO = np.meshgrid(np.linspace(N, S, H_PX), np.linspace(W, E, W_PX), indexing="ij")
+    _, owner = tree.query(np.column_stack([LO.ravel() * k, LA.ravel() * 111.32]))
+    zft = dem_m.ravel() * 3.28084
+    cnt = np.bincount(owner, minlength=len(clat))
+    zbar = np.bincount(owner, weights=zft, minlength=len(clat)) / np.maximum(cnt, 1)
+    if (cnt == 0).any():                              # cells just off the map: borrow the nearest
+        inside = np.where(cnt > 0)[0]                 # cell's height so edges aren't pulled to 0 ft
+        _, nn = cKDTree(np.column_stack([clon[inside] * k, clat[inside] * 111.32])).query(
+            np.column_stack([clon[cnt == 0] * k, clat[cnt == 0] * 111.32]))
+        zbar[cnt == 0] = zbar[inside[nn]]
+    seen = cnt > 50                                   # cells mostly inside the map
+    pts = np.column_stack([clon * k, clat * 111.32])
+    grad = np.full(len(clat), np.nan)
+    for c in np.where(seen)[0]:
+        nb = [j for j in tree.query_ball_point(pts[c], radius_km) if seen[j] and cval[j] >= 0.5]
+        if len(nb) < 8:
+            continue
+        x, y = zbar[nb] / 1000.0, cval[nb]
+        w = np.exp(-np.sum((pts[nb] - pts[c]) ** 2, 1) / (2 * (radius_km / 2) ** 2))
+        xm, ym = np.average(x, weights=w), np.average(y, weights=w)
+        vx = np.average((x - xm) ** 2, weights=w)
+        if vx < 0.05:                                 # flat neighbourhood: no gradient to learn
+            continue
+        grad[c] = max(0.0, np.average((x - xm) * (y - ym), weights=w) / vx)
+    grad = np.where(np.isnan(grad), 0.0, grad)
+    # smooth both cell fields onto the pixels (same triangulation as the base field)
+    full = np.zeros_like(total_m, dtype=float)
+    full[np.where(box)[0]] = zbar / 39.3701
+    zbar_px = to_in(full)
+    full[np.where(box)[0]] = grad / 39.3701
+    grad_px = to_in(full)
+    base = to_in(total_m)
+    fine = np.clip(base + grad_px * (dem_m * 3.28084 - zbar_px) / 1000.0, 0, None)
+    print(f"  downscale: gradient median {np.median(grad[seen & (grad > 0)]):.1f} in/1000 ft, "
+          f"max {grad.max():.1f}; fine max {fine.max():.1f} in vs cell max {cval.max():.1f}")
+    return fine, grad_px
+
+
+def downscale_layers(fine):
+    """Resort labels: the range of downscaled snow within 1.5 km (base-to-top proxy)."""
+    body = []
+    r_px = 1.5 / ((E - W) * 111.32 * math.cos(math.radians(LAT0)) / W_PX)
+    yy, xx = np.mgrid[0:H_PX, 0:W_PX]
+    for name, la, lo in RESORTS:
+        x, y = px(lo, la)
+        if not (0 <= x <= W_PX and 0 <= y <= H_PX):
+            continue
+        m = (xx - x) ** 2 + (yy - y) ** 2 <= r_px ** 2
+        lo_in, hi_in = np.percentile(fine[m], [5, 95])
+        body.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r_px:.1f}" fill="none" stroke="{INK}" '
+                    f'stroke-opacity="0.45" stroke-width="1.2" stroke-dasharray="3 5"/>')
+        body += halo_text(x, y + r_px + 22, f'{lo_in:.0f}–{hi_in:.0f}"',
+                          f'font-size="22" font-weight="700" fill="{INK}" text-anchor="middle" dominant-baseline="middle"')
+    return [("snow range within 1.5 km (in.)", body)]
 
 
 SIX_H_LEVELS_IN = [0.5, 1, 2, 4, 8]   # snow in this 6 h block: the fill
