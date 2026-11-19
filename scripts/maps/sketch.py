@@ -45,6 +45,9 @@ CONTOUR_FT = 500
 INDEX_FT = 2500
 SNOW_LEVELS_IN = [1, 3, 6, 12, 18, 24, 36]
 
+TITLE = {"ifs": "5-day snow · ECMWF IFS (raw, 0.25°)", "nbm": "5-day snow · NOAA NBM (2.5 km)"}
+SLR_NOTE = {"ifs": f"placeholder {SLR}:1 snow ratio", "nbm": "NBM's own snow ratio"}
+CREDIT = {"ifs": "Forecast © ECMWF, CC BY 4.0", "nbm": "Forecast: NOAA National Blend of Models"}
 BLUE, BROWN, GREY, INK = "#1f5fbf", "#9a5a2e", "#8a8f96", "#2b2f33"
 # Single blue ramp, more snow = deeper and more saturated. Starts clearly off-white.
 FILL = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
@@ -173,6 +176,63 @@ def snow_inches(path):
     return inches
 
 
+# ---------------------------------------------------------------- NBM (2.5 km, own SLR)
+def latest_nbm_snow(hours=120):
+    """Sum of NBM 6 h ASNOW blocks over `hours` from the newest 00z/12z cycle that has them."""
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
+    import nbm
+    import eccodes
+    now = datetime.now(timezone.utc)
+    for back in range(0, 4):
+        c = (now - timedelta(hours=3 + 12 * back)).replace(minute=0, second=0, microsecond=0)
+        cycle = c.replace(hour=0 if c.hour < 12 else 12)
+        leads = nbm.list_leads(cycle)
+        need = list(range(6, hours + 1, 6))
+        if not all(l in leads for l in need):
+            print(f"NBM {cycle:%Y-%m-%d %HZ}: leads not all posted yet", file=sys.stderr)
+            continue
+        total, lat, lon = None, None, None
+        for l in need:
+            key = leads[l]
+            idx = nbm.parse_idx(nbm.http(f"{nbm.BUCKET_URL}/{key}.idx").decode())
+            rng = nbm.pick(idx, "ASNOW", "surface", f"{l - 6}-{l} hour acc fcst")
+            if rng is None:
+                raise SystemExit(f"NBM {cycle:%Y-%m-%d %HZ} f{l:03d}: no 6 h ASNOW in the .idx")
+            raw = nbm.http(f"{nbm.BUCKET_URL}/{key}", headers={"Range": f"bytes={rng[0]}-{rng[1]}"})
+            gid = eccodes.codes_new_from_message(raw)
+            vals = np.asarray(eccodes.codes_get_values(gid), dtype="float64")
+            missing = eccodes.codes_get(gid, "missingValue")
+            if lat is None:
+                lat = np.asarray(eccodes.codes_get_array(gid, "latitudes"))
+                lon = np.asarray(eccodes.codes_get_array(gid, "longitudes"))
+                lon = np.where(lon > 180, lon - 360, lon)
+            eccodes.codes_release(gid)
+            vals[vals == missing] = np.nan
+            total = vals if total is None else total + vals
+        return cycle, lat, lon, total
+    raise SystemExit("No NBM cycle with 6 h snow out to 120 h in the last 2 days")
+
+
+def nbm_inches(lat, lon, total_m):
+    from scipy.interpolate import griddata
+    box = (lat > S - 0.1) & (lat < N + 0.1) & (lon > W - 0.1) & (lon < E + 0.1)
+    if box.sum() < 100:
+        raise SystemExit(f"NBM grid has only {box.sum()} points in the map box")
+    v = total_m[box]
+    if np.isnan(v).mean() > 0.01:
+        raise SystemExit(f"NBM snow missing at {np.isnan(v).mean():.1%} of points; not drawing zeros")
+    yy = np.linspace(N, S, H_PX)
+    xx = np.linspace(W, E, W_PX)
+    LA, LO = np.meshgrid(yy, xx, indexing="ij")
+    out = griddata((lat[box], lon[box]), v, (LA, LO), method="linear")
+    if np.isnan(out).any():
+        raise SystemExit("NBM interpolation left gaps inside the map")
+    inches = np.clip(out, 0, None) * 39.3701
+    if inches.max() > 200:
+        raise SystemExit(f"implausible NBM snow: max {inches.max():.1f} in")
+    return inches
+
+
 # ---------------------------------------------------------------- vectors
 def paths_from_contour(cs, min_pts=12):
     out = []  # (level, [d strings])
@@ -233,7 +293,7 @@ def halo_text(x, y, txt, attrs):
             f'<text x="{x:.1f}" y="{y:.1f}" {attrs}>{txt}</text>']
 
 
-def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode):
+def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs"):
     """mode: 'all' (editable master), 'fill', 'lines'."""
     b64 = base64.b64encode(base_png).decode()
     L = []
@@ -297,10 +357,10 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode):
 
     valid = run + timedelta(hours=120)
     cap = [f'<rect x="0" y="{H_PX - 118}" width="{W_PX}" height="118" fill="#ffffff" fill-opacity="0.92"/>',
-           f'<text x="36" y="{H_PX - 76}" font-size="28" font-weight="600" fill="{INK}">5-day snow · ECMWF IFS (raw, 0.25°)</text>',
+           f'<text x="36" y="{H_PX - 76}" font-size="28" font-weight="600" fill="{INK}">{TITLE[source]}</text>',
            f'<text x="36" y="{H_PX - 42}" font-size="19" fill="{GREY}">Run {run:%a %b %-d %HZ} → {valid:%a %b %-d %HZ} · '
-           f'sketch placeholders: {SLR}:1 snow ratio, snow line {SNOW_LINE_FT:,} ft · contours {CONTOUR_FT} ft</text>',
-           f'<text x="36" y="{H_PX - 16}" font-size="15" fill="{GREY}">Elevation © ESA Copernicus GLO-30 · Forecast © ECMWF, CC BY 4.0</text>']
+           f'{SLR_NOTE[source]}, sketch snow line {SNOW_LINE_FT:,} ft · contours {CONTOUR_FT} ft</text>',
+           f'<text x="36" y="{H_PX - 16}" font-size="15" fill="{GREY}">Elevation © ESA Copernicus GLO-30 · {CREDIT[source]}</text>']
     layer("caption", cap)
     L.append("</svg>")
     return "\n".join(L)
@@ -311,6 +371,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--dem-cache")
     ap.add_argument("--fake-snow", action="store_true", help="test without ECMWF")
+    ap.add_argument("--source", choices=["ifs", "nbm"], default="ifs")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
@@ -326,24 +387,27 @@ def main():
         run, src = datetime(2026, 11, 18, 0, tzinfo=timezone.utc), "fake"
         yy, xx = np.mgrid[0:H_PX, 0:W_PX]
         snow = 22 * np.exp(-(((xx - W_PX * .6) / 300) ** 2 + ((yy - H_PX * .75) / 500) ** 2))
+    elif a.source == "nbm":
+        run, lat, lon, total = latest_nbm_snow()
+        snow, src = nbm_inches(lat, lon, total), "aws"
     else:
         run, path, src = latest_ifs_snow(a.out)
         snow = snow_inches(path)
         os.remove(path)
-    print(f"IFS {run:%Y-%m-%d %HZ} via {src}: snow max {snow.max():.1f} in")
+    print(f"{a.source.upper()} {run:%Y-%m-%d %HZ} via {src}: snow max {snow.max():.1f} in")
 
     dem_ft = dem * 3.28084
     terrain, snow_lines, fill = contour_sets(dem_ft, snow)
 
     import cairosvg
     for mode, name in [("all", "layers.svg"), ("fill", "sketch-fill"), ("lines", "sketch-lines")]:
-        s = svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode)
+        s = svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, a.source)
         if mode == "all":
             open(os.path.join(a.out, name), "w").write(s)
         else:
             cairosvg.svg2png(bytestring=s.encode(), write_to=os.path.join(a.out, name + ".png"))
-    json.dump({"bounds": [W, S, E, N], "px": [W_PX, H_PX], "ifs_run": run.isoformat(), "ifs_source": src,
-               "snow_max_in": round(float(snow.max()), 1), "slr_placeholder": SLR,
+    json.dump({"bounds": [W, S, E, N], "px": [W_PX, H_PX], "source": a.source, "run": run.isoformat(), "fetched_via": src,
+               "snow_max_in": round(float(snow.max()), 1), "slr": SLR if a.source == "ifs" else "nbm",
                "snow_line_ft_placeholder": SNOW_LINE_FT},
               open(os.path.join(a.out, "meta.json"), "w"), indent=2)
     print("wrote", sorted(os.listdir(a.out)))
