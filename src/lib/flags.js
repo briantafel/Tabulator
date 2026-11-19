@@ -67,7 +67,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
    bet's number. No Settings row; "off" reverts to the old sentence. */
 /* terrainMap (2026-11-19): Snow by terrain on the resort sheet, for resorts in
    public/terrain/index.json (Alta first). No Settings row; "off" removes it. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off" });
+/* terrainZoom (2026-11-19): the expand button on Snow by terrain and its
+   fullscreen pan/zoom map. Needs terrainMap on. No Settings row; "off" removes the button. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */
