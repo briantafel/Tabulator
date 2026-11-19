@@ -203,8 +203,8 @@ def main():
 
     # --- relief: Blender top-down render when BLENDER is set (cached per resort), else the numpy shader
     LIGHTS = [  # name, azimuth, elevation, strength, sun angle (softness), sky
-        ["crisp", 315, 24, 4.2, 3, 0.28],
-        ["soft", 315, 34, 3.4, 12, 0.42],
+        ["crisp", 315, 24, 4.2, 3, 0.22, [135, 35, 0.9]],
+        ["soft", 315, 34, 3.4, 12, 0.32, [135, 40, 0.8]],
     ]
     rgbs = {}
     blender = os.environ.get("BLENDER")

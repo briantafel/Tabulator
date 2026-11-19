@@ -50,12 +50,20 @@ cam = bpy.data.objects.new("c", cam_d); sc.collection.objects.link(cam); sc.came
 cam.location = (0, 0, float(Z.max()) + 5.0); cam.rotation_euler = (0, 0, 0)
 cam_d.clip_end = 50
 
-sun_d = bpy.data.lights.new("sun", "SUN"); sun = bpy.data.objects.new("sun", sun_d); sc.collection.objects.link(sun)
-for name, az, el, strength, angle, sky in meta["light"]:
+def aim(obj, az, el):
     a, e = math.radians(az), math.radians(el)
     src = Vector((math.sin(a) * math.cos(e), math.cos(a) * math.cos(e), math.sin(e)))
-    sun.rotation_euler = (-src).to_track_quat("-Z", "Y").to_euler()
+    obj.rotation_euler = (-src).to_track_quat("-Z", "Y").to_euler()
+
+sun_d = bpy.data.lights.new("sun", "SUN"); sun = bpy.data.objects.new("sun", sun_d); sc.collection.objects.link(sun)
+fill_d = bpy.data.lights.new("fill", "SUN"); fill = bpy.data.objects.new("fill", fill_d); sc.collection.objects.link(fill)
+fill_d.cycles.cast_shadow = False if hasattr(fill_d, "cycles") else None
+for name, az, el, strength, angle, sky, *fl in meta["light"]:
+    aim(sun, az, el)
     sun_d.energy = strength; sun_d.angle = math.radians(angle)
+    # weak shadowless fill from the opposite side: gives form to the shadowed faces
+    f_az, f_el, f_str = fl[0] if fl else ((az + 180) % 360, 40, 0.0)
+    aim(fill, f_az, f_el); fill_d.energy = f_str; fill_d.angle = math.radians(30)
     bg.inputs["Color"].default_value = (1, 1, 1, 1); bg.inputs["Strength"].default_value = sky
     sc.render.filepath = f"{OUT}-{name}.png"
     bpy.ops.render.render(write_still=True)
