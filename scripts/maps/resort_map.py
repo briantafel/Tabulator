@@ -203,8 +203,10 @@ def main():
 
     # --- relief: Blender top-down render when BLENDER is set (cached per resort), else the numpy shader
     LIGHTS = [  # name, azimuth, elevation, strength, sun angle (softness), sky
-        ["crisp", 315, 24, 4.2, 3, 0.22, [135, 35, 0.9]],
-        ["soft", 315, 34, 3.4, 12, 0.32, [135, 40, 0.8]],
+        # Brian 2026-11-19: keep every slope in tone (nothing black, nothing blown). High, broad key;
+        # strong shadowless fill; plain tone curve. name, az, el, key, softness deg, sky, [fill az, el, str]
+        ["even", 315, 45, 2.3, 18, 0.42, [135, 40, 0.9]],
+        ["even-high", 320, 55, 2.0, 25, 0.5, [140, 45, 0.8]],
     ]
     rgbs = {}
     blender = os.environ.get("BLENDER")
@@ -224,6 +226,9 @@ def main():
             sys.exit(f"Blender failed: {r_.stderr[-1500:]}")
         for name, *_ in LIGHTS:
             rgbs[name] = np.asarray(Image.open(work / f"{a.resort}-{name}.png").convert("RGB"))
+            g = rgbs[name].mean(-1)
+            print(f"  relief {name}: clipped white {(g >= 254).mean():.1%}, darkest 1% {np.percentile(g, 1):.0f}, "
+                  f"median {np.median(g):.0f}")
     else:
         rgbs["numpy"] = sk.relief(dem)
     rgb = next(iter(rgbs.values()))

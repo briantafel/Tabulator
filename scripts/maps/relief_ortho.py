@@ -21,8 +21,8 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene
 sc.render.engine = "CYCLES"; sc.cycles.device = "CPU"
 sc.cycles.samples = int(os.environ.get("SAMPLES", "48")); sc.cycles.use_denoising = True
-sc.view_settings.view_transform = "Standard"; sc.view_settings.look = "Medium High Contrast"
-sc.view_settings.exposure = meta.get("exposure", 0.0)
+sc.view_settings.view_transform = "Standard"; sc.view_settings.look = "None"
+sc.view_settings.exposure = meta.get("exposure", -0.25)
 sc.render.resolution_x, sc.render.resolution_y = wpx, hpx
 
 xs = np.linspace(-w / 2, w / 2, nc); ys = np.linspace(h / 2, -h / 2, nr)
