@@ -1,15 +1,15 @@
 {
   "version": "slr-v3",
   "form": "SLR = a + b*T, clamped; per region where regions[r].promoted, else pooled",
-  "a": 11.558,
-  "b": -0.368,
+  "a": 11.517,
+  "b": -0.357,
   "clamp": [
     5.0,
     25.0
   ],
   "temperature": "forecast 2 m, precipitation-weighted, at the point being converted (\u00b0C); fitted at station height, applied at the slope",
   "fitted_on": "2024-25, leads 1-3, CoCoRaHS / SLF plots / AMeDAS same-window new snow + water, water >= 2.5 mm, snow > 0, T <= 0.0 C",
-  "n_days": 3139,
+  "n_days": 3067,
   "median_observed_slr": 13.0,
   "promote": {
     "1": true,
@@ -31,17 +31,17 @@
       "median": 11.5,
       "a_raw": 9.438,
       "b_raw": -0.398,
-      "a": 10.119,
-      "b": -0.388,
+      "a": 10.106,
+      "b": -0.385,
       "promoted": false
     },
     "Rockies": {
-      "n": 2066,
-      "median": 13.8,
-      "a_raw": 12.516,
-      "b_raw": -0.272,
-      "a": 12.432,
-      "b": -0.28,
+      "n": 1994,
+      "median": 13.9,
+      "a_raw": 12.21,
+      "b_raw": -0.317,
+      "a": 12.146,
+      "b": -0.32,
       "promoted": false
     },
     "Sierra & Cascades": {
@@ -49,8 +49,8 @@
       "median": 11.5,
       "a_raw": 11.198,
       "b_raw": -0.38,
-      "a": 11.287,
-      "b": -0.377,
+      "a": 11.277,
+      "b": -0.374,
       "promoted": false
     }
   },
@@ -79,6 +79,7 @@
     "alta": "Rockies",
     "brighton": "Rockies",
     "solitude": "Rockies",
+    "park-city": "Rockies",
     "snowbasin": "Rockies",
     "powder-mountain": "Rockies",
     "jackson-hole": "Rockies",
