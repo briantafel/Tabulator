@@ -239,6 +239,8 @@ def latest_nbm_snow(hours=120):
             vals = np.asarray(natural_order(gid, eccodes.codes_get_values(gid)), dtype="float64")
             missing = eccodes.codes_get(gid, "missingValue")
             if lat is None:
+                global NBM_NX
+                NBM_NX = eccodes.codes_get(gid, "Nx")
                 lat = np.asarray(eccodes.codes_get_array(gid, "latitudes"))
                 lon = np.asarray(eccodes.codes_get_array(gid, "longitudes"))
                 lon = np.where(lon > 180, lon - 360, lon)
@@ -378,7 +380,8 @@ def halo_text(x, y, txt, attrs):
             f'<text x="{x:.1f}" y="{y:.1f}" {attrs}>{txt}</text>']
 
 
-def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fill_from=FILL_FROM_IN, caption=None):
+def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fill_from=FILL_FROM_IN, caption=None,
+        extra=None, hide_snow=False):
     """mode: 'all' (editable master), 'fill', 'lines'."""
     b64 = base64.b64encode(base_png).decode()
     L = []
@@ -412,7 +415,7 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fi
 
     fill_body = [f'<path d="{d}" fill="{FILL[min(i + 1, len(FILL)-1)]}" fill-opacity="{FILL_OP}" '
                  f'fill-rule="evenodd" stroke="none" data-in="{lv}"/>' for i, (lv, d) in enumerate(fill) if d and lv >= fill_from]
-    layer("snow fill", fill_body, hidden=(mode == "lines"))
+    layer("snow fill", fill_body, hidden=(mode == "lines" or hide_snow))
 
     line_body = []
     for i, (lv, ds) in enumerate(snow_lines):
@@ -422,11 +425,15 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fi
     for lv, (x, y) in label_points(snow_lines):
         line_body += halo_text(x, y, f'{lv:g}"', f'font-size="22" font-weight="600" fill="{FILL[5]}" '
                                f'text-anchor="middle" dominant-baseline="middle"')
-    layer("snow lines", line_body, hidden=(mode == "fill"))
+    layer("snow lines", line_body, hidden=(mode == "fill" or hide_snow))
+    for name, body in (extra or []):
+        layer(name, body)
 
     mk = []
     for name, la, lo in RESORTS:
         x, y = px(lo, la)
+        if not (0 <= x <= W_PX and 0 <= y <= H_PX):
+            continue
         mk.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="9" fill="#ffffff" stroke="{INK}" stroke-width="1.6"/>')
         mk.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.6" fill="{INK}"/>')
         dx = -16 if name in ("Snowbird", "Alta") else 16
@@ -436,6 +443,8 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fi
                         f'text-anchor="{anchor}" dominant-baseline="middle"')
     for name, la, lo in CITIES:
         x, y = px(lo, la)
+        if not (0 <= x <= W_PX and 0 <= y <= H_PX):
+            continue
         mk.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{GREY}"/>')
         mk += halo_text(x + 10, y, name, f'font-size="21" fill="{GREY}" dominant-baseline="middle"')
     layer("places", mk)
@@ -460,8 +469,17 @@ def main():
     ap.add_argument("--source", choices=["ifs", "nbm"], default="ifs")
     ap.add_argument("--style", choices=["plaster", "terraced"], default="plaster")
     ap.add_argument("--animate", action="store_true", help="NBM only: one frame per 6 h block + an MP4")
+    ap.add_argument("--bbox", help="W,S,E,N (default: the Wasatch)")
+    ap.add_argument("--width", type=int, default=0, help="px width for --bbox")
+    ap.add_argument("--cells", action="store_true", help="NBM only: draw the raw 2.5 km cells with values")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
+    if a.bbox:
+        global W, S, E, N, LAT0, W_PX, H_PX
+        W, S, E, N = map(float, a.bbox.split(","))
+        LAT0 = (S + N) / 2
+        W_PX = a.width or 1800
+        H_PX = int(round(W_PX * (N - S) / ((E - W) * math.cos(math.radians(LAT0)))))
 
     dem = load_dem(a.dem_cache)
     print(f"DEM {dem.shape}, {dem.min():.0f}–{dem.max():.0f} m")
@@ -499,11 +517,54 @@ def main():
                "snow_max_in": round(float(snow.max()), 1), "slr": SLR if a.source == "ifs" else "nbm",
                "snow_line_ft_placeholder": SNOW_LINE_FT},
               open(os.path.join(a.out, "meta.json"), "w"), indent=2)
+    if a.cells:
+        if a.source != "nbm":
+            raise SystemExit("--cells needs --source nbm")
+        cap = ("5-day snow · NOAA NBM, each 2.5 km cell as issued",
+               f"Run {run:%a %b %-d %HZ} → {run + timedelta(hours=120):%a %b %-d %HZ} · inches per cell, NBM's own snow ratio · "
+               f"no smoothing · contours {CONTOUR_FT} ft")
+        sv = svg(base_png, dem_ft, terrain, [], [], run, "all", "nbm", caption=cap,
+                 extra=nbm_cells_layer(lat, lon, total), hide_snow=True)
+        open(os.path.join(a.out, "cells.svg"), "w").write(sv)
+        cairosvg.svg2png(bytestring=sv.encode(), write_to=os.path.join(a.out, "cells.png"))
     if a.animate:
         if a.source != "nbm":
             raise SystemExit("--animate needs --source nbm (6 h blocks)")
         animate(a.out, base_png, dem_ft, terrain, run, blocks, to_in)
     print("wrote", sorted(os.listdir(a.out)))
+
+
+def nbm_cells_layer(lat, lon, total_m):
+    """NBM's own 2.5 km cells, unsmoothed: each one filled by its 5-day total and labelled.
+    Corners = mean of the four surrounding grid points (Lambert grid, so cells are tilted)."""
+    nx = NBM_NX
+    LAT, LON, V = lat.reshape(-1, nx), lon.reshape(-1, nx), total_m.reshape(-1, nx) * 39.3701
+    rows, cols = np.where((LAT > S - 0.05) & (LAT < N + 0.05) & (LON > W - 0.07) & (LON < E + 0.07))
+    r0, r1, c0, c1 = rows.min() - 1, rows.max() + 2, cols.min() - 1, cols.max() + 2
+    la, lo, v = LAT[r0:r1 + 1, c0:c1 + 1], LON[r0:r1 + 1, c0:c1 + 1], V[r0:r1 + 1, c0:c1 + 1]
+    cla = (la[:-1, :-1] + la[1:, :-1] + la[:-1, 1:] + la[1:, 1:]) / 4
+    clo = (lo[:-1, :-1] + lo[1:, :-1] + lo[:-1, 1:] + lo[1:, 1:]) / 4
+    edges = [0, 1, 3, 6, 12, 18, 24, 36, 1e9]
+    shapes, labels = [], []
+    for j in range(1, v.shape[0] - 1):
+        for i in range(1, v.shape[1] - 1):
+            val = v[j, i]
+            corners = [px(clo[a, b], cla[a, b]) for a, b in ((j - 1, i - 1), (j - 1, i), (j, i), (j, i - 1))]
+            d = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in corners) + " Z"
+            k = int(np.searchsorted(edges, val, side="right")) - 1
+            if val >= 1:
+                shapes.append(f'<path d="{d}" fill="{FILL[min(k, len(FILL) - 1)]}" fill-opacity="0.5" '
+                              f'stroke="#ffffff" stroke-opacity="0.7" stroke-width="1"/>')
+            else:
+                shapes.append(f'<path d="{d}" fill="none" stroke="{GREY}" stroke-opacity="0.35" stroke-width="0.8"/>')
+            x, y = px(lo[j, i], la[j, i])
+            if 0 < x < W_PX and 0 < y < H_PX - 120:
+                txt = f"{val:.0f}" if val >= 1 else ("" if val < 0.05 else f"{val:.1f}".lstrip("0"))
+                if txt:
+                    labels += halo_text(x, y, txt, f'font-size="19" font-weight="600" fill="{INK if val < 18 else "#ffffff"}" '
+                                                  f'text-anchor="middle" dominant-baseline="middle"')
+    # white halos read badly on the darkest cells: drop the halo there
+    return [("nbm cells (2.5 km, 5-day in.)", shapes), ("cell values (in.)", labels)]
 
 
 SIX_H_LEVELS_IN = [0.5, 1, 2, 4, 8]   # snow in this 6 h block: the fill
