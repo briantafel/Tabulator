@@ -272,6 +272,18 @@ def main():
     r_close = 110 / m_px
     grown = distance_transform_edt(~raw) <= r_close
     mask = binary_fill_holes(distance_transform_edt(grown) > r_close * 0.85)
+    # Drop strands narrower than ~120 m (a lone long run, a cat track): opening with r = 60 m,
+    # then keep the largest piece(s) that survive.
+    from scipy.ndimage import label as cc_label
+    r_open = 60 / m_px
+    opened = distance_transform_edt(distance_transform_edt(mask) > r_open) <= r_open
+    opened &= mask
+    lab_, nlab = cc_label(opened)
+    if nlab:
+        sizes = np.bincount(lab_.ravel())[1:]
+        keep = np.isin(lab_, 1 + np.where(sizes >= 0.05 * sizes.max())[0])
+        if keep.sum() > 0.5 * mask.sum():
+            mask = keep
     if mask.mean() < 0.02:
         sys.exit("skiable-terrain mask is nearly empty (no runs mapped?); refusing to draw")
     acres = mask.sum() * m_px * m_px / 4046.86
@@ -302,18 +314,22 @@ def main():
 
     ramp = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
     # Frame: the traced outline plus ~150 m, square (Brian 2026-11-19: crop close so the resort is large).
+    # The frame follows the resort's own shape, between 4:5 (tall) and 3:2 (wide).
     rr, cc = np.where(mask)
     pad = 150 / m_px
     x0, x1, y0, y1 = cc.min() - pad, cc.max() + pad, rr.min() - pad, rr.max() + pad
-    side = max(x1 - x0, y1 - y0)
+    fw, fh = x1 - x0, y1 - y0
+    if fw / fh > 1.5: fh = fw / 1.5
+    if fw / fh < 0.8: fw = fh * 0.8
+    fw, fh = min(fw, sk.W_PX), min(fh, sk.H_PX)
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-    side = min(side, sk.W_PX, sk.H_PX)
-    vx = float(np.clip(cx - side / 2, 0, sk.W_PX - side)); vy = float(np.clip(cy - side / 2, 0, sk.H_PX - side))
-    print(f"frame: {side * m_px / 1000:.2f} km square ({side:.0f} px of {sk.W_PX})")
+    vx = float(np.clip(cx - fw / 2, 0, sk.W_PX - fw)); vy = float(np.clip(cy - fh / 2, 0, sk.H_PX - fh))
+    side = fw  # kept for the json
+    print(f"frame: {fw * m_px / 1000:.2f} x {fh * m_px / 1000:.2f} km ({fw:.0f} x {fh:.0f} px), ratio {fw / fh:.2f}")
     head = ('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
             'xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" ')
     head_full = head + f'width="{sk.W_PX}" height="{sk.H_PX}" viewBox="0 0 {sk.W_PX} {sk.H_PX}" font-family="Inter, Helvetica, Arial, sans-serif">'
-    L = [head + f'width="{side:.0f}" height="{side:.0f}" viewBox="{vx:.1f} {vy:.1f} {side:.1f} {side:.1f}" '
+    L = [head + f'width="{fw:.0f}" height="{fh:.0f}" viewBox="{vx:.1f} {vy:.1f} {fw:.1f} {fh:.1f}" '
          f'font-family="Inter, Helvetica, Arial, sans-serif">',
          f'<defs><clipPath id="area"><path d="{area_d}" clip-rule="evenodd"/></clipPath></defs>']
 
