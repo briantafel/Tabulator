@@ -21,7 +21,7 @@ jobs:
       - name: Install
         run: |
           sudo apt-get install -y -q fonts-inter >/dev/null || true
-          pip install rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib
+          pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib
       - name: Render
         run: for r in ${{ inputs.resorts }}; do python3 scripts/maps/resort_map.py out $r; done
       - name: Publish to the resort-maps branch

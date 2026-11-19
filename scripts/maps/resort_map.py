@@ -1,4 +1,5 @@
 """One resort, snow by terrain: the ski area alone on white plaster relief.
+(Ski area outline, lifts and runs: OpenSkiMap GeoJSON exports, OpenStreetMap contributors, ODbL.)
 
   python3 resort_map.py OUTDIR RESORT_ID [--px 1800]
 
@@ -40,73 +41,66 @@ def resort(rid):
     sys.exit(f"no resort {rid}")
 
 
-def overpass(q):
-    import time
-    data = urllib.parse.urlencode({"data": q}).encode()
-    urls = (OVERPASS, "https://overpass.private.coffee/api/interpreter",
-            "https://maps.mail.ru/osm/tools/overpass/api/interpreter", "https://overpass.kumi.systems/api/interpreter")
-    for attempt in range(3):
-        for url in urls:
-            try:
-                return json.load(urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=240))
-            except Exception as e:
-                print(f"overpass {url} (try {attempt + 1}): {e}", file=sys.stderr, flush=True)
-        time.sleep(30 * (attempt + 1))
-    sys.exit("Overpass unreachable after 3 rounds of 4 servers")
+OSM_GEOJSON = "https://tiles.openskimap.org/geojson/{}.geojson"
 
 
-def lines_of(el):
-    """Overpass element (out geom) -> list of [(lat, lon), ...] rings/lines."""
-    if el["type"] == "way":
-        return [[(p["lat"], p["lon"]) for p in el.get("geometry", [])]]
-    if el["type"] == "relation":
-        return [[(p["lat"], p["lon"]) for p in m.get("geometry", [])] for m in el.get("members", [])
-                if m.get("role") in ("outer", "") and m.get("geometry")]
+def stream_features(kind):
+    """Stream OpenSkiMap features (ski_areas / lifts / runs) without loading the file whole."""
+    import ijson
+    req = urllib.request.Request(OSM_GEOJSON.format(kind), headers=UA)
+    with urllib.request.urlopen(req, timeout=600) as f:
+        yield from ijson.items(f, "features.item", use_float=True)
+
+
+def rings_of(geom):
+    """GeoJSON geometry -> list of [(lat, lon), ...] (polygon outer rings and lines)."""
+    t, c = geom["type"], geom["coordinates"]
+    if t == "Polygon":
+        return [[(y, x) for x, y, *_ in c[0]]]
+    if t == "MultiPolygon":
+        return [[(y, x) for x, y, *_ in poly[0]] for poly in c]
+    if t == "LineString":
+        return [[(y, x) for x, y, *_ in c]]
+    if t == "MultiLineString":
+        return [[(y, x) for x, y, *_ in line] for line in c]
     return []
 
 
-def ski_area(r, osm_name):
-    lat, lon = r.get("latlon") or r.get("nws")
-    q = f"""[out:json][timeout:120];
-(way["landuse"="winter_sports"](around:4000,{lat},{lon});
- relation["landuse"="winter_sports"](around:4000,{lat},{lon});
- relation["site"="piste"](around:4000,{lat},{lon}););
-out geom;"""
-    els = overpass(q)["elements"]
-    want = {n.lower() for n in (r["name"], osm_name or "") if n}
-
-    def score(el):
-        name = (el.get("tags", {}).get("name") or "").lower()
-        rings = [ring for ring in lines_of(el) if len(ring) > 2]
-        if not rings:
-            return None
-        pts = np.array([p for ring in rings for p in ring])
-        d = np.min(np.hypot(pts[:, 0] - lat, (pts[:, 1] - lon) * math.cos(math.radians(lat)))) * 111.32
-        named = any(w and (w in name or name in w) for w in want) if name else False
-        return (0 if named else 1, d), rings, name
-    cands = [s for s in (score(e) for e in els) if s]
-    if not cands:
-        sys.exit(f"{r['id']}: no ski-area outline in OpenStreetMap near the resort point")
-    cands.sort(key=lambda c: c[0])
-    key, rings, name = cands[0]
-    print(f"ski area: '{name}' ({len(rings)} rings), name match {key[0] == 0}, {key[1]:.2f} km")
-    return rings, name
+def ski_area(r, osm_id):
+    """The resort's OpenSkiMap ski area (id from resort-elevations.json): outline rings."""
+    if not osm_id:
+        sys.exit(f"{r['id']}: no OpenSkiMap id in resort-elevations.json")
+    for f in stream_features("ski_areas"):
+        if f["properties"].get("id") == osm_id:
+            rings = [ring for ring in rings_of(f["geometry"]) if len(ring) > 2]
+            if not rings:
+                sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} has no outline ({f['geometry']['type']})")
+            name = f["properties"].get("name")
+            print(f"ski area: '{name}' ({len(rings)} rings)")
+            return rings, name
+    sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found")
 
 
 def lifts_runs(bbox):
     W, S, E, N = bbox
-    q = f"""[out:json][timeout:120];
-(way["aerialway"~"chair_lift|gondola|cable_car|mixed_lift|drag_lift|t-bar|j-bar|platter|rope_tow|magic_carpet"]({S},{W},{N},{E});
- way["piste:type"="downhill"]({S},{W},{N},{E}););
-out geom;"""
-    lifts, runs = [], []
-    for el in overpass(q)["elements"]:
-        g = [(p["lat"], p["lon"]) for p in el.get("geometry", [])]
-        if len(g) < 2:
-            continue
-        (lifts if "aerialway" in el.get("tags", {}) else runs).append((el.get("tags", {}), g))
-    print(f"lifts {len(lifts)}, runs {len(runs)}")
-    return lifts, runs
+
+    def near(g):
+        return any(W <= lo <= E and S <= la <= N for la, lo in g)
+    out = {}
+    for kind in ("lifts", "runs"):
+        got = []
+        for f in stream_features(kind):
+            p = f.get("properties") or {}
+            if kind == "runs" and "downhill" not in (p.get("uses") or []):
+                continue
+            for g in rings_of(f.get("geometry") or {"type": "", "coordinates": []}):
+                if len(g) >= 2 and near(g):
+                    got.append((p, g))
+        out[kind] = got
+    print(f"lifts {len(out['lifts'])}, runs {len(out['runs'])}")
+    if not out["lifts"]:
+        sys.exit("no lifts found in the crop; refusing to draw base/top")
+    return out["lifts"], out["runs"]
 
 
 def load_dem_fine(bbox, wpx, hpx):
@@ -151,7 +145,7 @@ def main():
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     r = resort(a.resort)
     elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(a.resort, {})
-    rings, area_name = ski_area(r, elev.get("osm_name"))
+    rings, area_name = ski_area(r, elev.get("osm_id"))
     pts = np.array([p for ring in rings for p in ring])
     la0, la1, lo0, lo1 = pts[:, 0].min(), pts[:, 0].max(), pts[:, 1].min(), pts[:, 1].max()
     lat_c, lon_c = (la0 + la1) / 2, (lo0 + lo1) / 2
