@@ -141,6 +141,9 @@ export default function Tabulator() {
   /* Radar headline names the resort behind "up to N" (2026-11-19). No
      Settings row; flags.json `peakResort: "off"` reverts everyone. */
   const peakOn = (feedRaw?.flags?.peakResort ?? "off") !== "off";
+  /* Snow by terrain on the resort sheet (Brian, 2026-11-19: "roll this out for Alta only").
+     No Settings row; flags.json `terrainMap: "off"` removes it for everyone. */
+  const terrainOn = (feedRaw?.flags?.terrainMap ?? "off") !== "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
@@ -716,6 +719,7 @@ export default function Tabulator() {
         history={feed?.history}
         projections={projections}
         avalanche={seasonOn && open ? feedRaw.season?.avalanche?.[open.id] ?? null : null}
+        terrain={terrainOn}
         reportedSnow={open && feedRaw?.season?.resorts?.[open.id] ? reported(feedRaw.season.resorts[open.id]) : undefined}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}

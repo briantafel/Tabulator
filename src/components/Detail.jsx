@@ -14,6 +14,7 @@ import Dot from "./Dot.jsx";
 import RangeChart from "./RangeChart.jsx";
 import RollNumber from "./RollNumber.jsx";
 import AvalancheSection from "./Avalanche.jsx";
+import TerrainMap from "./TerrainMap.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 import { coldLow, stripWithOurTemps } from "../lib/temps.js";
 
@@ -30,6 +31,7 @@ const reducedMotion = () =>
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
   reports, weather, wxSource = "nws", history, projections = false, avalanche = null, reportedSnow = undefined,
+  terrain = false,
 }) {
   const [adding, setAdding] = useState(false);
   /* Which total the headline shows (projections only): it rests on the
@@ -522,6 +524,10 @@ export default function Detail({
               comes and goes with the Shaping up switch). No zone, no section:
               most resorts outside the US and Canada have no center. The storm
               line uses the next three days of this sheet's own forecast. */}
+          {/* Snow by terrain (2026-11-19): between Weather and Avalanche, full sheet only.
+              flags.json `terrainMap`; only resorts listed in public/terrain/index.json. */}
+          {max && terrain && <TerrainMap id={r.id} metric={metric} />}
+
           {max && avalanche && (
             <AvalancheSection
               a={avalanche}

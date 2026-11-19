@@ -1,0 +1,12 @@
+{
+ "_note": "Snow-by-terrain maps per resort (scripts/maps/resort_map.py). One NBM run each; the app hides a map older than 48 h.",
+ "alta": {
+  "img": "terrain/alta.webp",
+  "run": "2026-11-19T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 24,
+  "top_in": 32,
+  "base_ft": 8538,
+  "top_ft": 10552
+ }
+}

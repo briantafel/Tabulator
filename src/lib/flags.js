@@ -65,7 +65,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
 /* peakResort (2026-11-19): the radar headline names the resort the "up to"
    amount belongs to ("up to 39\" at Kirkwood"), so it can't read as the best
    bet's number. No Settings row; "off" reverts to the old sentence. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off" });
+/* terrainMap (2026-11-19): Snow by terrain on the resort sheet, for resorts in
+   public/terrain/index.json (Alta first). No Settings row; "off" removes it. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */
