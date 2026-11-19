@@ -1,15 +1,26 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { due } from "../workers/scheduler/index.js";
+import { due, SCHEDULE } from "../workers/scheduler/index.js";
 
-test("scheduler starts hourly jobs every hour and 3-hourly jobs on their offsets", () => {
-  // extra-models.yml: hourly since 2026-11-18 (HRRR precip, HRDPS, AIGEFS).
-  assert.deepEqual(due(0), ["watchdog.yml", "dynamical-history.yml", "upper-air.yml", "extra-models.yml"]);
-  assert.deepEqual(due(1), ["watchdog.yml", "dynamical-history.yml", "regional-eps.yml", "extra-models.yml"]);
-  assert.deepEqual(due(5), ["watchdog.yml", "dynamical-history.yml", "dynamical-ens.yml", "nbm.yml", "extra-models.yml", "temps.yml"]);
-  assert.equal(Array.from({ length: 24 }, (_, h) => due(h)).flat().filter((f) => f === "extra-models.yml").length, 24);
-  const perDay = Array.from({ length: 24 }, (_, h) => due(h)).flat();
-  assert.equal(perDay.filter((f) => f === "regional-eps.yml").length, 8);
+/* Rules, not a hard-coded list (2026-11-18): adding a job to the table must
+   not break every deploy, as it did twice that evening (ac6c289, 5578331). */
+test("every scheduled job starts exactly on its own hours, and only then", () => {
+  for (const { file, every, offset } of SCHEDULE) {
+    const hours = [...Array(24).keys()].filter((h) => due(h).includes(file));
+    const want = [...Array(24).keys()].filter((h) => h % every === offset);
+    // a file listed twice (blend: 07 and 21) is due at the union of its entries
+    const all = SCHEDULE.filter((e) => e.file === file)
+      .flatMap((e) => [...Array(24).keys()].filter((h) => h % e.every === e.offset));
+    assert.ok(want.every((h) => hours.includes(h)), `${file} missing at ${want.filter((h) => !hours.includes(h))}`);
+    assert.deepEqual(hours, [...new Set(all)].sort((a, b) => a - b), file);
+  }
+});
+
+test("known fixed points of the table", () => {
+  const n = (f) => Array.from({ length: 24 }, (_, h) => due(h)).flat().filter((x) => x === f).length;
+  assert.equal(n("watchdog.yml"), 24);
+  assert.equal(n("regional-eps.yml"), 8);
+  assert.ok(due(0).includes("upper-air.yml") && due(1).includes("regional-eps.yml") && due(5).includes("temps.yml"));
 });
 
 test("daily jobs start once a day, at their hour (2026-11-11)", () => {
