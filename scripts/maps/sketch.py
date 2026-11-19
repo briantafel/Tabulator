@@ -89,30 +89,65 @@ def load_dem(cache):
     return dem
 
 
-def relief(dem):
-    """Soft multi-direction light, near-white flats, ambient occlusion in the folds."""
+EXAG = 2.4          # vertical exaggeration, for effect and legibility
+SUN_AZ, SUN_ALT = 315, 24   # low raking key light from the NW, for cast shadows
+TERRACE_M = 500 / 3.28084   # terraced style: one step per 500 ft contour
+
+
+def cast_shadow(z, dy, dx):
+    """1 where the terrain toward the sun rises above the sun's ray, else 0."""
+    a, t = math.radians(SUN_AZ), math.tan(math.radians(SUN_ALT))
+    dr, dc = -math.cos(a), math.sin(a)          # rows run south, columns east
+    step_m = math.hypot(dr * dy, dc * dx)
+    rise = z.max() - z.min()
+    n = int(rise / (step_m * t)) + 2
+    H, Wd = z.shape
+    pad = n + 2
+    zp = np.full((H + 2 * pad, Wd + 2 * pad), -1e9, dtype=z.dtype)
+    zp[pad:pad + H, pad:pad + Wd] = z
+    shadow = np.zeros(z.shape, bool)
+    for k in range(1, n):
+        r, c = int(round(k * dr)), int(round(k * dc))
+        shadow |= zp[pad + r:pad + r + H, pad + c:pad + c + Wd] > z + k * step_m * t
+    return shadow.astype("float32")
+
+
+def relief(dem, style="plaster", seed=7):
+    """White plaster model: soft multi-direction light, exaggerated relief, soft cast
+    shadows, ambient occlusion in the folds, and a fine plaster grain."""
     dy = (N - S) / H_PX * 111320.0
     dx = (E - W) / W_PX * 111320.0 * math.cos(math.radians(LAT0))
-    z = gaussian_filter(dem, 0.8) * 1.4                       # mild exaggeration
+    z = gaussian_filter(dem, 0.8)
+    if style == "terraced":
+        # stacked layers like a laser-cut model; keep a little slope so faces still shade
+        z = np.floor(z / TERRACE_M) * TERRACE_M * 0.85 + z * 0.15
+    z = z * EXAG
     gy, gx = np.gradient(z, dy, dx)
-    gy = -gy                                                  # rows run north to south
+    gy = -gy
     nx, ny, nz = -gx, -gy, np.ones_like(z)
-    n = np.sqrt(nx * nx + ny * ny + 1)
-    nx, ny, nz = nx / n, ny / n, nz / n
+    nn = np.sqrt(nx * nx + ny * ny + 1)
+    nx, ny, nz = nx / nn, ny / nn, nz / nn
+    lights = [(SUN_AZ, SUN_ALT + 16, 0.5), (270, 50, 0.18), (360, 50, 0.17), (200, 65, 0.15)]
     shade = np.zeros_like(z)
-    # azimuth (deg from north, clockwise), altitude, weight: NW key light, softer fills
-    for az, alt, w in [(315, 45, 0.45), (270, 50, 0.2), (360, 50, 0.2), (225, 60, 0.15)]:
+    for az, alt, w in lights:
         a, b = math.radians(az), math.radians(alt)
         lx, ly, lz = math.sin(a) * math.cos(b), math.cos(a) * math.cos(b), math.sin(b)
         shade += w * np.clip(nx * lx + ny * ly + nz * lz, 0, 1)
-    flat = sum(w * math.sin(math.radians(alt)) for _, alt, w in
-               [(315, 45, 0.45), (270, 50, 0.2), (360, 50, 0.2), (225, 60, 0.15)])
-    tone = 0.965 + (shade - flat) * 0.85
-    # ambient occlusion: darken where the ground sits below its surroundings
-    occ = gaussian_filter(dem, 18) - dem
-    tone -= np.clip(occ / 600.0, 0, 0.12)
-    tone = np.clip(tone, 0.52, 1.0)
-    rgb = np.stack([tone * 0.995, tone, tone * 1.0], -1)    # a breath of cool
+    flat = sum(w * math.sin(math.radians(alt)) for _, alt, w in lights)
+    tone = 0.955 + (shade - flat) * 1.05
+    # soft cast shadows, as if lit by a big window: blur the hard shadow mask
+    sh = cast_shadow(z, dy, dx)
+    tone -= 0.20 * gaussian_filter(sh, 5) + 0.06 * gaussian_filter(sh, 25)
+    # ambient occlusion, two scales: tight creases and broad valleys
+    tone -= np.clip((gaussian_filter(z, 4) - z) / (220.0 * EXAG), 0, 0.10)
+    tone -= np.clip((gaussian_filter(z, 30) - z) / (1400.0 * EXAG), 0, 0.08)
+    # plaster: a fine grain plus faint mottling, multiplied in so it shows on flats too
+    rng = np.random.default_rng(seed)
+    grain = gaussian_filter(rng.normal(0, 1, z.shape), 0.7)
+    mottle = gaussian_filter(rng.normal(0, 1, z.shape), 9)
+    tone *= 1 + 0.035 * grain / grain.std() + 0.012 * mottle / mottle.std()
+    tone = np.clip(tone, 0.40, 1.0)
+    rgb = np.stack([tone * 0.992, tone * 0.996, tone], -1)   # a breath of cool
     return (rgb * 255).astype("uint8")
 
 
@@ -224,7 +259,12 @@ def nbm_inches(lat, lon, total_m):
     yy = np.linspace(N, S, H_PX)
     xx = np.linspace(W, E, W_PX)
     LA, LO = np.meshgrid(yy, xx, indexing="ij")
-    out = griddata((lat[box], lon[box]), v, (LA, LO), method="linear")
+    from scipy.interpolate import LinearNDInterpolator
+    from scipy.spatial import Delaunay
+    k = math.cos(math.radians(LAT0)) * 111.32
+    pts = np.column_stack([lon[box] * k, lat[box] * 111.32])
+    tri = Delaunay(pts, qhull_options="QJ")   # joggle: the NBM grid is near-regular
+    out = LinearNDInterpolator(tri, v)(LO * k, LA * 111.32)
     if np.isnan(out).any():
         raise SystemExit("NBM interpolation left gaps inside the map")
     inches = np.clip(out, 0, None) * 39.3701
@@ -372,12 +412,13 @@ def main():
     ap.add_argument("--dem-cache")
     ap.add_argument("--fake-snow", action="store_true", help="test without ECMWF")
     ap.add_argument("--source", choices=["ifs", "nbm"], default="ifs")
+    ap.add_argument("--style", choices=["plaster", "terraced"], default="plaster")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
     dem = load_dem(a.dem_cache)
     print(f"DEM {dem.shape}, {dem.min():.0f}–{dem.max():.0f} m")
-    rgb = relief(dem)
+    rgb = relief(dem, a.style)
     buf = io.BytesIO()
     Image.fromarray(rgb).save(buf, "PNG", optimize=True)
     base_png = buf.getvalue()
