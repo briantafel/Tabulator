@@ -1,95 +1,60 @@
 {
- "generatedAt": "2026-11-19T14:20:15.995Z",
- "forecastGeneratedAt": "2026-11-19T12:58:48.485Z",
+ "generatedAt": "2026-11-19T15:49:51.072Z",
+ "forecastGeneratedAt": "2026-11-19T15:43:07.808Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-19T14:20:13.285Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-19",
-  "to": "2026-11-23",
-  "days": 5,
-  "toLabel": "Monday Nov 23"
+  "to": "2026-11-24",
+  "days": 6,
+  "toLabel": "Tuesday Nov 24"
  },
- "overview": "A strong storm brings heavy snow to the Sierra, Oregon and Idaho this Thursday and Friday. The Pacific Northwest and Utah get a smaller round of snow in the weekend window, then a drier spell. Another wave of rain and mountain snow is expected in the Thanksgiving week.",
+ "overview": null,
  "regions": [
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Brighton is forecast for about 40\". Solitude and Snowbasin follow. Winter Weather Advisory at Brighton from Thursday to Saturday."
+  },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A strong system is moving through today with heavy mountain snow above 4000 feet and thunderstorm chances, mainly south of I-80. Showers linger into Friday morning, then drier air arrives Friday afternoon. Kirkwood leads with 17 inches, and the National Weather Service is calling for 23 to 39 inches from Thursday night through Sunday night. Winter Storm Warnings run through Friday."
+   "text": "Kirkwood is forecast for about 39\", 30\" of it Thursday. Sugar Bowl and Palisades follow. Winter Storm Warning at Kirkwood from Thursday to Friday."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "A potent storm brings heavy Sierra snow and strong winds through Friday morning, with snow showers renewed by a passing trough. A brief dry spell follows Friday afternoon into Saturday morning, then another system arrives Saturday afternoon. Mammoth leads with 14 inches, with gusts to 65 mph Thursday, and the National Weather Service is calling for 21 to 32 inches through Thursday night."
+   "text": "Mammoth is forecast for about 27\", 24\" of it Thursday. Winter Storm Warning at Mammoth from Thursday to Friday."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Cypress Mountain is forecast for about 25\", 14\" of it Tuesday. Whistler follows. Environment Canada has rain mixed in at Whistler Tuesday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Snow moves in from the west Thursday and grows heavier Friday west of the Divide, with some impacts on mountain passes. Snow tapers and the system shifts east, leaving higher elevations with snow and lower valleys mostly dry. Idaho's central mountains should be drier Saturday, Sunday and Tuesday. Grand Targhee leads with 12 inches, and the National Weather Service is calling for 12 to 25 inches from Thursday through Monday."
-  },
-  {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "A long storm arrives in pieces from Thursday morning through Saturday morning, with the heaviest totals in the northern mountains. A second wave Friday brings snow levels down to the valley floors. Powder Mountain leads with 11 inches, and the National Weather Service is calling for 19 to 35 inches from Thursday through Monday. A Winter Weather Advisory runs from Thursday to Saturday."
+   "text": "Grand Targhee is forecast for about 23\". Jackson Hole and Sun Valley follow."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A deep low off Oregon brings mountain snow and rain at lower elevations today, with dense fog in central Oregon. Mostly dry weather returns Friday afternoon before a weak system arrives Saturday, with more snow Saturday night into Sunday. Crystal Mountain leads with 9 inches, with a 6-inch Sunday peak. Confidence in details is low."
+   "text": "Crystal Mountain is forecast for about 17\", 12\" of it Tuesday. Mt. Baker and Stevens Pass follow."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Telluride is forecast for about 12\", 7\" of it Saturday. Aspen Highlands and Crested Butte follow. The NWS is calling for more at Aspen Highlands: 3 to 9 inches Thursday night through Monday night."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek is forecast for about 10\", 5\" of it Friday. Taos follows. The NWS is calling for more at Wolf Creek: 7 to 17 inches Thursday night through Monday night."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says a trough will bring rain and mountain snow to the West Coast and Intermountain West next week, with heavier rain possible in California around Tuesday Nov 24 into Wednesday Nov 25.",
-  "sources": [
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-19T09:57:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-19T10:48:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-19T11:49:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-19T11:40:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
-   },
-   {
-    "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-11-19T12:13:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
-   },
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-19T11:14:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS PDT Area Forecast Discussion",
-    "issuedAt": "2026-11-19T12:17:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PDT&issuedby=PDT&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-19T06:35:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-18T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
@@ -97,44 +62,16 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-19T13:05:37.483Z"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-19T09:57:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-19T10:48:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-19T11:49:00+00:00"
-  },
-  {
-   "name": "NWS PIH Area Forecast Discussion",
-   "issuedAt": "2026-11-19T11:40:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-19T12:13:00+00:00"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-19T11:14:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-19T12:17:00+00:00"
+   "issuedAt": "2026-11-19T15:49:41.640Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-19T14:20:15.995Z"
+   "issuedAt": "2026-11-19T15:49:51.072Z"
   }
  ],
  "api": {
   "day": "2026-11-19",
-  "calls": 5
+  "calls": 7
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
