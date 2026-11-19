@@ -26,7 +26,7 @@ jobs:
           python-version: "3.12"
       - name: Install
         run: |
-          sudo apt-get install -y -q fonts-inter >/dev/null || true
+          sudo apt-get install -y -q fonts-inter ffmpeg >/dev/null || true
           pip install rasterio cairosvg scipy matplotlib pillow ecmwf-opendata eccodes eccodeslib
       - name: NBM grid probe
         if: inputs.probe
@@ -35,7 +35,7 @@ jobs:
         if: ${{ !inputs.probe }}
         run: |
           python3 scripts/maps/sketch.py out/ifs --dem-cache dem.npy --source ifs
-          python3 scripts/maps/sketch.py out/nbm --dem-cache dem.npy --source nbm
+          python3 scripts/maps/sketch.py out/nbm --dem-cache dem.npy --source nbm --animate
       - uses: actions/upload-artifact@v4
         if: ${{ !inputs.probe }}
         with:

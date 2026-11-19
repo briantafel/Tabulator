@@ -226,7 +226,7 @@ def latest_nbm_snow(hours=120):
         if not all(l in leads for l in need):
             print(f"NBM {cycle:%Y-%m-%d %HZ}: leads not all posted yet", file=sys.stderr)
             continue
-        total, lat, lon = None, None, None
+        total, lat, lon, blocks = None, None, None, []
         for l in need:
             key = leads[l]
             idx = nbm.parse_idx(nbm.http(f"{nbm.BUCKET_URL}/{key}.idx").decode())
@@ -245,8 +245,32 @@ def latest_nbm_snow(hours=120):
             eccodes.codes_release(gid)
             vals[vals == missing] = np.nan
             total = vals if total is None else total + vals
-        return cycle, lat, lon, total
+            blocks.append((l, vals))
+        return cycle, lat, lon, total, blocks
     raise SystemExit("No NBM cycle with 6 h snow out to 120 h in the last 2 days")
+
+
+def nbm_interp(lat, lon):
+    """Returns f(values_m) -> inches on the map's pixel grid (triangulation built once)."""
+    from scipy.interpolate import LinearNDInterpolator
+    from scipy.spatial import Delaunay
+    box = (lat > S - 0.1) & (lat < N + 0.1) & (lon > W - 0.1) & (lon < E + 0.1)
+    if box.sum() < 100:
+        raise SystemExit(f"NBM grid has only {box.sum()} points in the map box")
+    k = math.cos(math.radians(LAT0)) * 111.32
+    tri = Delaunay(np.column_stack([lon[box] * k, lat[box] * 111.32]), qhull_options="QJ")
+    LA, LO = np.meshgrid(np.linspace(N, S, H_PX), np.linspace(W, E, W_PX), indexing="ij")
+    q = (LO * k, LA * 111.32)
+
+    def f(values_m):
+        v = values_m[box]
+        if np.isnan(v).mean() > 0.01:
+            raise SystemExit(f"NBM snow missing at {np.isnan(v).mean():.1%} of points; not drawing zeros")
+        out = LinearNDInterpolator(tri, v)(*q)
+        if np.isnan(out).any():
+            raise SystemExit("NBM interpolation left gaps inside the map")
+        return np.clip(out, 0, None) * 39.3701
+    return f
 
 
 def nbm_inches(lat, lon, total_m):
@@ -314,6 +338,26 @@ def contour_sets(dem_ft, snow_in):
     return terrain, snow_lines, fill
 
 
+def snow_shapes(field_in, levels, smooth=6, min_pts=4):
+    """(lines, fill) contours of one snow field at the given inch levels."""
+    fig = plt.figure()
+    ax = fig.add_axes([0, 0, 1, 1])
+    sm = gaussian_filter(field_in, smooth)
+    lv = [l for l in levels if l < sm.max()]
+    lines, fill = [], []
+    if lv:
+        lines = paths_from_contour(ax.contour(sm, levels=lv), min_pts=min_pts)
+        csf = ax.contourf(sm, levels=lv + [1e6])
+        for i, level in enumerate(lv):
+            ds = []
+            for poly in csf.get_paths()[i].to_polygons(closed_only=True):
+                if len(poly) >= 3:
+                    ds.append("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in poly) + " Z")
+            fill.append((level, " ".join(ds)))
+    plt.close(fig)
+    return lines, fill
+
+
 def label_points(snow_lines):
     """One label per snow contour, at its longest segment's midpoint."""
     labels = []
@@ -334,7 +378,7 @@ def halo_text(x, y, txt, attrs):
             f'<text x="{x:.1f}" y="{y:.1f}" {attrs}>{txt}</text>']
 
 
-def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs"):
+def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs", fill_from=FILL_FROM_IN, caption=None):
     """mode: 'all' (editable master), 'fill', 'lines'."""
     b64 = base64.b64encode(base_png).decode()
     L = []
@@ -367,7 +411,7 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs"):
     layer("contours below snow line", terrain_group(False))
 
     fill_body = [f'<path d="{d}" fill="{FILL[min(i + 1, len(FILL)-1)]}" fill-opacity="{FILL_OP}" '
-                 f'fill-rule="evenodd" stroke="none" data-in="{lv}"/>' for i, (lv, d) in enumerate(fill) if d and lv >= FILL_FROM_IN]
+                 f'fill-rule="evenodd" stroke="none" data-in="{lv}"/>' for i, (lv, d) in enumerate(fill) if d and lv >= fill_from]
     layer("snow fill", fill_body, hidden=(mode == "lines"))
 
     line_body = []
@@ -397,10 +441,11 @@ def svg(base_png, dem_ft, terrain, snow_lines, fill, run, mode, source="ifs"):
     layer("places", mk)
 
     valid = run + timedelta(hours=120)
+    t1, t2 = caption or (TITLE[source], f"Run {run:%a %b %-d %HZ} → {valid:%a %b %-d %HZ} · "
+                         f"{SLR_NOTE[source]}, sketch snow line {SNOW_LINE_FT:,} ft · contours {CONTOUR_FT} ft")
     cap = [f'<rect x="0" y="{H_PX - 118}" width="{W_PX}" height="118" fill="#ffffff" fill-opacity="0.92"/>',
-           f'<text x="36" y="{H_PX - 76}" font-size="28" font-weight="600" fill="{INK}">{TITLE[source]}</text>',
-           f'<text x="36" y="{H_PX - 42}" font-size="19" fill="{GREY}">Run {run:%a %b %-d %HZ} → {valid:%a %b %-d %HZ} · '
-           f'{SLR_NOTE[source]}, sketch snow line {SNOW_LINE_FT:,} ft · contours {CONTOUR_FT} ft</text>',
+           f'<text x="36" y="{H_PX - 76}" font-size="28" font-weight="600" fill="{INK}">{t1}</text>',
+           f'<text x="36" y="{H_PX - 42}" font-size="19" fill="{GREY}">{t2}</text>',
            f'<text x="36" y="{H_PX - 16}" font-size="15" fill="{GREY}">Elevation © ESA Copernicus GLO-30 · {CREDIT[source]}</text>']
     layer("caption", cap)
     L.append("</svg>")
@@ -414,6 +459,7 @@ def main():
     ap.add_argument("--fake-snow", action="store_true", help="test without ECMWF")
     ap.add_argument("--source", choices=["ifs", "nbm"], default="ifs")
     ap.add_argument("--style", choices=["plaster", "terraced"], default="plaster")
+    ap.add_argument("--animate", action="store_true", help="NBM only: one frame per 6 h block + an MP4")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
@@ -430,8 +476,9 @@ def main():
         yy, xx = np.mgrid[0:H_PX, 0:W_PX]
         snow = 22 * np.exp(-(((xx - W_PX * .6) / 300) ** 2 + ((yy - H_PX * .75) / 500) ** 2))
     elif a.source == "nbm":
-        run, lat, lon, total = latest_nbm_snow()
-        snow, src = nbm_inches(lat, lon, total), "aws"
+        run, lat, lon, total, blocks = latest_nbm_snow()
+        to_in = nbm_interp(lat, lon)
+        snow, src = to_in(total), "aws"
     else:
         run, path, src = latest_ifs_snow(a.out)
         snow = snow_inches(path)
@@ -452,7 +499,46 @@ def main():
                "snow_max_in": round(float(snow.max()), 1), "slr": SLR if a.source == "ifs" else "nbm",
                "snow_line_ft_placeholder": SNOW_LINE_FT},
               open(os.path.join(a.out, "meta.json"), "w"), indent=2)
+    if a.animate:
+        if a.source != "nbm":
+            raise SystemExit("--animate needs --source nbm (6 h blocks)")
+        animate(a.out, base_png, dem_ft, terrain, run, blocks, to_in)
     print("wrote", sorted(os.listdir(a.out)))
+
+
+SIX_H_LEVELS_IN = [0.5, 1, 2, 4, 8]   # snow in this 6 h block: the fill
+
+
+def animate(out, base_png, dem_ft, terrain, run, blocks, to_in):
+    """Frame per 6 h block: fill = snow falling in that block, lines = running total."""
+    import cairosvg, subprocess
+    from zoneinfo import ZoneInfo
+    mt = ZoneInfo("America/Denver")
+    fdir = os.path.join(out, "frames")
+    os.makedirs(fdir, exist_ok=True)
+    running = np.zeros((H_PX, W_PX))
+    for n, (lead, vals) in enumerate(blocks):
+        six = to_in(vals)
+        running = running + six
+        lines, _ = snow_shapes(running, SNOW_LEVELS_IN)
+        _, fill = snow_shapes(six, SIX_H_LEVELS_IN, smooth=4)
+        end = (run + timedelta(hours=lead)).astimezone(mt)
+        start = (run + timedelta(hours=lead - 6)).astimezone(mt)
+        t1 = (f"{start:%a %b %-d %-I %p} – " + (f"{end:%-I %p}" if end.date() == start.date() else f"{end:%a %-I %p}")
+              + " MT").replace("AM", "am").replace("PM", "pm")
+        t2 = (f"Fill: snow in these 6 hours · lines: total so far (max {running.max():.0f} in) · "
+              f"NOAA NBM {run:%b %-d %HZ}, 2.5 km, NBM's own snow ratio")
+        sv = svg(base_png, dem_ft, terrain, lines, fill, run, "all", "nbm", fill_from=0, caption=(t1, t2))
+        cairosvg.svg2png(bytestring=sv.encode(), write_to=os.path.join(fdir, f"f{n:02d}.png"),
+                         output_width=W_PX // 2, output_height=H_PX // 2)
+        print(f"  frame {n:02d} f{lead:03d}: 6 h max {six.max():.1f} in, total max {running.max():.1f} in")
+    # 3 fps; hold the last frame ~2 s. H.264, veryfast, even dimensions.
+    r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", "3", "-i", os.path.join(fdir, "f%02d.png"),
+                        "-vf", "tpad=stop_mode=clone:stop_duration=2,scale=trunc(iw/2)*2:trunc(ih/2)*2",
+                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+                        "-movflags", "+faststart", os.path.join(out, "nbm-5day.mp4")], capture_output=True, text=True)
+    if r.returncode:
+        raise SystemExit(f"ffmpeg failed: {r.stderr[-800:]}")
 
 
 if __name__ == "__main__":
