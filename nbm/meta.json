@@ -1,0 +1,18 @@
+{
+  "bounds": [
+    -112.15,
+    40.45,
+    -111.35,
+    41.45
+  ],
+  "px": [
+    1450,
+    2400
+  ],
+  "source": "nbm",
+  "run": "2026-11-19T00:00:00+00:00",
+  "fetched_via": "aws",
+  "snow_max_in": 30.5,
+  "slr": "nbm",
+  "snow_line_ft_placeholder": 6500
+}
