@@ -202,6 +202,12 @@ def snowfall(con, out: Path) -> str:
         con.executemany("INSERT INTO bw VALUES (?, ?, ?)",
                         [(int(l), m, v) for l, ws in b["weights"].items() for m, v in ws.items()])
         con.execute("CREATE TABLE bf(model VARCHAR, lead INTEGER, region VARCHAR, f DOUBLE)")
+        # Trace floor (blend.py), only where promoted — exactly what the live forecast applies.
+        con.execute("CREATE TABLE bfloor(lead INTEGER, f DOUBLE)")
+        fl = [(int(l), float(f)) for l, f in (b.get("trace_floor_mm") or {}).items()
+              if (b.get("trace_floor_promote") or {}).get(l)]
+        if fl:
+            con.executemany("INSERT INTO bfloor VALUES (?, ?)", fl)
         bf_rows = [(k.split("|")[0], int(k.split("|")[1]), k.split("|")[2], v) for k, v in b["factors"].items()]
         if bf_rows:
             con.executemany("INSERT INTO bf VALUES (?, ?, ?, ?)", bf_rows)
@@ -219,6 +225,8 @@ def snowfall(con, out: Path) -> str:
         LEFT JOIN bf ON bf.model = d.model AND bf.lead = d.lead AND bf.region = d.region
         LEFT JOIN bpool ON bpool.model = d.model AND bpool.lead = d.lead
         GROUP BY d.split, d.resort_id, d.local_date, d.lead""")
+        con.execute("""UPDATE sd SET fc = 0 FROM bfloor
+                       WHERE sd.source_label = 'ours (blend-v1)' AND sd.lead = bfloor.lead AND sd.fc < bfloor.f""")
         ours_note = ("Ours = blend-v1: region-corrected, inverse-error weighted ECMWF / GEM / GFS precipitation, "
                      "fitted on 2024-25 (LIQUID, mm of water). Leads 1–7.")
     # Ours in SNOW: blend-v1 water × SLR (slr.py; v2 is fitted on same-station new snow + water). Same arithmetic
@@ -538,22 +546,24 @@ def resort_reports(con, out: Path) -> str:
         return "\n".join(head + ["_no resort reports paired yet_\n"])
     # Ours, exactly as in section 2 but without needing a gauge on the day (bw / bf / bpool / stemp / sline).
     have = {r[0] for r in con.execute("SELECT table_name FROM information_schema.tables").fetchall()}
-    if {"bw", "bf", "bpool", "stemp"} <= have:
+    if {"bw", "bf", "bpool", "stemp", "bfloor"} <= have:
         sl = json.loads((out / "slr.json").read_text())
         lo_, hi_ = sl["clamp"]
         line = "LEFT JOIN sline l ON l.resort_id = o.resort_id" if "sline" in have else \
                "LEFT JOIN (SELECT NULL::VARCHAR AS resort_id, NULL::DOUBLE AS a, NULL::DOUBLE AS b) l ON false"
         con.execute(f"""
         INSERT INTO rb
-        WITH w AS (
+        WITH w0 AS (
           SELECT d.split, d.resort_id, any_value(d.region) AS region, any_value(d.macro) AS macro, d.local_date, d.lead,
-                 sum(bw.w * d.fc * coalesce(bf.f, bpool.f, 1.0)) / sum(bw.w) AS fc
+                 sum(bw.w * d.fc * coalesce(bf.f, bpool.f, 1.0)) / sum(bw.w) AS fc0
           FROM (SELECT *, split_part(source_label, ':', 2) AS model FROM rb
                 WHERE space = 'liquid' AND source_label LIKE 'open-meteo-previous-runs:%') d
           JOIN bw ON bw.lead = d.lead AND bw.model = d.model
           LEFT JOIN bf ON bf.model = d.model AND bf.lead = d.lead AND bf.region = d.region
           LEFT JOIN bpool ON bpool.model = d.model AND bpool.lead = d.lead
-          GROUP BY d.split, d.resort_id, d.local_date, d.lead)
+          GROUP BY d.split, d.resort_id, d.local_date, d.lead),
+             w AS (SELECT w0.*, CASE WHEN w0.fc0 < coalesce(bfloor.f, 0) THEN 0 ELSE w0.fc0 END AS fc
+                   FROM w0 LEFT JOIN bfloor ON bfloor.lead = w0.lead)
         SELECT 'ours (blend × SLR)', false, 'snow', o.split, o.resort_id, o.region, o.macro, o.local_date, o.lead,
                CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest(coalesce(l.a, {sl['a']}) + coalesce(l.b, {sl['b']}) * t.t,
                                                                   {lo_}), {hi_}) / 10 END

@@ -99,10 +99,12 @@ jobs:
           if not all(p.get(k) for k in need):
               raise SystemExit("blend.json has no weights/factors — not shipped")
           keep = {k: p[k] for k in ("version", "models", "leads", "weights", "factors", "pooled_factors",
-                                    "best_single_on_train", "fitted_on") if k in p}
+                                    "best_single_on_train", "fitted_on", "trace_floor_mm", "trace_floor_promote") if k in p}
           keep.setdefault("version", "blend-v1")
           json.dump(keep, open("public/blend.json", "w"), indent=1); open("public/blend.json", "a").write("\n")
-          print(f"Blend: shipped {keep['version']} ({len(keep['factors'])} region factors, leads {sorted(keep['weights'])})")
+          fl = {l: f for l, f in (keep.get("trace_floor_mm") or {}).items() if (keep.get("trace_floor_promote") or {}).get(l)}
+          print(f"Blend: shipped {keep['version']} ({len(keep['factors'])} region factors, leads {sorted(keep['weights'])}); "
+                f"trace floor promoted at {fl or 'no lead'}")
           PY
       - name: Commit
         run: |

@@ -106,3 +106,11 @@ test("snowfall flag: known modes only, off by default", () => {
   assert.equal(parseFlags({ snowfall: "on" }).snowfall, "on");
   assert.equal(parseFlags({ snowfall: "yes" }).snowfall, "off");
 });
+
+test("trace floor: a blended day under the promoted floor is dry; unpromoted leads untouched", () => {
+  const params = { weights: { 1: { a: 1 }, 5: { a: 1 } }, factors: {}, pooled_factors: {},
+    trace_floor_mm: { 1: 3, 5: 3 }, trace_floor_promote: { 1: true, 5: false } };
+  assert.equal(blendDay({ a: { water: 2.4, t: -5 } }, { lead: 1, region: "Utah", params }).water, 0);
+  assert.equal(blendDay({ a: { water: 3.2, t: -5 } }, { lead: 1, region: "Utah", params }).water, 3.2);
+  assert.equal(blendDay({ a: { water: 2.4, t: -5 } }, { lead: 5, region: "Utah", params }).water, 2.4);
+});

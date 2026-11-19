@@ -61,7 +61,10 @@ export function blendDay(perModel, { lead, region, params }) {
     wSum += w; wWater += w * v.water * f; tSum += v.t; n++;
   }
   if (!n) return null;
-  return { water: wWater / wSum, t: tSum / n, models: n };
+  // Trace floor (blend.py, promoted per lead): a blended day under F mm is called dry.
+  const floor = params.trace_floor_promote?.[key] ? params.trace_floor_mm?.[key] ?? 0 : 0;
+  const water = wWater / wSum;
+  return { water: water < floor ? 0 : water, t: tSum / n, models: n };
 }
 
 export function snowFrom(water, t, slrLine) {
