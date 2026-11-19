@@ -15,6 +15,15 @@ URL = "https://tiles.openskimap.org/geojson/ski_areas.geojson"
 ROOT = Path(__file__).resolve().parents[2]
 MAX_KM = 6.0
 MIN_MATCHED = 0.8
+# Resorts the nearest/name rule gets wrong (first run 2026-11-19): search these OSM names
+# within OVERRIDE_KM instead and take the match with the largest vertical.
+OVERRIDE_KM = 25.0
+OVERRIDES = {
+    "tremblant": ["tremblant"], "verbier": ["verbier", "4 vallées", "quatre vallées"],
+    "chamonix": ["grands montets"], "st-moritz": ["corviglia"], "tetnuldi": ["tetnuldi"],
+    "niseko": ["niseko united", "grand hirafu", "hirafu"], "myoko-akakura": ["akakura"],
+    "marmot": ["marmot"], "blue-mountain": ["blue mountain"], "chapelco": ["chapelco"],
+}
 
 
 def norm(s):
@@ -80,6 +89,29 @@ def main(out):
             lines.append(f"{r['id']:28s} NO POINT")
             continue
         la, lo = pt
+        if r["id"] in OVERRIDES:
+            subs = OVERRIDES[r["id"]]
+            best = None
+            for f in feats:
+                name = (f["properties"].get("name") or "")
+                if "_pts" not in f or not any(x in name.lower() for x in subs):
+                    continue
+                d = min(km((la, lo), q) for q in f["_pts"])
+                st = f["properties"].get("statistics") or {}
+                lows = [v for v in (stat(st, "lifts", "minElevation"), stat(st, "runs", "minElevation")) if v is not None]
+                highs = [v for v in (stat(st, "lifts", "maxElevation"), stat(st, "runs", "maxElevation")) if v is not None]
+                if d <= OVERRIDE_KM and lows and highs and (best is None or max(highs) - min(lows) > best[0]):
+                    best = (max(highs) - min(lows), f, d, name, round(min(lows)), round(max(highs)), st)
+            if best:
+                _, f, d, name, base, top, st = best
+                table[r["id"]] = {"base_m": base, "top_m": top, "vertical_m": top - base,
+                                  "lift_base_m": stat(st, "lifts", "minElevation"), "lift_top_m": stat(st, "lifts", "maxElevation"),
+                                  "source": "openskimap", "osm_name": name, "osm_id": f["properties"].get("id"),
+                                  "match_km": round(d, 2), "name_similarity": None, "matched_by": "override:" + "|".join(subs)}
+                matched += 1
+                lines.append(f"{r['id']:28s} {base:5d}–{top:5d} m  '{name}' {d:.1f} km  OVERRIDE")
+                continue
+            lines.append(f"{r['id']:28s} OVERRIDE {subs} found nothing with elevations; trying nearest")
         cands = []
         for dla in (-1, 0, 1):
             for dlo in (-1, 0, 1):
