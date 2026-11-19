@@ -89,7 +89,7 @@ def load_dem(cache):
     return dem
 
 
-EXAG = 2.4          # vertical exaggeration, for effect and legibility
+EXAG = 2.0          # vertical exaggeration, for effect and legibility
 SUN_AZ, SUN_ALT = 315, 24   # low raking key light from the NW, for cast shadows
 TERRACE_M = 500 / 3.28084   # terraced style: one step per 500 ft contour
 
@@ -134,19 +134,19 @@ def relief(dem, style="plaster", seed=7):
         lx, ly, lz = math.sin(a) * math.cos(b), math.cos(a) * math.cos(b), math.sin(b)
         shade += w * np.clip(nx * lx + ny * ly + nz * lz, 0, 1)
     flat = sum(w * math.sin(math.radians(alt)) for _, alt, w in lights)
-    tone = 0.955 + (shade - flat) * 1.05
+    tone = 0.965 + (shade - flat) * 0.62
     # soft cast shadows, as if lit by a big window: blur the hard shadow mask
     sh = cast_shadow(z, dy, dx)
-    tone -= 0.20 * gaussian_filter(sh, 5) + 0.06 * gaussian_filter(sh, 25)
+    tone -= 0.11 * gaussian_filter(sh, 4) + 0.04 * gaussian_filter(sh, 22)
     # ambient occlusion, two scales: tight creases and broad valleys
-    tone -= np.clip((gaussian_filter(z, 4) - z) / (220.0 * EXAG), 0, 0.10)
-    tone -= np.clip((gaussian_filter(z, 30) - z) / (1400.0 * EXAG), 0, 0.08)
+    tone -= np.clip((gaussian_filter(z, 4) - z) / (300.0 * EXAG), 0, 0.06)
+    tone -= np.clip((gaussian_filter(z, 30) - z) / (1800.0 * EXAG), 0, 0.05)
     # plaster: a fine grain plus faint mottling, multiplied in so it shows on flats too
     rng = np.random.default_rng(seed)
     grain = gaussian_filter(rng.normal(0, 1, z.shape), 0.7)
     mottle = gaussian_filter(rng.normal(0, 1, z.shape), 9)
-    tone *= 1 + 0.035 * grain / grain.std() + 0.012 * mottle / mottle.std()
-    tone = np.clip(tone, 0.40, 1.0)
+    tone *= 1 + 0.028 * grain / grain.std() + 0.012 * mottle / mottle.std()
+    tone = np.clip(tone, 0.58, 1.0)
     rgb = np.stack([tone * 0.992, tone * 0.996, tone], -1)   # a breath of cool
     return (rgb * 255).astype("uint8")
 
@@ -235,7 +235,8 @@ def latest_nbm_snow(hours=120):
                 raise SystemExit(f"NBM {cycle:%Y-%m-%d %HZ} f{l:03d}: no 6 h ASNOW in the .idx")
             raw = nbm.http(f"{nbm.BUCKET_URL}/{key}", headers={"Range": f"bytes={rng[0]}-{rng[1]}"})
             gid = eccodes.codes_new_from_message(raw)
-            vals = np.asarray(eccodes.codes_get_values(gid), dtype="float64")
+            from regional_eps import natural_order
+            vals = np.asarray(natural_order(gid, eccodes.codes_get_values(gid)), dtype="float64")
             missing = eccodes.codes_get(gid, "missingValue")
             if lat is None:
                 lat = np.asarray(eccodes.codes_get_array(gid, "latitudes"))

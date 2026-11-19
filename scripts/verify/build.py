@@ -110,6 +110,10 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
            THEN timezone(z.tz, CAST(CAST(timezone(z.tz, r.valid_start) AS DATE) + 1 AS TIMESTAMP) + INTERVAL 6 HOUR)
            ELSE r.valid_end END AS valid_end)
     FROM raw r LEFT JOIN resorts z USING (resort_id)""")
+    # nbm-1/2 read NBM's reversed odd grid rows backwards: wrong values for ~half the resorts.
+    has_pv = "parser_version" in [c[0] for c in con.execute("DESCRIBE raw").fetchall()]
+    nbm_filter = ("AND NOT (source = 'nbm' AND coalesce(parser_version, '') IN ('nbm-1', 'nbm-2'))"
+                  if has_pv else "")
     con.execute(f"""
     CREATE TABLE f0 AS
     SELECT source, kind, resort_id, coalesce(tier, 'mid') AS tier, coalesce(station_id, '') AS station_id,
@@ -123,6 +127,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     WHERE kind IN ('forecast', 'hindcast') AND source IN {FORECAST_SOURCES}
       AND variable IN ('snow', 'precip') AND value IS NOT NULL AND resort_id IS NOT NULL
       AND valid_end > valid_start
+      {nbm_filter}
     QUALIFY row_number() OVER (
       PARTITION BY source, resort_id, tier, station_id, model, member, issue_key, valid_start, valid_end, variable
       ORDER BY fetched_at DESC) = 1

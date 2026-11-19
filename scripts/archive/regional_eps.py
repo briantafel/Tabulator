@@ -158,6 +158,29 @@ def done_markers() -> set[str]:
 
 
 # ---------------------------------------------------------------- GRIB
+def natural_order(gid, vals):
+    """Values in the same order as eccodes' latitudes/longitudes.
+
+    NBM (scanningMode 80) stores every other row in reverse ("alternativeRowScanning").
+    eccodes returns the coordinates in natural order but the values as stored, so
+    without this every odd row read its value from the mirrored column (found
+    2026-11-18: 2 m temperature alternated -1 / +10.6 °C down the column through Alta).
+    """
+    import eccodes
+    try:
+        alt = eccodes.codes_get(gid, "alternativeRowScanning")
+    except Exception:
+        return vals
+    if not alt:
+        return vals
+    if eccodes.codes_get(gid, "jPointsAreConsecutive"):
+        raise RuntimeError("alternativeRowScanning with column-major points is not handled")
+    nx = eccodes.codes_get(gid, "Nx") if eccodes.codes_is_defined(gid, "Nx") else eccodes.codes_get(gid, "Ni")
+    a = np.array(vals, copy=True).reshape(-1, nx)
+    a[1::2] = a[1::2, ::-1]
+    return a.ravel()
+
+
 def grib_messages(raw: bytes):
     """Yield (keys, values) for every message in a GRIB file's bytes."""
     import eccodes
@@ -177,7 +200,7 @@ def grib_messages(raw: bytes):
                             keys[k] = eccodes.codes_get(gid, k)
                         except Exception:
                             keys[k] = None
-                    yield keys, eccodes.codes_get_values(gid)
+                    yield keys, natural_order(gid, eccodes.codes_get_values(gid))
                 finally:
                     eccodes.codes_release(gid)
 

@@ -4,6 +4,7 @@ import os, sys, math
 import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
 import nbm, eccodes
+from regional_eps import natural_order
 from datetime import datetime, timedelta, timezone
 
 now = datetime.now(timezone.utc)
@@ -22,7 +23,7 @@ for var, lvl, fc in [("ASNOW", "surface", "18-24 hour acc fcst"), ("TMP", "2 m a
     ks = {k: eccodes.codes_get(g, k) for k in ["gridType", "Nx", "Ny", "iScansNegatively", "jScansPositively",
           "jPointsAreConsecutive", "alternativeRowScanning", "scanningMode", "numberOfDataPoints",
           "bitmapPresent", "packingType"]}
-    v = np.asarray(eccodes.codes_get_values(g))
+    v = np.asarray(natural_order(g, eccodes.codes_get_values(g)))
     lat = np.asarray(eccodes.codes_get_array(g, "latitudes")); lon = np.asarray(eccodes.codes_get_array(g, "longitudes"))
     lon = np.where(lon > 180, lon - 360, lon)
     print(cycle, var, ks, "nvals", v.size, "nlat", lat.size)

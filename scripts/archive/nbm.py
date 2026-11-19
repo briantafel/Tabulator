@@ -59,7 +59,7 @@ from regional_eps import grib_messages  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 BUCKET_URL = "https://noaa-nbm-grib2-pds.s3.amazonaws.com"
 UA = "tabulator-archive/1.0 (+https://github.com/briantafel/tabulator)"
-PARSER_VERSION = "nbm-2"  # 2: snow level, SLR
+PARSER_VERSION = "nbm-3"  # 2: snow level, SLR. 3: odd grid rows read in the right order (nbm-1/2 wrong for ~half the resorts)
 SOURCE = "nbm"
 # 00z/12z: their 6-hour accumulations end on 00/06/12/18 UTC like every other
 # source. The log reports each cycle's last lead (extended range check).
