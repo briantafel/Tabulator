@@ -561,9 +561,8 @@ def nbm_cells_layer(lat, lon, total_m):
             if 0 < x < W_PX and 0 < y < H_PX - 120:
                 txt = f"{val:.0f}" if val >= 1 else ("" if val < 0.05 else f"{val:.1f}".lstrip("0"))
                 if txt:
-                    labels += halo_text(x, y, txt, f'font-size="19" font-weight="600" fill="{INK if val < 18 else "#ffffff"}" '
+                    labels += halo_text(x, y, txt, f'font-size="19" font-weight="600" fill="{INK}" '
                                                   f'text-anchor="middle" dominant-baseline="middle"')
-    # white halos read badly on the darkest cells: drop the halo there
     return [("nbm cells (2.5 km, 5-day in.)", shapes), ("cell values (in.)", labels)]
 
 
