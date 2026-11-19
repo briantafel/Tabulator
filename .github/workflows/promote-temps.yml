@@ -50,7 +50,7 @@ jobs:
         run: |
           # temps_report.md is public models vs SNOTEL only. slr_report.md is cut BEFORE its Snow-Forecast section.
           cat /tmp/temps_report.md | tee -a "$GITHUB_STEP_SUMMARY"
-          python3 -c "import sys;t=open('/tmp/slr_report.md').read();print(t.split('## Ours (ECMWF water')[0].replace('PRIVATE (contains paid-source comparison).',''))" | tee -a "$GITHUB_STEP_SUMMARY"
+          python3 -c "import sys;t=open('/tmp/slr_report.md').read();print(t.split('## Ours (ECMWF water')[0].replace('PRIVATE (contains paid-source comparison).',''));print('## Phase'+t.split('## Phase',1)[1] if '## Phase' in t else '')" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Keep promoted parts only
         run: python3 scripts/model/promote_temps.py /tmp/temp-model.json public/temp-model.json 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: SLR — ship only if promoted at every judged lead
@@ -63,7 +63,7 @@ jobs:
               print(f"SLR: {p.get('version')} has no per-lead judgement — not shipped")
           elif all(prom.values()):
               keep = {k: p[k] for k in ("version", "form", "a", "b", "clamp", "temperature", "fitted_on", "n_days",
-                                        "median_observed_slr", "promote", "regions", "region_of") if k in p}
+                                        "median_observed_slr", "promote", "regions", "region_of", "phase") if k in p}
               json.dump(keep, open("public/slr.json", "w"), indent=2); open("public/slr.json", "a").write("\n")
               own = {r: f"{e['a']} + {e['b']}·T" for r, e in (p.get("regions") or {}).items() if e.get("promoted")}
               print(f"SLR: shipped {p['version']}: pooled SLR = {p['a']} + {p['b']}·T (promoted at every lead); "

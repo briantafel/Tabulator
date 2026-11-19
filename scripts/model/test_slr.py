@@ -78,5 +78,18 @@ with tempfile.TemporaryDirectory() as tmp:
     assert p["promote"].get("1") is True, p["promote"]
     rep = (out / "slr_report.md").read_text()
     assert "Over-forecast by station height" in rep and "| ALL |" in rep.split("Over-forecast")[1], rep
+    assert p["phase"] == {"1-3": "temp", "4-7": "temp"}, p["phase"]  # no model snowfall here
+    assert "Phase: rain or snow" in rep
     assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep and "OWN LINE promoted" in rep, rep
 print("slr: all checks passed")
+
+
+# Phase: no model snowfall in the data → today's rule everywhere; phase_frac edge cases.
+import numpy as _np
+from slr import phase_frac
+_p = json.loads((out / "slr.json").read_text()) if False else None
+_w = _np.array([10.0, 10.0, 10.0, 0.0]); _ms = _np.array([7.0, 3.5, _np.nan, 0.0]); _t = _np.array([3.0, -1.0, 1.0, -5.0])
+assert list(phase_frac("temp", _w, _ms, _t)) == [0, 1, 1, 1]
+assert list(_np.round(phase_frac("model", _w, _ms, _t), 2)) == [1.0, 0.5, 1.0, 0.0]   # NaN → temp rule; dry → 0
+assert list(_np.round(phase_frac("hybrid", _w, _ms, _t), 2)) == [1.0, 1.0, 1.0, 1.0]  # cold slope overrides model rain
+print("phase: checks passed")

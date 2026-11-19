@@ -98,6 +98,11 @@ def load(con, pairs: Path, wpairs: Path) -> None:
     FROM read_parquet('{wpairs}')
     WHERE truth_source IN ({srcs}) AND space = 'liquid' AND source IN ('{PREV}', '{HINDCAST}', 'snow-forecast')""")
     con.execute(f"""
+    CREATE TABLE fm AS
+    SELECT DISTINCT resort_id, station_id, ws, we, source_label, issue_key, lead_day, fc AS fc_msnow
+    FROM read_parquet('{wpairs}')
+    WHERE truth_source IN ({srcs}) AND space = 'snow' AND source = '{PREV}'""")
+    con.execute(f"""
     CREATE TABLE fs AS
     SELECT DISTINCT resort_id, station_id, ws, we, source, source_label, issue_key, lead_day, fc AS fc_snow
     FROM read_parquet('{wpairs}')
@@ -110,9 +115,11 @@ def load(con, pairs: Path, wpairs: Path) -> None:
     GROUP BY ALL""")
     con.execute(f"""
     CREATE TABLE d AS
-    SELECT o.*, f.source_label, f.lead_day, f.fc_water,
+    SELECT o.*, f.source_label, f.lead_day, f.fc_water, m.fc_msnow,
            t.t_mid - {LAPSE_C_PER_M} * o.delev_mid AS t_st, t.t_mid AS t_slope
     FROM obs o JOIN fw f USING (resort_id, station_id, ws, we)
+    LEFT JOIN fm m ON m.resort_id = o.resort_id AND m.station_id = o.station_id AND m.ws = o.ws AND m.we = o.we
+      AND m.source_label = f.source_label AND m.issue_key = f.issue_key
     JOIN ft t ON t.resort_id = o.resort_id AND t.source_label = f.source_label AND t.issue_key = f.issue_key
       AND t.local_date = o.mid_date
     WHERE f.source = '{PREV}'""")
@@ -318,6 +325,84 @@ def by_height(con, p: dict) -> list[dict]:
     return rows
 
 
+# Phase (2026-11-19, Brian "do it"): rain or snow. Today a window is all snow if the station temperature is
+# ≤ 2 °C, else all rain ("temp"). Candidates: the model's own snow share φ = model snowfall ÷ (0.7 × model water)
+# — its microphysics, melting layer included — ("model"), and a hybrid that never lets the model call rain when
+# the elevation-adjusted temperature says snow ("hybrid": max(φ, ramp), ramp 1 at ≤ 0 °C → 0 at ≥ 2 °C).
+# Judged on 2025-26 CoCoRaHS boards (they record whether it snowed, in 1 cm steps), per lead group. The model
+# decides phase at the elevation Open-Meteo was asked for (SF mid), but boards sit lower, so near-height boards
+# (|Δ elevation| ≤ NEAR_M) are reported separately. Ships per lead group only if it beats "temp" at 2.5 cm
+# (90 % range above 0) and isn't worse at 15 cm.
+NEAR_M = 300
+PHASE_GROUPS = {"1-3": (1, 2, 3), "4-7": (4, 5, 6, 7)}
+
+
+def phase_frac(method: str, water, msnow, t):
+    ramp = np.clip((2.0 - t) / 2.0, 0, 1)
+    if method == "temp":
+        return (t <= MAX_T_C + 2).astype(float)
+    phi = np.where(water > 0, np.clip(np.nan_to_num(msnow, nan=-1) / np.maximum(0.7 * water, 1e-9), 0, 1), 0.0)
+    phi = np.where(np.isnan(msnow), (t <= MAX_T_C + 2).astype(float), phi)  # no model snowfall → today's rule
+    return phi if method == "model" else np.maximum(phi, ramp)
+
+
+def phase_check(con, p: dict) -> tuple[dict, str]:
+    rng = np.random.default_rng(SEED + 19)
+    out_rows, choice = [], {}
+    curve = con.execute("""
+      SELECT floor(t_slope) AS tb, count(*), median(least(greatest(fc_msnow / (0.7 * fc_water), 0), 1))
+      FROM d WHERE split = 'train' AND fc_water >= 2 AND fc_msnow IS NOT NULL AND t_slope BETWEEN -6 AND 6
+      GROUP BY tb ORDER BY tb""").fetchall()
+    for g, leads in PHASE_GROUPS.items():
+        ls = ", ".join(map(str, leads))
+        r = con.execute(f"""SELECT end_date, fc_water, fc_msnow, t_st, snow_cm, abs(delev_mid) <= {NEAR_M} AS near, macro
+                            FROM d WHERE split = 'test' AND lead_day IN ({ls})""").fetchnumpy()
+        if not len(r["snow_cm"]):
+            choice[g] = "temp"; continue
+        best, best_key = "temp", None
+        for subset in ("all", "near"):
+            m = np.ones(len(r["snow_cm"]), bool) if subset == "all" else r["near"].astype(bool)
+            if m.sum() < 50:
+                out_rows.append(f"| {g} | {subset} | — | — | too few windows ({int(m.sum())}) | | | |"); continue
+            ud, inv = np.unique(r["end_date"][m], return_inverse=True)
+            idx = rng.integers(0, len(ud), size=(N_BOOT, len(ud)))
+            w, ms, t, obs = r["fc_water"][m], r["fc_msnow"][m], r["t_st"][m], r["snow_cm"][m]
+            slr = slr_of(t, p, r["macro"][m]) / 10
+            snow = {k: w * phase_frac(k, w, ms, t) * slr for k in ("temp", "model", "hybrid")}
+            for thr in (2.5, 10.0, 15.0):
+                o = obs >= thr
+                base = csi_boot(snow["temp"] >= thr, o, inv, len(ud), idx)
+                for k in ("model", "hybrid"):
+                    c = csi_boot(snow[k] >= thr, o, inv, len(ud), idx)
+                    dd = c[2] - base[2]
+                    lo, hi = float(np.percentile(dd, 5)), float(np.percentile(dd, 95))
+                    out_rows.append(f"| {g} | {subset} | {k} | {thr:g} | {int(o.sum())} | {base[0]:.3f} → {c[0]:.3f} | "
+                                    f"{base[1]:.2f} → {c[1]:.2f} | {lo:+.3f} to {hi:+.3f} |")
+                    if subset == "all":
+                        key = (k, thr)
+                        choice.setdefault(f"_{g}", {})[key] = (lo, hi, c[0] - base[0])
+        cand = choice.pop(f"_{g}", {})
+        for k in ("hybrid", "model"):  # prefer the hybrid on ties: it can't call rain on a cold slope
+            if (k, 2.5) in cand and cand[(k, 2.5)][0] > 0 and cand[(k, 15.0)][1] >= 0:
+                if best == "temp" or cand[(k, 2.5)][2] > cand[(best, 2.5)][2]:
+                    best = k
+        choice[g] = best
+    report = "\n".join([
+        "\n## Phase: rain or snow (judged on 2025-26 boards)\n",
+        "temp = today's rule (all snow at ≤ 2 °C at the board, else rain); model = the model's own snow share; "
+        "hybrid = max(model share, temperature ramp 0–2 °C). Same water, same SLR. `near` = boards within "
+        f"{NEAR_M} m of the forecast's elevation (the model decides phase at that height).\n",
+        "| leads | boards | method | ≥ cm | events | CSI temp → method | freq bias temp → method | gain range |",
+        "|---|---|---|---|---|---|---|---|", *out_rows,
+        f"\nCHOSEN per lead group: {json.dumps(choice)}\n",
+        "\nModel snow share by elevation-adjusted temperature at the forecast height (training winter, ≥ 2 mm). "
+        "A share well below 1 at ≤ 0 °C would mean the model decides phase lower than the slope.\n",
+        "| T (°C) | windows | median snow share |", "|---|---|---|",
+        *[f"| {int(tb)} | {n} | {(m if m is not None else float('nan')):.2f} |" for tb, n, m in curve],
+    ])
+    return choice, report
+
+
 def md_table(rows: list[dict], cols: list[tuple[str, str]]) -> str:
     f = lambda v: f"{v:.2f}" if isinstance(v, (float, np.floating)) else str(v)
     lines = ["| " + " | ".join(h for h, _ in cols) + " |", "|" + "---|" * len(cols)]
@@ -336,6 +421,7 @@ def main(pairs: Path, out: Path) -> None:
     params = fit(con)
     res, promote, vs, region_rows = evaluate(con, params)
     params["promote"] = promote
+    params["phase"], phase_report = phase_check(con, params)
     (out / "slr.json").write_text(json.dumps(params, indent=2) + "\n")
     calm = {k: v for k, v in params["by_height_class"].items()}
     parts = [
@@ -375,7 +461,7 @@ def main(pairs: Path, out: Path) -> None:
                       ("range", "range")]) if vs else "_no shared windows yet_\n",
         "\nHindcast is lead 0 (model spin-up handicaps ours). Live Snow-Forecast rows are this season only: thin.\n",
     ]
-    (out / "slr_report.md").write_text("\n".join(parts))
+    (out / "slr_report.md").write_text("\n".join(parts) + phase_report)
     prom = [k for k, v in params["regions"].items() if v.get("promoted")]
     print(f"SLR v3 fitted on {params['n_days']} training station-days; own line for {prom or 'no region'}; "
           "report written", file=sys.stderr)
