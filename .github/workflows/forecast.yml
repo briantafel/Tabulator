@@ -108,7 +108,8 @@ jobs:
             # Other jobs commit to main too (temps, projections, blend); a plain
             # push lost this run's output on 2026-11-18 17:42Z. Rebase and retry.
             for i in 1 2 3; do
-              git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+              git pull --rebase -X theirs -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+              git rebase --abort 2>/dev/null || true
               sleep 10
             done
             grep -q pushed=true "$GITHUB_OUTPUT" || { echo "::error::push failed after 3 tries"; exit 1; }

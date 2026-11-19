@@ -98,9 +98,13 @@ jobs:
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "blend-forecast: $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
-            git pull --rebase -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            git pull --rebase -X theirs -q origin main && git push && { echo "pushed=true" >> "$GITHUB_OUTPUT"; break; }
+            git rebase --abort 2>/dev/null || true
             sleep 10
           done
+          # Loud (2026-11-19): the 21:07Z run built 57/57, lost its push to a
+          # conflict with forecast.yml over editorial-ours.json, and stayed green.
+          grep -q pushed=true "$GITHUB_OUTPUT" || { echo "::error::push failed after 3 tries — today's blend is NOT live"; exit 1; }
 
       - name: Redeploy the site
         if: steps.projcommit.outputs.pushed == 'true'
@@ -142,8 +146,9 @@ jobs:
           aws s3 ls "s3://$R2_BUCKET/runs/$RUN_ID.json" --endpoint-url "$ENDPOINT"
 
       - name: Fail the run if the pass or the projections fell short
-        if: steps.collect.outcome == 'failure' || steps.projections.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.projections.outcome == 'failure' || steps.projcommit.outcome == 'failure'
         run: |
+          [ "${{ steps.projcommit.outcome }}" = "failure" ] && echo "::error::Built but not saved: the commit/push failed, so the app still shows the previous blend."
           [ "${{ steps.collect.outcome }}" = "failure" ] && echo "::error::Open-Meteo forecast pass fell short — see the Collect step. What succeeded was still uploaded."
           [ "${{ steps.projections.outcome }}" = "failure" ] && echo "::error::Our forecast was not built — see the Build our forecast step."
           exit 1
