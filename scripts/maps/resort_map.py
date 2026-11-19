@@ -201,8 +201,32 @@ def main():
     print(f"crop: wide-field {coarse.min():.1f}–{coarse.max():.1f} in -> 10 m {snow.min():.1f}–{snow.max():.1f} in; "
           f"NBM cells here {nbm_cell(q).min():.1f}–{nbm_cell(q).max():.1f} in")
 
-    # --- relief
-    rgb = sk.relief(dem)
+    # --- relief: Blender top-down render when BLENDER is set (cached per resort), else the numpy shader
+    LIGHTS = [  # name, azimuth, elevation, strength, sun angle (softness), sky
+        ["nw-low", 315, 32, 3.2, 6, 0.55],
+        ["nw-high", 320, 50, 2.6, 10, 0.75],
+    ]
+    rgbs = {}
+    blender = os.environ.get("BLENDER")
+    if blender:
+        import subprocess
+        work = out / "relief"; work.mkdir(exist_ok=True)
+        step = max(1, int(round(sk.W_PX / 900)))
+        np.save(work / f"{a.resort}.npy", dem[::step, ::step])
+        w_m = (crop[2] - crop[0]) * 111320.0 * math.cos(math.radians(sk.LAT0)); h_m = (crop[3] - crop[1]) * 111320.0
+        json.dump({"width_m": w_m, "height_m": h_m, "px": [sk.W_PX, sk.H_PX], "exag": 1.5, "light": LIGHTS},
+                  open(work / f"{a.resort}.json", "w"))
+        cmd = [blender, "-b", "-P", str(Path(__file__).with_name("relief_ortho.py")), "--",
+               str(work / f"{a.resort}.npy"), str(work / f"{a.resort}.json"), str(work / a.resort)]
+        r_ = subprocess.run(cmd, capture_output=True, text=True)
+        print("\n".join(l for l in r_.stdout.splitlines() if "rendered" in l or "Error" in l))
+        if r_.returncode:
+            sys.exit(f"Blender failed: {r_.stderr[-1500:]}")
+        for name, *_ in LIGHTS:
+            rgbs[name] = np.asarray(Image.open(work / f"{a.resort}-{name}.png").convert("RGB"))
+    else:
+        rgbs["numpy"] = sk.relief(dem)
+    rgb = next(iter(rgbs.values()))
     buf = io.BytesIO(); Image.fromarray(rgb).save(buf, "PNG", optimize=True)
     b64 = base64.b64encode(buf.getvalue()).decode()
 
@@ -271,10 +295,13 @@ def main():
         L.append(f'<g id="{name}" inkscape:groupmode="layer" inkscape:label="{name}">'); L.extend(body); L.append("</g>")
 
     layer("relief (raster)", [f'<image width="{sk.W_PX}" height="{sk.H_PX}" xlink:href="data:image/png;base64,{b64}"/>'])
+    relief_line = len(L) - 2
+    fill_start = len(L)
     n = max(1, len(fill))
-    layer("snow fill (inside area)", [f'<path d="{d}" fill="{ramp[min(len(ramp) - 1, int(i * (len(ramp) - 1) / max(1, n - 1)))]}" '
-                                      f'fill-opacity="0.5" fill-rule="evenodd" clip-path="url(#area)"/>'
-                                      for i, (lv, d) in enumerate(fill) if d])
+    fill_paths = [f'<path d="{d}" fill="{ramp[min(len(ramp) - 1, int(i * (len(ramp) - 1) / max(1, n - 1)))]}" '
+                  f'fill-rule="evenodd" clip-path="url(#area)"/>' for i, (lv, d) in enumerate(fill) if d]
+    layer("snow fill (multiply)", [f'<g style="mix-blend-mode:multiply" opacity="0.85">'] + fill_paths + ["</g>"])
+    fill_end = len(L)
     body = []
     for lv, ds in lines:
         if ds:
@@ -305,9 +332,23 @@ def main():
     layer("labels", lab)
     L.append("</svg>")
     svg = "\n".join(L)
-    (out / f"{a.resort}.svg").write_text(svg)
+    (out / f"{a.resort}.svg").write_text(svg)   # editable: plain relief + multiply fill layer
     import cairosvg
-    cairosvg.svg2png(bytestring=svg.encode(), write_to=str(out / f"{a.resort}.png"))
+    # PNG: cairo ignores blend modes, so tint the relief in raster (multiply), then draw the rest.
+    fill_svg = "\n".join(L[:2] + L[fill_start:fill_end] + ["</svg>"])
+    fpng = cairosvg.svg2png(bytestring=fill_svg.encode(), output_width=sk.W_PX, output_height=sk.H_PX)
+    F = np.asarray(Image.open(io.BytesIO(fpng)).convert("RGBA")).astype("float32") / 255.0
+    k = 0.85 * F[..., 3:4]
+    for name, base in rgbs.items():
+        comp = base.astype("float32") / 255.0 * (1 - k + k * F[..., :3])
+        bb = io.BytesIO(); Image.fromarray((comp * 255).clip(0, 255).astype("uint8")).save(bb, "PNG")
+        L2 = list(L)
+        L2[relief_line] = (f'<image width="{sk.W_PX}" height="{sk.H_PX}" '
+                           f'xlink:href="data:image/png;base64,{base64.b64encode(bb.getvalue()).decode()}"/>')
+        del L2[fill_start:fill_end]
+        suffix = "" if len(rgbs) == 1 else f"-{name}"
+        cairosvg.svg2png(bytestring="\n".join(L2).encode(), write_to=str(out / f"{a.resort}{suffix}.png"))
+        Image.fromarray(base).save(out / f"{a.resort}{suffix}-relief.png")
     json.dump({"resort": a.resort, "ski_area": area_name, "crop": crop, "dem": dem_src, "nbm_run": run.isoformat(),
                "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
                "levels_in": [float(x) for x in levels],
