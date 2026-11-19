@@ -140,10 +140,25 @@ def collect_hrrr(cfg, cycle, resorts, deadline):
         raise FileNotFoundError("cycle not complete on the bucket yet")
 
     def index(l):
-        return l, hrrr_picks(parse_noaa_idx(http(url(l) + ".idx").decode()), l)
+        try:
+            return l, hrrr_picks(parse_noaa_idx(http(url(l) + ".idx").decode()), l)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return l, None
+            raise
 
     with ThreadPoolExecutor(max_workers=16) as pool:
         picks = dict(pool.map(index, leads))
+    # NOAA's archive occasionally lacks one hour of a run (2026-01-14 18z: one file 404).
+    # Drop that hour: blocks that need it are skipped (never zero), the rest are kept.
+    gone = sorted(l for l, p in picks.items() if p is None)
+    if gone:
+        if len(gone) > 6:
+            raise RuntimeError(f"{len(gone)} of {len(leads)} hourly files missing (first f{gone[0]:02d})")
+        log(f"    GAP: hourly files missing on AWS: {', '.join(f'f{l:02d}' for l in gone)} — affected blocks dropped")
+        picks = {l: p for l, p in picks.items() if p is not None}
+    if 1 not in picks:
+        raise RuntimeError("f01 missing — no grid to read")
     for l, p in picks.items():
         need = {"t", "u", "v"} | ({"precip"} if l % BLOCK_H == 0 else set())
         have = {v for _, v, _, _ in p}
