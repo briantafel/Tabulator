@@ -206,7 +206,6 @@ def main():
         # Brian 2026-11-19: keep every slope in tone (nothing black, nothing blown). High, broad key;
         # strong shadowless fill; plain tone curve. name, az, el, key, softness deg, sky, [fill az, el, str]
         ["even", 315, 45, 2.3, 18, 0.42, [135, 40, 0.9]],
-        ["even-high", 320, 55, 2.0, 25, 0.5, [140, 45, 0.8]],
     ]
     rgbs = {}
     blender = os.environ.get("BLENDER")
@@ -216,7 +215,8 @@ def main():
         step = max(1, int(round(sk.W_PX / 900)))
         np.save(work / f"{a.resort}.npy", dem[::step, ::step])
         w_m = (crop[2] - crop[0]) * 111320.0 * math.cos(math.radians(sk.LAT0)); h_m = (crop[3] - crop[1]) * 111320.0
-        json.dump({"width_m": w_m, "height_m": h_m, "px": [sk.W_PX, sk.H_PX], "exag": 2.0, "light": LIGHTS},
+        json.dump({"width_m": w_m, "height_m": h_m, "px": [sk.W_PX, sk.H_PX], "exag": 2.0, "light": LIGHTS,
+                   "exposure": -0.9},
                   open(work / f"{a.resort}.json", "w"))
         cmd = [blender, "-b", "-P", str(Path(__file__).with_name("relief_ortho.py")), "--",
                str(work / f"{a.resort}.npy"), str(work / f"{a.resort}.json"), str(work / a.resort)]
@@ -227,8 +227,18 @@ def main():
         for name, *_ in LIGHTS:
             rgbs[name] = np.asarray(Image.open(work / f"{a.resort}-{name}.png").convert("RGB"))
             g = rgbs[name].mean(-1)
-            print(f"  relief {name}: clipped white {(g >= 254).mean():.1%}, darkest 1% {np.percentile(g, 1):.0f}, "
-                  f"median {np.median(g):.0f}")
+            print(f"  relief {name} raw: clipped {(g >= 254).mean():.1%}, p1 {np.percentile(g, 1):.0f}, "
+                  f"median {np.median(g):.0f}, p99.5 {np.percentile(g, 99.5):.0f}")
+            # Levels: brightest slopes just under white (0.975), darkest 0.5% at 0.52 (never black),
+            # a slight lift of the mid-tones so the plaster stays light.
+            lo_, hi_ = np.percentile(g, 0.5), np.percentile(g, 99.7)
+            t = np.clip((g - lo_) / max(1.0, hi_ - lo_), 0, 1) ** 0.85
+            v = 0.52 + t * (0.975 - 0.52)
+            scale = (v * 255.0) / np.maximum(g, 1.0)
+            rgbs[name] = np.clip(rgbs[name].astype("float32") * scale[..., None], 0, 255).astype("uint8")
+            g2 = rgbs[name].mean(-1)
+            print(f"  relief {name} levelled: clipped {(g2 >= 254).mean():.1%}, p1 {np.percentile(g2, 1):.0f}, "
+                  f"median {np.median(g2):.0f}")
     else:
         rgbs["numpy"] = sk.relief(dem)
     rgb = next(iter(rgbs.values()))
