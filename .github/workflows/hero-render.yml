@@ -32,7 +32,12 @@ jobs:
         run: |
           sudo apt-get update -q >/dev/null
           sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null || echo "apt install failed; Blender will say what is missing"
-          curl -sSL -o b.tar.xz https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz
+          f=Blender4.2/blender-4.2.3-linux-x64.tar.xz
+          for u in https://download.blender.org/release/$f https://mirrors.ocf.berkeley.edu/blender/release/$f https://ftp.nluug.nl/pub/graphics/blender/release/$f; do
+            curl -fsSL --retry 4 --retry-delay 10 -o b.tar.xz "$u" && xz -t b.tar.xz && break
+            echo "download failed from $u"; rm -f b.tar.xz
+          done
+          test -f b.tar.xz
           tar -xf b.tar.xz
           SAMPLES=${{ inputs.samples }} ./blender-4.2.3-linux-x64/blender -b -P scripts/hero/render.py -- work/height.npy work/height.json out 2>&1 | grep -vE "^Fra:|Sample" | tail -40; test ${PIPESTATUS[0]} -eq 0
           ls -la out
