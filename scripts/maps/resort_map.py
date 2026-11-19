@@ -10,7 +10,8 @@
    the crop. Same caveats: NBM only, not yet scored.
 3. Relief: USGS 3DEP 10 m (Copernicus 30 m outside the US), plaster style.
 4. Colour only inside the ski area: snow bands + labelled lines; outside it the plaster
-   shows through a white veil. Base / top values are read at the lowest and highest
+   stays plain plaster (no veil). The "area" is the skiable terrain traced from the
+   resort's own mapped runs, not a legal permit boundary. Base / top values are read at the lowest and highest
    lift terminals.
 Writes RESORT_ID.png and RESORT_ID.svg (vector layers over the relief image).
 """
@@ -86,7 +87,17 @@ def ski_area(r, osm_id):
     sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found")
 
 
-def lifts_runs(bbox):
+def member_of(p, osm_id):
+    for a in p.get("skiAreas") or []:
+        aid = a.get("properties", {}).get("id") if isinstance(a, dict) else a
+        if aid == osm_id:
+            return True
+    return False
+
+
+def lifts_runs(bbox, osm_id=None):
+    """Lifts and downhill runs in the crop; when OpenSkiMap tags them with ski areas,
+    only this resort's (so a neighbour's runs don't widen the outline)."""
     W, S, E, N = bbox
 
     def near(g):
@@ -98,10 +109,14 @@ def lifts_runs(bbox):
             p = f.get("properties") or {}
             if kind == "runs" and "downhill" not in (p.get("uses") or []):
                 continue
-            for g in rings_of(f.get("geometry") or {"type": "", "coordinates": []}):
+            geom = f.get("geometry") or {"type": "", "coordinates": []}
+            area = geom["type"] in ("Polygon", "MultiPolygon")
+            for g in rings_of(geom):
                 if len(g) >= 2 and near(g):
-                    got.append((p, g))
-        out[kind] = got
+                    got.append((p, g, area))
+        mine = [x for x in got if osm_id and member_of(x[0], osm_id)]
+        print(f"{kind}: {len(got)} in crop, {len(mine)} tagged to this ski area")
+        out[kind] = mine if mine else got
     print(f"lifts {len(out['lifts'])}, runs {len(out['runs'])}")
     if not out["lifts"]:
         sys.exit("no lifts found in the crop; refusing to draw base/top")
@@ -198,18 +213,36 @@ def main():
         s = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in (P(la, lo) for la, lo in seq))
         return s + (" Z" if close else "")
 
-    area_d = " ".join(path(ring, True) for ring in rings)
-    lifts, runs = lifts_runs(crop)
+    lifts, runs = lifts_runs(crop, elev.get("osm_id"))
 
-    # inside-area mask for stats
-    from matplotlib.path import Path as MPath
-    mask = np.zeros(snow.shape, bool)
-    yy, xx = np.mgrid[0:sk.H_PX, 0:sk.W_PX]
-    pts_px = np.column_stack([xx.ravel(), yy.ravel()])
-    for ring in rings:
-        mask |= MPath(np.array([P(la, lo) for la, lo in ring])).contains_points(pts_px).reshape(snow.shape)
+    # Skiable-terrain outline: the resort's runs (areas filled, lines given a ~45 m width),
+    # joined across the gaps between neighbouring runs (closing ~110 m), holes filled.
+    # This follows the terrain people ski, not a legal permit line.
+    from PIL import ImageDraw
+    from scipy.ndimage import distance_transform_edt, binary_fill_holes
+    m_px = (crop[3] - crop[1]) * 111320.0 / sk.H_PX
+    canvas = Image.new("L", (sk.W_PX, sk.H_PX), 0)
+    dr = ImageDraw.Draw(canvas)
+    for _, g, area in runs:
+        xy = [P(la, lo) for la, lo in g]
+        if area and len(xy) > 2:
+            dr.polygon(xy, fill=255)
+        else:
+            dr.line(xy, fill=255, width=max(2, int(round(45 / m_px))), joint="curve")
+    raw = np.asarray(canvas) > 0
+    r_close = 110 / m_px
+    grown = distance_transform_edt(~raw) <= r_close
+    mask = binary_fill_holes(distance_transform_edt(grown) > r_close * 0.85)
     if mask.mean() < 0.02:
-        sys.exit("ski-area mask is nearly empty; refusing to draw")
+        sys.exit("skiable-terrain mask is nearly empty (no runs mapped?); refusing to draw")
+    acres = mask.sum() * m_px * m_px / 4046.86
+    print(f"skiable-terrain outline: {acres:,.0f} acres from {len(runs)} runs")
+    import matplotlib; matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig = plt.figure(); ax = fig.add_axes([0, 0, 1, 1])
+    cs = ax.contour(mask.astype(float), levels=[0.5])
+    area_d = " ".join("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in seg) + " Z" for seg in cs.allsegs[0] if len(seg) > 8)
+    plt.close(fig)
     inside = snow[mask]
     lo_in, hi_in = np.floor(inside.min()), np.ceil(inside.max())
     step = 2 if hi_in - lo_in <= 16 else 3
@@ -220,7 +253,7 @@ def main():
 
     # base / top at lift terminals
     terms = []
-    for tags, g in lifts:
+    for tags, g, _ in lifts:
         for la_, lo_ in (g[0], g[-1]):
             x, y = P(la_, lo_)
             if 0 <= x < sk.W_PX and 0 <= y < sk.H_PX and mask[int(y), int(x)]:
@@ -238,8 +271,6 @@ def main():
         L.append(f'<g id="{name}" inkscape:groupmode="layer" inkscape:label="{name}">'); L.extend(body); L.append("</g>")
 
     layer("relief (raster)", [f'<image width="{sk.W_PX}" height="{sk.H_PX}" xlink:href="data:image/png;base64,{b64}"/>'])
-    layer("outside the ski area (veil)", [f'<path d="M0,0 H{sk.W_PX} V{sk.H_PX} H0 Z {area_d}" fill="#ffffff" '
-                                          f'fill-opacity="0.55" fill-rule="evenodd"/>'])
     n = max(1, len(fill))
     layer("snow fill (inside area)", [f'<path d="{d}" fill="{ramp[min(len(ramp) - 1, int(i * (len(ramp) - 1) / max(1, n - 1)))]}" '
                                       f'fill-opacity="0.5" fill-rule="evenodd" clip-path="url(#area)"/>'
@@ -251,16 +282,16 @@ def main():
                         f'stroke-linejoin="round" clip-path="url(#area)"/>')
     layer("snow lines", body)
     layer("runs", [f'<path d="{path(g)}" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.2" '
-                   f'stroke-linecap="round" clip-path="url(#area)"/>' for _, g in runs])
+                   f'stroke-linecap="round" clip-path="url(#area)"/>' for _, g, _a in runs])
     lb = []
-    for tags, g in lifts:
+    for tags, g, _ in lifts:
         lb.append(f'<path d="{path([g[0], g[-1]])}" fill="none" stroke="{sk.INK}" stroke-width="1.6" clip-path="url(#area)"/>')
         for la_, lo_ in (g[0], g[-1]):
             x, y = P(la_, lo_)
             if 0 <= x < sk.W_PX and 0 <= y < sk.H_PX and mask[int(y), int(x)]:
                 lb.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.2" fill="{sk.INK}"/>')
     layer("lifts", lb)
-    layer("ski area boundary", [f'<path d="{area_d}" fill="none" stroke="{sk.INK}" stroke-opacity="0.55" '
+    layer("skiable terrain outline (from runs)", [f'<path d="{area_d}" fill="none" stroke="{sk.INK}" stroke-opacity="0.55" '
                                 f'stroke-width="1.4" stroke-dasharray="6 6"/>'])
     lab = []
     for lv, (x, y) in sk.label_points(lines):
@@ -282,7 +313,7 @@ def main():
                "levels_in": [float(x) for x in levels],
                "base": marks[0][1][:1] + marks[0][1][3:] if marks else None,
                "top": marks[1][1][:1] + marks[1][1][3:] if marks else None,
-               "lifts": len(lifts), "runs": len(runs)}, open(out / f"{a.resort}.json", "w"), indent=1, default=float)
+               "lifts": len(lifts), "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(float(acres))}, open(out / f"{a.resort}.json", "w"), indent=1, default=float)
     print(f"{a.resort}: inside {inside.min():.1f}–{inside.max():.1f} in; marks {[(w, round(m[0]), round(m[3], 1)) for w, m in marks]}")
 
 
