@@ -100,7 +100,7 @@ test("namePeak: the up-to amount names its resort when the best bet is elsewhere
   const snow = { kirkwood: [75, 3, 0, 13, 1, 8], "mt-rose": [56, 3, 0, 6, 0, 5],
     brighton: [37, 31, 5, 1, 21, 0], solitude: [33, 30, 5, 1, 23, 0] };
   const s = say(outlook(feed(snow), { now: NOW, namePeak: true }));
-  assert.match(s, /with up to \[\d+"\] at \[Kirkwood\] falling/);
+  assert.match(s, /with up to \[\d+"\] falling at \[Kirkwood\] over \[the next/);
   assert.match(s, /best bet for snow is \[the Wasatch\], with \[Brighton\]/);
   // Off: the old sentence, unchanged.
   assert.doesNotMatch(say(outlook(feed(snow), { now: NOW })), / at \[/);
