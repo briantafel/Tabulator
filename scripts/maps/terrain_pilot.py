@@ -1,0 +1,653 @@
+"""Terrain pilot: one resort's snow-by-terrain map at 4K, plus a Blender file.
+
+  python3 terrain_pilot.py OUTDIR RESORT_ID [--px 4096]      (BLENDER=/path/to/blender required)
+
+Builds on resort_map.py (outline from the resort's own runs, lifts, runs, snow bands, labels) and
+relief_ortho.py (plaster relief). Settled look unchanged: same lighting ("even"), levels step, crop rule
+(run-traced outline + 150 m, square), outline, colours, label content. What is new (claude/state-2026-11-19-terrain-pilot.md):
+
+  * relief rendered at PX x PX for the square frame, from a 16-bit heightmap on the native DEM grid
+    (USGS 3DEP 10 m in the US, Copernicus GLO-30 elsewhere), displaced in Blender at render time
+  * snow from NBM where it covers the resort, else ECMWF IFS open data (same terrain step)
+  * every vector (snow lines, outline, lifts, runs, labels) is written in SVG at the PX frame size, with
+    line widths and font sizes scaled so they read the same at phone width as the old 1800 px maps
+  * <id>.blend: terrain from the packed heightmap, plaster, lights, camera, render settings
+
+Outputs (OUTDIR): <id>.png <id>.svg <id>-vectors.svg <id>-relief.png <id>-heightmap16.png <id>.blend <id>.json
+and preview/<id>-1024.png, preview/<id>-crop1to1.png. Failures are loud: a FAILED.txt is written and the exit code is non-zero.
+(Ski area outline, lifts and runs: OpenSkiMap / OpenStreetMap contributors, ODbL.)
+"""
+import argparse, base64, io, json, math, os, subprocess, sys, time, traceback
+from datetime import timedelta
+from pathlib import Path
+
+import numpy as np
+import rasterio
+from rasterio.enums import Resampling
+from rasterio.merge import merge
+from PIL import Image, ImageDraw
+from scipy.interpolate import RectBivariateSpline, RegularGridInterpolator
+from scipy.ndimage import (binary_fill_holes, distance_transform_edt, gaussian_filter,
+                           label as cc_label, uniform_filter)
+
+sys.path.insert(0, os.path.dirname(__file__))
+import sketch as sk  # noqa: E402
+import resort_map as rm  # noqa: E402
+
+Image.MAX_IMAGE_PIXELS = None
+ROOT = rm.ROOT
+OLD_PX = 1800                 # width in px of the render grid resort_map.py used for the crop
+PAD_M = 150.0                 # frame = outline + 150 m (settled)
+MARGIN_M = 300.0              # extra terrain around the frame in the heightmap (shading context)
+EXAG = 2.0
+EXPOSURE = -0.9
+LIGHTS = [["even", 315, 45, 2.3, 18, 0.42, [135, 40, 0.9]]]      # settled 2026-11-19
+LEVELS = dict(p_lo=0.5, p_hi=99.7, out_lo=0.52, out_hi=0.975, gamma=0.85)   # settled levels step
+RAMP = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
+SLR_IFS = 12.0                # placeholder snow-to-liquid ratio for IFS (same as sketch.SLR)
+CAPTION = {"nbm": "NOAA NBM • Tabulator terrain-adjusted", "ifs": "ECMWF IFS • Tabulator terrain-adjusted"}
+FT = 3.28084
+
+
+def log(*a):
+    print(*a, flush=True)
+
+
+def retry(fn, what, tries=3, wait=20):
+    last = None
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001  (loud in the log, re-raised after the last try)
+            last = e
+            log(f"{what}: attempt {i + 1}/{tries} failed: {e}")
+            time.sleep(wait)
+    raise RuntimeError(f"{what} failed after {tries} tries: {last}")
+
+
+class Grid:
+    """Linear lon/lat -> pixel map (the same equirectangular crop resort_map.py uses)."""
+    def __init__(self, bbox, w, h):
+        self.W, self.S, self.E, self.N = bbox
+        self.w, self.h = w, h
+
+    def P(self, la, lo):
+        return (lo - self.W) / (self.E - self.W) * self.w, (self.N - la) / (self.N - self.S) * self.h
+
+
+# ---------------------------------------------------------------- DEM
+def tiles_usgs(b):
+    W, S, E, N = b
+    out = []
+    for la in range(math.floor(S), math.floor(N) + 1):
+        for lo in range(math.floor(W), math.floor(E) + 1):
+            n = f"n{la + 1:02d}w{-lo:03d}"
+            out.append(f"/vsicurl/https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/current/{n}/USGS_13_{n}.tif")
+    return out
+
+
+def tiles_cop(b):
+    W, S, E, N = b
+    out = []
+    for la in range(math.floor(S), math.floor(N) + 1):
+        for lo in range(math.floor(W), math.floor(E) + 1):
+            ns = f"N{la:02d}" if la >= 0 else f"S{-la:02d}"
+            ew = f"W{-lo:03d}" if lo < 0 else f"E{lo:03d}"
+            k = f"Copernicus_DSM_COG_10_{ns}_00_{ew}_00_DEM"
+            out.append(f"/vsicurl/https://copernicus-dem-30m.s3.amazonaws.com/{k}/{k}.tif")
+    return out
+
+
+def merge_tiles(urls, bbox, res, resampling, tolerate_missing):
+    srcs, missing = [], []
+    for u in urls:
+        try:
+            srcs.append(rasterio.open(u))
+        except Exception as e:  # noqa: BLE001
+            missing.append((u, str(e)[:120]))
+    if not srcs:
+        raise RuntimeError(f"no DEM tiles could be opened, e.g. {missing[:1]}")
+    if missing and not tolerate_missing:
+        raise RuntimeError(f"{len(missing)} of {len(urls)} DEM tiles missing: {missing[:2]}")
+    arr, _ = merge(srcs, bounds=bbox, res=(res, res), resampling=resampling, nodata=-9999)
+    z = arr[0].astype("float32")
+    bad = z < -500
+    if missing:
+        log(f"  WARNING {len(missing)} Copernicus tiles absent (open sea): {bad.mean():.1%} of the box filled with 0 m")
+        z[bad] = 0.0
+    elif bad.mean() > 0.001:
+        raise RuntimeError(f"DEM has {bad.mean():.2%} nodata")
+    return z
+
+
+def is_us(lat, lon):
+    return 24.0 < lat < 49.2 and -125.0 < lon < -66.0
+
+
+def load_dem_native(bbox, lat_c, lon_c):
+    """Native-grid DEM over bbox: USGS 3DEP 1/3 arc-sec (US) or Copernicus GLO-30 (elsewhere).
+    Returns (z, lon0, lat1, res_deg, info). A US resort that cannot get 3DEP fails (no silent downgrade)."""
+    if is_us(lat_c, lon_c):
+        res, src = 1 / 10800, "USGS 3DEP 1/3 arc-sec (10 m)"
+        z = retry(lambda: merge_tiles(tiles_usgs(bbox), bbox, res, Resampling.bilinear, False), "USGS 3DEP")
+    else:
+        res, src = 1 / 3600, "Copernicus GLO-30 (30 m DSM)"
+        z = retry(lambda: merge_tiles(tiles_cop(bbox), bbox, res, Resampling.bilinear, False), "Copernicus GLO-30")
+    info = {"source": src, "native_res_deg": res,
+            "native_res_m": [round(res * 111320, 1), round(res * 111320 * math.cos(math.radians(lat_c)), 1)],
+            "native_res_m_note": "N-S x E-W", "native_shape": list(z.shape)}
+    log(f"DEM {src}: {z.shape}, {z.min():.0f}-{z.max():.0f} m")
+    return z, bbox[0], bbox[3], res, info
+
+
+def dem_wide(bbox, wpx, hpx):
+    res = ((bbox[2] - bbox[0]) / wpx, (bbox[3] - bbox[1]) / hpx)
+    srcs_urls = tiles_cop(bbox)
+
+    def go():
+        srcs, missing = [], 0
+        for u in srcs_urls:
+            try:
+                srcs.append(rasterio.open(u))
+            except Exception:  # noqa: BLE001
+                missing += 1
+        if not srcs:
+            raise RuntimeError("no Copernicus tiles for the wide box")
+        arr, _ = merge(srcs, bounds=bbox, res=res, resampling=Resampling.average, nodata=-9999)
+        z = arr[0].astype("float32")[:hpx, :wpx]
+        bad = z < -500
+        if bad.mean() > 0.02 and not missing:
+            raise RuntimeError(f"wide DEM has {bad.mean():.1%} nodata")
+        if bad.any():
+            log(f"  wide DEM: {missing} tiles absent / {bad.mean():.1%} nodata filled with 0 m (open sea)")
+            z[bad] = 0.0
+        if z.shape != (hpx, wpx):
+            raise RuntimeError(f"wide DEM shape {z.shape}")
+        return z
+    return retry(go, "wide DEM")
+
+
+# ---------------------------------------------------------------- snow
+def set_box(bbox, wpx):
+    rm.set_box(bbox, wpx)
+
+
+def ifs_cells(work, box):
+    """IFS 5-day snowfall as scattered cells inside box (+3 deg): (run, lat, lon, snow_m at 12:1, spacing deg, source)."""
+    run, path, src = sk.latest_ifs_snow(str(work))
+    lats, lons, v, units = sk.read_grib_ll(path)
+    swe = v / 1000.0 if "kg" in units else v
+    if not np.isfinite(swe).all():
+        raise SystemExit("IFS snowfall has missing values; not drawing zeros")
+    W, S, E, N = box
+    LA, LO = np.meshgrid(lats, lons, indexing="ij")
+    sel = (LA > S - 3) & (LA < N + 3) & (LO > W - 3) & (LO < E + 3)
+    spacing = float(abs(lats[1] - lats[0]))
+    log(f"IFS {run:%Y-%m-%d %HZ} via {src}: {spacing}° grid ({spacing * 111.32:.0f} km), {int(sel.sum())} cells near the resort; "
+        f"max {np.nanmax(swe[sel]) * 1000:.1f} mm water")
+    return run, LA[sel], LO[sel], np.clip(swe[sel], 0, None) * SLR_IFS, spacing, src
+
+
+def build_snow(rid, crop, lat_c, lon_c, work):
+    """Returns (sample(LA, LO, dem_m) -> inches on that grid, info). NBM where it covers the resort, else IFS."""
+    info = {"nbm_checked": False}
+    nominal = 19.0 < lat_c < 56.0 and -140.0 < lon_c < -60.0
+    if nominal:
+        wide = (crop[0] - 0.16, crop[1] - 0.12, crop[2] + 0.16, crop[3] + 0.12)
+        set_box(wide, 1400)
+        info["nbm_checked"] = True
+        run, lat, lon, total, _ = sk.latest_nbm_snow()
+        in_box = (lat > sk.S - 0.1) & (lat < sk.N + 0.1) & (lon > sk.W - 0.1) & (lon < sk.E + 0.1)
+        log(f"NBM grid lat {lat.min():.2f}..{lat.max():.2f}, lon {lon.min():.2f}..{lon.max():.2f}; "
+            f"{int(in_box.sum())} cells in the {wide[0]:.2f},{wide[1]:.2f},{wide[2]:.2f},{wide[3]:.2f} box")
+        reason = None
+        try:
+            to_in = sk.nbm_interp(lat, lon)
+            tin = to_in(total)
+        except SystemExit as e:
+            reason = str(e.code)
+        if reason is None:
+            dem_w = dem_wide(wide, sk.W_PX, sk.H_PX)
+            ctr = tin[(abs(np.linspace(sk.N, sk.S, sk.H_PX) - lat_c) < 0.02)[:, None] &
+                      (abs(np.linspace(sk.W, sk.E, sk.W_PX) - lon_c) < 0.03)[None, :]]
+            cross = None
+            if lat_c > 47.0:         # near/over the border: confirm NBM carries real values here, not fill
+                try:
+                    _, ila, ilo, itot, _, _ = ifs_cells(work, wide)
+                    near = (abs(ila - lat_c) < 0.2) & (abs(ilo - lon_c) < 0.3)
+                    ifs_in = float(itot[near].mean() * 39.3701)
+                    cross = {"nbm_in": round(float(ctr.mean()), 1), "ifs_in_12to1": round(ifs_in, 1)}
+                    log(f"NBM vs IFS cross-check at the resort: {cross}")
+                    if ifs_in >= 3.0 and ctr.mean() < 0.2 * ifs_in:
+                        reason = f"NBM looks empty here ({ctr.mean():.1f} in vs IFS {ifs_in:.1f} in)"
+                except SystemExit as e:
+                    cross = {"error": str(e.code)}
+            info["cross_check"] = cross
+        if reason is None:
+            fine_w, grad_w = sk.downscale(dem_w, lat, lon, total, to_in)
+            info.update(source="NBM", caption=CAPTION["nbm"], run=run.isoformat(), grid="NBM 2.5 km",
+                        slr="NBM's own snow ratio", nbm_check="inside the NBM grid, values present")
+            return _sampler(fine_w, grad_w, dem_w, wide), info
+        log(f"NBM does not cover {rid}: {reason} -> using ECMWF IFS")
+        info["nbm_check"] = f"not used: {reason}"
+    else:
+        info["nbm_check"] = "outside the NBM domain (CONUS + southern Canada)"
+        log(f"{rid} is outside the NBM domain -> using ECMWF IFS")
+    # --- ECMWF IFS open data
+    wide = (lon_c - 1.0, lat_c - 0.75, lon_c + 1.0, lat_c + 0.75)
+    set_box(wide, 1400)
+    run, lat, lon, total, spacing, src = ifs_cells(work, wide)
+    pad = 1.2 * spacing
+    to_in = sk.nbm_interp(lat, lon, pad=pad, min_pts=12)
+    to_in(total)       # raises (loudly) if the triangulation leaves gaps
+    dem_w = dem_wide(wide, sk.W_PX, sk.H_PX)
+    fine_w, grad_w = sk.downscale(dem_w, lat, lon, total, to_in, radius_km=3.2 * spacing * 111.32,
+                                  margin=(pad + 0.05, pad + 0.05), min_cnt=50, min_nb=6)
+    info.update(source="IFS", caption=CAPTION["ifs"], run=run.isoformat(), grid=f"IFS {spacing}° ({spacing * 111.32:.0f} km), via {src}",
+                slr=f"{SLR_IFS:g}:1 placeholder (no temperature-dependent ratio yet)")
+    return _sampler(fine_w, grad_w, dem_w, wide), info
+
+
+def _sampler(fine_w, grad_w, dem_w, wide):
+    ys = np.linspace(wide[3], wide[1], dem_w.shape[0])[::-1]
+    xs = np.linspace(wide[0], wide[2], dem_w.shape[1])
+    f_f = RegularGridInterpolator((ys, xs), fine_w[::-1], bounds_error=True)
+    f_g = RegularGridInterpolator((ys, xs), grad_w[::-1], bounds_error=True)
+    f_d = RegularGridInterpolator((ys, xs), dem_w[::-1], bounds_error=True)
+    if not np.isfinite(grad_w).all() or float(np.max(grad_w)) <= 0:
+        raise SystemExit("terrain step learned no snow-vs-height gradient here; refusing to label the map 'terrain-adjusted'")
+
+    def sample(LA, LO, dem_m):
+        q = np.stack([LA, LO], -1)
+        coarse, grad, dw = f_f(q), f_g(q), f_d(q)
+        # the wide field carries the height term at its own resolution; re-apply the same local rate to the
+        # fine terrain's departure from that (same step as resort_map.py)
+        return np.clip(coarse + grad * (dem_m - dw) * FT / 1000.0, 0, None)
+    return sample
+
+
+# ---------------------------------------------------------------- outline (resort_map.py's rule, on any grid)
+def trace_outline(runs, g, m_px):
+    canvas = Image.new("L", (g.w, g.h), 0)
+    dr = ImageDraw.Draw(canvas)
+    for _, geom, area in runs:
+        xy = [g.P(la, lo) for la, lo in geom]
+        if area and len(xy) > 2:
+            dr.polygon(xy, fill=255)
+        else:
+            dr.line(xy, fill=255, width=max(2, int(round(45 / m_px))), joint="curve")
+    raw = np.asarray(canvas) > 0
+    r_close = 110 / m_px
+    grown = distance_transform_edt(~raw) <= r_close
+    mask = binary_fill_holes(distance_transform_edt(grown) > r_close * 0.85)
+    del grown, raw
+    r_open = 100 / m_px
+    eroded = distance_transform_edt(mask) > r_open
+    opened = distance_transform_edt(~eroded) <= r_open
+    opened &= mask
+    del eroded
+    lab_, nlab = cc_label(opened)
+    trimmed = 0.0
+    if nlab:
+        sizes = np.bincount(lab_.ravel())[1:]
+        keep = np.isin(lab_, 1 + np.where(sizes >= 0.05 * sizes.max())[0])
+        if keep.sum() > 0.5 * mask.sum():
+            trimmed = float((mask.sum() - keep.sum()) * m_px * m_px / 4046.86)
+            mask = keep
+    if mask.mean() < 0.0005:
+        sys.exit("skiable-terrain mask is nearly empty (no runs mapped?); refusing to draw")
+    return mask, trimmed
+
+
+# ---------------------------------------------------------------- Blender + levels
+def run_blender(hm_png, meta, prefix):
+    blender = os.environ.get("BLENDER")
+    if not blender:
+        sys.exit("BLENDER is not set: the 4K relief needs Blender (no numpy fallback at this size)")
+    meta_path = Path(str(prefix) + "-meta.json")
+    meta_path.write_text(json.dumps(meta))
+    cmd = [blender, "-b", "-P", str(Path(__file__).with_name("relief_heightmap.py")), "--", str(hm_png), str(meta_path), str(prefix)]
+    t0 = time.time()
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    keep = [l for l in r.stdout.splitlines() if l.startswith(("heightmap ", "displacement check", "blend_mb", "rendered"))]
+    log("\n".join("  blender: " + l for l in keep))
+    if r.returncode or not Path(str(prefix) + "-tiles.json").exists():
+        sys.exit(f"Blender failed (exit {r.returncode}): {(r.stdout[-800:] + r.stderr[-1500:])}")
+    out = {}
+    for l in keep:
+        if l.startswith("blend_mb"):
+            out["blend_mb"] = float(l.split()[1])
+        if l.startswith("rendered"):
+            out["render_s"] = float(l.split()[1])
+        if l.startswith("displacement check"):
+            out["displacement_check"] = l
+    out["blender_wall_s"] = round(time.time() - t0)
+    return out
+
+
+def stitch(prefix, px):
+    """Kept centres of the Blender tiles -> one px x px RGB array."""
+    out = np.zeros((px, px, 3), dtype="uint8")
+    for t in json.loads(Path(str(prefix) + "-tiles.json").read_text()):
+        a = np.asarray(Image.open(t["file"]).convert("RGB"))
+        if a.shape[:2] != (t["y1"] - t["y0"], t["x1"] - t["x0"]):
+            sys.exit(f"tile {t['file']} is {a.shape}, expected {(t['y1'] - t['y0'], t['x1'] - t['x0'])}")
+        out[t["ky0"]:t["ky1"], t["kx0"]:t["kx1"]] = a[t["ky0"] - t["y0"]:t["ky1"] - t["y0"], t["kx0"] - t["x0"]:t["kx1"] - t["x0"]]
+        Path(t["file"]).unlink()
+    return out
+
+
+def level(raw_rgb):
+    """The settled levels step: brightest slopes just under white, darkest 0.5% at 0.52, mid-tones lifted."""
+    g = raw_rgb.mean(-1)
+    lo_, hi_ = np.percentile(g, LEVELS["p_lo"]), np.percentile(g, LEVELS["p_hi"])
+    t = np.clip((g - lo_) / max(1.0, hi_ - lo_), 0, 1) ** LEVELS["gamma"]
+    v = LEVELS["out_lo"] + t * (LEVELS["out_hi"] - LEVELS["out_lo"])
+    scale = (v * 255.0) / np.maximum(g, 1.0)
+    out = np.clip(raw_rgb.astype("float32") * scale[..., None], 0, 255).astype("uint8")
+    g2 = out.mean(-1)
+    stats = {"clipped_pct": round(float((g2 >= 254).mean() * 100), 3),
+             "darkest1pct_grey_pct": round(float(np.percentile(g2, 1) / 255 * 100), 1),
+             "darkest1pct_value": round(float(np.percentile(g2, 1)), 1),
+             "median_value": round(float(np.median(g2)), 1),
+             "raw_clipped_pct": round(float((g >= 254).mean() * 100), 3),
+             "raw_p_lo": round(float(lo_), 2), "raw_p_hi": round(float(hi_), 2)}
+    return out, stats
+
+
+def halo(x, y, txt, attrs, sw):
+    import re
+    bare = re.sub(r'\s*fill="[^"]*"', "", attrs)
+    return [f'<text x="{x:.1f}" y="{y:.1f}" {bare} fill="#ffffff" stroke="#ffffff" stroke-width="{sw:.1f}" stroke-linejoin="round">{txt}</text>',
+            f'<text x="{x:.1f}" y="{y:.1f}" {attrs}>{txt}</text>']
+
+
+def contours(field, levels, sigma, scale, flip=None):
+    """(lines, fill): lines = [(level, ['M x,y L ...'])], fill = [(level, 'M ... Z M ...')], in frame px."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+    ax = fig.add_axes([0, 0, 1, 1])
+    sm = gaussian_filter(field, sigma)
+    lv = [l for l in levels if l < sm.max()]
+    lines, fill = [], []
+
+    def fmt(seg):
+        return "M" + " L".join(f"{(x + 0.5) * scale:.1f},{(y + 0.5) * scale:.1f}" for x, y in seg)
+    if lv:
+        cs = ax.contour(sm, levels=lv)
+        for level_, segs in zip(cs.levels, cs.allsegs):
+            lines.append((level_, [fmt(s) for s in segs if len(s) >= 8]))
+        csf = ax.contourf(sm, levels=lv + [1e6])
+        for i, level_ in enumerate(lv):
+            ds = [fmt(p) + " Z" for p in csf.get_paths()[i].to_polygons(closed_only=True) if len(p) >= 3]
+            fill.append((level_, " ".join(ds)))
+    plt.close(fig)
+    return lines, fill
+
+
+# ---------------------------------------------------------------- main
+def run(out, rid, px=4096, work=None):
+    t_start = time.time()
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "preview").mkdir(exist_ok=True)
+    work = Path(work or out / "work")
+    work.mkdir(exist_ok=True)
+    timing = {}
+    r = rm.resort(rid)
+    elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(rid, {})
+    rings, area_name = rm.ski_area(r, elev.get("osm_id"))
+    pts = np.array([p for ring in rings for p in ring])
+    la0, la1, lo0, lo1 = pts[:, 0].min(), pts[:, 0].max(), pts[:, 1].min(), pts[:, 1].max()
+    lat_c, lon_c = (la0 + la1) / 2, (lo0 + lo1) / 2
+    k = math.cos(math.radians(lat_c))
+    half_km = max((la1 - la0) * 111.32, (lo1 - lo0) * 111.32 * k) / 2 + 0.45
+    crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
+    log(f"crop ±{half_km:.2f} km around {lat_c:.4f},{lon_c:.4f}")
+    lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
+
+    # --- frame: pass 1 on the old 1800 px crop grid (so the frame rule is exactly the settled one)
+    lat0c = (crop[1] + crop[3]) / 2
+    h_old = int(round(OLD_PX * (crop[3] - crop[1]) / ((crop[2] - crop[0]) * math.cos(math.radians(lat0c)))))
+    g_old = Grid(crop, OLD_PX, h_old)
+    m_old = (crop[3] - crop[1]) * 111320.0 / h_old
+    mask1, trimmed1 = trace_outline(runs, g_old, m_old)
+    rr, cc = np.where(mask1)
+    pad = PAD_M / m_old
+    x0, x1, y0, y1 = cc.min() - pad, cc.max() + pad, rr.min() - pad, rr.max() + pad
+    side_px_old = max(x1 - x0, y1 - y0)
+    side_m = side_px_old * m_old
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    f_lon, f_lat = crop[0] + cx / OLD_PX * (crop[2] - crop[0]), crop[3] - cy / h_old * (crop[3] - crop[1])
+    kf = math.cos(math.radians(f_lat))
+
+    def box_for(side):
+        return (f_lon - side / 2 / (111320 * kf), f_lat - side / 2 / 111320, f_lon + side / 2 / (111320 * kf), f_lat + side / 2 / 111320)
+    fbox = box_for(side_m)                     # the 4K frame (W, S, E, N)
+    region_m = side_m + 2 * MARGIN_M
+    rbox = box_for(region_m)                   # heightmap region
+    m_px = side_m / px
+    s = px * m_old / side_m                    # old px-size -> new px-size (labels/lines read the same at phone width)
+    log(f"frame {side_m / 1000:.2f} km square, {m_px:.2f} m/px at {px} px; sizes x{s:.2f} vs the 1800 px maps")
+    timing["setup_s"] = round(time.time() - t_start)
+
+    # --- DEM on the native grid, region = frame + margin
+    t0 = time.time()
+    dem, dlon0, dlat1, dres, dem_info = load_dem_native(rbox, f_lat, f_lon)
+    nr, nc = dem.shape
+    lat_nat = dlat1 - (np.arange(nr) + 0.5) * dres
+    lon_nat = dlon0 + (np.arange(nc) + 0.5) * dres
+    spl = RectBivariateSpline(lat_nat[::-1], lon_nat, dem[::-1], kx=3, ky=3, s=0)
+    # heightmap: 2 render px per sample, bicubic from the native grid
+    hn = int(round(px / 2 * region_m / side_m))
+    hlat = rbox[3] - (np.arange(hn) + 0.5) * (rbox[3] - rbox[1]) / hn
+    hlon = rbox[0] + (np.arange(hn) + 0.5) * (rbox[2] - rbox[0]) / hn
+    z = spl(hlat[::-1], hlon)[::-1].astype("float64")
+    zmin, zmax = float(z.min()), float(z.max())
+    h16 = np.round((z - zmin) / (zmax - zmin) * 65535).astype("uint16")
+    hm_png = out / f"{rid}-heightmap16.png"
+    Image.fromarray(h16).save(hm_png, optimize=False)
+    dem_info.update(heightmap_px=hn, heightmap_spacing_m=round(region_m / hn, 2), heightmap_z_m=[round(zmin, 1), round(zmax, 1)],
+                    heightmap_quantisation_m=round((zmax - zmin) / 65535, 3),
+                    upsample_note="bicubic from the native grid; detail is limited by the native DEM, not the mesh")
+    timing["dem_s"] = round(time.time() - t0)
+
+    # --- relief (Blender) at px x px
+    t0 = time.time()
+    meta = {"id": rid, "region_m": region_m, "frame_m": side_m, "px": px, "z_min": zmin, "z_max": zmax, "exag": EXAG,
+            "light": LIGHTS, "exposure": EXPOSURE, "samples": int(os.environ.get("SAMPLES", "48")),
+            "noise_scale": 2500.0 / OLD_PX * px * region_m / side_m,      # same grain size per pixel as the 1800 px maps
+            "bump_distance": 0.0005 * m_px / m_old,
+            "mesh_base": 160, "render_levels": 3, "viewport_levels": 1, "levels": LEVELS,
+            "tiles": 2 if px >= 2048 else 1}
+    bl = run_blender(hm_png, meta, out / rid)
+    raw = stitch(out / rid, px)
+    relief, st = level(raw)
+    del raw
+    log(f"  relief levels: clipped {st['clipped_pct']:.3f}% (raw {st['raw_clipped_pct']:.3f}%), darkest 1% at "
+        f"{st['darkest1pct_value']:.0f}/255 = {st['darkest1pct_grey_pct']:.1f}% grey, median {st['median_value']:.0f}")
+    if st["clipped_pct"] > 0.1 or not 50 <= st["darkest1pct_grey_pct"] <= 60:
+        log(f"  WARNING: levels outside the settled range (0% clipped, darkest 1% ~55%): {st}")
+    timing["relief_s"] = round(time.time() - t0)
+
+    # --- snow
+    t0 = time.time()
+    sample, snow_info = build_snow(rid, crop, lat_c, lon_c, work)
+    sn = px // 2
+    s_lat = fbox[3] - (np.arange(sn) + 0.5) * (fbox[3] - fbox[1]) / sn
+    s_lon = fbox[0] + (np.arange(sn) + 0.5) * (fbox[2] - fbox[0]) / sn
+    dem_f = spl(s_lat[::-1], s_lon)[::-1]
+    LA, LO = np.meshgrid(s_lat, s_lon, indexing="ij")
+    snow = sample(LA, LO, dem_f)
+    del LA, LO
+    sig = max(1.0, 1.8 * m_old / (side_m / sn))             # old: gaussian 1.5 px then 1 px at ~m_old per px
+    snow = gaussian_filter(snow, sig)
+    timing["snow_s"] = round(time.time() - t0)
+    log(f"snow field {snow.min():.1f}-{snow.max():.1f} in on the frame ({snow_info['source']} {snow_info['run']})")
+
+    # --- outline at 4K (same rule, same metres), vectors, labels
+    t0 = time.time()
+    g4 = Grid(fbox, px, px)
+    mask, trimmed = trace_outline(runs, g4, m_px)
+    acres = float(mask.sum() * m_px * m_px / 4046.86)
+    log(f"skiable-terrain outline: {acres:,.0f} acres from {len(runs)} runs (trimmed {trimmed:,.0f} acres)")
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+    ax = fig.add_axes([0, 0, 1, 1])
+    cs = ax.contour(gaussian_filter(mask.astype("float32"), 1.5), levels=[0.5])
+    area_d = " ".join("M" + " L".join(f"{x + 0.5:.1f},{y + 0.5:.1f}" for x, y in seg[::2]) + " Z" for seg in cs.allsegs[0] if len(seg) > 16)
+    plt.close(fig)
+    msn = np.asarray(Image.fromarray(mask.astype("uint8") * 255).resize((sn, sn), Image.NEAREST)) > 0
+    inside = snow[msn]
+    if inside.size == 0 or inside.max() < 1.0:
+        sys.exit(f"no snow (max {inside.max() if inside.size else 0:.1f} in) inside the outline: nothing to map; not drawing zeros")
+    lo_in, hi_in = np.floor(inside.min()), np.ceil(inside.max())
+    step = 2 if hi_in - lo_in <= 16 else 3
+    while (hi_in - lo_in) / step > 14:
+        step += 1
+    levels = list(np.arange(math.floor(lo_in / step) * step + step, hi_in, step))
+    sc_ = px / sn
+    sig2 = 0.01
+    lines, _ = contours(snow, levels, sig2, sc_)
+    _, fill = contours(snow, [float(math.floor(lo_in))] + levels, sig2, sc_)
+
+    def Pf(la, lo):
+        return g4.P(la, lo)
+
+    def path(seq):
+        return "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in (Pf(la, lo) for la, lo in seq))
+
+    spl_ev = lambda la, lo: float(spl.ev(la, lo))  # noqa: E731
+    terms = []
+    for _, gg, _a in lifts:
+        for la_, lo_ in (gg[0], gg[-1]):
+            x, y = Pf(la_, lo_)
+            if 0 <= x < px and 0 <= y < px and mask[int(y), int(x)]:
+                terms.append((spl_ev(la_, lo_), x, y, float(snow[min(sn - 1, int(y / sc_)), min(sn - 1, int(x / sc_))])))
+    terms.sort()
+    marks = [("Base", terms[0]), ("Top", terms[-1])] if len(terms) >= 2 else []
+
+    INK = sk.INK
+    sw = lambda v: v * s  # noqa: E731
+    head = ('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+            'xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" '
+            f'width="{px}" height="{px}" viewBox="0 0 {px} {px}" font-family="Inter, Helvetica, Arial, sans-serif">')
+    defs = f'<defs><clipPath id="area"><path d="{area_d}" clip-rule="evenodd"/></clipPath></defs>'
+
+    def layer(name, body):
+        return [f'<g id="{name}" inkscape:groupmode="layer" inkscape:label="{name}">'] + body + ["</g>"]
+    n = max(1, len(fill))
+    fill_paths = [f'<path d="{d}" fill="{RAMP[min(len(RAMP) - 1, int(i * (len(RAMP) - 1) / max(1, n - 1)))]}" '
+                  f'fill-rule="evenodd" clip-path="url(#area)"/>' for i, (lv_, d) in enumerate(fill) if d]
+    fill_layer = layer("snow fill (multiply)", ['<g style="mix-blend-mode:multiply" opacity="0.85">'] + fill_paths + ["</g>"])
+    over = []
+    over += layer("snow lines", [f'<path d="{" ".join(ds)}" fill="none" stroke="#0d3fb0" stroke-opacity="0.75" stroke-width="{sw(1.6):.2f}" '
+                                 f'stroke-linejoin="round" clip-path="url(#area)"/>' for lv_, ds in lines if ds])
+    over += layer("runs", [f'<path d="{path(gg)}" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="{sw(2.2):.2f}" '
+                           f'stroke-linecap="round" clip-path="url(#area)"/>' for _, gg, _a in runs])
+    lb = []
+    for _, gg, _a in lifts:
+        lb.append(f'<path d="{path([gg[0], gg[-1]])}" fill="none" stroke="{INK}" stroke-width="{sw(1.6):.2f}" clip-path="url(#area)"/>')
+        for la_, lo_ in (gg[0], gg[-1]):
+            x, y = Pf(la_, lo_)
+            if 0 <= x < px and 0 <= y < px and mask[int(y), int(x)]:
+                lb.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(3.2):.2f}" fill="{INK}"/>')
+    over += layer("lifts", lb)
+    over += layer("skiable terrain outline (from runs)", [f'<path d="{area_d}" fill="none" stroke="{INK}" stroke-opacity="0.55" '
+                                                         f'stroke-width="{sw(1.4):.2f}" stroke-dasharray="{sw(6):.1f} {sw(6):.1f}"/>'])
+    lab = []
+    for lv_, (x, y) in sk.label_points(lines):
+        if 0 < y < px and mask[int(min(y, px - 1)), int(min(x, px - 1))]:
+            lab += halo(x, y, f'{lv_:g}"', f'font-size="{sw(26):.1f}" font-weight="600" fill="#0d3fb0" text-anchor="middle" dominant-baseline="middle"', sw(6))
+    for word, (zz, x, y, sv) in marks:
+        lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(11):.1f}" fill="#ffffff" stroke="{INK}" stroke-width="{sw(2):.1f}"/>')
+        lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(4):.1f}" fill="{INK}"/>')
+        lab += halo(x + sw(18), y, f'{word} {sv:.0f}"  ·  {zz * FT:,.0f} ft',
+                    f'font-size="{sw(30):.1f}" font-weight="700" fill="{INK}" dominant-baseline="middle"', sw(6))
+    over += layer("labels", lab)
+    timing["vectors_s"] = round(time.time() - t0)
+
+    # busiest 1024 px of the map (most runs and lifts per area), for the 1:1 crop
+    small = Image.new("L", (px // 4, px // 4), 0)
+    sd = ImageDraw.Draw(small)
+    for _, gg, _a in runs:
+        xy = [(x / 4, y / 4) for x, y in (Pf(la, lo) for la, lo in gg)]
+        if len(xy) > 1:
+            sd.line(xy, fill=255, width=1)
+    for _, gg, _a in lifts:
+        sd.line([(x / 4, y / 4) for x, y in (Pf(*gg[0]), Pf(*gg[-1]))], fill=255, width=3)
+    csz = min(1024, px)
+    dens = uniform_filter(np.asarray(small, dtype="float32") / 255.0, size=max(1, csz // 4), mode="constant")
+    iy, ix = np.unravel_index(int(np.argmax(dens)), dens.shape)
+    bx = int(np.clip(ix * 4 - csz // 2, 0, px - csz))
+    by = int(np.clip(iy * 4 - csz // 2, 0, px - csz))
+
+    # --- compose: relief, multiply tint, vectors
+    import cairosvg
+    t0 = time.time()
+    rbuf = io.BytesIO()
+    Image.fromarray(relief).save(rbuf, "PNG", optimize=True)
+    rpng = rbuf.getvalue()
+    (out / f"{rid}-relief.png").write_bytes(rpng)
+    b64 = base64.b64encode(rpng).decode()
+    img_layer = layer("relief (raster)", [f'<image width="{px}" height="{px}" xlink:href="data:image/png;base64,{b64}"/>'])
+    (out / f"{rid}.svg").write_text("\n".join([head, defs] + img_layer + fill_layer + over + ["</svg>"]))
+    (out / f"{rid}-vectors.svg").write_text("\n".join([head, defs] + fill_layer + over + ["</svg>"]))
+    del img_layer, b64
+    fpng = cairosvg.svg2png(bytestring="\n".join([head, defs] + fill_layer + ["</svg>"]).encode(), output_width=px, output_height=px)
+    F = np.asarray(Image.open(io.BytesIO(fpng)).convert("RGBA")).astype("float32") / 255.0
+    kk = 0.85 * F[..., 3:4]
+    comp = (relief.astype("float32") / 255.0 * (1 - kk + kk * F[..., :3]) * 255).clip(0, 255).astype("uint8")
+    del F, kk
+    vpng = cairosvg.svg2png(bytestring="\n".join([head, defs] + over + ["</svg>"]).encode(), output_width=px, output_height=px)
+    final = Image.alpha_composite(Image.fromarray(comp).convert("RGBA"), Image.open(io.BytesIO(vpng)).convert("RGBA")).convert("RGB")
+    final.save(out / f"{rid}.png", optimize=True)
+    final.resize((1024, 1024), Image.LANCZOS).save(out / "preview" / f"{rid}-1024.png")
+    final.crop((bx, by, bx + csz, by + csz)).save(out / "preview" / f"{rid}-crop1to1.png")
+    timing["compose_s"] = round(time.time() - t0)
+
+    info = {
+        "resort": rid, "ski_area": area_name, "date_utc": time.strftime("%Y-%m-%d", time.gmtime()),
+        "frame_km": round(side_m / 1000, 3), "px": px, "m_per_px": round(m_px, 3),
+        "frame_bbox_lonlat": [round(v, 6) for v in fbox], "crop": crop,
+        "dem": dem_info, "snow": snow_info, "caption_source": snow_info["caption"],
+        "relief": {**st, "lights": "even", "exposure": EXPOSURE, "exaggeration": EXAG, "levels": LEVELS, "samples": meta["samples"],
+                   "mesh_vertex_spacing_m": round(region_m / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2)},
+        "blender": bl,
+        "svg_scale_vs_1800px_maps": round(s, 3),
+        "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
+        "levels_in": [float(x) for x in levels],
+        "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,
+        "top": [round(marks[1][1][0], 1), round(marks[1][1][3], 1)] if marks else None,
+        "lifts": len(lifts), "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
+        "busiest_crop_xy": [bx, by, csz], "timing_s": {**timing, "total_s": round(time.time() - t_start)},
+        "files": sorted(p.name for p in out.iterdir() if p.is_file()),
+    }
+    (out / f"{rid}.json").write_text(json.dumps(info, indent=1, default=float))
+    log(f"{rid}: done in {time.time() - t_start:.0f}s; inside {inside.min():.1f}-{inside.max():.1f} in; "
+        f"blend {bl.get('blend_mb')} MB; render {bl.get('render_s')} s")
+    return info
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("out")
+    ap.add_argument("resort")
+    ap.add_argument("--px", type=int, default=4096)
+    a = ap.parse_args()
+    try:
+        run(a.out, a.resort, a.px)
+    except BaseException as e:  # noqa: BLE001  (written to FAILED.txt, then re-raised: the job goes red)
+        Path(a.out).mkdir(parents=True, exist_ok=True)
+        msg = str(e.code) if isinstance(e, SystemExit) else f"{type(e).__name__}: {e}"
+        (Path(a.out) / "FAILED.txt").write_text(f"{a.resort}: {msg}\n\n{traceback.format_exc()}")
+        print(f"FAILED {a.resort}: {msg}", file=sys.stderr, flush=True)
+        raise
+
+
+if __name__ == "__main__":
+    main()

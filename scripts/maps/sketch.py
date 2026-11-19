@@ -252,12 +252,13 @@ def latest_nbm_snow(hours=120):
     raise SystemExit("No NBM cycle with 6 h snow out to 120 h in the last 2 days")
 
 
-def nbm_interp(lat, lon):
-    """Returns f(values_m) -> inches on the map's pixel grid (triangulation built once)."""
+def nbm_interp(lat, lon, pad=0.1, min_pts=100):
+    """Returns f(values_m) -> inches on the map's pixel grid (triangulation built once).
+    pad / min_pts: wider pad and fewer points for coarse (0.25 deg IFS) grids, terrain pilot."""
     from scipy.interpolate import LinearNDInterpolator
     from scipy.spatial import Delaunay
-    box = (lat > S - 0.1) & (lat < N + 0.1) & (lon > W - 0.1) & (lon < E + 0.1)
-    if box.sum() < 100:
+    box = (lat > S - pad) & (lat < N + pad) & (lon > W - pad) & (lon < E + pad)
+    if box.sum() < min_pts:
         raise SystemExit(f"NBM grid has only {box.sum()} points in the map box")
     k = math.cos(math.radians(LAT0)) * 111.32
     tri = Delaunay(np.column_stack([lon[box] * k, lat[box] * 111.32]), qhull_options="QJ")
@@ -581,7 +582,7 @@ def nbm_cells_layer(lat, lon, total_m):
     return [("nbm cells (2.5 km, 5-day in.)", shapes), ("cell values (in.)", labels)]
 
 
-def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0):
+def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0, margin=(0.15, 0.2), min_cnt=50, min_nb=8):
     """Sketch of terrain downscaling, from NBM alone (no PRISM yet, not yet scored).
 
     1. Assign every map pixel to its nearest NBM cell; a cell's terrain height = mean of
@@ -593,7 +594,7 @@ def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0):
     Returns (inches per pixel, gradient in in/1000 ft per pixel)."""
     from scipy.spatial import cKDTree
     k = math.cos(math.radians(LAT0)) * 111.32
-    box = (lat > S - 0.15) & (lat < N + 0.15) & (lon > W - 0.2) & (lon < E + 0.2)
+    box = (lat > S - margin[0]) & (lat < N + margin[0]) & (lon > W - margin[1]) & (lon < E + margin[1])
     clat, clon, cval = lat[box], lon[box], total_m[box] * 39.3701
     tree = cKDTree(np.column_stack([clon * k, clat * 111.32]))
     LA, LO = np.meshgrid(np.linspace(N, S, H_PX), np.linspace(W, E, W_PX), indexing="ij")
@@ -606,12 +607,12 @@ def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0):
         _, nn = cKDTree(np.column_stack([clon[inside] * k, clat[inside] * 111.32])).query(
             np.column_stack([clon[cnt == 0] * k, clat[cnt == 0] * 111.32]))
         zbar[cnt == 0] = zbar[inside[nn]]
-    seen = cnt > 50                                   # cells mostly inside the map
+    seen = cnt > min_cnt                              # cells mostly inside the map
     pts = np.column_stack([clon * k, clat * 111.32])
     grad = np.full(len(clat), np.nan)
     for c in np.where(seen)[0]:
         nb = [j for j in tree.query_ball_point(pts[c], radius_km) if seen[j] and cval[j] >= 0.5]
-        if len(nb) < 8:
+        if len(nb) < min_nb:
             continue
         x, y = zbar[nb] / 1000.0, cval[nb]
         w = np.exp(-np.sum((pts[nb] - pts[c]) ** 2, 1) / (2 * (radius_km / 2) ** 2))

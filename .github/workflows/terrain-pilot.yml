@@ -1,0 +1,130 @@
+name: Terrain pilot (4K snow-by-terrain maps + Blender files)
+
+# Manual, one job per resort in parallel (claude/state-2026-11-19-terrain-pilot.md).
+#   - full files (4K PNG, SVG, .blend, JSON) -> GitHub Release terrain-pilot-<date> (gh release upload)
+#   - small previews (1024 px maps, a 1:1 4K crop each, contact sheet, summary table) -> orphan branch `terrain-pilot`
+# Does not touch the live app or the resort-maps branch. A failed resort turns its job red and the run red.
+on:
+  workflow_dispatch:
+    inputs:
+      resorts:
+        description: "Space-separated resort ids (ids in src/data/resort-elevations.json)"
+        default: "alta whistler jackson-hole zermatt niseko"
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+      tag: ${{ steps.m.outputs.tag }}
+    env:
+      RESORTS: ${{ inputs.resorts }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - id: m
+        run: |
+          ids=$(echo "$RESORTS" | tr -s ' ,' '\n\n' | grep -E '^[a-z0-9-]+$' | jq -R . | jq -sc .)
+          [ "$ids" != "[]" ] || { echo "no valid resort ids in: $RESORTS"; exit 1; }
+          tag="terrain-pilot-$(date -u +%F)"
+          echo "matrix=$ids" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$tag" --latest=false \
+              --notes "Terrain pilot: 4K snow-by-terrain maps and Blender files (run $GITHUB_RUN_ID). Previews: branch terrain-pilot."
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        resort: ${{ fromJson(needs.plan.outputs.matrix) }}
+    env:
+      TAG: ${{ needs.plan.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+      R: ${{ matrix.resort }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Install
+        run: |
+          sudo apt-get install -y -q fonts-inter >/dev/null || true
+          pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib ecmwf-opendata
+      - name: Blender
+        run: |
+          sudo apt-get update -q >/dev/null
+          sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null || echo "apt install failed"
+          f=Blender4.2/blender-4.2.3-linux-x64.tar.xz
+          for u in https://download.blender.org/release/$f https://mirrors.ocf.berkeley.edu/blender/release/$f https://ftp.nluug.nl/pub/graphics/blender/release/$f; do
+            curl -fsSL --retry 4 --retry-delay 10 -o b.tar.xz "$u" && xz -t b.tar.xz && break
+            echo "download failed from $u"; rm -f b.tar.xz
+          done
+          [ -f b.tar.xz ] || { echo "Blender could not be downloaded from any mirror"; exit 1; }
+          tar -xf b.tar.xz
+          echo "BLENDER=$PWD/blender-4.2.3-linux-x64/blender" >> $GITHUB_ENV
+      - name: OpenSkiMap exports
+        run: |
+          mkdir -p osm
+          for k in ski_areas lifts runs; do
+            curl -fsSL --retry 5 --retry-delay 15 --retry-all-errors -o osm/$k.geojson https://tiles.openskimap.org/geojson/$k.geojson
+            ls -la osm/$k.geojson
+          done
+      - name: Render (4K map + .blend)
+        env:
+          OSM_DIR: osm
+        run: python3 scripts/maps/terrain_pilot.py "out/$R" "$R"
+      - name: Full files to the release
+        if: always()
+        run: |
+          cd "out/$R" 2>/dev/null || { echo "nothing was written for $R"; exit 0; }
+          [ -f FAILED.txt ] && cp FAILED.txt "$R-FAILED.txt"
+          files=$(ls *.png *.svg *.blend *.json "$R-FAILED.txt" 2>/dev/null || true)
+          [ -n "$files" ] || { echo "no files for $R"; exit 0; }
+          ls -la $files
+          gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber $files
+      - name: Previews (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-${{ matrix.resort }}
+          path: |
+            out/${{ matrix.resort }}/preview
+            out/${{ matrix.resort }}/${{ matrix.resort }}.json
+            out/${{ matrix.resort }}/FAILED.txt
+          if-no-files-found: warn
+
+  publish:
+    needs: [plan, render]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pillow && sudo apt-get install -y -q fonts-inter >/dev/null || true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: preview-*
+          path: previews
+      - name: Contact sheet, table, previews branch
+        env:
+          TAG: ${{ needs.plan.outputs.tag }}
+          IDS: ${{ join(fromJson(needs.plan.outputs.matrix), ' ') }}
+        run: |
+          set +e
+          python3 scripts/maps/pilot_publish.py previews site "$TAG" "$GITHUB_REPOSITORY" $IDS
+          rc=$?
+          cat site/summary.md >> "$GITHUB_STEP_SUMMARY"
+          cd site
+          git init -q -b terrain-pilot
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Terrain pilot previews from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" terrain-pilot || rc=1
+          exit $rc
