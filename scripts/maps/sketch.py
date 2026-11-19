@@ -145,7 +145,7 @@ def relief(dem, style="plaster", seed=7):
     rng = np.random.default_rng(seed)
     grain = gaussian_filter(rng.normal(0, 1, z.shape), 0.7)
     mottle = gaussian_filter(rng.normal(0, 1, z.shape), 9)
-    tone *= 1 + 0.028 * grain / grain.std() + 0.012 * mottle / mottle.std()
+    tone *= 1 + 0.021 * grain / grain.std() + 0.009 * mottle / mottle.std()
     tone = np.clip(tone, 0.58, 1.0)
     rgb = np.stack([tone * 0.992, tone * 0.996, tone], -1)   # a breath of cool
     return (rgb * 255).astype("uint8")
