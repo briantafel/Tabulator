@@ -1,0 +1,64 @@
+name: Deploy scheduler Worker
+
+# Deploys workers/scheduler (the Cloudflare cron that starts the archive
+# workflows on time) whenever its code changes on main, so a schedule change no
+# longer waits on a manual `wrangler deploy` from Brian's Mac (2026-11-19).
+#
+# One-time setup (Brian): a Cloudflare API token from the "Edit Cloudflare
+# Workers" template, saved as the repo secret CLOUDFLARE_API_TOKEN. The account
+# id reuses R2_ACCOUNT_ID (same Cloudflare account). The Worker's own secret
+# GITHUB_TOKEN is kept across deploys; this workflow never touches it.
+#
+# Loud on failure: a missing token fails the run (red X, GitHub emails Brian).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["workers/scheduler/**", ".github/workflows/deploy-scheduler.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-scheduler
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test the schedule first
+        run: node --test test/scheduler.test.js
+
+      - name: Check the token is set
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.R2_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CF_TOKEN" ] || [ -z "$CF_ACCOUNT" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN (or R2_ACCOUNT_ID) is not set. See the top of this file."
+            exit 1
+          fi
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.R2_ACCOUNT_ID }}
+          workingDirectory: workers/scheduler
+          command: deploy
+
+      - name: Show what runs next
+        run: |
+          echo "Deployed. Next scheduled starts (UTC):"
+          node --input-type=module -e '
+            import { due } from "./workers/scheduler/index.js";
+            const h = new Date().getUTCHours();
+            for (let d = 0; d < 6; d++) { const x = (h + d) % 24; console.log(String(x).padStart(2, "0") + ":07", due(x).join(", ")); }'

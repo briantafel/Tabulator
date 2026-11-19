@@ -17,7 +17,8 @@ judge on 2025-26 ('test') only. Leads 1–7 (lead 0 carries model spin-up).
 Judged against each raw model and against the single model that scored best
 on the TRAINING winter at that lead (the choice you could have made in
 advance), with 90% date-block bootstrap ranges on the difference.
-Writes blend.json and blend_report.md (sealed report; no paid sources used).
+Writes blend.json and blend_report.md (no paid sources used; verify.yml publishes
+the report unsealed, and refuses if it ever names a paid source).
 """
 from __future__ import annotations
 

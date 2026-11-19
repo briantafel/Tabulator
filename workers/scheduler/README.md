@@ -19,7 +19,12 @@ time from Cloudflare's cron instead. GitHub's own cron lines stay as a backup.
    Or in the Cloudflare dashboard: Workers & Pages → Create → Worker, paste
    `index.js`, add the variable `REPO = briantafel/Tabulator`, add the secret
    `GITHUB_TOKEN`, and add the cron trigger `7 * * * *`.
-3. **Check:** open the Worker's URL; it lists what starts in the next hours.
+3. **Auto-deploy (from 2026-11-19).** Create a Cloudflare API token from the
+   "Edit Cloudflare Workers" template and save it as the GitHub repo secret
+   `CLOUDFLARE_API_TOKEN`. After that, `.github/workflows/deploy-scheduler.yml`
+   deploys this Worker on every change to this folder on main; no more manual
+   `wrangler deploy`. The Worker's `GITHUB_TOKEN` secret stays as set above.
+4. **Check:** open the Worker's URL; it lists what starts in the next hours.
    After the next :07, the GitHub Actions tab shows the runs as "workflow_dispatch".
 
 ## What it starts (UTC)

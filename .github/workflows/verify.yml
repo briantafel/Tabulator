@@ -112,6 +112,32 @@ jobs:
             -pkeyopt rsa_padding_mode:oaep -out sealed/key.enc
           rm report.tgz
 
+      # Public-only reports (2026-11-19): blend, bands and temps use public models
+      # and public truth only (see each script's docstring), so they go to the log,
+      # the job summary and an unsealed artifact. Claude can read them without a
+      # decrypt. Anything with paid scores (report.md, digest, slr) stays sealed.
+      - name: Print the public-only reports
+        if: always()
+        run: |
+          mkdir -p public-report
+          for f in blend_report.md bands_report.md temps_report.md; do
+            [ -f "out/$f" ] || { echo "::warning::out/$f missing"; continue; }
+            if grep -qi "snow-forecast\|(paid)" "out/$f"; then
+              echo "::error::out/$f mentions a paid source; not publishing it"; exit 1
+            fi
+            cp "out/$f" public-report/
+            echo "===== $f ====="; cat "out/$f"
+            { echo; cat "out/$f"; } >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verify-report-public
+          path: public-report/
+          retention-days: 30
+          if-no-files-found: warn
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
