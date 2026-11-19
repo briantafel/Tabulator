@@ -197,3 +197,23 @@ export function isStale(generatedAt, now = new Date()) {
   const age = now - new Date(generatedAt);
   return !Number.isFinite(age) || age > 26 * 60 * 60 * 1000;
 }
+
+/** Drop days that have already ended on this phone (Brian, 2026-11-19: "still
+ *  showing the 18th when it's the 19th" — the morning scrape was missed, so
+ *  the file still began yesterday). A late file means older numbers, never
+ *  yesterday shown as the first day. Applied to `dates`, `sfDates` and every
+ *  resort's `days`; if nothing would be left, the feed is returned as is and
+ *  the stale-data warning (isStale) carries the message. */
+export function dropPast(feed, now = new Date()) {
+  if (!feed?.dates?.length) return feed;
+  const t = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  if (feed.dates[0] >= t) return feed;
+  const dates = feed.dates.filter((d) => d >= t);
+  if (!dates.length) return feed;
+  return {
+    ...feed,
+    dates,
+    ...(feed.sfDates ? { sfDates: feed.sfDates.filter((d) => d >= t) } : {}),
+    resorts: feed.resorts.map((r) => ({ ...r, days: (r.days ?? []).filter((d) => d.date >= t) })),
+  };
+}

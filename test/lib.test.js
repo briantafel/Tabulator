@@ -188,3 +188,17 @@ test("calendar weeks start on Sunday", () => {
   assert.equal(leadingBlanks(new Date(2026, 10, 1)), 0);  // Nov 1 2026, Sunday
   assert.equal(leadingBlanks(new Date(2026, 9, 1)), 4);   // Oct 1 2026, Thursday
 });
+
+test("dropPast: a late file never shows yesterday as day 1 (2026-11-19)", async () => {
+  const { dropPast } = await import("../src/lib/forecast.js");
+  const now = new Date(2026, 10, 19, 7, 58); // 19 Nov, local
+  const feed = { dates: ["2026-11-18", "2026-11-19", "2026-11-20"], sfDates: ["2026-11-18", "2026-11-19"],
+    resorts: [{ id: "k", days: [{ date: "2026-11-18", snow: 22 }, { date: "2026-11-19", snow: 16 }, { date: "2026-11-20", snow: 0 }] }] };
+  const f = dropPast(feed, now);
+  assert.deepEqual(f.dates, ["2026-11-19", "2026-11-20"]);
+  assert.deepEqual(f.sfDates, ["2026-11-19"]);
+  assert.deepEqual(f.resorts[0].days.map((d) => d.date), ["2026-11-19", "2026-11-20"]);
+  assert.equal(dropPast({ ...feed, dates: ["2026-11-19"] }, now).dates[0], "2026-11-19");
+  const old = { dates: ["2026-11-10"], resorts: [] };
+  assert.equal(dropPast(old, now), old); // nothing left: unchanged, the stale warning speaks
+});

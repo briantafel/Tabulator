@@ -36,6 +36,10 @@ export const SCHEDULE = [
   // "Same times as snow-forecast... Their schedule is perfect for skiers").
   // 07 UTC rather than SF's 06: ECMWF's 00z isn't on Open-Meteo until ~07.
   // 21 UTC = 4:07 PM ET, all three 12z runs are out.
+  // Snow-Forecast scrape (2026-11-19): GitHub's cron skipped the 06:15 run, so
+  // the app opened on the 19th still starting at the 18th. Same two slots.
+  { file: "forecast.yml", every: 24, offset: 6 },
+  { file: "forecast.yml", every: 24, offset: 21 },
   { file: "blend.yml", every: 24, offset: 7 },
   { file: "blend.yml", every: 24, offset: 21 },
   { file: "verify.yml", every: 24, offset: 9 },

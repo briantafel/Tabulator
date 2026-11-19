@@ -12,7 +12,7 @@ import Trips from "./components/Trips.jsx";
 import TripEdit from "./components/TripEdit.jsx";
 import TripDetail from "./components/TripDetail.jsx";
 
-import { loadForecast } from "./lib/forecast.js";
+import { loadForecast, dropPast } from "./lib/forecast.js";
 import { score } from "./lib/scoring.js";
 /* Aliased: `load` is already this file's forecast loader, and an
    unaliased import silently resolved to that instead — the storage
@@ -159,12 +159,12 @@ export default function Tabulator() {
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
   const base = useMemo(() => {
     const b = tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw;
-    return snowOn ? applySnowfall(b, feedRaw.blend, Date.now(), { bands: bandsOn }) : b;
+    return dropPast(snowOn ? applySnowfall(b, feedRaw.blend, Date.now(), { bands: bandsOn }) : b);
   }, [tempsOn, snowOn, bandsOn, feedRaw]);
   const feed = useMemo(() => {
     const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
     const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
-    return snowOn ? applySnowfall(g, feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend);
+    return dropPast(snowOn ? applySnowfall(g, feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend));
   }, [projections, tempsOn, slrOn, snowOn, bandsOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
