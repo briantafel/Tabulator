@@ -1,0 +1,37 @@
+name: Resort snow-by-terrain map (one-off)
+
+# One resort, its ski area alone, NBM downscaled by terrain on plaster relief.
+# Manual. Publishes PNG/SVG/JSON to the `resort-maps` branch.
+on:
+  workflow_dispatch:
+    inputs:
+      resorts: {default: "alta"}
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Install
+        run: |
+          sudo apt-get install -y -q fonts-inter >/dev/null || true
+          pip install rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib
+      - name: Render
+        run: for r in ${{ inputs.resorts }}; do python3 scripts/maps/resort_map.py out $r; done
+      - name: Publish to the resort-maps branch
+        if: always()
+        run: |
+          [ -d out ] || exit 0
+          cd out
+          git init -q -b resort-maps
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Resort maps from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" resort-maps
