@@ -22,7 +22,16 @@ jobs:
         run: |
           sudo apt-get install -y -q fonts-inter >/dev/null || true
           pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib
+      - name: OpenSkiMap exports
+        run: |
+          mkdir -p osm
+          for k in ski_areas lifts runs; do
+            curl -fsSL --retry 5 --retry-delay 15 --retry-all-errors -o osm/$k.geojson https://tiles.openskimap.org/geojson/$k.geojson
+            ls -la osm/$k.geojson
+          done
       - name: Render
+        env:
+          OSM_DIR: osm
         run: for r in ${{ inputs.resorts }}; do python3 scripts/maps/resort_map.py out $r; done
       - name: Publish to the resort-maps branch
         if: always()

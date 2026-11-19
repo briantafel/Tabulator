@@ -47,6 +47,11 @@ OSM_GEOJSON = "https://tiles.openskimap.org/geojson/{}.geojson"
 def stream_features(kind):
     """Stream OpenSkiMap features (ski_areas / lifts / runs) without loading the file whole."""
     import ijson
+    local = os.environ.get("OSM_DIR") and Path(os.environ["OSM_DIR"]) / f"{kind}.geojson"
+    if local and local.exists():
+        with open(local, "rb") as f:
+            yield from ijson.items(f, "features.item", use_float=True)
+        return
     req = urllib.request.Request(OSM_GEOJSON.format(kind), headers=UA)
     with urllib.request.urlopen(req, timeout=600) as f:
         yield from ijson.items(f, "features.item", use_float=True)
@@ -209,7 +214,9 @@ def main():
     lo_in, hi_in = np.floor(inside.min()), np.ceil(inside.max())
     step = 2 if hi_in - lo_in <= 16 else 3
     levels = list(np.arange(math.floor(lo_in / step) * step + step, hi_in, step))
-    lines, fill = sk.snow_shapes(snow, levels, smooth=1, min_pts=8)
+    lines, _ = sk.snow_shapes(snow, levels, smooth=1, min_pts=8)
+    # fill bands start at the area's lowest value, so no part of the area reads as "no snow"
+    _, fill = sk.snow_shapes(snow, [float(math.floor(lo_in))] + levels, smooth=1, min_pts=8)
 
     # base / top at lift terminals
     terms = []
@@ -244,12 +251,14 @@ def main():
                         f'stroke-linejoin="round" clip-path="url(#area)"/>')
     layer("snow lines", body)
     layer("runs", [f'<path d="{path(g)}" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.2" '
-                   f'stroke-linecap="round"/>' for _, g in runs])
+                   f'stroke-linecap="round" clip-path="url(#area)"/>' for _, g in runs])
     lb = []
     for tags, g in lifts:
-        lb.append(f'<path d="{path([g[0], g[-1]])}" fill="none" stroke="{sk.INK}" stroke-width="1.6"/>')
+        lb.append(f'<path d="{path([g[0], g[-1]])}" fill="none" stroke="{sk.INK}" stroke-width="1.6" clip-path="url(#area)"/>')
         for la_, lo_ in (g[0], g[-1]):
-            x, y = P(la_, lo_); lb.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.2" fill="{sk.INK}"/>')
+            x, y = P(la_, lo_)
+            if 0 <= x < sk.W_PX and 0 <= y < sk.H_PX and mask[int(y), int(x)]:
+                lb.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.2" fill="{sk.INK}"/>')
     layer("lifts", lb)
     layer("ski area boundary", [f'<path d="{area_d}" fill="none" stroke="{sk.INK}" stroke-opacity="0.55" '
                                 f'stroke-width="1.4" stroke-dasharray="6 6"/>'])
