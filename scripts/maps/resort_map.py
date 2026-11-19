@@ -301,9 +301,20 @@ def main():
     marks = [("Base", terms[0]), ("Top", terms[-1])] if len(terms) >= 2 else []
 
     ramp = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
-    L = [f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
-         f'xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="{sk.W_PX}" height="{sk.H_PX}" '
-         f'viewBox="0 0 {sk.W_PX} {sk.H_PX}" font-family="Inter, Helvetica, Arial, sans-serif">',
+    # Frame: the traced outline plus ~150 m, square (Brian 2026-11-19: crop close so the resort is large).
+    rr, cc = np.where(mask)
+    pad = 150 / m_px
+    x0, x1, y0, y1 = cc.min() - pad, cc.max() + pad, rr.min() - pad, rr.max() + pad
+    side = max(x1 - x0, y1 - y0)
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    side = min(side, sk.W_PX, sk.H_PX)
+    vx = float(np.clip(cx - side / 2, 0, sk.W_PX - side)); vy = float(np.clip(cy - side / 2, 0, sk.H_PX - side))
+    print(f"frame: {side * m_px / 1000:.2f} km square ({side:.0f} px of {sk.W_PX})")
+    head = ('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+            'xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" ')
+    head_full = head + f'width="{sk.W_PX}" height="{sk.H_PX}" viewBox="0 0 {sk.W_PX} {sk.H_PX}" font-family="Inter, Helvetica, Arial, sans-serif">'
+    L = [head + f'width="{side:.0f}" height="{side:.0f}" viewBox="{vx:.1f} {vy:.1f} {side:.1f} {side:.1f}" '
+         f'font-family="Inter, Helvetica, Arial, sans-serif">',
          f'<defs><clipPath id="area"><path d="{area_d}" clip-rule="evenodd"/></clipPath></defs>']
 
     def layer(name, body):
@@ -350,7 +361,7 @@ def main():
     (out / f"{a.resort}.svg").write_text(svg)   # editable: plain relief + multiply fill layer
     import cairosvg
     # PNG: cairo ignores blend modes, so tint the relief in raster (multiply), then draw the rest.
-    fill_svg = "\n".join(L[:2] + L[fill_start:fill_end] + ["</svg>"])
+    fill_svg = "\n".join([head_full, L[1]] + L[fill_start:fill_end] + ["</svg>"])
     fpng = cairosvg.svg2png(bytestring=fill_svg.encode(), output_width=sk.W_PX, output_height=sk.H_PX)
     F = np.asarray(Image.open(io.BytesIO(fpng)).convert("RGBA")).astype("float32") / 255.0
     k = 0.85 * F[..., 3:4]
