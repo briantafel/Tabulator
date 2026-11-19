@@ -30,10 +30,11 @@ jobs:
           cp work/height.json out/meta.json
       - name: Blender
         run: |
-          sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null
+          sudo apt-get update -q >/dev/null
+          sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null || echo "apt install failed; Blender will say what is missing"
           curl -sSL -o b.tar.xz https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz
           tar -xf b.tar.xz
-          SAMPLES=${{ inputs.samples }} ./blender-4.2.3-linux-x64/blender -b -P scripts/hero/render.py -- work/height.npy work/height.json out 2>&1 | grep -vE "^Fra:|Sample" | tail -40
+          SAMPLES=${{ inputs.samples }} ./blender-4.2.3-linux-x64/blender -b -P scripts/hero/render.py -- work/height.npy work/height.json out 2>&1 | grep -vE "^Fra:|Sample" | tail -40; test ${PIPESTATUS[0]} -eq 0
           ls -la out
           test -f out/01-hero-light.png
       - name: Publish to the hero-frames branch
