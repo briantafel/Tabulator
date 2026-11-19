@@ -7,9 +7,9 @@ on:
     inputs:
       lat: {default: "43.7410"}
       lon: {default: "-110.8024"}
-      half_km: {default: "6.5"}
+      half_km: {default: "4.0"}
       grid: {default: "900"}
-      samples: {default: "96"}
+      samples: {default: "64"}
 
 permissions:
   contents: write

@@ -27,7 +27,7 @@ sc.cycles.samples = SAMPLES
 sc.cycles.use_denoising = True
 sc.render.film_transparent = False
 sc.view_settings.view_transform = "AgX"
-sc.view_settings.look = "AgX - Base Contrast"
+sc.view_settings.look = "AgX - Punchy"
 
 # ---------------------------------------------------------------- terrain slab
 n_r, n_c = H.shape
@@ -92,8 +92,8 @@ def sun(az_deg, el_deg, strength, angle_deg):
     src = Vector((math.sin(az) * math.cos(el), math.cos(az) * math.cos(el), math.sin(el)))
     o.rotation_euler = (-src).to_track_quat("-Z", "Y").to_euler()
     return o
-key = sun(135, 22, 4.2, 2.5)      # low raking key from the SE, soft-edged shadows
-fill = sun(300, 55, 0.6, 30)      # broad soft fill from the NW
+key = sun(165, 17, 5.5, 1.5)      # low raking key from the SSE: side light for a camera in the east
+fill = sun(300, 55, 0.22, 30)     # faint fill so shadow faces stay deep
 
 # ---------------------------------------------------------------- camera
 cam_d = bpy.data.cameras.new("cam"); cam = bpy.data.objects.new("cam", cam_d); sc.collection.objects.link(cam)
@@ -101,7 +101,7 @@ sc.camera = cam
 peak_r, peak_c = np.unravel_index(np.argmax(H), H.shape)
 peak = Vector((xs[peak_c], ys[peak_r], float(Z[peak_r, peak_c])))
 
-def look(az_deg, el_deg, dist, lens, target_drop=0.35):
+def look(az_deg, el_deg, dist, lens, target_drop=0.42):
     az, el = math.radians(az_deg), math.radians(el_deg)
     tgt = peak - Vector((0, 0, peak.z * target_drop))
     cam.location = tgt + dist * Vector((math.sin(az) * math.cos(el), math.cos(az) * math.cos(el), math.sin(el)))
@@ -109,14 +109,15 @@ def look(az_deg, el_deg, dist, lens, target_drop=0.35):
     cam_d.lens = lens
 
 SHOTS = [
-    # name, cam azimuth (from N, deg), elevation, distance km, lens mm, background, res
-    ("01-hero-light", 100, 9, 15.0, 70, "light", (1600, 2000)),
-    ("02-hero-dark", 100, 9, 15.0, 70, "dark", (1600, 2000)),
-    ("03-slab-light", 145, 30, 26.0, 50, "light", (2000, 1600)),
+    # name, cam azimuth (from N, deg), elevation, distance km, lens mm, background, res, floor seen
+    ("01-hero-light", 95, 5, 11.0, 105, "light", (1600, 2000), False),
+    ("02-hero-dark", 95, 5, 11.0, 105, "dark", (1600, 2000), False),
+    ("03-slab-light", 140, 28, 19.0, 55, "light", (2000, 1600), True),
 ]
-for name, az, el, dist, lens, bgk, (rx, ry) in SHOTS:
+for name, az, el, dist, lens, bgk, (rx, ry), floor_seen in SHOTS:
+    floor.visible_camera = floor_seen
     if bgk == "light":
-        bg.inputs["Color"].default_value = (0.80, 0.81, 0.83, 1); bg.inputs["Strength"].default_value = 0.55
+        bg.inputs["Color"].default_value = (0.80, 0.81, 0.83, 1); bg.inputs["Strength"].default_value = 0.45
         floor_mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.78, 0.79, 0.81, 1)
     else:
         bg.inputs["Color"].default_value = (0.035, 0.045, 0.055, 1); bg.inputs["Strength"].default_value = 0.35
