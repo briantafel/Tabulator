@@ -203,8 +203,8 @@ def main():
 
     # --- relief: Blender top-down render when BLENDER is set (cached per resort), else the numpy shader
     LIGHTS = [  # name, azimuth, elevation, strength, sun angle (softness), sky
-        ["nw-low", 315, 32, 3.2, 6, 0.55],
-        ["nw-high", 320, 50, 2.6, 10, 0.75],
+        ["crisp", 315, 24, 4.2, 3, 0.28],
+        ["soft", 315, 34, 3.4, 12, 0.42],
     ]
     rgbs = {}
     blender = os.environ.get("BLENDER")
@@ -214,7 +214,7 @@ def main():
         step = max(1, int(round(sk.W_PX / 900)))
         np.save(work / f"{a.resort}.npy", dem[::step, ::step])
         w_m = (crop[2] - crop[0]) * 111320.0 * math.cos(math.radians(sk.LAT0)); h_m = (crop[3] - crop[1]) * 111320.0
-        json.dump({"width_m": w_m, "height_m": h_m, "px": [sk.W_PX, sk.H_PX], "exag": 1.5, "light": LIGHTS},
+        json.dump({"width_m": w_m, "height_m": h_m, "px": [sk.W_PX, sk.H_PX], "exag": 2.0, "light": LIGHTS},
                   open(work / f"{a.resort}.json", "w"))
         cmd = [blender, "-b", "-P", str(Path(__file__).with_name("relief_ortho.py")), "--",
                str(work / f"{a.resort}.npy"), str(work / f"{a.resort}.json"), str(work / a.resort)]
