@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-19T17:06:33.989Z",
- "forecastGeneratedAt": "2026-11-19T15:43:07.808Z",
+ "generatedAt": "2026-11-19T21:14:25.036Z",
+ "forecastGeneratedAt": "2026-11-19T21:07:44.000Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-19T17:06:29.944Z",
  "quiet": false,
@@ -16,12 +16,12 @@
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Brighton is forecast for about 39\". Solitude and Snowbasin follow. Winter Weather Advisory at Brighton from Thursday to Saturday."
+   "text": "Brighton is forecast for about 39\". Solitude and Snowbasin follow. Winter Storm Warning at Brighton from Thursday to Saturday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 39\", 30\" of it Thursday. Mt. Rose and Sugar Bowl follow. The National Weather Service has heavy snow at Mt. Rose Thursday. Winter Storm Warning at Kirkwood from Thursday to Friday."
+   "text": "Kirkwood is forecast for about 39\", 30\" of it Thursday. Mt. Rose and Sugar Bowl follow. Winter Storm Warning at Kirkwood from Thursday to Friday."
   },
   {
    "key": "the Eastern Sierra",
@@ -36,7 +36,7 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 23\". Jackson Hole and Sun Valley follow."
+   "text": "Grand Targhee is forecast for about 23\". Jackson Hole and Sun Valley follow. Winter Weather Advisory at Grand Targhee from Thursday night to Friday night."
   },
   {
    "key": "the Cascades",
@@ -46,12 +46,12 @@
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride is forecast for about 12\", 7\" of it Saturday. Aspen Highlands and Crested Butte follow. The NWS is calling for more at Aspen Highlands: 3 to 9 inches Thursday night through Monday night."
+   "text": "Telluride is forecast for about 12\", 7\" of it Saturday. Aspen Highlands and Crested Butte follow. The NWS is calling for more at Aspen Highlands: 2 to 9 inches Thursday night through Monday night."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 10\". Taos follows. The NWS is calling for more at Wolf Creek: 7 to 17 inches Thursday night through Monday night."
+   "text": "Wolf Creek is forecast for about 10\". Taos follows."
   }
  ],
  "ahead": null,
@@ -62,11 +62,11 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-19T15:49:41.640Z"
+   "issuedAt": "2026-11-19T21:14:16.943Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-19T17:06:33.989Z"
+   "issuedAt": "2026-11-19T21:14:25.036Z"
   }
  ],
  "api": {
