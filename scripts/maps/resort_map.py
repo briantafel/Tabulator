@@ -272,10 +272,10 @@ def main():
     r_close = 110 / m_px
     grown = distance_transform_edt(~raw) <= r_close
     mask = binary_fill_holes(distance_transform_edt(grown) > r_close * 0.85)
-    # Drop strands narrower than ~120 m (a lone long run, a cat track): opening with r = 60 m,
+    # Drop strands narrower than ~200 m (a lone long run, a cat track): opening with r = 100 m,
     # then keep the largest piece(s) that survive.
     from scipy.ndimage import label as cc_label
-    r_open = 60 / m_px
+    r_open = 100 / m_px
     opened = distance_transform_edt(distance_transform_edt(mask) > r_open) <= r_open
     opened &= mask
     lab_, nlab = cc_label(opened)
@@ -314,13 +314,12 @@ def main():
 
     ramp = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"]
     # Frame: the traced outline plus ~150 m, square (Brian 2026-11-19: crop close so the resort is large).
-    # The frame follows the resort's own shape, between 4:5 (tall) and 3:2 (wide).
+    # Square frame (Brian 2026-11-19: square for the app and for sharing to social), tight to the outline.
     rr, cc = np.where(mask)
     pad = 150 / m_px
     x0, x1, y0, y1 = cc.min() - pad, cc.max() + pad, rr.min() - pad, rr.max() + pad
     fw, fh = x1 - x0, y1 - y0
-    if fw / fh > 1.5: fh = fw / 1.5
-    if fw / fh < 0.8: fw = fh * 0.8
+    fw = fh = max(fw, fh)
     fw, fh = min(fw, sk.W_PX), min(fh, sk.H_PX)
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     vx = float(np.clip(cx - fw / 2, 0, sk.W_PX - fw)); vy = float(np.clip(cy - fh / 2, 0, sk.H_PX - fh))
