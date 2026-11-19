@@ -1,0 +1,41 @@
+name: HRRR precipitation backfill (2024-25, 2025-26 winters)
+
+# Added 2026-11-18 (claude/state-2026-11-18-more-models.md). The blend trains on
+# 2024-25 and tests on 2025-26; HRRR precipitation was only archived live from
+# 2026-11-18. Fills Nov–Apr of both winters, 4 cycles a day (~1,450 cycles,
+# ~10 s each), one 50-min chunk per hourly run, newest first, resuming via the
+# same done markers as the live job. When the log says BACKFILL COMPLETE,
+# disable this workflow.
+on:
+  schedule:
+    - cron: "40 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hrrr-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install eccodes eccodeslib numpy duckdb==2.0.0
+      - name: Backfill
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: python3 scripts/archive/extra_models.py work --only hrrr --range 20241101-20250430,20251101-20260430

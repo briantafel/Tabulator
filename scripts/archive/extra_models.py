@@ -2,6 +2,12 @@
 """More forecast models at our resort points: HRRR precipitation, Canada's HRDPS, NOAA's AIGEFS.
 
     python3 scripts/archive/extra_models.py <workDir> [--dry-run] [--only MODEL] [--cycle YYYYMMDDHH] [--probe]
+                                            [--range YYYYMMDD-YYYYMMDD[,YYYYMMDD-YYYYMMDD…]]
+
+--range (backfill; HRRR only, the one model with history): every cycle in the
+inclusive date ranges, newest first, skipping cycles already archived (same
+done markers as live). Prints BACKFILL COMPLETE when nothing in the ranges is
+left, so the hourly backfill workflow can be switched off.
 
 Added 2026-11-18. Brian compared our model list with OpenSnow's (EPS, ECMWF,
 AIFS, HRRR, GFS, AIGEFS, ICON, RDPS, GDPS). Three gaps were worth closing for
@@ -400,6 +406,20 @@ def to_rows(model, cfg, cycle, ids, pts, members, fetched_at, run_id):
     return rows
 
 
+def range_cycles(spec: str, hours) -> list[datetime]:
+    """'20241101-20250430,20251101-20260430' → every cycle in those days, newest first."""
+    out = set()
+    for part in spec.split(","):
+        a, b = (datetime.strptime(x, "%Y%m%d").replace(tzinfo=timezone.utc) for x in part.split("-"))
+        if b < a:
+            raise SystemExit(f"bad range {part}")
+        d = a
+        while d <= b:
+            out.update(d.replace(hour=h) for h in hours)
+            d += timedelta(days=1)
+    return sorted(out, reverse=True)
+
+
 def main() -> int:
     a = sys.argv[1:]
     if "--probe" in a:
@@ -430,7 +450,11 @@ def main() -> int:
     for model, cfg in MODELS.items():
         if only and model != only:
             continue
-        if "--cycle" in a:
+        if "--range" in a:
+            if model != "hrrr":
+                raise SystemExit(f"--range is for hrrr only ({model} has no history to backfill)")
+            cands = range_cycles(a[a.index("--range") + 1], cfg["cycles"])
+        elif "--cycle" in a:
             cands = [datetime.strptime(a[a.index("--cycle") + 1], "%Y%m%d%H").replace(tzinfo=timezone.utc)]
         else:
             days = cfg["keep_days"]
@@ -471,7 +495,18 @@ def main() -> int:
                 if dry:
                     break
             except FileNotFoundError as e:
-                waiting.append(f"{key}: {e}")
+                if "--range" in a and not dry:
+                    # A past cycle that AWS doesn't have will never appear: mark it so the
+                    # backfill can finish, and list it (gaps stay gaps, never zeros).
+                    m = work / f"{key}.missing.json"
+                    m.parent.mkdir(parents=True, exist_ok=True)
+                    m.write_text(json.dumps({"cycle": iso(cycle), "missing": str(e)}))
+                    r = bucket("cp", str(m), f"s3://{os.environ['R2_BUCKET']}/extra-models/done/{key}.json")
+                    if r.returncode:
+                        raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
+                    ok.append(f"{key}: NOT ON AWS — recorded as a gap")
+                else:
+                    waiting.append(f"{key}: {e}")
             except TimeoutError:
                 waiting.append(f"{key}: time limit (next run continues)")
             except Exception as e:
@@ -480,6 +515,8 @@ def main() -> int:
     report = "\n".join(["More models (HRRR precip, HRDPS, AIGEFS):"] + [f"  ✓ {o}" for o in ok]
                        + [f"  … {w}" for w in waiting] + [f"  ✗ {f}" for f in failures]
                        + ([] if ok or waiting or failures else ["  nothing new"]))
+    if "--range" in a and not dry and not failures and not waiting:
+        report += "\nBACKFILL COMPLETE — disable the backfill workflow"
     log("\n" + report)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:

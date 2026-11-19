@@ -83,3 +83,9 @@ def test_aigefs_url_and_member_rows():
                       members, "2026-11-18T23:00:00Z", "rid")
     assert [(r["member"], r["valid_start"], r["value"]) for r in rows] == [
         (3, "2026-11-18T12:00:00Z", 1.0), (3, "2026-11-18T18:00:00Z", 2.5)]
+
+
+def test_range_cycles_newest_first_inclusive():
+    c = em.range_cycles("20250430-20250501,20241101-20241101", (0, 12))
+    assert c[0] == datetime(2025, 5, 1, 12, tzinfo=timezone.utc) and c[-1] == datetime(2024, 11, 1, 0, tzinfo=timezone.utc)
+    assert len(c) == 6
