@@ -1,0 +1,51 @@
+{
+ "resort": "alta",
+ "ski_area": "Alta Ski Area",
+ "crop": [
+  -111.65822951555982,
+  40.55758494600168,
+  -111.59075608444017,
+  40.60882845399831
+ ],
+ "dem": "usgs-3dep-10m",
+ "nbm_run": "2026-11-20T12:00:00+00:00",
+ "inside_range_in": [
+  6.2,
+  8.2
+ ],
+ "levels_in": [
+  8.0
+ ],
+ "base": [
+  2602.325439453125,
+  6.254254023458384
+ ],
+ "top": [
+  3216.365234375,
+  7.841167378027611
+ ],
+ "labels": {
+  "frame": "fractions of the square picture, 0-1 from the top-left",
+  "depth": [],
+  "marks": [
+   {
+    "kind": "base",
+    "x": 0.274,
+    "y": 0.2877,
+    "in": 6.3,
+    "ft": 8538
+   },
+   {
+    "kind": "top",
+    "x": 0.45,
+    "y": 0.81,
+    "in": 7.8,
+    "ft": 10552
+   }
+  ]
+ },
+ "lifts": 12,
+ "runs": 133,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1726
+}
