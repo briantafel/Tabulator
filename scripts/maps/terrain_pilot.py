@@ -407,6 +407,16 @@ def run(out, rid, px=4096, work=None):
     crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
     log(f"crop ±{half_km:.2f} km around {lat_c:.4f},{lon_c:.4f}")
     lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
+    # only lifts that exist today: OpenSkiMap also carries disused / abandoned / proposed / planned ones
+    lifts_dropped = []
+    keep_l = []
+    for l in lifts:
+        st_ = l[0].get("status")
+        if st_ in (None, "operating"):
+            keep_l.append(l)
+        else:
+            lifts_dropped.append({"name": l[0].get("name"), "type": l[0].get("liftType"), "reason": f"status {st_}"})
+    lifts = keep_l
 
     # --- frame: pass 1 on the old 1800 px crop grid (so the frame rule is exactly the settled one)
     lat0c = (crop[1] + crop[3]) / 2
@@ -493,6 +503,28 @@ def run(out, rid, px=4096, work=None):
     mask, trimmed = trace_outline(runs, g4, m_px)
     acres = float(mask.sum() * m_px * m_px / 4046.86)
     log(f"skiable-terrain outline: {acres:,.0f} acres from {len(runs)} runs (trimmed {trimmed:,.0f} acres)")
+    # a lift is drawn only if both terminals are on drawn skiable terrain (within LIFT_TOL_M of the outline):
+    # a lift ending on bare ground means its runs were trimmed away, so it is dropped (and listed), never drawn
+    LIFT_TOL_M = 120
+    near_mask = distance_transform_edt(~mask) <= LIFT_TOL_M / m_px
+    keep_l = []
+    for l in lifts:
+        ok = True
+        for la_, lo_ in (l[1][0], l[1][-1]):
+            x, y = g4.P(la_, lo_)
+            if not (0 <= x < px and 0 <= y < px):
+                continue            # terminal outside the frame: the visible part still runs to the frame edge
+            if not near_mask[int(y), int(x)]:
+                ok = False
+        if ok:
+            keep_l.append(l)
+        else:
+            lifts_dropped.append({"name": l[0].get("name"), "type": l[0].get("liftType"), "reason": "terminal not on drawn skiable terrain"})
+    del near_mask
+    log(f"lifts: {len(keep_l)} drawn, {len(lifts_dropped)} dropped: " + "; ".join(f"{d['name']} ({d['reason']})" for d in lifts_dropped))
+    lifts = keep_l
+    if not lifts:
+        sys.exit("no lift terminals on drawn terrain; refusing to draw base/top")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -567,8 +599,12 @@ def run(out, rid, px=4096, work=None):
     for word, (zz, x, y, sv) in marks:
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(11):.1f}" fill="#ffffff" stroke="{INK}" stroke-width="{sw(2):.1f}"/>')
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(4):.1f}" fill="{INK}"/>')
-        lab += halo(x + sw(18), y, f'{word} {sv:.0f}"  ·  {zz * FT:,.0f} ft',
-                    f'font-size="{sw(30):.1f}" font-weight="700" fill="{INK}" dominant-baseline="middle"', sw(6))
+        txt = f'{word} {sv:.0f}"  ·  {zz * FT:,.0f} ft'
+        tw = 0.62 * sw(30) * len(txt)           # rough text width; keep the whole label inside the frame
+        left = x + sw(18) + tw > px - sw(12)
+        lab += halo(x - sw(18) if left else x + sw(18), y, txt,
+                    f'font-size="{sw(30):.1f}" font-weight="700" fill="{INK}" dominant-baseline="middle"'
+                    + (' text-anchor="end"' if left else ""), sw(6))
     over += layer("labels", lab)
     timing["vectors_s"] = round(time.time() - t0)
 
@@ -625,7 +661,7 @@ def run(out, rid, px=4096, work=None):
         "levels_in": [float(x) for x in levels],
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,
         "top": [round(marks[1][1][0], 1), round(marks[1][1][3], 1)] if marks else None,
-        "lifts": len(lifts), "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
+        "lifts": len(lifts), "lifts_dropped": lifts_dropped, "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
         "busiest_crop_xy": [bx, by, csz], "timing_s": {**timing, "total_s": round(time.time() - t_start)},
         "files": sorted(p.name for p in out.iterdir() if p.is_file()),
     }
