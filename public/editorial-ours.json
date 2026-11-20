@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-20T21:20:44.371Z",
- "forecastGeneratedAt": "2026-11-20T21:13:50.901Z",
+ "generatedAt": "2026-11-20T21:42:47.898Z",
+ "forecastGeneratedAt": "2026-11-20T15:25:35.848Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-20T16:20:28.099Z",
+ "blendGeneratedAt": "2026-11-20T21:42:44.175Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,57 +16,57 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 54\". Whistler follows."
+   "text": "Cypress Mountain is forecast for about 49\". Whistler follows."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Palisades is forecast for about 29\". Sugar Bowl and Kirkwood follow."
-  },
-  {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Snowbasin is forecast for about 22\", 14\" of it Friday. Powder Mountain and Brighton follow. Winter Storm Warning at Snowbasin from Friday to Saturday."
+   "text": "Palisades is forecast for about 33\". Sugar Bowl and Kirkwood follow. Winter Storm Warning at Palisades from Friday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Baker is forecast for about 26\". Crystal Mountain and Mt. Bachelor follow. The National Weather Service has rain mixed in at Mt. Baker Wednesday and Wednesday night."
+   "text": "Crystal Mountain is forecast for about 29\", 17\" of it Tuesday. Mt. Baker and Stevens Pass follow."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Snowbasin is forecast for about 23\", 14\" of it Friday. Powder Mountain and Brighton follow. Winter Storm Warning at Snowbasin from Thursday night to Saturday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 21\". Jackson Hole and Big Sky follow. Winter Weather Advisory at Grand Targhee from Thursday night to Friday night."
+   "text": "Grand Targhee is forecast for about 25\". Jackson Hole and Big Sky follow. Winter Weather Advisory at Grand Targhee from Thursday night to Friday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride is forecast for about 12\", 7\" of it Monday. Breckenridge and Aspen Highlands follow."
+   "text": "Telluride is forecast for about 9\". Aspen Highlands and Crested Butte follow."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 7\", 4\" of it Sunday. The NWS is calling for more at Mammoth: 4 to 11 inches Friday through Wednesday."
+   "text": "Mammoth is forecast for about 7\"."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 8\", 4\" of it Saturday. Taos follows."
+   "text": "Wolf Creek is forecast for about 6\", 3\" of it Saturday. Taos follows."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-20T16:20:28.099Z"
+   "issuedAt": "2026-11-20T21:42:44.175Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T21:20:32.072Z"
+   "issuedAt": "2026-11-20T15:32:09.392Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T21:20:44.371Z"
+   "issuedAt": "2026-11-20T21:42:47.898Z"
   }
  ],
  "api": {
