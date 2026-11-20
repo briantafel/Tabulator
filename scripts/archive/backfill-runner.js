@@ -108,7 +108,16 @@ function upload(localPath, key, { recursive = false } = {}) {
     cpSync(localPath, dest, { recursive });
     return;
   }
-  aws("s3", "cp", localPath, `s3://${BUCKET}/${key}`, ...(recursive ? ["--recursive"] : []));
+  // R2 now and then answers a single put with a 500 (backfill 2026-11-20:
+  // one of 166 pieces). Try three times before calling the piece failed.
+  for (let attempt = 1; ; attempt++) {
+    try { aws("s3", "cp", localPath, `s3://${BUCKET}/${key}`, ...(recursive ? ["--recursive"] : [])); return; }
+    catch (e) {
+      if (attempt >= 3) throw e;
+      log(`  · upload of ${key} failed (try ${attempt}/3) — retrying`);
+      execFileSync("sleep", [String(5 * attempt)]);
+    }
+  }
 }
 
 function doneKeys() {
@@ -431,6 +440,35 @@ for (const p of pending) {
   if (p.kind === "om") await sleep(p.live ? OM_LIVE_SPACING_MS : OM_SPACING_MS);
 }
 
+// One more go at pieces that failed on a network fault or a server error,
+// after a pause. Backfill 2026-11-20 went red over 4 Open-Meteo connect
+// timeouts and one R2 500 out of 171 pieces — blips, not broken sources.
+// Anything that fails again still fails the run, and every recovery is
+// listed in the report, so nothing is hidden.
+const transient = (m) => /UND_ERR|ECONNRESET|ETIMEDOUT|EAI_AGAIN|fetch failed|HTTP 5\d\d|INTERNAL_ERROR|internal server error/i.test(m);
+const recovered = [];
+const retryable = failed.filter((f) => transient(f)).slice(0, 10); // a handful of blips, not an outage
+if (retryable.length && Date.now() - started < TIME_LIMIT_MS - 5 * 60_000) {
+  log(`\nretrying ${retryable.length} piece(s) that hit a network or server error, after 2 minutes`);
+  await sleep(120_000);
+  for (const f of retryable) {
+    const key = f.slice(0, f.indexOf(": "));
+    const p = pending.find((x) => x.key === key);
+    if (!p) continue;
+    try {
+      const n = await runPiece(p);
+      ok++; rowsOut += n; if (p.live) liveOk++;
+      failed.splice(failed.indexOf(f), 1);
+      recovered.push(key);
+      log(`  ✓ ${key}: ${n} rows (second try)`);
+    } catch (e) {
+      failed[failed.indexOf(f)] = `${key}: ${e.message} (failed twice)`;
+      log(`  ✗ ${key} — failed again: ${e.message}`);
+    }
+    if (p.kind === "om") await sleep(p.live ? OM_LIVE_SPACING_MS : OM_SPACING_MS);
+  }
+}
+
 const history = pieces.filter((p) => !p.live);
 const nowDone = history.filter((p) => done.has(doneKeyOf(p))).length + (ok - liveOk);
 const liveDue = livePieces.filter((p) => !done.has(doneKeyOf(p))).length;
@@ -445,6 +483,7 @@ if (off.length) {
   lines.push("", "Sources switched off for this run (retried next run):");
   for (const [g, why] of off) lines.push(`  - ${g}: ${why}; ${skipped.get(g) ?? 0} piece(s) not tried`);
 }
+if (recovered.length) lines.push("", `${recovered.length} piece(s) failed once and succeeded on a second try: ${recovered.join(", ")}`);
 if (failed.length) {
   lines.push("", `${failed.length} piece(s) failed and will be retried next run:`);
   failed.forEach((f) => lines.push(`  - ${f}`));
