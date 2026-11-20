@@ -98,6 +98,9 @@ def tiles_cop(b):
     return out
 
 
+FILLED_VOIDS = []
+
+
 def merge_tiles(urls, bbox, res, resampling, tolerate_missing):
     srcs, missing = [], []
     for u in urls:
@@ -115,8 +118,14 @@ def merge_tiles(urls, bbox, res, resampling, tolerate_missing):
     if missing:
         log(f"  WARNING {len(missing)} Copernicus tiles absent (open sea): {bad.mean():.1%} of the box filled with 0 m")
         z[bad] = 0.0
-    elif bad.mean() > 0.001:
-        raise RuntimeError(f"DEM has {bad.mean():.2%} nodata")
+    elif bad.mean() > 0.01:
+        raise RuntimeError(f"DEM has {bad.mean():.2%} nodata (more than 1%: refusing to fill)")
+    elif bad.any():
+        # small scattered voids (Copernicus water/void cells): fill from the nearest valid cell, and say so
+        idx = distance_transform_edt(bad, return_distances=False, return_indices=True)
+        z = z[tuple(idx)]
+        log(f"  WARNING DEM voids filled from nearest valid cell: {bad.mean():.2%} of the box")
+        FILLED_VOIDS.append(float(bad.mean()))
     return z
 
 
@@ -135,7 +144,8 @@ def load_dem_native(bbox, lat_c, lon_c):
         z = retry(lambda: merge_tiles(tiles_cop(bbox), bbox, res, Resampling.bilinear, False), "Copernicus GLO-30")
     info = {"source": src, "native_res_deg": res,
             "native_res_m": [round(res * 111320, 1), round(res * 111320 * math.cos(math.radians(lat_c)), 1)],
-            "native_res_m_note": "N-S x E-W", "native_shape": list(z.shape)}
+            "native_res_m_note": "N-S x E-W", "native_shape": list(z.shape),
+            "voids_filled_fraction": round(FILLED_VOIDS[-1], 5) if FILLED_VOIDS else 0.0}
     log(f"DEM {src}: {z.shape}, {z.min():.0f}-{z.max():.0f} m")
     return z, bbox[0], bbox[3], res, info
 
