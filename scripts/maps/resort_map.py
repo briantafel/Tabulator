@@ -372,7 +372,9 @@ def main():
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{sk.INK}"/>')
         lab += sk.halo_text(x + 18, y, f'{word} {s:.0f}"  ·  {z * 3.28084:,.0f} ft',
                             f'font-size="30" font-weight="700" fill="{sk.INK}" dominant-baseline="middle"')
+    lab_start = len(L)
     layer("labels", lab)
+    lab_end = len(L)
     L.append("</svg>")
     svg = "\n".join(L)
     (out / f"{a.resort}.svg").write_text(svg)   # editable: plain relief + multiply fill layer
@@ -391,12 +393,23 @@ def main():
         del L2[fill_start:fill_end]
         suffix = "" if len(rgbs) == 1 else f"-{name}"
         cairosvg.svg2png(bytestring="\n".join(L2).encode(), write_to=str(out / f"{a.resort}{suffix}.png"))
+        # Same picture without the labels layer: the app draws the labels itself as vectors
+        # (Brian 2026-11-20: "computed, not rendered"), from the label data in the json below.
+        L3 = L2[:lab_start - len(L) + len(L2)] + L2[lab_end - len(L) + len(L2):]
+        cairosvg.svg2png(bytestring="\n".join(L3).encode(), write_to=str(out / f"{a.resort}{suffix}-clean.png"))
         Image.fromarray(base).save(out / f"{a.resort}{suffix}-relief.png")
     json.dump({"resort": a.resort, "ski_area": area_name, "crop": crop, "dem": dem_src, "nbm_run": run.isoformat(),
                "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
                "levels_in": [float(x) for x in levels],
                "base": marks[0][1][:1] + marks[0][1][3:] if marks else None,
                "top": marks[1][1][:1] + marks[1][1][3:] if marks else None,
+               "labels": {"frame": "fractions of the square picture, 0-1 from the top-left",
+                          "depth": [{"x": round((x - vx) / fw, 4), "y": round((y - vy) / fh, 4), "in": float(lv)}
+                                    for lv, (x, y) in sk.label_points(lines)
+                                    if 0 < y < sk.H_PX and mask[int(min(y, sk.H_PX - 1)), int(min(x, sk.W_PX - 1))]
+                                    and vx <= x <= vx + fw and vy <= y <= vy + fh],
+                          "marks": [{"kind": w.lower(), "x": round((x - vx) / fw, 4), "y": round((y - vy) / fh, 4),
+                                     "in": round(float(sv), 1), "ft": round(float(z) * 3.28084)} for w, (z, x, y, sv) in marks]},
                "lifts": len(lifts), "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(float(acres))}, open(out / f"{a.resort}.json", "w"), indent=1, default=float)
     print(f"{a.resort}: inside {inside.min():.1f}–{inside.max():.1f} in; marks {[(w, round(m[0]), round(m[3], 1)) for w, m in marks]}")
 
