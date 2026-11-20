@@ -15,7 +15,18 @@
   ],
   "labels": {
    "frame": "fractions of this picture, 0-1 from the top-left",
-   "depth": [],
+   "depth": [
+    {
+     "x": 0.4065,
+     "y": 0.3597,
+     "in": 7.0
+    },
+    {
+     "x": 0.9065,
+     "y": 0.5915,
+     "in": 8.0
+    }
+   ],
    "marks": [
     {
      "x": 0.3404,
@@ -47,7 +58,18 @@
    },
    "labels": {
     "frame": "fractions of this picture, 0-1 from the top-left",
-    "depth": [],
+    "depth": [
+     {
+      "x": 0.4205,
+      "y": 0.4094,
+      "in": 7.0
+     },
+     {
+      "x": 0.8473,
+      "y": 0.5081,
+      "in": 8.0
+     }
+    ],
     "marks": [
      {
       "x": 0.364,
