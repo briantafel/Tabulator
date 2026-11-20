@@ -1,4 +1,4 @@
-import { DEPTH_INK, INK, layoutDepth, layoutMark } from "../lib/terrainLabels.js";
+import { DEPTH_INK, INK, layoutDepth, layoutMark, textWidth } from "../lib/terrainLabels.js";
 
 /* The Snow by terrain labels, drawn as SVG over the picture (Brian, 2026-11-20).
    viewBox is the picture in Figma px (358 on the sheet, 874 full screen), so
@@ -30,6 +30,7 @@ export default function TerrainLabels({ labels, metric, S, counter = false, scre
             <circle r={S.dot / 2} fill={INK} />
             <text
               x={L.tx - L.cx} y="0" textAnchor={L.flip ? "end" : "start"} dominantBaseline="central"
+              {...(screen ? { "data-mark": "", "data-w": textWidth(L.text, S.mark), "data-off": S.ring / 2 + S.gap } : {})}
               fontSize={S.mark} fontWeight="700" fill={INK}
               stroke="#fff" strokeWidth={S.mark / 3} strokeLinejoin="round" paintOrder="stroke"
             >{L.text}</text>

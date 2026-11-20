@@ -387,6 +387,46 @@ def trace_outline(runs, g, m_px):
     return mask, trimmed
 
 
+
+LIFT_NEAR_M = 150.0           # a run cluster belongs to the resort if an operating lift passes within this of it
+
+
+def prune_runs(runs, lifts, g, m_px):
+    """Drop runs whose cluster (the connected piece of the traced outline) has no operating lift within LIFT_NEAR_M:
+    OpenSkiMap tags backcountry / out-of-area runs to the resort, and they draw as terrain nothing connects to
+    (Brian 2026-11-20, Crystal). Returns (kept runs, dropped list). Never prunes if it would leave under half the
+    terrain, or if no lift touches any cluster (then the lift data, not the runs, is what is wrong): says so."""
+    mask, _ = trace_outline(runs, g, m_px)
+    lab, n = cc_label(mask)
+    if n < 2:
+        return runs, []
+    canvas = Image.new("L", (g.w, g.h), 0)
+    dr = ImageDraw.Draw(canvas)
+    for _, geom, _a in lifts:
+        xy = [g.P(la, lo) for la, lo in geom]
+        if len(xy) >= 2:
+            dr.line(xy, fill=255, width=2)
+    near = distance_transform_edt(np.asarray(canvas) == 0) <= LIFT_NEAR_M / m_px
+    keep = set(np.unique(lab[near & (lab > 0)]).tolist())
+    if not keep:
+        log("WARNING prune_runs: no lift touches any run cluster; keeping all runs")
+        return runs, []
+    area = np.bincount(lab.ravel(), minlength=n + 1)
+    if area[list(keep)].sum() < 0.5 * area[1:].sum():
+        log("WARNING prune_runs: lift-served clusters are under half the terrain; keeping all runs")
+        return runs, []
+    kept, dropped = [], []
+    for r in runs:
+        pts = [g.P(la, lo) for la, lo in r[1]]
+        ids = {int(lab[min(g.h - 1, max(0, int(round(y)))), min(g.w - 1, max(0, int(round(x))))]) for x, y in pts}
+        ids.discard(0)
+        if not ids or ids & keep:
+            kept.append(r)
+        else:
+            dropped.append({"name": r[0].get("name"), "cluster_acres": round(float(area[next(iter(ids))]) * m_px * m_px / 4046.86)})
+    return kept, dropped
+
+
 # ---------------------------------------------------------------- Blender + levels
 def run_blender(hm_png, meta, prefix):
     blender = os.environ.get("BLENDER")
@@ -532,6 +572,9 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     h_old = int(round(OLD_PX * (crop[3] - crop[1]) / ((crop[2] - crop[0]) * math.cos(math.radians(lat0c)))))
     g_old = Grid(crop, OLD_PX, h_old)
     m_old = (crop[3] - crop[1]) * 111320.0 / h_old
+    runs, runs_dropped = prune_runs(runs, lifts, g_old, m_old)
+    if runs_dropped:
+        log(f"runs dropped, no operating lift within {LIFT_NEAR_M:.0f} m of their cluster: {len(runs_dropped)}: " + "; ".join(f"{d['name'] or '(unnamed)'} ({d['cluster_acres']} ac)" for d in runs_dropped[:12]))
     mask1, trimmed1 = trace_outline(runs, g_old, m_old)
     rr, cc = np.where(mask1)
     pad = PAD_M / m_old
@@ -840,7 +883,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
         "levels_in": [float(x) for x in levels],
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,
         "top": [round(marks[1][1][0], 1), round(marks[1][1][3], 1)] if marks else None,
-        "lifts": len(lifts), "lifts_dropped": lifts_dropped, "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
+        "lifts": len(lifts), "lifts_dropped": lifts_dropped, "runs_dropped": runs_dropped, "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
         "app": app_info,
         "busiest_crop_xy": [bx, by, csz], "timing_s": {**timing, "total_s": round(time.time() - t_start)},
         "files": sorted(p.name for p in out.iterdir() if p.is_file()),

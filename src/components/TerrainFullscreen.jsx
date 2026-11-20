@@ -77,6 +77,17 @@ export default function TerrainFullscreen({ src, alt, onClose, title = "Snow by 
     if (labEl.current) {
       labEl.current.style.transform = `translate3d(${v.x}px, ${v.y}px, 0)`;
       labEl.current.style.setProperty("--k", `${(v.s * pw) / ref[0]}px`);
+      /* A Base / Top label flips to the other side of its marker when it would leave the SCREEN (the picture is
+         wider than the screen, so the picture-edge flip is not enough: Crystal's "Base" ran off the right). */
+      const sl = stage.current?.getBoundingClientRect().left ?? 0;
+      for (const t of labEl.current.querySelectorAll("[data-mark]")) {
+        const c = t.parentNode.querySelector("circle")?.getBoundingClientRect();
+        if (!c) continue;
+        const cx = c.left + c.width / 2 - sl, w = +t.dataset.w, off = +t.dataset.off, m = 6;
+        const flip = cx + off + w > vw - m && cx - off - w > m;
+        t.setAttribute("text-anchor", flip ? "end" : "start");
+        t.setAttribute("x", flip ? -off : off);
+      }
     }
     const d = done.current;
     if (d) {
