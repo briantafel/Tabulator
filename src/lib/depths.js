@@ -33,12 +33,21 @@ export function parseDay(raw) {
 
 const positive = (n) => (n != null && n > 0 ? n : null);
 
+/* A depth of 0 beside fresh snowfall is the vendor's gap, not a bare
+ * mountain. Kirkwood, 2026-11-18/19: Snow-Forecast printed "Bottom 0 cm, Top
+ * 0 cm" next to "Fresh snowfall 81 cm" (SNOTEL depth rose 33 → 91 cm), and the
+ * sheet showed Base 0" Top 0". Snow cannot fall on a mountain and leave it
+ * with no depth, so a 0 is dropped (null → the sheet leaves it off) whenever
+ * fresh snow is reported. 0 with no fresh snow is still a real 0. */
+const depthOrNull = (cm, fresh) => (cm === 0 && fresh != null ? null : cm);
+
 export function snowpack(resort) {
   const d = resort?.depths ?? {};
+  const fresh = positive(parseDepthCm(d["Fresh snowfall depth"]));
   return {
-    base: parseDepthCm(d["Bottom snow depth"]),
-    top: parseDepthCm(d["Top snow depth"]),
+    base: depthOrNull(parseDepthCm(d["Bottom snow depth"]), fresh),
+    top: depthOrNull(parseDepthCm(d["Top snow depth"]), fresh),
     last: parseDay(d["Last snowfall"]),
-    fresh: positive(parseDepthCm(d["Fresh snowfall depth"])),
+    fresh,
   };
 }

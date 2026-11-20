@@ -23,3 +23,25 @@ test("zero fresh snow is not an amount", () => {
 test("no depths at all", () => {
   assert.deepEqual(snowpack({}), { base: null, top: null, last: null, fresh: null });
 });
+
+test("a 0 base and top beside fresh snowfall is the vendor's gap, not a bare mountain", () => {
+  // Kirkwood 2026-11-19: Bottom 0 cm, Top 0 cm, Fresh snowfall 81 cm.
+  const p = snowpack(resort({
+    "Bottom snow depth": "0 cm", "Top snow depth": "0 cm",
+    "Fresh snowfall depth": "81 cm", "Last snowfall": "18 Nov 2026",
+  }));
+  assert.equal(p.base, null);
+  assert.equal(p.top, null);
+  assert.equal(p.fresh, 81);
+});
+
+test("0 depth with no fresh snow is still a real 0, and real depths are untouched", () => {
+  const bare = snowpack(resort({ "Bottom snow depth": "0 cm", "Top snow depth": "0 cm" }));
+  assert.equal(bare.base, 0);
+  assert.equal(bare.top, 0);
+  const deep = snowpack(resort({
+    "Bottom snow depth": "0 cm", "Top snow depth": "35 cm", "Fresh snowfall depth": "10 cm",
+  }));
+  assert.equal(deep.base, null, "the 0 contradicts the fresh snow");
+  assert.equal(deep.top, 35);
+});
