@@ -1,0 +1,124 @@
+{
+ "resort": "niseko",
+ "ski_area": "\u30cb\u30bb\u30b3\u30e6\u30ca\u30a4\u30c6\u30c3\u30c9, Niseko United",
+ "date_utc": "2026-11-20",
+ "frame_km": 5.551,
+ "px": 4096,
+ "m_per_px": 1.355,
+ "frame_bbox_lonlat": [
+  140.638784,
+  42.84341,
+  140.706824,
+  42.893278
+ ],
+ "crop": [
+  140.63055429468318,
+  42.83345479971254,
+  140.71811840531683,
+  42.89763510028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   199,
+   271
+  ],
+  "heightmap_px": 2269,
+  "heightmap_spacing_m": 2.71,
+  "heightmap_z_m": [
+   176.1,
+   1305.7
+  ],
+  "heightmap_quantisation_m": 0.017,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-19T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 53.5,
+  "darkest1pct_value": 136.3,
+  "median_value": 204.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 162.33,
+  "raw_p_hi": 213.0,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 4.81
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 8.10e-07 of the height range, 44805 distinct 16-bit levels sampled",
+  "blend_mb": 5.1,
+  "render_s": 921.0,
+  "blender_wall_s": 922
+ },
+ "svg_scale_vs_1800px_maps": 2.929,
+ "inside_range_in": [
+  10.3,
+  16.1
+ ],
+ "levels_in": [
+  12.0,
+  14.0,
+  16.0
+ ],
+ "base": [
+  295.1,
+  10.3
+ ],
+ "top": [
+  1049.8,
+  15.9
+ ],
+ "lifts": 40,
+ "runs": 182,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1421,
+ "busiest_crop_xy": [
+  1700,
+  2916,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 21,
+  "dem_s": 3,
+  "relief_s": 923,
+  "snow_s": 251,
+  "vectors_s": 6,
+  "compose_s": 73,
+  "total_s": 1278
+ },
+ "files": [
+  "niseko-heightmap16.png",
+  "niseko-meta.json",
+  "niseko-relief.png",
+  "niseko-tiles.json",
+  "niseko-vectors.svg",
+  "niseko.blend",
+  "niseko.png",
+  "niseko.svg"
+ ]
+}

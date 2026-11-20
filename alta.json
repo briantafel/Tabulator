@@ -1,0 +1,126 @@
+{
+ "resort": "alta",
+ "ski_area": "Alta Ski Area",
+ "date_utc": "2026-11-20",
+ "frame_km": 4.562,
+ "px": 4096,
+ "m_per_px": 1.114,
+ "frame_bbox_lonlat": [
+  -111.652655,
+  40.559426,
+  -111.598692,
+  40.600411
+ ],
+ "crop": [
+  -111.65822951555982,
+  40.55758494600168,
+  -111.59075608444017,
+  40.60882845399831
+ ],
+ "dem": {
+  "source": "USGS 3DEP 1/3 arc-sec (10 m)",
+  "native_res_deg": 9.259259259259259e-05,
+  "native_res_m": [
+   10.3,
+   7.8
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   501,
+   659
+  ],
+  "heightmap_px": 2317,
+  "heightmap_spacing_m": 2.23,
+  "heightmap_z_m": [
+   2464.9,
+   3373.5
+  ],
+  "heightmap_quantisation_m": 0.014,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": true,
+  "cross_check": null,
+  "source": "NBM",
+  "caption": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-19T12:00:00+00:00",
+  "grid": "NBM 2.5 km",
+  "slr": "NBM's own snow ratio",
+  "nbm_check": "inside the NBM grid, values present"
+ },
+ "caption_source": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.9,
+  "darkest1pct_value": 140.0,
+  "median_value": 218.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 154.33,
+  "raw_p_hi": 216.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 4.03
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.43e-06 of the height range, 44049 distinct 16-bit levels sampled",
+  "blend_mb": 6.7,
+  "render_s": 1417.0,
+  "blender_wall_s": 1419
+ },
+ "svg_scale_vs_1800px_maps": 2.845,
+ "inside_range_in": [
+  24.2,
+  33.5
+ ],
+ "levels_in": [
+  26.0,
+  28.0,
+  30.0,
+  32.0
+ ],
+ "base": [
+  2602.3,
+  24.2
+ ],
+ "top": [
+  3216.6,
+  31.6
+ ],
+ "lifts": 12,
+ "runs": 137,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1726,
+ "busiest_crop_xy": [
+  712,
+  1364,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 2,
+  "relief_s": 1421,
+  "snow_s": 25,
+  "vectors_s": 8,
+  "compose_s": 93,
+  "total_s": 1575
+ },
+ "files": [
+  "alta-heightmap16.png",
+  "alta-meta.json",
+  "alta-relief.png",
+  "alta-tiles.json",
+  "alta-vectors.svg",
+  "alta.blend",
+  "alta.png",
+  "alta.svg"
+ ]
+}

@@ -1,0 +1,33 @@
+name: Lift audit (terrain pilot)
+on:
+  workflow_dispatch:
+    inputs:
+      resorts:
+        default: "alta whistler jackson-hole zermatt niseko"
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      RESORTS: ${{ inputs.resorts }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib ecmwf-opendata
+      - name: OpenSkiMap exports
+        run: |
+          mkdir -p osm
+          for k in ski_areas lifts runs; do
+            curl -fsSL --retry 5 --retry-delay 15 --retry-all-errors -o osm/$k.geojson https://tiles.openskimap.org/geojson/$k.geojson
+          done
+      - name: Audit
+        env: {OSM_DIR: osm}
+        run: python3 scripts/maps/lift_audit.py out $RESORTS
+      - name: Publish to branch lift-audit
+        run: |
+          cd out && git init -q -b lift-audit
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Lift audit run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" lift-audit
