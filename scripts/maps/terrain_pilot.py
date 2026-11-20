@@ -385,6 +385,27 @@ def halo(x, y, txt, attrs, sw):
             f'<text x="{x:.1f}" y="{y:.1f}" {attrs}>{txt}</text>']
 
 
+def inside_label_points(lines, mask, px):
+    """One label point per contour level, on the contour's longest stretch that lies inside the skiable outline
+    (middle of that stretch). A level with no line inside the outline gets no label: never a label on bare ground."""
+    out = []
+    for level, ds in lines:
+        best = []
+        for d in ds:
+            pts = [tuple(map(float, q.strip("ML ").split(","))) for q in d.split(" L")]
+            run = []
+            for x, y in pts + [(-1.0, -1.0)]:
+                if 0 <= x < px and 0 <= y < px and bool(mask[int(y), int(x)]):
+                    run.append((x, y))
+                else:
+                    if len(run) > len(best):
+                        best = run
+                    run = []
+        if best:
+            out.append((level, best[len(best) // 2]))
+    return out
+
+
 def contours(field, levels, sigma, scale, flip=None):
     """(lines, fill): lines = [(level, ['M x,y L ...'])], fill = [(level, 'M ... Z M ...')], in frame px."""
     import matplotlib
@@ -571,7 +592,7 @@ def run(out, rid, px=4096, work=None, app=False):
     if inside.size == 0 or inside.max() < 1.0:
         sys.exit(f"no snow (max {inside.max() if inside.size else 0:.1f} in) inside the outline: nothing to map; not drawing zeros")
     lo_in, hi_in = np.floor(inside.min()), np.ceil(inside.max())
-    step = 2 if hi_in - lo_in <= 16 else 3
+    step = 1 if hi_in - lo_in <= 4 else 2 if hi_in - lo_in <= 16 else 3   # narrow range (a quiet run): every inch, so the map is never label-less
     while (hi_in - lo_in) / step > 14:
         step += 1
     levels = list(np.arange(math.floor(lo_in / step) * step + step, hi_in, step))
@@ -628,8 +649,8 @@ def run(out, rid, px=4096, work=None, app=False):
     over_nolab = list(over)
     lab = []
     depth_pts = []
-    for lv_, (x, y) in sk.label_points(lines):
-        if 0 < y < px and mask[int(min(y, px - 1)), int(min(x, px - 1))]:
+    for lv_, (x, y) in inside_label_points(lines, mask, px):
+        if True:
             depth_pts.append((float(lv_), float(x), float(y)))
             lab += halo(x, y, f'{lv_:g}"', f'font-size="{sw(26):.1f}" font-weight="600" fill="#0d3fb0" text-anchor="middle" dominant-baseline="middle"', sw(6))
     for word, (zz, x, y, sv) in marks:
