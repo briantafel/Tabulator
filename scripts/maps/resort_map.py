@@ -15,7 +15,7 @@
    lift terminals.
 Writes RESORT_ID.png and RESORT_ID.svg (vector layers over the relief image).
 """
-import argparse, base64, io, json, math, os, sys, urllib.parse, urllib.request
+import argparse, base64, io, json, math, os, re, sys, urllib.parse, urllib.request
 from datetime import timedelta
 from pathlib import Path
 
@@ -72,7 +72,10 @@ def rings_of(geom):
     return []
 
 
-def ski_area(r, osm_id):
+EXTRA_IDS = set()      # ski-area ids found by the name fallback; lifts and runs of these count as the resort's
+
+
+def ski_area(r, osm_id, elev_name=None):
     """The resort's OpenSkiMap ski area (id from resort-elevations.json): outline rings."""
     if not osm_id:
         sys.exit(f"{r['id']}: no OpenSkiMap id in resort-elevations.json")
@@ -84,13 +87,33 @@ def ski_area(r, osm_id):
             name = f["properties"].get("name")
             print(f"ski area: '{name}' ({len(rings)} rings)")
             return rings, name
+    # The stored id is gone from today's export (OpenSkiMap re-keys and merges areas). Fall back, loudly, to the ski areas
+    # whose name shares a distinctive word with the stored name and whose outline is within 8 km of the resort's point.
+    name0 = (elev_name or "").lower()
+    words = {w for w in re.findall(r"[a-z]{4,}", name0)} - {"ski", "area", "resort", "mountain", "mount", "snow", "village"}
+    pt = r.get("nws") or (r.get("latlon") or [None, None])
+    got, ids = [], []
+    if words and pt and pt[0] is not None:
+        for f in stream_features("ski_areas"):
+            nm = (f["properties"].get("name") or "").lower()
+            if not words & set(re.findall(r"[a-z]{4,}", nm)):
+                continue
+            rings = [ring for ring in rings_of(f["geometry"]) if len(ring) > 2]
+            if rings and min(math.hypot((la - pt[0]) * 111.3, (lo - pt[1]) * 111.3 * math.cos(math.radians(pt[0]))) for ring in rings for la, lo in ring) < 8:
+                got += rings
+                ids.append(f["properties"].get("id"))
+                print(f"  fallback ski area: '{f['properties'].get('name')}' ({f['properties'].get('id')})")
+    if got:
+        print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} not found; using {len(ids)} area(s) matched by name and distance")
+        EXTRA_IDS.update(i for i in ids if i)
+        return got, elev_name
     sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found")
 
 
 def member_of(p, osm_id):
     for a in p.get("skiAreas") or []:
         aid = a.get("properties", {}).get("id") if isinstance(a, dict) else a
-        if aid == osm_id:
+        if aid == osm_id or aid in EXTRA_IDS:
             return True
     return False
 
@@ -165,7 +188,7 @@ def main():
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     r = resort(a.resort)
     elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(a.resort, {})
-    rings, area_name = ski_area(r, elev.get("osm_id"))
+    rings, area_name = ski_area(r, elev.get("osm_id"), elev.get("osm_name"))
     pts = np.array([p for ring in rings for p in ring])
     la0, la1, lo0, lo1 = pts[:, 0].min(), pts[:, 0].max(), pts[:, 1].min(), pts[:, 1].max()
     lat_c, lon_c = (la0 + la1) / 2, (lo0 + lo1) / 2

@@ -507,7 +507,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     timing = {}
     r = rm.resort(rid)
     elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(rid, {})
-    rings, area_name = rm.ski_area(r, elev.get("osm_id"))
+    rings, area_name = rm.ski_area(r, elev.get("osm_id"), elev.get("osm_name"))
     pts = np.array([p for ring in rings for p in ring])
     la0, la1, lo0, lo1 = pts[:, 0].min(), pts[:, 0].max(), pts[:, 1].min(), pts[:, 1].max()
     lat_c, lon_c = (la0 + la1) / 2, (lo0 + lo1) / 2
