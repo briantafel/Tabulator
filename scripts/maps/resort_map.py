@@ -78,12 +78,21 @@ EXTRA_IDS = set()      # ski-area ids found by the name fallback; lifts and runs
 def ski_area(r, osm_id, elev_name=None):
     """The resort's OpenSkiMap ski area (id from resort-elevations.json): outline rings."""
     if not osm_id:
-        sys.exit(f"{r['id']}: no OpenSkiMap id in resort-elevations.json")
+        print(f"WARNING {r['id']}: no OpenSkiMap id in resort-elevations.json; finding the area by name and distance")
     for f in stream_features("ski_areas"):
         if f["properties"].get("id") == osm_id:
             rings = [ring for ring in rings_of(f["geometry"]) if len(ring) > 2]
             if not rings:
-                print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} has no outline ({f['geometry']['type']}); trying name+distance fallback")
+                g = f["geometry"]
+                if g.get("type") == "Point":
+                    # OpenSkiMap maps this resort as a point only: frame it from a small square round the point; the caller
+                    # grows the crop to every run and lift tagged to this area (loudly)
+                    lo0, la0 = g["coordinates"][:2]
+                    d_ = 1.5 / 111.32
+                    dl = d_ / math.cos(math.radians(la0))
+                    print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} is a point, no outline; framing from its lifts and runs")
+                    return [[(la0 - d_, lo0 - dl), (la0 - d_, lo0 + dl), (la0 + d_, lo0 + dl), (la0 + d_, lo0 - dl), (la0 - d_, lo0 - dl)]], f["properties"].get("name")
+                print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} has no outline ({g.get('type')}); trying name+distance fallback")
                 break
             name = f["properties"].get("name")
             print(f"ski area: '{name}' ({len(rings)} rings)")

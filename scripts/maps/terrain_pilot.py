@@ -315,6 +315,7 @@ def build_snow(rid, crop, lat_c, lon_c, work):
             fine_w, grad_w = sk.downscale(dem_w, lat, lon, total, to_in)
             info.update(source="NBM", caption=CAPTION["nbm"], run=run.isoformat(), grid="NBM 2.5 km",
                         slr="NBM's own snow ratio", nbm_check="inside the NBM grid, values present")
+            grad_w = _usable_grad(grad_w, info)
             return _sampler(fine_w, grad_w, dem_w, wide), info
         log(f"NBM does not cover {rid}: {reason} -> using ECMWF IFS")
         info["nbm_check"] = f"not used: {reason}"
@@ -333,7 +334,19 @@ def build_snow(rid, crop, lat_c, lon_c, work):
                                   margin=(pad + 0.05, pad + 0.05), min_cnt=50, min_nb=6)
     info.update(source="IFS", caption=CAPTION["ifs"], run=run.isoformat(), grid=f"IFS {spacing}° ({spacing * 111.32:.0f} km), via {src}",
                 slr=f"{SLR_IFS:g}:1 placeholder (no temperature-dependent ratio yet)")
+    grad_w = _usable_grad(grad_w, info)
     return _sampler(fine_w, grad_w, dem_w, wide), info
+
+
+def _usable_grad(grad_w, info):
+    """The terrain step needs a positive snow-vs-height gradient. Where it learns none (flat or inverted: mixed
+    precipitation, a quiet run, a rain-snow line), draw the plain NBM/IFS field with no height term and SAY SO in the
+    caption, never 'terrain-adjusted' (Brian 2026-11-20: map the resort anyway)."""
+    if np.isfinite(grad_w).all() and float(np.max(grad_w)) > 0:
+        return grad_w
+    log("WARNING: no snow-vs-height gradient learned here: using the source field as is, NOT terrain-adjusted")
+    info.update(caption=info["caption"].split(" \u2022 ")[0] + " \u2022 not terrain-adjusted", terrain_adjusted=False)
+    return np.zeros_like(grad_w) if np.isfinite(grad_w).all() else np.nan_to_num(grad_w, nan=0.0, posinf=0.0, neginf=0.0) * 0.0
 
 
 def _sampler(fine_w, grad_w, dem_w, wide):
@@ -342,8 +355,8 @@ def _sampler(fine_w, grad_w, dem_w, wide):
     f_f = RegularGridInterpolator((ys, xs), fine_w[::-1], bounds_error=True)
     f_g = RegularGridInterpolator((ys, xs), grad_w[::-1], bounds_error=True)
     f_d = RegularGridInterpolator((ys, xs), dem_w[::-1], bounds_error=True)
-    if not np.isfinite(grad_w).all() or float(np.max(grad_w)) <= 0:
-        raise SystemExit("terrain step learned no snow-vs-height gradient here; refusing to label the map 'terrain-adjusted'")
+    if not np.isfinite(grad_w).all():
+        raise SystemExit("terrain step produced non-finite values; refusing")
 
     def sample(LA, LO, dem_m):
         q = np.stack([LA, LO], -1)
@@ -554,7 +567,8 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     global NON_US
     NON_US = r.get("region") == "Canada"
     elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(rid, {})
-    rings, area_name = rm.ski_area(r, elev.get("osm_id"), elev.get("osm_name"))
+    rings, area_name = rm.ski_area(r, elev.get("osm_id"), elev.get("osm_name") or r.get("name"))
+    oid = elev.get("osm_id") or ("fallback" if rm.EXTRA_IDS else None)     # no id on file: the fallback's ids stand in
     pts = np.array([p for ring in rings for p in ring])
     la0, la1, lo0, lo1 = pts[:, 0].min(), pts[:, 0].max(), pts[:, 1].min(), pts[:, 1].max()
     lat_c, lon_c = (la0 + la1) / 2, (lo0 + lo1) / 2
@@ -562,7 +576,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     half_km = max((la1 - la0) * 111.32, (lo1 - lo0) * 111.32 * k) / 2 + 0.45
     crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
     log(f"crop ±{half_km:.2f} km around {lat_c:.4f},{lon_c:.4f}")
-    lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
+    lifts, runs = rm.lifts_runs(crop, oid)
     # The OpenSkiMap polygon is often smaller than the terrain (Powder Mountain: runs and lifts spill 10-15% past it).
     # Grow the crop to hold every run and lift fetched, and fetch again, so the frame, the fit view and the picture all
     # see the same outline (a frame cut from the polygon alone left the top lobe and the Base marker off the screen).
@@ -577,7 +591,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
         half_km = need
         crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
         log(f"crop grown to ±{half_km:.2f} km to hold every run and lift")
-        lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
+        lifts, runs = rm.lifts_runs(crop, oid)
     # only lifts that exist today: OpenSkiMap also carries disused / abandoned / proposed / planned ones
     lifts_dropped = []
     keep_l = []
