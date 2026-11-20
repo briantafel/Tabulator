@@ -808,7 +808,12 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     over_nolab = list(over)
     lab = []
     depth_pts = []
-    for lv_, (x, y) in inside_label_points(lines, mask, px):
+    pts_lab = list(inside_label_points(lines, mask, px))
+    if nosnow:   # one 0" label in the middle of the skiable terrain (the point deepest inside the outline), Brian 2026-11-20
+        dt = distance_transform_edt(mask)
+        cy_, cx_ = np.unravel_index(int(np.argmax(dt)), dt.shape)
+        pts_lab = [(0.0, (float(cx_), float(cy_)))]
+    for lv_, (x, y) in pts_lab:
         if True:
             depth_pts.append((float(lv_), float(x), float(y)))
             lab += halo(x, y, f'{lv_:g}"', f'font-size="{sw(26):.1f}" font-weight="600" fill="#0d3fb0" text-anchor="middle" dominant-baseline="middle"', sw(6))
