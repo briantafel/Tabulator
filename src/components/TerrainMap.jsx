@@ -42,7 +42,9 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
   const src = `${import.meta.env.BASE_URL}${vec ? m.img_clean : m.img}`;
   /* A portrait render made for the full-screen view (m.full), when the run has one. */
   const fullPic = vec && m.full?.img ? m.full : null;
-  const fullSrc = fullPic ? `${import.meta.env.BASE_URL}${fullPic.img}` : src;
+  const B = import.meta.env.BASE_URL;
+  const fullSrc = fullPic ? `${B}${fullPic.img}` : src;
+  const fullVec = fullPic?.fill && fullPic?.lines ? { fill: `${B}${fullPic.fill}`, lines: `${B}${fullPic.lines}`, px: fullPic.px } : null;
   const alt = `Five-day snow across ${id} by terrain`;
   return (
     <section className="tm" aria-label="Snow by terrain">
@@ -60,7 +62,7 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
         )}
       </div>
       {zoom && full && <TerrainFullscreen src={fullSrc} alt={alt} title={name || "Snow by terrain"} metric={metric}
-          labels={fullPic ? fullPic.labels : vec ? m.labels : null} pic={fullPic?.ref} focus={fullPic?.focus}
+          labels={fullPic ? fullPic.labels : vec ? m.labels : null} pic={fullPic?.ref} focus={fullPic?.focus} vec={fullVec}
           legend={vec && m.range_in ? { range: m.range_in, label: m.label, day } : null} onClose={() => setFull(false)} />}
       <div className="tm-cap">
         <span>{m.label}</span>

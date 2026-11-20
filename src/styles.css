@@ -1694,6 +1694,10 @@ body { background: #F2F2F2; }
   position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none;
   will-change: transform; pointer-events: none; user-select: none; -webkit-user-drag: none;
 }
+/* Vector layers: viewport-sized plus half a screen of margin each side, so a pan before the redraw never shows a gap. */
+.tmf-vec { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; overflow: hidden; pointer-events: none; }
+.tmf-vec-fill { mix-blend-mode: multiply; opacity: .85; }
+.tmf-labs { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform; font-family: Inter, system-ui, sans-serif; }
 .tmf-img > img { display: block; width: 100%; height: 100%; -webkit-user-drag: none; }
 /* Floating legend: a sibling of the stage, not inside it, so pan and zoom never move it.
    Inset 15 from the sides and the bottom (the top bar's left padding, so the card lines up with the title; plus the home-indicator inset); it does

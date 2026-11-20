@@ -86,7 +86,13 @@
       "ft": 10552
      }
     ]
-   }
+   },
+   "fill": "terrain/alta-full-fill.svg",
+   "lines": "terrain/alta-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ]
   }
  }
 }

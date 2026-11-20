@@ -3,15 +3,16 @@ import { DEPTH_INK, INK, layoutDepth, layoutMark } from "../lib/terrainLabels.js
 /* The Snow by terrain labels, drawn as SVG over the picture (Brian, 2026-11-20).
    viewBox is the picture in Figma px (358 on the sheet, 874 full screen), so
    the whole overlay scales with the picture and the sheet's --u. Full screen
-   passes `counter`: each label is scaled by 1 / zoom (CSS var --tm-s, written by
+   passes `counter` (or, better, `screen`: labels positioned in screen px from the
+   --k CSS var, px per reference px, never scaled at all, so they are always crisp): each label is scaled by 1 / zoom (CSS var --tm-s, written by
    TerrainFullscreen on every pan/zoom) so type stays the same size on screen
    while the map zooms under it. */
-export default function TerrainLabels({ labels, metric, S, counter = false }) {
+export default function TerrainLabels({ labels, metric, S, counter = false, screen = false }) {
   const at = (x, y) => ({
-    style: { transform: counter ? `translate(${x}px, ${y}px) scale(calc(1 / var(--tm-s, 1)))` : `translate(${x}px, ${y}px)` },
+    style: { transform: screen ? `translate(calc(var(--k) * ${x}), calc(var(--k) * ${y}))` : counter ? `translate(${x}px, ${y}px) scale(calc(1 / var(--tm-s, 1)))` : `translate(${x}px, ${y}px)` },
   });
   return (
-    <svg className="tm-vec" viewBox={`0 0 ${S.w ?? S.size} ${S.h ?? S.size}`} aria-hidden="true" focusable="false">
+    <svg className="tm-vec" {...(screen ? { width: 1, height: 1, style: { position: "absolute", left: 0, top: 0, inset: "auto", width: 1, height: 1, overflow: "visible" } } : { viewBox: `0 0 ${S.w ?? S.size} ${S.h ?? S.size}` })} aria-hidden="true" focusable="false">
       {(labels.depth ?? []).map((d, i) => {
         const L = layoutDepth(d, metric, S);
         return (

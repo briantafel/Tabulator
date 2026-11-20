@@ -83,6 +83,9 @@ jobs:
         env:
           OSM_DIR: osm
         run: python3 scripts/maps/terrain_pilot.py "out/$R" "$R" $APP
+      - name: App vector layers (full-screen map)
+        if: inputs.app
+        run: pip install numpy >/dev/null && python3 scripts/maps/app_vectors.py "out/$R" "$R"
       - name: Full files to the release
         if: always()
         run: |
