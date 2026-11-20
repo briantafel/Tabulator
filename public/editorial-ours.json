@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-20T06:14:40.287Z",
+ "generatedAt": "2026-11-20T07:17:42.679Z",
  "forecastGeneratedAt": "2026-11-20T06:07:48.157Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-20T02:34:05.282Z",
+ "blendGeneratedAt": "2026-11-20T07:17:40.144Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -12,29 +12,63 @@
   "days": 5,
   "toLabel": "Tuesday Nov 24"
  },
- "overview": "A Pacific storm brings snow to Utah and the northern Rockies through Friday and Saturday, then a weaker system follows Monday. The central Rockies get snow showers Friday into Saturday, and the WPC expects more wet systems over the West into midweek.",
+ "overview": "A Pacific Northwest storm system brings snow to the Utah, Wyoming and Montana mountains through Saturday, then a weaker system follows around Monday. The Central Rockies get showers through Saturday and more fast-moving storms are possible through Thanksgiving week.",
  "regions": [
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A Pacific storm system brings snow to Utah's mountains through early Saturday, focused increasingly on northern Utah. Powder Mountain is the top resort, with a 10 inch total and 9 inches on Friday. The NWS is calling for more, 12 to 20 inches over Friday through Monday. A Winter Storm Warning runs from Thursday night to Saturday. Dry weather returns for the weekend before a weaker system hits Monday."
+   "text": "A storm from the Pacific Northwest passes over Utah through early Saturday, with snow focused increasingly on northern Utah. Powder Mountain leads with 10 inches, most of it on Friday. The NWS is calling for more, 12 to 20 inches Friday through Monday, and a Winter Storm Warning runs from Thursday night to Saturday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Snow rates pick up Thursday night into Friday, with the heaviest totals for the mountains west of the Divide. Grand Targhee is the top resort, with a 10 inch total and 6 inches on Friday. Snow then shifts east Friday afternoon, bringing snow to southern and central Wyoming and possible travel trouble on I-80. A Winter Weather Advisory covers the area through Friday night, and the weekend stays unsettled and cold."
+   "text": "A system brings snow to the western slopes and passes Friday, with the Tetons under a Winter Weather Advisory. Grand Targhee leads with 10 inches, 6 of them on Friday. Winds ease and more snow showers follow into Monday."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Snow showers move across the Colorado and Utah high country tonight into Saturday, with a possible snow squall near US 40 and I-70 Friday morning. Telluride is the top resort, with a 7 inch total. Shower activity drops off Saturday, then picks up again Sunday night and Monday with a stronger cold push."
+   "text": "Moisture from a storm moving across the Intermountain West brings snow to the mountains through Saturday. Telluride and Crested Butte both expect about 7 inches. Some gusts could make travel harder, and a brief snow squall is possible near Interstate 70 Friday morning."
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Climate Prediction Center expects a weaker, more progressive system to move through the West around Wednesday Nov 25 into the following days. It has less confidence in the details.",
+  "sources": [
+   {
+    "name": "NWS SLC Area Forecast Discussion",
+    "issuedAt": "2026-11-20T05:21:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
+   },
+   {
+    "name": "NWS RIW Area Forecast Discussion",
+    "issuedAt": "2026-11-20T05:27:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
+   },
+   {
+    "name": "NWS TFX Area Forecast Discussion",
+    "issuedAt": "2026-11-20T06:40:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
+   },
+   {
+    "name": "NWS GJT Area Forecast Discussion",
+    "issuedAt": "2026-11-20T05:42:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-19T19:58:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-19T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-20T02:34:05.282Z"
+   "issuedAt": "2026-11-20T07:17:40.144Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -50,7 +84,7 @@
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-20T01:05:00+00:00"
+   "issuedAt": "2026-11-20T06:40:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
@@ -58,12 +92,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T06:14:40.287Z"
+   "issuedAt": "2026-11-20T07:17:42.679Z"
   }
  ],
  "api": {
   "day": "2026-11-20",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
