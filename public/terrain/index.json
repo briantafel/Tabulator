@@ -2555,5 +2555,1021 @@
     ]
    }
   }
+ },
+ "mammoth": {
+  "img": "terrain/mammoth-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 3.9,
+  "top_in": 8.1,
+  "base_ft": 8087,
+  "top_ft": 11019,
+  "img_clean": "terrain/mammoth-sheet.webp",
+  "range_in": [
+   3.3,
+   8.2
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.8239,
+     "y": 0.3092,
+     "in": 4.0
+    },
+    {
+     "x": 0.4291,
+     "y": 0.5259,
+     "in": 6.0
+    },
+    {
+     "x": 0.3172,
+     "y": 0.6407,
+     "in": 8.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9128,
+     "y": 0.5576,
+     "kind": "base",
+     "in": 3.9,
+     "ft": 8087
+    },
+    {
+     "x": 0.3264,
+     "y": 0.6625,
+     "kind": "top",
+     "in": 8.1,
+     "ft": 11020
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/mammoth-full.webp",
+   "fill": "terrain/mammoth-full-fill.svg",
+   "lines": "terrain/mammoth-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3601,
+    "x1": 0.9384,
+    "y1": 0.5781
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7977,
+      "y": 0.3816,
+      "in": 4.0
+     },
+     {
+      "x": 0.4351,
+      "y": 0.4808,
+      "in": 6.0
+     },
+     {
+      "x": 0.3324,
+      "y": 0.5334,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8793,
+      "y": 0.4954,
+      "kind": "base",
+      "in": 3.9,
+      "ft": 8087
+     },
+     {
+      "x": 0.3408,
+      "y": 0.5434,
+      "kind": "top",
+      "in": 8.1,
+      "ft": 11020
+     }
+    ]
+   }
+  }
+ },
+ "northstar": {
+  "img": "terrain/northstar-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 4.0,
+  "top_in": 8.3,
+  "base_ft": 6302,
+  "top_ft": 8611,
+  "img_clean": "terrain/northstar-sheet.webp",
+  "range_in": [
+   3.7,
+   8.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.8025,
+     "y": 0.2558,
+     "in": 4.0
+    },
+    {
+     "x": 0.5441,
+     "y": 0.4887,
+     "in": 6.0
+    },
+    {
+     "x": 0.4137,
+     "y": 0.8812,
+     "in": 8.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.3302,
+     "y": 0.1066,
+     "kind": "base",
+     "in": 4.0,
+     "ft": 6302
+    },
+    {
+     "x": 0.4603,
+     "y": 0.8731,
+     "kind": "top",
+     "in": 8.3,
+     "ft": 8611
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/northstar-full.webp",
+   "fill": "terrain/northstar-full-fill.svg",
+   "lines": "terrain/northstar-full-lines.svg",
+   "px": [
+    2609,
+    4096
+   ],
+   "ref": [
+    556.71,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1567,
+    "y0": 0.1691,
+    "x1": 0.8429,
+    "y1": 0.7691
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8022,
+      "y": 0.3135,
+      "in": 4.0
+     },
+     {
+      "x": 0.5439,
+      "y": 0.4619,
+      "in": 6.0
+     },
+     {
+      "x": 0.4136,
+      "y": 0.7119,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3301,
+      "y": 0.2185,
+      "kind": "base",
+      "in": 4.0,
+      "ft": 6302
+     },
+     {
+      "x": 0.4601,
+      "y": 0.7068,
+      "kind": "top",
+      "in": 8.3,
+      "ft": 8611
+     }
+    ]
+   }
+  }
+ },
+ "wolf-creek": {
+  "img": "terrain/wolf-creek-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 4.0,
+  "top_in": 4.7,
+  "base_ft": 10260,
+  "top_ft": 11761,
+  "img_clean": "terrain/wolf-creek-sheet.webp",
+  "range_in": [
+   4.0,
+   4.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6758,
+     "y": 0.4635,
+     "in": 4.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.6901,
+     "y": 0.436,
+     "kind": "base",
+     "in": 4.0,
+     "ft": 10261
+    },
+    {
+     "x": 0.1373,
+     "y": 0.5377,
+     "kind": "top",
+     "in": 4.7,
+     "ft": 11761
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/wolf-creek-full.webp",
+   "fill": "terrain/wolf-creek-full-fill.svg",
+   "lines": "terrain/wolf-creek-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2755,
+    "x1": 0.9384,
+    "y1": 0.6627
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6665,
+      "y": 0.4519,
+      "in": 4.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6801,
+      "y": 0.4389,
+      "kind": "base",
+      "in": 4.0,
+      "ft": 10261
+     },
+     {
+      "x": 0.1572,
+      "y": 0.4869,
+      "kind": "top",
+      "in": 4.7,
+      "ft": 11761
+     }
+    ]
+   }
+  }
+ },
+ "aspen-highlands": {
+  "img": "terrain/aspen-highlands-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 4.6,
+  "top_in": 7.1,
+  "base_ft": 8094,
+  "top_ft": 11576,
+  "img_clean": "terrain/aspen-highlands-sheet.webp",
+  "range_in": [
+   4.6,
+   7.2
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6179,
+     "y": 0.1223,
+     "in": 5.0
+    },
+    {
+     "x": 0.4453,
+     "y": 0.4696,
+     "in": 6.0
+    },
+    {
+     "x": 0.3576,
+     "y": 0.8494,
+     "in": 7.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.6095,
+     "y": 0.0438,
+     "kind": "base",
+     "in": 4.6,
+     "ft": 8095
+    },
+    {
+     "x": 0.342,
+     "y": 0.832,
+     "kind": "top",
+     "in": 7.1,
+     "ft": 11576
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/aspen-highlands-full.webp",
+   "fill": "terrain/aspen-highlands-full-fill.svg",
+   "lines": "terrain/aspen-highlands-full-lines.svg",
+   "px": [
+    3433,
+    4096
+   ],
+   "ref": [
+    732.53,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2904,
+    "y0": 0.0732,
+    "x1": 0.7093,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6178,
+      "y": 0.1526,
+      "in": 5.0
+     },
+     {
+      "x": 0.4451,
+      "y": 0.4436,
+      "in": 6.0
+     },
+     {
+      "x": 0.3574,
+      "y": 0.762,
+      "in": 7.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6094,
+      "y": 0.0867,
+      "kind": "base",
+      "in": 4.6,
+      "ft": 8095
+     },
+     {
+      "x": 0.3418,
+      "y": 0.7474,
+      "kind": "top",
+      "in": 7.1,
+      "ft": 11576
+     }
+    ]
+   }
+  }
+ },
+ "arapahoe-basin": {
+  "img": "terrain/arapahoe-basin-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 3.0,
+  "top_in": 2.9,
+  "base_ft": 10790,
+  "top_ft": 12475,
+  "img_clean": "terrain/arapahoe-basin-sheet.webp",
+  "range_in": [
+   2.7,
+   3.0
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6759,
+     "y": 0.2136,
+     "in": 3.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.5892,
+     "y": 0.0926,
+     "kind": "base",
+     "in": 3.0,
+     "ft": 10790
+    },
+    {
+     "x": 0.6046,
+     "y": 0.5924,
+     "kind": "top",
+     "in": 2.9,
+     "ft": 12475
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/arapahoe-basin-full.webp",
+   "fill": "terrain/arapahoe-basin-full-fill.svg",
+   "lines": "terrain/arapahoe-basin-full-lines.svg",
+   "px": [
+    3150,
+    4096
+   ],
+   "ref": [
+    672.14,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2158,
+    "y0": 0.1138,
+    "x1": 0.7842,
+    "y1": 0.8244
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6759,
+      "y": 0.2488,
+      "in": 3.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5892,
+      "y": 0.1557,
+      "kind": "base",
+      "in": 3.0,
+      "ft": 10790
+     },
+     {
+      "x": 0.6046,
+      "y": 0.5402,
+      "kind": "top",
+      "in": 2.9,
+      "ft": 12475
+     }
+    ]
+   }
+  }
+ },
+ "sun-valley": {
+  "img": "terrain/sun-valley-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 1.2,
+  "top_in": 2.8,
+  "base_ft": 5760,
+  "top_ft": 9150,
+  "img_clean": "terrain/sun-valley-sheet.webp",
+  "range_in": [
+   1.2,
+   2.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4369,
+     "y": 0.4319,
+     "in": 2.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.8448,
+     "y": 0.3265,
+     "kind": "base",
+     "in": 1.2,
+     "ft": 5760
+    },
+    {
+     "x": 0.1726,
+     "y": 0.6905,
+     "kind": "top",
+     "in": 2.8,
+     "ft": 9150
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/sun-valley-full.webp",
+   "fill": "terrain/sun-valley-full-fill.svg",
+   "lines": "terrain/sun-valley-full-lines.svg",
+   "px": [
+    2414,
+    4096
+   ],
+   "ref": [
+    515.1,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1292,
+    "y0": 0.1925,
+    "x1": 0.8708,
+    "y1": 0.7458
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4369,
+      "y": 0.429,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8448,
+      "y": 0.3668,
+      "kind": "base",
+      "in": 1.2,
+      "ft": 5760
+     },
+     {
+      "x": 0.1726,
+      "y": 0.5814,
+      "kind": "top",
+      "in": 2.8,
+      "ft": 9150
+     }
+    ]
+   }
+  }
+ },
+ "big-sky": {
+  "img": "terrain/big-sky-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 3.4,
+  "top_in": 9.1,
+  "base_ft": 6816,
+  "top_ft": 11160,
+  "img_clean": "terrain/big-sky-sheet.webp",
+  "range_in": [
+   3.1,
+   9.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7765,
+     "y": 0.6333,
+     "in": 4.0
+    },
+    {
+     "x": 0.479,
+     "y": 0.531,
+     "in": 6.0
+    },
+    {
+     "x": 0.1695,
+     "y": 0.5956,
+     "in": 8.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.8873,
+     "y": 0.5587,
+     "kind": "base",
+     "in": 3.4,
+     "ft": 6816
+    },
+    {
+     "x": 0.1068,
+     "y": 0.579,
+     "kind": "top",
+     "in": 9.1,
+     "ft": 11161
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/big-sky-full.webp",
+   "fill": "terrain/big-sky-full-fill.svg",
+   "lines": "terrain/big-sky-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2823,
+    "x1": 0.9384,
+    "y1": 0.656
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7517,
+      "y": 0.5295,
+      "in": 4.0
+     },
+     {
+      "x": 0.4812,
+      "y": 0.4832,
+      "in": 6.0
+     },
+     {
+      "x": 0.1997,
+      "y": 0.5125,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8525,
+      "y": 0.4957,
+      "kind": "base",
+      "in": 3.4,
+      "ft": 6816
+     },
+     {
+      "x": 0.1426,
+      "y": 0.5049,
+      "kind": "top",
+      "in": 9.1,
+      "ft": 11161
+     }
+    ]
+   }
+  }
+ },
+ "taos": {
+  "img": "terrain/taos-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 2.0,
+  "top_in": 3.1,
+  "base_ft": 9349,
+  "top_ft": 11816,
+  "img_clean": "terrain/taos-sheet.webp",
+  "range_in": [
+   2.0,
+   3.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4423,
+     "y": 0.5959,
+     "in": 3.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.4225,
+     "y": 0.0621,
+     "kind": "base",
+     "in": 2.0,
+     "ft": 9349
+    },
+    {
+     "x": 0.3811,
+     "y": 0.6439,
+     "kind": "top",
+     "in": 3.1,
+     "ft": 11816
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/taos-full.webp",
+   "fill": "terrain/taos-full-fill.svg",
+   "lines": "terrain/taos-full-lines.svg",
+   "px": [
+    2873,
+    4096
+   ],
+   "ref": [
+    613.04,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1883,
+    "y0": 0.1472,
+    "x1": 0.8114,
+    "y1": 0.791
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4421,
+      "y": 0.5364,
+      "in": 3.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4224,
+      "y": 0.1619,
+      "kind": "base",
+      "in": 2.0,
+      "ft": 9349
+     },
+     {
+      "x": 0.381,
+      "y": 0.5701,
+      "kind": "top",
+      "in": 3.1,
+      "ft": 11816
+     }
+    ]
+   }
+  }
+ },
+ "whitewater": {
+  "img": "terrain/whitewater-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.6,
+  "top_in": 1.3,
+  "base_ft": 4558,
+  "top_ft": 6754,
+  "img_clean": "terrain/whitewater-sheet.webp",
+  "range_in": [
+   0.6,
+   1.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3365,
+     "y": 0.3976,
+     "in": 1.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0557,
+     "y": 0.536,
+     "kind": "base",
+     "in": 0.6,
+     "ft": 4559
+    },
+    {
+     "x": 0.8313,
+     "y": 0.3518,
+     "kind": "top",
+     "in": 1.3,
+     "ft": 6754
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/whitewater-full.webp",
+   "fill": "terrain/whitewater-full-fill.svg",
+   "lines": "terrain/whitewater-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3378,
+    "x1": 0.9384,
+    "y1": 0.6005
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3465,
+      "y": 0.4211,
+      "in": 1.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0827,
+      "y": 0.486,
+      "kind": "base",
+      "in": 0.6,
+      "ft": 4559
+     },
+     {
+      "x": 0.8116,
+      "y": 0.3997,
+      "kind": "top",
+      "in": 1.3,
+      "ft": 6754
+     }
+    ]
+   }
+  }
+ },
+ "red-mountain": {
+  "img": "terrain/red-mountain-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": 1.2,
+  "top_in": 2.1,
+  "base_ft": 3788,
+  "top_ft": 6693,
+  "img_clean": "terrain/red-mountain-sheet.webp",
+  "range_in": [
+   1.2,
+   2.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.395,
+     "y": 0.6279,
+     "in": 2.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.8638,
+     "y": 0.5882,
+     "kind": "base",
+     "in": 1.2,
+     "ft": 3788
+    },
+    {
+     "x": 0.1591,
+     "y": 0.2077,
+     "kind": "top",
+     "in": 2.1,
+     "ft": 6693
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/red-mountain-full.webp",
+   "fill": "terrain/red-mountain-full-fill.svg",
+   "lines": "terrain/red-mountain-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2634,
+    "x1": 0.9384,
+    "y1": 0.6748
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4019,
+      "y": 0.5289,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8411,
+      "y": 0.5103,
+      "kind": "base",
+      "in": 1.2,
+      "ft": 3788
+     },
+     {
+      "x": 0.1808,
+      "y": 0.3324,
+      "kind": "top",
+      "in": 2.1,
+      "ft": 6693
+     }
+    ]
+   }
+  }
+ },
+ "revelstoke": {
+  "img": "terrain/revelstoke-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 1696,
+  "top_ft": 7284,
+  "img_clean": "terrain/revelstoke-sheet.webp",
+  "range_in": [
+   0.0,
+   0.4
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6857,
+     "y": 0.4907,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0408,
+     "y": 0.7046,
+     "kind": "base",
+     "in": null,
+     "ft": 1695
+    },
+    {
+     "x": 0.7987,
+     "y": 0.6133,
+     "kind": "top",
+     "in": null,
+     "ft": 7285
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/revelstoke-full.webp",
+   "fill": "terrain/revelstoke-full-fill.svg",
+   "lines": "terrain/revelstoke-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.281,
+    "x1": 0.9384,
+    "y1": 0.6572
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6721,
+      "y": 0.4648,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0754,
+      "y": 0.5636,
+      "kind": "base",
+      "in": null,
+      "ft": 1695
+     },
+     {
+      "x": 0.7766,
+      "y": 0.5214,
+      "kind": "top",
+      "in": null,
+      "ft": 7285
+     }
+    ]
+   }
+  }
  }
 }
