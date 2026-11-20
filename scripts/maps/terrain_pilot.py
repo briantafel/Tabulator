@@ -40,6 +40,7 @@ OLD_PX = 1800                 # width in px of the render grid resort_map.py use
 PAD_M = 150.0                 # frame = outline + 150 m (settled)
 MARGIN_M = 300.0              # extra terrain around the frame in the heightmap (shading context)
 EXAG = 2.0
+HIRES_HM = 4096               # heightmap samples per side in hires mode (= the mesh: 256 x 2^4)
 EXPOSURE = -0.9
 LIGHTS = [["even", 315, 45, 2.3, 18, 0.42, [135, 40, 0.9]]]      # settled 2026-11-19
 LEVELS = dict(p_lo=0.5, p_hi=99.7, out_lo=0.52, out_hi=0.975, gamma=0.85)   # settled levels step
@@ -50,7 +51,7 @@ FT = 3.28084
 # App layout (Brian 2026-11-20): one render serves the resort sheet (square) and the full-screen map (pan/zoom).
 # Reference phone 402 x 874; full-screen band between the header and the legend, 15 px side margins.
 REF_W, REF_H = 402.0, 874.0
-BAND_W = REF_W - 2 * 15.0           # 372
+SIDE_PX = 10.0                      # outline to screen side at the fit view (Brian 2026-11-20)
 BAND_TOP, BAND_BOT = 64.0, 118.0    # header row + gap above; legend card + margins below
 BAND_H = REF_H - BAND_TOP - BAND_BOT
 BAND_CY = BAND_TOP + BAND_H / 2     # 410: where the outline's centre sits
@@ -137,13 +138,77 @@ def merge_tiles(urls, bbox, res, resampling, tolerate_missing):
     return z
 
 
+def tiles_usgs_1m(b):
+    """USGS 3DEP 1 m lidar DEMs over bbox, newest first (TNM Access API). Projects overlap; merge fills from the next."""
+    import urllib.parse
+    import urllib.request
+    W, S, E, N = b
+    q = urllib.parse.urlencode({"datasets": "Digital Elevation Model (DEM) 1 meter", "bbox": f"{W:.5f},{S:.5f},{E:.5f},{N:.5f}",
+                                "max": "100", "outputFormat": "JSON"})
+
+    def go():
+        with urllib.request.urlopen("https://tnmaccess.nationalmap.gov/api/v1/products?" + q, timeout=90) as r:
+            return json.load(r)
+    items = retry(go, "TNM Access 1 m DEM query").get("items", [])
+    items = [i for i in items if i.get("downloadURL", "").endswith(".tif")]
+    items.sort(key=lambda i: i.get("publicationDate", ""), reverse=True)
+    log(f"  3DEP 1 m: {len(items)} tiles: " + "; ".join(f"{i['title']} ({i.get('publicationDate')})" for i in items[:6]))
+    return ["/vsicurl/" + i["downloadURL"] for i in items]
+
+
+def merge_1m(urls, bbox, res):
+    """1 m UTM tiles -> one lon/lat grid at `res` deg, first (newest) tile wins, nodata (-9999) where none covers."""
+    from rasterio.vrt import WarpedVRT
+    srcs = []
+    for u in urls:
+        try:
+            src = rasterio.open(u)
+            srcs.append(WarpedVRT(src, crs="EPSG:4326", resampling=Resampling.bilinear, src_nodata=src.nodata, nodata=-9999))
+        except Exception as e:  # noqa: BLE001
+            log(f"  1 m tile skipped: {u.split('/')[-1]}: {str(e)[:100]}")
+    if not srcs:
+        raise RuntimeError("no 1 m tile could be opened")
+    arr, _ = merge(srcs, bounds=bbox, res=(res, res), resampling=Resampling.bilinear, nodata=-9999)
+    return arr[0].astype("float32")
+
+
 def is_us(lat, lon):
     return 24.0 < lat < 49.2 and -125.0 < lon < -66.0
 
 
-def load_dem_native(bbox, lat_c, lon_c):
+def load_dem_1m(bbox, lat_c, lon_c):
+    """3DEP 1 m lidar (about 1.0 x 0.76 m cells), holes filled from the 10 m 3DEP and said so. None if there is no 1 m coverage."""
+    res = 1 / 111320.0
+    urls = tiles_usgs_1m(bbox)
+    if not urls:
+        return None
+    z = retry(lambda: merge_1m(urls, bbox, res), "USGS 3DEP 1 m")
+    bad = z < -500
+    cover = 1 - bad.mean()
+    if cover < 0.5:
+        log(f"  WARNING 1 m lidar covers only {cover:.0%} of the box")
+        return None
+    filled = float(bad.mean())
+    if bad.any():
+        coarse = retry(lambda: merge_tiles(tiles_usgs(bbox), bbox, res, Resampling.bilinear, False), "USGS 3DEP 10 m (void fill)")
+        z[bad] = coarse[bad]
+        del coarse
+        log(f"  WARNING {filled:.2%} of the 1 m grid had no lidar; filled from the 10 m DEM")
+    info = {"source": "USGS 3DEP 1 m lidar DEM" + (f" (+{filled:.1%} from 10 m)" if filled else ""), "native_res_deg": res,
+            "native_res_m": [round(res * 111320, 2), round(res * 111320 * math.cos(math.radians(lat_c)), 2)],
+            "native_res_m_note": "N-S x E-W", "native_shape": list(z.shape), "voids_filled_fraction": round(filled, 5), "fine": True}
+    log(f"DEM {info['source']}: {z.shape}, {z.min():.0f}-{z.max():.0f} m")
+    return z, bbox[0], bbox[3], res, info
+
+
+def load_dem_native(bbox, lat_c, lon_c, fine=False):
     """Native-grid DEM over bbox: USGS 3DEP 1/3 arc-sec (US) or Copernicus GLO-30 (elsewhere).
     Returns (z, lon0, lat1, res_deg, info). A US resort that cannot get 3DEP fails (no silent downgrade)."""
+    if fine and is_us(lat_c, lon_c):
+        got = load_dem_1m(bbox, lat_c, lon_c)
+        if got:
+            return got
+        log("  WARNING hires asked for but no usable 1 m lidar here: using the 10 m DEM")
     if is_us(lat_c, lon_c):
         res, src = 1 / 10800, "USGS 3DEP 1/3 arc-sec (10 m)"
         z = retry(lambda: merge_tiles(tiles_usgs(bbox), bbox, res, Resampling.bilinear, False), "USGS 3DEP")
@@ -432,7 +497,7 @@ def contours(field, levels, sigma, scale, flip=None):
 
 
 # ---------------------------------------------------------------- main
-def run(out, rid, px=4096, work=None, app=False):
+def run(out, rid, px=4096, work=None, app=False, hires=False):
     t_start = time.time()
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
@@ -479,11 +544,12 @@ def run(out, rid, px=4096, work=None, app=False):
     if app:
         # Reference px -> metres: the outline (+150 m each side) must fit the band at the fit view.
         ow, oh = (x1 - x0) * m_old, (y1 - y0) * m_old
-        mu = max(ow / BAND_W, oh / BAND_H)
+        ow_t, oh_t = ow - 2 * PAD_M, oh - 2 * PAD_M              # the outline itself: this is what fills the band
+        mu = max(ow_t / (REF_W - 2 * SIDE_PX), oh_t / BAND_H)
         S_sheet = max(ow, oh)                      # the sheet's square frame: the settled rule
         side_m = REF_H * mu                        # the render is a square as tall as the full-screen picture
         f_lat -= (REF_H / 2 - BAND_CY) * mu / 111320.0   # outline centre sits at BAND_CY from the top
-        app_g = {"mu": mu, "ow": ow, "oh": oh, "S_sheet": S_sheet}
+        app_g = {"mu": mu, "ow": ow, "oh": oh, "ow_t": ow_t, "oh_t": oh_t, "S_sheet": S_sheet}
         log(f"app layout: {mu:.2f} m per reference px; outline+pad {ow:.0f} x {oh:.0f} m; render {side_m / 1000:.2f} km square")
     kf = math.cos(math.radians(f_lat))
 
@@ -499,23 +565,42 @@ def run(out, rid, px=4096, work=None, app=False):
 
     # --- DEM on the native grid, region = frame + margin
     t0 = time.time()
-    dem, dlon0, dlat1, dres, dem_info = load_dem_native(rbox, f_lat, f_lon)
+    dem, dlon0, dlat1, dres, dem_info = load_dem_native(rbox, f_lat, f_lon, fine=hires)
     nr, nc = dem.shape
     lat_nat = dlat1 - (np.arange(nr) + 0.5) * dres
     lon_nat = dlon0 + (np.arange(nc) + 0.5) * dres
-    spl = RectBivariateSpline(lat_nat[::-1], lon_nat, dem[::-1], kx=3, ky=3, s=0)
-    # heightmap: 2 render px per sample, bicubic from the native grid
-    hn = int(round(px / 2 * region_m / side_m))
-    hlat = rbox[3] - (np.arange(hn) + 0.5) * (rbox[3] - rbox[1]) / hn
-    hlon = rbox[0] + (np.arange(hn) + 0.5) * (rbox[2] - rbox[0]) / hn
-    z = spl(hlat[::-1], hlon)[::-1].astype("float64")
+    if dem_info.get("fine"):
+        # 1 m grid: too big for a bicubic spline. The heightmap is sampled straight from it (bilinear, 1.6 m cells);
+        # snow and lifts only need elevation to ~6 m, so they use a block-averaged copy.
+        from scipy.ndimage import map_coordinates
+        hn = HIRES_HM
+        hlat = rbox[3] - (np.arange(hn) + 0.5) * (rbox[3] - rbox[1]) / hn
+        hlon = rbox[0] + (np.arange(hn) + 0.5) * (rbox[2] - rbox[0]) / hn
+        rows = ((dlat1 - hlat) / dres - 0.5).astype("float32")
+        cols = ((hlon - dlon0) / dres - 0.5).astype("float32")
+        z = map_coordinates(dem, [np.broadcast_to(rows[:, None], (hn, hn)), np.broadcast_to(cols[None, :], (hn, hn))],
+                            order=1, mode="nearest").astype("float64")
+        k = 6
+        r2, c2 = nr // k * k, nc // k * k
+        coarse = dem[:r2, :c2].reshape(r2 // k, k, c2 // k, k).mean((1, 3))
+        lat_c_ = lat_nat[:r2].reshape(-1, k).mean(1)
+        lon_c_ = lon_nat[:c2].reshape(-1, k).mean(1)
+        spl = RectBivariateSpline(lat_c_[::-1], lon_c_, coarse[::-1], kx=3, ky=3, s=0)
+        del coarse
+    else:
+        spl = RectBivariateSpline(lat_nat[::-1], lon_nat, dem[::-1], kx=3, ky=3, s=0)
+        # heightmap: 2 render px per sample, bicubic from the native grid
+        hn = int(round(px / 2 * region_m / side_m))
+        hlat = rbox[3] - (np.arange(hn) + 0.5) * (rbox[3] - rbox[1]) / hn
+        hlon = rbox[0] + (np.arange(hn) + 0.5) * (rbox[2] - rbox[0]) / hn
+        z = spl(hlat[::-1], hlon)[::-1].astype("float64")
     zmin, zmax = float(z.min()), float(z.max())
     h16 = np.round((z - zmin) / (zmax - zmin) * 65535).astype("uint16")
     hm_png = out / f"{rid}-heightmap16.png"
     Image.fromarray(h16).save(hm_png, optimize=False)
     dem_info.update(heightmap_px=hn, heightmap_spacing_m=round(region_m / hn, 2), heightmap_z_m=[round(zmin, 1), round(zmax, 1)],
                     heightmap_quantisation_m=round((zmax - zmin) / 65535, 3),
-                    upsample_note="bicubic from the native grid; detail is limited by the native DEM, not the mesh")
+                    upsample_note=("bilinear from the 1 m lidar grid" if dem_info.get("fine") else "bicubic from the native grid; detail is limited by the native DEM, not the mesh"))
     timing["dem_s"] = round(time.time() - t0)
 
     # --- relief (Blender) at px x px
@@ -524,7 +609,7 @@ def run(out, rid, px=4096, work=None, app=False):
             "light": LIGHTS, "exposure": EXPOSURE, "samples": int(os.environ.get("SAMPLES", "48")),
             "noise_scale": 2500.0 / OLD_PX * px * region_m / side_m,      # same grain size per pixel as the 1800 px maps
             "bump_distance": 0.0005 * m_px / m_old,
-            "mesh_base": 160, "render_levels": 3, "viewport_levels": 1, "levels": LEVELS,
+            "mesh_base": 256 if hires else 160, "render_levels": 4 if hires else 3, "viewport_levels": 1, "levels": LEVELS,
             "tiles": 2 if px >= 2048 else 1}
     bl = run_blender(hm_png, meta, out / rid)
     raw = stitch(out / rid, px)
@@ -704,9 +789,9 @@ def run(out, rid, px=4096, work=None, app=False):
         vpng2 = cairosvg.svg2png(bytestring="\n".join([head, defs] + over_nolab + ["</svg>"]).encode(), output_width=px, output_height=px)
         clean = Image.alpha_composite(Image.fromarray(comp).convert("RGBA"), Image.open(io.BytesIO(vpng2)).convert("RGBA")).convert("RGB")
         del vpng2
-        mu, ow, oh, S_sheet = app_g["mu"], app_g["ow"], app_g["oh"], app_g["S_sheet"]
+        mu, ow, oh, S_sheet = app_g["mu"], app_g["ow_t"], app_g["oh_t"], app_g["S_sheet"]   # focus = the outline, no pad
         ox, oy = px / 2.0, BAND_CY / REF_H * px          # outline centre in the render
-        Wc = int(round(min(px, max((REF_W + 2 * OVERSCAN) * mu, S_sheet) / m_px)))
+        Wc = int(round(min(px, max((REF_W + 2 * OVERSCAN) * mu, S_sheet) / m_px)))   # (S_sheet: the sheet crop is cut from the same render)
         left = int(round(ox - Wc / 2))
         full_im = clean.crop((left, 0, left + Wc, px))
         full_im.save(out / f"{rid}-full.webp", "WEBP", quality=80, method=6)
@@ -725,7 +810,7 @@ def run(out, rid, px=4096, work=None, app=False):
         fx0, fx1 = (ox - ow / 2 / m_px - left) / Wc, (ox + ow / 2 / m_px - left) / Wc
         fy0, fy1 = (oy - oh / 2 / m_px) / px, (oy + oh / 2 / m_px) / px
         app_info = {
-            "ref_viewport": [REF_W, REF_H], "band": {"side": 15, "top": BAND_TOP, "bottom": BAND_BOT},
+            "ref_viewport": [REF_W, REF_H], "band": {"side": SIDE_PX, "top": BAND_TOP, "bottom": BAND_BOT},
             "m_per_ref_px": round(mu, 3),
             "full": {"img": f"{rid}-full.webp", "px": [Wc, px], "ref": [round(Wc * REF_H / px, 2), REF_H],
                      "focus": {"x0": round(fx0, 4), "y0": round(fy0, 4), "x1": round(fx1, 4), "y1": round(fy1, 4)},
@@ -771,10 +856,11 @@ def main():
     ap.add_argument("out")
     ap.add_argument("resort")
     ap.add_argument("--px", type=int, default=4096)
+    ap.add_argument("--hires", action="store_true", help="US only: 1 m lidar DEM, 4096^2 mesh (use with --px 5120)")
     ap.add_argument("--app", action="store_true", help="app layout: one render for the resort sheet (square) and the full-screen map (portrait, pan/zoom)")
     a = ap.parse_args()
     try:
-        run(a.out, a.resort, a.px, app=a.app)
+        run(a.out, a.resort, a.px, app=a.app, hires=a.hires)
     except BaseException as e:  # noqa: BLE001  (written to FAILED.txt, then re-raised: the job goes red)
         Path(a.out).mkdir(parents=True, exist_ok=True)
         msg = str(e.code) if isinstance(e, SystemExit) else f"{type(e).__name__}: {e}"

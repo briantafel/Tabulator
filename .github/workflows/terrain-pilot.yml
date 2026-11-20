@@ -10,6 +10,10 @@ on:
       resorts:
         description: "Space-separated resort ids (ids in src/data/resort-elevations.json)"
         default: "alta whistler jackson-hole zermatt niseko"
+      hires:
+        description: "US only: 1 m lidar DEM, 4096^2 mesh, 5120 px render (heavier: ~1-2 h)"
+        type: boolean
+        default: false
       app:
         description: "App layout (sheet square + full-screen portrait webp, label fractions)"
         type: boolean
@@ -51,7 +55,7 @@ jobs:
       TAG: ${{ needs.plan.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
       R: ${{ matrix.resort }}
-      APP: ${{ inputs.app && '--app' || '' }}
+      APP: ${{ inputs.app && '--app' || '' }} ${{ inputs.hires && '--hires --px 5120' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

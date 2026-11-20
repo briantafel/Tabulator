@@ -56,14 +56,17 @@ def fake_terrain(la, lo):
     return 3000 + 0.25 * y + 400 * np.sin(x / 700) * np.cos(y / 900) + 150 * np.sin(x / 150 + y / 210)
 
 
-def fake_dem(bbox, lat_c, lon_c):
+def fake_dem(bbox, lat_c, lon_c, fine=False):
     res = 1 / 10800
     W, S, E, N = bbox
     cols, rows = int(round((E - W) / res)), int(round((N - S) / res))
     la = N - (np.arange(rows) + 0.5) * res
     lo = W + (np.arange(cols) + 0.5) * res
     z = fake_terrain(la[:, None], lo[None, :]).astype("float32")
-    return z, W, N, res, {"source": "synthetic", "native_res_deg": res, "native_res_m": [10.3, 7.9], "native_shape": list(z.shape)}
+    info = {"source": "synthetic", "native_res_deg": res, "native_res_m": [10.3, 7.9], "native_shape": list(z.shape)}
+    if os.environ.get("TEST_FINE"):
+        info["fine"] = True          # exercises the 1 m branch (heightmap by map_coordinates, block-averaged spline)
+    return z, W, N, res, info
 
 
 def fake_snow(rid, crop, lat_c, lon_c, work_):
@@ -73,6 +76,7 @@ def fake_snow(rid, crop, lat_c, lon_c, work_):
 
 
 tp.load_dem_native = fake_dem
+tp.HIRES_HM = 512
 tp.build_snow = fake_snow
 info = tp.run(work / "out", RID, px=int(os.environ.get("TEST_PX", "512")), app=bool(os.environ.get("TEST_APP")))
 out = work / "out"
