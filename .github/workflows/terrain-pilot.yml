@@ -10,6 +10,10 @@ on:
       resorts:
         description: "Space-separated resort ids (ids in src/data/resort-elevations.json)"
         default: "alta whistler jackson-hole zermatt niseko"
+      app:
+        description: "App layout (sheet square + full-screen portrait webp, label fractions)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -47,6 +51,7 @@ jobs:
       TAG: ${{ needs.plan.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
       R: ${{ matrix.resort }}
+      APP: ${{ inputs.app && '--app' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -77,13 +82,13 @@ jobs:
       - name: Render (4K map + .blend)
         env:
           OSM_DIR: osm
-        run: python3 scripts/maps/terrain_pilot.py "out/$R" "$R"
+        run: python3 scripts/maps/terrain_pilot.py "out/$R" "$R" $APP
       - name: Full files to the release
         if: always()
         run: |
           cd "out/$R" 2>/dev/null || { echo "nothing was written for $R"; exit 0; }
           [ -f FAILED.txt ] && cp FAILED.txt "$R-FAILED.txt"
-          files=$(ls *.png *.svg *.blend *.json "$R-FAILED.txt" 2>/dev/null || true)
+          files=$(ls *.png *.svg *.blend *.json *.webp "$R-FAILED.txt" 2>/dev/null || true)
           [ -n "$files" ] || { echo "no files for $R"; exit 0; }
           ls -la $files
           gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber $files

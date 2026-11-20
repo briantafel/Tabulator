@@ -47,6 +47,14 @@ RAMP = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#0626
 SLR_IFS = 12.0                # placeholder snow-to-liquid ratio for IFS (same as sketch.SLR)
 CAPTION = {"nbm": "NOAA NBM • Tabulator terrain-adjusted", "ifs": "ECMWF IFS • Tabulator terrain-adjusted"}
 FT = 3.28084
+# App layout (Brian 2026-11-20): one render serves the resort sheet (square) and the full-screen map (pan/zoom).
+# Reference phone 402 x 874; full-screen band between the header and the legend, 15 px side margins.
+REF_W, REF_H = 402.0, 874.0
+BAND_W = REF_W - 2 * 15.0           # 372
+BAND_TOP, BAND_BOT = 64.0, 118.0    # header row + gap above; legend card + margins below
+BAND_H = REF_H - BAND_TOP - BAND_BOT
+BAND_CY = BAND_TOP + BAND_H / 2     # 410: where the outline's centre sits
+OVERSCAN = 17.0                     # extra terrain each side of the reference width, so other phone shapes still get covered
 
 
 def log(*a):
@@ -403,7 +411,7 @@ def contours(field, levels, sigma, scale, flip=None):
 
 
 # ---------------------------------------------------------------- main
-def run(out, rid, px=4096, work=None):
+def run(out, rid, px=4096, work=None, app=False):
     t_start = time.time()
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
@@ -446,6 +454,16 @@ def run(out, rid, px=4096, work=None):
     side_m = side_px_old * m_old
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     f_lon, f_lat = crop[0] + cx / OLD_PX * (crop[2] - crop[0]), crop[3] - cy / h_old * (crop[3] - crop[1])
+    app_g = None
+    if app:
+        # Reference px -> metres: the outline (+150 m each side) must fit the band at the fit view.
+        ow, oh = (x1 - x0) * m_old, (y1 - y0) * m_old
+        mu = max(ow / BAND_W, oh / BAND_H)
+        S_sheet = max(ow, oh)                      # the sheet's square frame: the settled rule
+        side_m = REF_H * mu                        # the render is a square as tall as the full-screen picture
+        f_lat -= (REF_H / 2 - BAND_CY) * mu / 111320.0   # outline centre sits at BAND_CY from the top
+        app_g = {"mu": mu, "ow": ow, "oh": oh, "S_sheet": S_sheet}
+        log(f"app layout: {mu:.2f} m per reference px; outline+pad {ow:.0f} x {oh:.0f} m; render {side_m / 1000:.2f} km square")
     kf = math.cos(math.radians(f_lat))
 
     def box_for(side):
@@ -607,9 +625,12 @@ def run(out, rid, px=4096, work=None):
     over += layer("lifts", lb)
     over += layer("skiable terrain outline (from runs)", [f'<path d="{area_d}" fill="none" stroke="{INK}" stroke-opacity="0.55" '
                                                          f'stroke-width="{sw(1.4):.2f}" stroke-dasharray="{sw(6):.1f} {sw(6):.1f}"/>'])
+    over_nolab = list(over)
     lab = []
+    depth_pts = []
     for lv_, (x, y) in sk.label_points(lines):
         if 0 < y < px and mask[int(min(y, px - 1)), int(min(x, px - 1))]:
+            depth_pts.append((float(lv_), float(x), float(y)))
             lab += halo(x, y, f'{lv_:g}"', f'font-size="{sw(26):.1f}" font-weight="600" fill="#0d3fb0" text-anchor="middle" dominant-baseline="middle"', sw(6))
     for word, (zz, x, y, sv) in marks:
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(11):.1f}" fill="#ffffff" stroke="{INK}" stroke-width="{sw(2):.1f}"/>')
@@ -657,6 +678,43 @@ def run(out, rid, px=4096, work=None):
     del F, kk
     vpng = cairosvg.svg2png(bytestring="\n".join([head, defs] + over + ["</svg>"]).encode(), output_width=px, output_height=px)
     final = Image.alpha_composite(Image.fromarray(comp).convert("RGBA"), Image.open(io.BytesIO(vpng)).convert("RGBA")).convert("RGB")
+    app_info = None
+    if app:
+        vpng2 = cairosvg.svg2png(bytestring="\n".join([head, defs] + over_nolab + ["</svg>"]).encode(), output_width=px, output_height=px)
+        clean = Image.alpha_composite(Image.fromarray(comp).convert("RGBA"), Image.open(io.BytesIO(vpng2)).convert("RGBA")).convert("RGB")
+        del vpng2
+        mu, ow, oh, S_sheet = app_g["mu"], app_g["ow"], app_g["oh"], app_g["S_sheet"]
+        ox, oy = px / 2.0, BAND_CY / REF_H * px          # outline centre in the render
+        Wc = int(round(min(px, max((REF_W + 2 * OVERSCAN) * mu, S_sheet) / m_px)))
+        left = int(round(ox - Wc / 2))
+        full_im = clean.crop((left, 0, left + Wc, px))
+        full_im.save(out / f"{rid}-full.webp", "WEBP", quality=80, method=6)
+        Sp = S_sheet / m_px
+        sx0, sy0 = ox - Sp / 2, oy - Sp / 2
+        box = (int(round(sx0)), int(round(sy0)), int(round(sx0 + Sp)), int(round(sy0 + Sp)))
+        for nm, src_im in (("sheet", clean), ("sheet-baked", final)):
+            src_im.crop(box).resize((1080, 1080), Image.LANCZOS).save(out / f"{rid}-{nm}.webp", "WEBP", quality=82, method=6)
+        fr = lambda x, y, x0_, y0_, w_, h_: (round((x - x0_) / w_, 4), round((y - y0_) / h_, 4))  # noqa: E731
+        mk = lambda x0_, y0_, w_, h_: {  # noqa: E731
+            "frame": "fractions of this picture, 0-1 from the top-left",
+            "depth": [dict(zip(("x", "y"), fr(x, y, x0_, y0_, w_, h_)), **{"in": lv_}) for lv_, x, y in depth_pts
+                      if x0_ <= x <= x0_ + w_ and y0_ <= y <= y0_ + h_],
+            "marks": [dict(zip(("x", "y"), fr(x, y, x0_, y0_, w_, h_)), kind=w.lower(), **{"in": round(float(sv), 1)}, ft=round(float(zz) * FT))
+                      for w, (zz, x, y, sv) in marks]}
+        fx0, fx1 = (ox - ow / 2 / m_px - left) / Wc, (ox + ow / 2 / m_px - left) / Wc
+        fy0, fy1 = (oy - oh / 2 / m_px) / px, (oy + oh / 2 / m_px) / px
+        app_info = {
+            "ref_viewport": [REF_W, REF_H], "band": {"side": 15, "top": BAND_TOP, "bottom": BAND_BOT},
+            "m_per_ref_px": round(mu, 3),
+            "full": {"img": f"{rid}-full.webp", "px": [Wc, px], "ref": [round(Wc * REF_H / px, 2), REF_H],
+                     "focus": {"x0": round(fx0, 4), "y0": round(fy0, 4), "x1": round(fx1, 4), "y1": round(fy1, 4)},
+                     "labels": mk(left, 0, Wc, px)},
+            "sheet": {"img_clean": f"{rid}-sheet.webp", "img": f"{rid}-sheet-baked.webp", "side_m": round(S_sheet),
+                      "labels": mk(box[0], box[1], box[2] - box[0], box[3] - box[1])},
+        }
+        for nm, f_ in (("full", out / f"{rid}-full.webp"), ("sheet", out / f"{rid}-sheet.webp")):
+            log(f"  app {nm}: {f_.stat().st_size / 1e6:.2f} MB")
+        del clean
     final.save(out / f"{rid}.png", optimize=True)
     final.resize((1024, 1024), Image.LANCZOS).save(out / "preview" / f"{rid}-1024.png")
     final.crop((bx, by, bx + csz, by + csz)).save(out / "preview" / f"{rid}-crop1to1.png")
@@ -677,6 +735,7 @@ def run(out, rid, px=4096, work=None):
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,
         "top": [round(marks[1][1][0], 1), round(marks[1][1][3], 1)] if marks else None,
         "lifts": len(lifts), "lifts_dropped": lifts_dropped, "runs": len(runs), "outline": "skiable terrain from runs", "outline_acres": round(acres),
+        "app": app_info,
         "busiest_crop_xy": [bx, by, csz], "timing_s": {**timing, "total_s": round(time.time() - t_start)},
         "files": sorted(p.name for p in out.iterdir() if p.is_file()),
     }
@@ -691,9 +750,10 @@ def main():
     ap.add_argument("out")
     ap.add_argument("resort")
     ap.add_argument("--px", type=int, default=4096)
+    ap.add_argument("--app", action="store_true", help="app layout: one render for the resort sheet (square) and the full-screen map (portrait, pan/zoom)")
     a = ap.parse_args()
     try:
-        run(a.out, a.resort, a.px)
+        run(a.out, a.resort, a.px, app=a.app)
     except BaseException as e:  # noqa: BLE001  (written to FAILED.txt, then re-raised: the job goes red)
         Path(a.out).mkdir(parents=True, exist_ok=True)
         msg = str(e.code) if isinstance(e, SystemExit) else f"{type(e).__name__}: {e}"
