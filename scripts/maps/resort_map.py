@@ -104,6 +104,14 @@ def ski_area(r, osm_id, elev_name=None):
                 got += rings
                 ids.append(f["properties"].get("id"))
                 print(f"  fallback ski area: '{f['properties'].get('name')}' ({f['properties'].get('id')})")
+    if not got and pt and pt[0] is not None:
+        # nothing shares a name: take any outlined ski area within 2 km of the resort's point (loudly)
+        for f in stream_features("ski_areas"):
+            rings = [ring for ring in rings_of(f["geometry"]) if len(ring) > 2]
+            if rings and min(math.hypot((la - pt[0]) * 111.3, (lo - pt[1]) * 111.3 * math.cos(math.radians(pt[0]))) for ring in rings for la, lo in ring) < 2:
+                got += rings
+                ids.append(f["properties"].get("id"))
+                print(f"  fallback ski area (by distance only): '{f['properties'].get('name')}' ({f['properties'].get('id')})")
     if got:
         print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} not found; using {len(ids)} area(s) matched by name and distance")
         EXTRA_IDS.update(i for i in ids if i)

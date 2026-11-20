@@ -172,7 +172,12 @@ def merge_1m(urls, bbox, res):
     return arr[0].astype("float32")
 
 
+NON_US = False     # set from the resort's region ("Canada"): the 49th parallel cannot tell Ontario from New York
+
+
 def is_us(lat, lon):
+    if NON_US:
+        return False
     return 24.0 < lat < 49.0 and -125.0 < lon < -66.0   # 49th parallel is the border; Red Mountain (49.1) must not count as US
 
 
@@ -546,6 +551,8 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     work.mkdir(exist_ok=True)
     timing = {}
     r = rm.resort(rid)
+    global NON_US
+    NON_US = r.get("region") == "Canada"
     elev = json.loads((ROOT / "src/data/resort-elevations.json").read_text())["resorts"].get(rid, {})
     rings, area_name = rm.ski_area(r, elev.get("osm_id"), elev.get("osm_name"))
     pts = np.array([p for ring in rings for p in ring])
