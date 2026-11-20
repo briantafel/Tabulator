@@ -1,57 +1,53 @@
 {
- "generatedAt": "2026-11-19T21:37:58.077Z",
- "forecastGeneratedAt": "2026-11-19T21:07:44.000Z",
+ "generatedAt": "2026-11-20T02:24:47.454Z",
+ "forecastGeneratedAt": "2026-11-20T02:17:47.775Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-19T21:37:55.860Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-19",
+  "from": "2026-11-20",
   "to": "2026-11-24",
-  "days": 6,
+  "days": 5,
   "toLabel": "Tuesday Nov 24"
  },
- "overview": null,
+ "overview": "A Pacific storm brings snow to the Utah, Wyoming and Sierra mountains through Friday, then a weaker system follows over the weekend and early next week. Colder air and a cutoff low settle over the northern Rockies and Montana, while the Pacific Northwest and Sierra stay wet into the coming week.",
  "regions": [
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 37\", 25\" of it Thursday. Palisades and Sugar Bowl follow. Winter Storm Warning at Kirkwood from Thursday to Friday."
-  },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Brighton is forecast for about 33\". Snowbasin and Powder Mountain follow. Winter Storm Warning at Brighton from Thursday to Saturday."
-  },
-  {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 24\", 20\" of it Thursday. Winter Storm Warning at Mammoth from Thursday to Friday."
-  },
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 27\". Jackson Hole and Sun Valley follow. The NWS is calling for more at Jackson Hole: 10 to 25 inches Thursday through Monday. Winter Weather Advisory at Grand Targhee from Thursday night to Friday night."
+   "text": "A Pacific Northwest storm moves through Utah through early Saturday, with snow falling heaviest over the northern mountains. Snow levels drop to the northern valley floors Friday night. Dry weather returns for the weekend, then a weaker system reaches southern Utah Monday into Tuesday. Snowbasin has the top total at 23\" with 12\" expected Friday. Winter Storm Warnings run Thursday through Saturday."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 25\", 14\" of it Tuesday. Whistler follows. Environment Canada has rain mixed in at Whistler Tuesday."
+   "text": "Snow is mostly confined to the higher ground here, with rain at lower elevations. Cypress Mountain sees the big totals, with the heaviest snow expected Tuesday. Whistler gets snow at times over the weekend and Monday, then a mix of snow and rain as the week goes on."
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "A cold system brings snow to the Tetons and the mountain passes Thursday night through Friday, with Teton Pass likely to have travel problems. Jackson Hole and Grand Targhee see the most snow Friday. A Winter Weather Advisory covers Thursday night through Friday night. Colder air arrives across Montana over the weekend, with snow showers around West Yellowstone and Southwest Montana into Saturday and dry weather after that."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "A strong storm brings heavy snow to the Sierra and southern Cascades, with strong winds on the ridges. Snow tapers Friday, then a weaker system arrives Saturday night into Monday. Palisades and Sugar Bowl each expect around 8\" on Sunday. Winter Storm Warnings for Palisades and Sugar Bowl run through Friday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain is forecast for about 16\", 11\" of it Tuesday. Mt. Bachelor and Stevens Pass follow."
+   "text": "The Pacific Northwest stays dry Friday under fog and high pressure. Rain and mountain snow arrive Saturday night as a weak low sits offshore, with light totals. Crystal Mountain gets snow Saturday through Tuesday, with its biggest day expected Tuesday. Heavier precipitation returns mid-week."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Aspen Highlands is forecast for about 8\". Telluride and Steamboat follow."
+   "text": "Snow showers run through the Colorado mountains Thursday night into Saturday, with blowing snow and gusts up to 45 mph Friday. The main system is convective and banded, so totals are uncertain. Aspen Highlands and Telluride see the best chances Friday and Saturday. Cold air settles in over the weekend."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 11\". Taos follows."
+   "text": "Strong winds hit the southern Sangres and I-25 gaps Friday, with a High Wind Warning. A quick system brings snow to the mountains Friday night, then another light round Saturday. Wolf Creek sees blowing snow through Friday night. Taos gets snow showers Saturday. A cold, unsettled pattern continues into next week."
   }
  ],
  "ahead": null,
@@ -62,16 +58,56 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-19T21:14:16.943Z"
+   "issuedAt": "2026-11-20T02:24:38.074Z"
+  },
+  {
+   "name": "NWS SLC Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:37:00+00:00"
+  },
+  {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-20T01:33:00+00:00"
+  },
+  {
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-20T01:05:00+00:00"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-19T20:40:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-19T20:39:00+00:00"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-19T22:44:00+00:00"
+  },
+  {
+   "name": "NWS PDT Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:49:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:41:00+00:00"
+  },
+  {
+   "name": "NWS PUB Area Forecast Discussion",
+   "issuedAt": "2026-11-20T00:14:00+00:00"
+  },
+  {
+   "name": "NWS ABQ Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:37:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-19T21:37:58.077Z"
+   "issuedAt": "2026-11-20T02:24:47.454Z"
   }
  ],
  "api": {
-  "day": "2026-11-19",
-  "calls": 10
+  "day": "2026-11-20",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
