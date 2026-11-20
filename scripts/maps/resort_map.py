@@ -83,7 +83,8 @@ def ski_area(r, osm_id, elev_name=None):
         if f["properties"].get("id") == osm_id:
             rings = [ring for ring in rings_of(f["geometry"]) if len(ring) > 2]
             if not rings:
-                sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} has no outline ({f['geometry']['type']})")
+                print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} has no outline ({f['geometry']['type']}); trying name+distance fallback")
+                break
             name = f["properties"].get("name")
             print(f"ski area: '{name}' ({len(rings)} rings)")
             return rings, name
@@ -107,7 +108,7 @@ def ski_area(r, osm_id, elev_name=None):
         print(f"WARNING {r['id']}: OpenSkiMap area {osm_id} not found; using {len(ids)} area(s) matched by name and distance")
         EXTRA_IDS.update(i for i in ids if i)
         return got, elev_name
-    sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found")
+    sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found or has no outline, and no nearby area matched by name")
 
 
 def member_of(p, osm_id):

@@ -173,7 +173,7 @@ def merge_1m(urls, bbox, res):
 
 
 def is_us(lat, lon):
-    return 24.0 < lat < 49.2 and -125.0 < lon < -66.0
+    return 24.0 < lat < 49.0 and -125.0 < lon < -66.0   # 49th parallel is the border; Red Mountain (49.1) must not count as US
 
 
 def load_dem_1m(bbox, lat_c, lon_c):

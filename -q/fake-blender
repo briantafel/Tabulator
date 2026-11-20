@@ -1,0 +1,5 @@
+#!/bin/sh
+# -b -P script -- args
+shift 3
+shift
+exec /usr/local/bin/python3 "$0.script" "$@"
