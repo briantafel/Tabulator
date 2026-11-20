@@ -1,7 +1,7 @@
 name: Terrain pilot (4K snow-by-terrain maps + Blender files)
 
 # Manual, one job per resort in parallel (claude/state-2026-11-19-terrain-pilot.md).
-#   - full files (4K PNG, SVG, .blend, JSON) -> GitHub Release terrain-pilot-<date> (gh release upload)
+#   - full files (4K PNG, SVG, .blend, JSON) -> GitHub Release terrain-pilot-<date>-r<run id> (gh release upload; one per run, 1000-asset cap)
 #   - small previews (1024 px maps, a 1:1 4K crop each, contact sheet, summary table) -> orphan branch `terrain-pilot`
 # Does not touch the live app or the resort-maps branch. A failed resort turns its job red and the run red.
 on:
@@ -36,7 +36,7 @@ jobs:
         run: |
           ids=$(echo "$RESORTS" | tr -s ' ,' '\n\n' | grep -E '^[a-z0-9-]+$' | jq -R . | jq -sc .)
           [ "$ids" != "[]" ] || { echo "no valid resort ids in: $RESORTS"; exit 1; }
-          tag="terrain-pilot-$(date -u +%F)"
+          tag="terrain-pilot-$(date -u +%F)-r${GITHUB_RUN_ID}"   # one release per run: a release holds at most 1000 assets (the 2026-11-20 one filled up)
           echo "matrix=$ids" >> "$GITHUB_OUTPUT"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
