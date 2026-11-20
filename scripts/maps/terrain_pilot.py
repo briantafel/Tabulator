@@ -563,6 +563,21 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
     log(f"crop ±{half_km:.2f} km around {lat_c:.4f},{lon_c:.4f}")
     lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
+    # The OpenSkiMap polygon is often smaller than the terrain (Powder Mountain: runs and lifts spill 10-15% past it).
+    # Grow the crop to hold every run and lift fetched, and fetch again, so the frame, the fit view and the picture all
+    # see the same outline (a frame cut from the polygon alone left the top lobe and the Base marker off the screen).
+    for _pass in range(3):
+        allpts = np.array(pts.tolist() + [p for f in (lifts + runs) for p in f[1]])
+        a0, a1, o0, o1 = allpts[:, 0].min(), allpts[:, 0].max(), allpts[:, 1].min(), allpts[:, 1].max()
+        need = max((a1 - a0) * 111.32, (o1 - o0) * 111.32 * k) / 2 + 0.45
+        if need <= half_km * 1.01:
+            break
+        lat_c, lon_c = (a0 + a1) / 2, (o0 + o1) / 2
+        k = math.cos(math.radians(lat_c))
+        half_km = need
+        crop = (lon_c - half_km / (111.32 * k), lat_c - half_km / 111.32, lon_c + half_km / (111.32 * k), lat_c + half_km / 111.32)
+        log(f"crop grown to ±{half_km:.2f} km to hold every run and lift")
+        lifts, runs = rm.lifts_runs(crop, elev.get("osm_id"))
     # only lifts that exist today: OpenSkiMap also carries disused / abandoned / proposed / planned ones
     lifts_dropped = []
     keep_l = []
