@@ -146,6 +146,8 @@ export default function Tabulator() {
   const terrainOn = (feedRaw?.flags?.terrainMap ?? "off") !== "off";
   /* Full screen + pan/zoom on that map (2026-11-19). flags.json `terrainZoom: "off"` removes the button. */
   const terrainZoomOn = terrainOn && (feedRaw?.flags?.terrainZoom ?? "off") !== "off";
+  /* Snow by terrain labels drawn as vectors (2026-11-20). flags.json `terrainVectors: "off"` restores the baked-in labels. */
+  const terrainVectorsOn = terrainOn && (feedRaw?.flags?.terrainVectors ?? "off") !== "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
@@ -727,6 +729,7 @@ export default function Tabulator() {
         avalanche={seasonOn && open ? feedRaw.season?.avalanche?.[open.id] ?? null : null}
         terrain={terrainOn}
         terrainZoom={terrainZoomOn}
+        terrainVectors={terrainVectorsOn}
         reportedSnow={open && feedRaw?.season?.resorts?.[open.id] ? reported(feedRaw.season.resorts[open.id]) : undefined}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}

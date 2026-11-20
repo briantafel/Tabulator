@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { snowWithUnit } from "../lib/units.js";
 import TerrainFullscreen from "./TerrainFullscreen.jsx";
+import TerrainLabels from "./TerrainLabels.jsx";
+import { SHEET, hasVectorLabels } from "../lib/terrainLabels.js";
 
 /* Snow by terrain (Brian, 2026-11-19): one resort's skiable terrain on the white
    plaster relief, NBM's 5-day snow split by elevation with our terrain step.
@@ -21,7 +23,7 @@ function loadIndex() {
   return indexPromise;
 }
 
-export default function TerrainMap({ id, metric, zoom = false }) {
+export default function TerrainMap({ id, metric, zoom = false, vectors = false }) {
   const [m, setM] = useState(null);
   const [full, setFull] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -34,13 +36,17 @@ export default function TerrainMap({ id, metric, zoom = false }) {
   const run = new Date(m.run);
   if (!(run > 0) || (Date.now() - run) / 3.6e6 > MAX_AGE_H) return null;
   const day = run.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-  const src = `${import.meta.env.BASE_URL}${m.img}`;
+  /* terrainVectors (Brian, 2026-11-20): labels drawn by the app as vectors over a labels-free
+     picture. Off, or no label data for this resort: the old picture with labels baked in. */
+  const vec = vectors && hasVectorLabels(m);
+  const src = `${import.meta.env.BASE_URL}${vec ? m.img_clean : m.img}`;
   const alt = `Five-day snow across ${id} by terrain`;
   return (
     <section className="tm" aria-label="Snow by terrain">
       <div className="tm-h"><h3>Snow by terrain</h3><span>{day} run</span></div>
       <div className="tm-img">
         <img src={src} alt={alt} onError={() => setFailed(true)} />
+        {vec && <TerrainLabels labels={m.labels} metric={metric} S={SHEET} />}
         {/* Full screen + pan/zoom (Brian, 2026-11-19, Figma 4030:511). flags.json `terrainZoom`. */}
         {zoom && (
           <button type="button" className="tm-expand" onClick={() => setFull(true)} aria-label="Full screen map">
@@ -50,7 +56,7 @@ export default function TerrainMap({ id, metric, zoom = false }) {
           </button>
         )}
       </div>
-      {zoom && full && <TerrainFullscreen src={src} alt={alt} onClose={() => setFull(false)} />}
+      {zoom && full && <TerrainFullscreen src={src} alt={alt} labels={vec ? m.labels : null} metric={metric} onClose={() => setFull(false)} />}
       <div className="tm-cap">
         <span>{m.label}</span>
         <span>Base <b>{snowWithUnit(m.base_in * 2.54, metric)}</b> · Top <b>{snowWithUnit(m.top_in * 2.54, metric)}</b></span>

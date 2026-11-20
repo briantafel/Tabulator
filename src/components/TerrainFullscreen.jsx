@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import {
   clampView, doubleTapTarget, initialView, panBy, pinchStep, zoomAt,
 } from "../lib/panzoom.js";
+import TerrainLabels from "./TerrainLabels.jsx";
+import { FULL } from "../lib/terrainLabels.js";
 
 /* Fullscreen Snow by terrain (Brian, 2026-11-19, Figma 4026:546): the map fills
    the screen edge to edge under a floating title and close button, and can be
@@ -18,7 +20,7 @@ const DOUBLE_MS = 300;
 const DOUBLE_PX = 28;
 const TAP_SLOP = 8;
 
-export default function TerrainFullscreen({ src, alt, onClose }) {
+export default function TerrainFullscreen({ src, alt, onClose, labels = null, metric = false }) {
   const root = useRef(null);
   const stage = useRef(null);
   const img = useRef(null);
@@ -38,6 +40,7 @@ export default function TerrainFullscreen({ src, alt, onClose }) {
     el.style.width = el.style.height = `${size}px`;
     el.style.transition = animate ? "transform .26s cubic-bezier(.2,.8,.3,1)" : "none";
     el.style.transform = `translate3d(${v.x}px, ${v.y}px, 0) scale(${v.s})`;
+    el.style.setProperty("--tm-s", String(v.s));   // labels counter-scale by 1 / zoom
     if (animate) {
       clearTimeout(settle.current);
       settle.current = setTimeout(() => { if (img.current) img.current.style.transition = "none"; }, 300);
@@ -168,7 +171,10 @@ export default function TerrainFullscreen({ src, alt, onClose }) {
         className="tmf-stage" ref={stage}
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
       >
-        <img ref={img} className="tmf-img" src={src} alt={alt} draggable={false} />
+        <div ref={img} className="tmf-img">
+          <img src={src} alt={alt} draggable={false} />
+          {labels && <TerrainLabels labels={labels} metric={metric} S={FULL} counter />}
+        </div>
       </div>
       <div className="tmf-top">
         <h3>Snow by terrain</h3>

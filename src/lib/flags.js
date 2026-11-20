@@ -69,7 +69,10 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
    public/terrain/index.json (Alta first). No Settings row; "off" removes it. */
 /* terrainZoom (2026-11-19): the expand button on Snow by terrain and its
    fullscreen pan/zoom map. Needs terrainMap on. No Settings row; "off" removes the button. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off" });
+/* terrainVectors (2026-11-20): Snow by terrain labels (snow depth, Base / Top) drawn by the app as
+   vectors over a labels-free picture, sized from Figma. Needs terrainMap. "off" restores the picture
+   with the labels baked in. No Settings row. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off", terrainVectors: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */
