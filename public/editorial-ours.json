@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-20T02:24:47.454Z",
- "forecastGeneratedAt": "2026-11-20T02:17:47.775Z",
+ "generatedAt": "2026-11-20T02:34:07.888Z",
+ "forecastGeneratedAt": "2026-11-19T21:07:44.000Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-19T21:37:55.860Z",
+ "blendGeneratedAt": "2026-11-20T02:34:05.282Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -12,49 +12,34 @@
   "days": 5,
   "toLabel": "Tuesday Nov 24"
  },
- "overview": "A Pacific storm brings snow to the Utah, Wyoming and Sierra mountains through Friday, then a weaker system follows over the weekend and early next week. Colder air and a cutoff low settle over the northern Rockies and Montana, while the Pacific Northwest and Sierra stay wet into the coming week.",
+ "overview": "A Pacific Northwest storm brings snow to Utah through Saturday, shifting north over time. Colorado gets a southwest-flow system Friday night into Saturday, with a second weaker disturbance around Monday into Tuesday.",
  "regions": [
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A Pacific Northwest storm moves through Utah through early Saturday, with snow falling heaviest over the northern mountains. Snow levels drop to the northern valley floors Friday night. Dry weather returns for the weekend, then a weaker system reaches southern Utah Monday into Tuesday. Snowbasin has the top total at 23\" with 12\" expected Friday. Winter Storm Warnings run Thursday through Saturday."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Snow is mostly confined to the higher ground here, with rain at lower elevations. Cypress Mountain sees the big totals, with the heaviest snow expected Tuesday. Whistler gets snow at times over the weekend and Monday, then a mix of snow and rain as the week goes on."
-  },
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "A cold system brings snow to the Tetons and the mountain passes Thursday night through Friday, with Teton Pass likely to have travel problems. Jackson Hole and Grand Targhee see the most snow Friday. A Winter Weather Advisory covers Thursday night through Friday night. Colder air arrives across Montana over the weekend, with snow showers around West Yellowstone and Southwest Montana into Saturday and dry weather after that."
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "A strong storm brings heavy snow to the Sierra and southern Cascades, with strong winds on the ridges. Snow tapers Friday, then a weaker system arrives Saturday night into Monday. Palisades and Sugar Bowl each expect around 8\" on Sunday. Winter Storm Warnings for Palisades and Sugar Bowl run through Friday."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "The Pacific Northwest stays dry Friday under fog and high pressure. Rain and mountain snow arrive Saturday night as a weak low sits offshore, with light totals. Crystal Mountain gets snow Saturday through Tuesday, with its biggest day expected Tuesday. Heavier precipitation returns mid-week."
+   "text": "A Pacific Northwest storm crosses Utah in pieces through early Saturday, with snow focused on northern Utah as it moves on. Friday is the main day, when snow levels drop and the heaviest bursts arrive. Snowbasin has the biggest total at 10\". The NWS is calling for more, 12 to 19 inches Friday through Friday night. A Winter Storm Warning runs Thursday to Saturday."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Snow showers run through the Colorado mountains Thursday night into Saturday, with blowing snow and gusts up to 45 mph Friday. The main system is convective and banded, so totals are uncertain. Aspen Highlands and Telluride see the best chances Friday and Saturday. Cold air settles in over the weekend."
+   "text": "Moisture from the Pacific Northwest storm reaches western Colorado Thursday night and Friday on strong southwest winds. The snow is banded and showery, so amounts vary a lot from one range to the next. Telluride has the biggest total at 8\", and the wind is a real factor, with gusts up to 55 mph Friday. Expect blowing snow and poor visibility on exposed ridges."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Strong winds hit the southern Sangres and I-25 gaps Friday, with a High Wind Warning. A quick system brings snow to the mountains Friday night, then another light round Saturday. Wolf Creek sees blowing snow through Friday night. Taos gets snow showers Saturday. A cold, unsettled pattern continues into next week."
+   "text": "Strong winds hit the southern Sangres and the I-25 gap areas Friday, with a High Wind Warning for the Sangres. Wolf Creek is the snowiest resort at 7\", with blowing snow likely Friday and Friday night. A quick system arrives Friday night with snow showers for the Continental Divide. Taos sees light snow showers Saturday."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Coastal British Columbia runs wetter and milder, with a mix of rain and snow. Cypress Mountain is the biggest total at 7\", with its main snow on Sunday. Whistler gets periods of snow through the weekend and into Tuesday, with rain mixing in at times."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-19T21:37:55.860Z"
+   "issuedAt": "2026-11-20T02:34:05.282Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -101,8 +86,24 @@
    "issuedAt": "2026-11-19T23:37:00+00:00"
   },
   {
+   "name": "NWS SLC Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:37:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:41:00+00:00"
+  },
+  {
+   "name": "NWS PUB Area Forecast Discussion",
+   "issuedAt": "2026-11-20T00:14:00+00:00"
+  },
+  {
+   "name": "NWS ABQ Area Forecast Discussion",
+   "issuedAt": "2026-11-19T23:37:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T02:24:47.454Z"
+   "issuedAt": "2026-11-20T02:34:07.888Z"
   }
  ],
  "api": {
