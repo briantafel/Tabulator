@@ -1,12 +1,70 @@
 {
- "_note": "Snow-by-terrain maps per resort (scripts/maps/resort_map.py). One NBM run each; the app hides a map older than 48 h.",
+ "_note": "Snow-by-terrain maps per resort (scripts/maps/resort_map.py). One NBM run each; the app hides a map older than 48 h. img = labels baked in; img_clean + labels = labels-free picture and the numbers the app draws its vector labels from (flag terrainVectors).",
  "alta": {
-  "img": "terrain/alta.webp",
-  "run": "2026-11-19T12:00:00+00:00",
+  "img": "terrain/alta-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
   "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
-  "base_in": 24,
-  "top_in": 32,
+  "base_in": 6.3,
+  "top_in": 7.8,
   "base_ft": 8538,
-  "top_ft": 10552
+  "top_ft": 10552,
+  "img_clean": "terrain/alta-sheet.webp",
+  "range_in": [
+   6.1,
+   8.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [],
+   "marks": [
+    {
+     "x": 0.3404,
+     "y": 0.2578,
+     "kind": "base",
+     "in": 6.3,
+     "ft": 8538
+    },
+    {
+     "x": 0.4975,
+     "y": 0.7245,
+     "kind": "top",
+     "in": 7.8,
+     "ft": 10552
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/alta-full.webp",
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0736,
+    "y0": 0.3053,
+    "x1": 0.9269,
+    "y1": 0.6329
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.364,
+      "y": 0.3661,
+      "kind": "base",
+      "in": 6.3,
+      "ft": 8538
+     },
+     {
+      "x": 0.4981,
+      "y": 0.5646,
+      "kind": "top",
+      "in": 7.8,
+      "ft": 10552
+     }
+    ]
+   }
+  }
  }
 }

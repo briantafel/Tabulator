@@ -1695,6 +1695,27 @@ body { background: #F2F2F2; }
   will-change: transform; pointer-events: none; user-select: none; -webkit-user-drag: none;
 }
 .tmf-img > img { display: block; width: 100%; height: 100%; -webkit-user-drag: none; }
+/* Floating legend: a sibling of the stage, not inside it, so pan and zoom never move it.
+   Inset 15 from the sides and the bottom (the top bar's left padding, so the card lines up with the title; plus the home-indicator inset); it does
+   not take touches, so a drag that starts on it still pans the map. */
+.tmf-legend {
+  position: absolute; z-index: 2; pointer-events: none;
+  left: calc(15 * var(--u)); right: calc(15 * var(--u));
+  bottom: calc(15 * var(--u) + env(safe-area-inset-bottom, 0px));
+  padding: calc(12 * var(--u)) calc(14 * var(--u)) calc(11 * var(--u));
+  background: #fff; border-radius: calc(14 * var(--u));
+  box-shadow: 0 calc(2 * var(--u)) calc(12 * var(--u)) rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.04);
+}
+.tmf-lg-h, .tmf-lg-f { display: flex; justify-content: space-between; align-items: baseline; gap: calc(8 * var(--u)); }
+.tmf-lg-h b { font-size: calc(12 * var(--u)); font-weight: 700; color: #1e1e1e; }
+.tmf-lg-h span { font-size: calc(11 * var(--u)); color: #6e6e6e; }
+.tmf-lg-bar {
+  height: calc(12 * var(--u)); margin: calc(8 * var(--u)) 0 calc(7 * var(--u)); border-radius: calc(6 * var(--u));
+  background: linear-gradient(to right, #d0dded, #acc3df, #6f99d9, #5781cf, #425797);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+}
+.tmf-lg-f b { font-size: calc(13 * var(--u)); font-weight: 700; color: #1e1e1e; }
+.tmf-lg-f span { font-size: calc(10 * var(--u)); color: #6e6e6e; white-space: nowrap; }
 .tmf-top {
   position: absolute; left: 0; right: 0; top: 0; pointer-events: none;
   display: flex; justify-content: space-between; align-items: flex-start;

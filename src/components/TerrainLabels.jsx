@@ -11,7 +11,7 @@ export default function TerrainLabels({ labels, metric, S, counter = false }) {
     style: { transform: counter ? `translate(${x}px, ${y}px) scale(calc(1 / var(--tm-s, 1)))` : `translate(${x}px, ${y}px)` },
   });
   return (
-    <svg className="tm-vec" viewBox={`0 0 ${S.size} ${S.size}`} aria-hidden="true" focusable="false">
+    <svg className="tm-vec" viewBox={`0 0 ${S.w ?? S.size} ${S.h ?? S.size}`} aria-hidden="true" focusable="false">
       {(labels.depth ?? []).map((d, i) => {
         const L = layoutDepth(d, metric, S);
         return (

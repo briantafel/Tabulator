@@ -23,7 +23,7 @@ function loadIndex() {
   return indexPromise;
 }
 
-export default function TerrainMap({ id, metric, zoom = false, vectors = false }) {
+export default function TerrainMap({ id, name = null, metric, zoom = false, vectors = false }) {
   const [m, setM] = useState(null);
   const [full, setFull] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -40,6 +40,9 @@ export default function TerrainMap({ id, metric, zoom = false, vectors = false }
      picture. Off, or no label data for this resort: the old picture with labels baked in. */
   const vec = vectors && hasVectorLabels(m);
   const src = `${import.meta.env.BASE_URL}${vec ? m.img_clean : m.img}`;
+  /* A portrait render made for the full-screen view (m.full), when the run has one. */
+  const fullPic = vec && m.full?.img ? m.full : null;
+  const fullSrc = fullPic ? `${import.meta.env.BASE_URL}${fullPic.img}` : src;
   const alt = `Five-day snow across ${id} by terrain`;
   return (
     <section className="tm" aria-label="Snow by terrain">
@@ -56,7 +59,9 @@ export default function TerrainMap({ id, metric, zoom = false, vectors = false }
           </button>
         )}
       </div>
-      {zoom && full && <TerrainFullscreen src={src} alt={alt} labels={vec ? m.labels : null} metric={metric} onClose={() => setFull(false)} />}
+      {zoom && full && <TerrainFullscreen src={fullSrc} alt={alt} title={name || "Snow by terrain"} metric={metric}
+          labels={fullPic ? fullPic.labels : vec ? m.labels : null} pic={fullPic?.ref} focus={fullPic?.focus}
+          legend={vec && m.range_in ? { range: m.range_in, label: m.label, day } : null} onClose={() => setFull(false)} />}
       <div className="tm-cap">
         <span>{m.label}</span>
         <span>Base <b>{snowWithUnit(m.base_in * 2.54, metric)}</b> · Top <b>{snowWithUnit(m.top_in * 2.54, metric)}</b></span>

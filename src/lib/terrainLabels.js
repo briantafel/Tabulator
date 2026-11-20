@@ -21,7 +21,7 @@ export const SHEET = {
   radius: 2,
 };
 export const FULL = {
-  size: 874,
+  size: 874,                       // the reference height; the picture is wider (S.w, set from the data)
   ring: 13.4, dot: 4.9,
   mark: 13,
   gap: 8.8,
@@ -59,13 +59,14 @@ export function textWidth(str, fs) {
   return em * fs;
 }
 
-/** Layout of one Base / Top marker in picture px (0..size). The label goes to
+/** Layout of one Base / Top marker in picture px (0..S.w, 0..S.h; both default to size). The label goes to
  *  the right of the marker and flips to the left when it would leave the frame. */
 export function layoutMark(m, metric, S) {
-  const cx = m.x * S.size, cy = m.y * S.size;
+  const W = S.w ?? S.size;
+  const cx = m.x * W, cy = m.y * (S.h ?? S.size);
   const text = markText(m, metric);
   const w = textWidth(text, S.mark);
-  const flip = cx + S.ring / 2 + S.gap + w > S.size - S.gap;
+  const flip = cx + S.ring / 2 + S.gap + w > W - S.gap;
   return { cx, cy, text, flip, tx: flip ? cx - S.ring / 2 - S.gap : cx + S.ring / 2 + S.gap, h: S.mark * LH };
 }
 
@@ -74,8 +75,9 @@ export function layoutMark(m, metric, S) {
 export function layoutDepth(d, metric, S) {
   const text = depthText(d.in, metric);
   const w = textWidth(text, S.depth) + 2 * S.padX, h = S.depth * LH + 2 * S.padY;
-  const cx = Math.min(S.size - w / 2 - 2, Math.max(w / 2 + 2, d.x * S.size));
-  const cy = Math.min(S.size - h / 2 - 2, Math.max(h / 2 + 2, d.y * S.size));
+  const W = S.w ?? S.size, H = S.h ?? S.size;
+  const cx = Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, d.x * W));
+  const cy = Math.min(H - h / 2 - 2, Math.max(h / 2 + 2, d.y * H));
   return { cx, cy, w, h, text };
 }
 
