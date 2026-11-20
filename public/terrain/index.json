@@ -51,10 +51,10 @@
     874.0
    ],
    "focus": {
-    "x0": 0.0736,
-    "y0": 0.3053,
-    "x1": 0.9269,
-    "y1": 0.6329
+    "x0": 0.0987,
+    "y0": 0.3178,
+    "x1": 0.9018,
+    "y1": 0.6204
    },
    "labels": {
     "frame": "fractions of this picture, 0-1 from the top-left",
@@ -92,7 +92,8 @@
    "px": [
     2043,
     4096
-   ]
+   ],
+   "focus_note": "the skiable outline itself (no 150 m pad); the fit view puts it 10 px from the screen sides"
   }
  }
 }

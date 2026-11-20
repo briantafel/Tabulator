@@ -26,6 +26,7 @@ const TAP_SLOP = 8;
    At fit the outline sits centred in the band between the header and the legend; the
    rest of the render's terrain is there to pan to. No `ref` = the old square picture. */
 const GAP = 20;
+const SIDE = 10;      // px between the outline and the screen sides at the fit view (Brian 2026-11-20: tighter)
 const SQUARE = [874, 874];
 
 /* Strip the <svg> wrapper off a layer file; the app draws the contents itself. */
@@ -106,7 +107,7 @@ export default function TerrainFullscreen({ src, alt, onClose, title = "Snow by 
     const top = root.current?.querySelector(".tmf-top")?.getBoundingClientRect();
     const lg = root.current?.querySelector(".tmf-legend")?.getBoundingClientRect();
     const band = {
-      side: 15 * u,
+      side: SIDE * u,
       top: (top ? top.bottom - r.top : 44 * u) + GAP * u,
       bottom: (lg ? r.bottom - lg.top : 15 * u) + GAP * u,
     };
