@@ -74,7 +74,7 @@ def fake_snow(rid, crop, lat_c, lon_c, work_):
 
 tp.load_dem_native = fake_dem
 tp.build_snow = fake_snow
-info = tp.run(work / "out", RID, px=int(os.environ.get("TEST_PX", "512")))
+info = tp.run(work / "out", RID, px=int(os.environ.get("TEST_PX", "512")), app=bool(os.environ.get("TEST_APP")))
 out = work / "out"
 from PIL import Image  # noqa: E402
 px = info["px"]
@@ -87,4 +87,21 @@ assert "<image" in (out / f"{RID}.svg").read_text()
 assert info["relief"]["clipped_pct"] <= 0.1, info["relief"]
 assert 45 <= info["relief"]["darkest1pct_grey_pct"] <= 65, info["relief"]
 assert (out / "preview" / f"{RID}-1024.png").exists() and (out / "preview" / f"{RID}-crop1to1.png").exists()
+if os.environ.get("TEST_APP"):
+    a = info["app"]
+    assert a and (out / f"{RID}-full.webp").exists() and (out / f"{RID}-sheet.webp").exists() and (out / f"{RID}-sheet-baked.webp").exists()
+    fw, fh = Image.open(out / f"{RID}-full.webp").size
+    assert (fw, fh) == tuple(a["full"]["px"]) and Image.open(out / f"{RID}-sheet.webp").size == (1080, 1080)
+    # portrait picture; its reference size is the 874-tall phone
+    assert fh > fw and a["full"]["ref"][1] == 874
+    f = a["full"]["focus"]
+    # the outline's focus rect sits inside the picture and in the band: centred horizontally, between the header and legend
+    assert 0 <= f["x0"] < f["x1"] <= 1 and 0 <= f["y0"] < f["y1"] <= 1, f
+    assert abs((f["x0"] + f["x1"]) / 2 - 0.5) < 0.02
+    ys0, ys1 = f["y0"] * 874, f["y1"] * 874
+    assert ys0 >= 60 and ys1 <= 874 - 110, (ys0, ys1)
+    for im_ in (a["full"]["labels"], a["sheet"]["labels"]):
+        for m in im_["marks"]:
+            assert 0 <= m["x"] <= 1 and 0 <= m["y"] <= 1, m
+    print("app layout OK", a["full"]["px"], a["full"]["ref"], f)
 print("OK", work)
