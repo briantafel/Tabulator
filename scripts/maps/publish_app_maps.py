@@ -41,7 +41,8 @@ def entry(rid, d):
         raise ValueError(f"{rid}.json has no app block (was the run made with app=true?)")
     return {
         "img": f"terrain/{rid}-sheet-baked.webp", "run": j["snow"]["run"], "label": j["caption_source"],
-        "base_in": j["base"][1], "top_in": j["top"][1],
+        "base_in": None if j.get("nosnow") else j["base"][1], "top_in": None if j.get("nosnow") else j["top"][1],
+        **({"nosnow": True} if j.get("nosnow") else {}),
         "base_ft": round(j["base"][0] * 3.28084), "top_ft": round(j["top"][0] * 3.28084),
         "img_clean": f"terrain/{rid}-sheet.webp", "range_in": j["inside_range_in"], "labels": a["sheet"]["labels"],
         "full": {"img": f"terrain/{rid}-full.webp", "fill": f"terrain/{rid}-full-fill.svg", "lines": f"terrain/{rid}-full-lines.svg",

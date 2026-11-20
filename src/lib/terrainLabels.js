@@ -39,9 +39,9 @@ export const depthText = (inches, metric) => `${snowTxt(inches * 2.54, metric)}$
 /** "Base 24" · 8,538 ft" or "Base 61cm · 2,603 m" — grouped thousands, a space before the unit. */
 export function markText(m, metric) {
   const word = m.kind === "top" ? "Top" : "Base";
-  const snow = depthText(m.in, metric);
   const elev = metric ? `${Math.round(m.ft / 3.28084).toLocaleString("en-US")} m` : `${m.ft.toLocaleString("en-US")} ft`;
-  return `${word} ${snow} · ${elev}`;
+  if (m.in == null) return `${word} · ${elev}`;           // no snow in the forecast: elevation only
+  return `${word} ${depthText(m.in, metric)} · ${elev}`;
 }
 
 /** Rough advance width of Inter Bold text, in px, for layout only (flipping a

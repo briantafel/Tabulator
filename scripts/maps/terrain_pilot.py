@@ -739,8 +739,14 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     plt.close(fig)
     msn = np.asarray(Image.fromarray(mask.astype("uint8") * 255).resize((sn, sn), Image.NEAREST)) > 0
     inside = snow[msn]
-    if inside.size == 0 or inside.max() < 1.0:
-        sys.exit(f"no snow (max {inside.max() if inside.size else 0:.1f} in) inside the outline: nothing to map; not drawing zeros")
+    if inside.size == 0:
+        sys.exit("no snow data inside the outline: nothing to map; not drawing zeros")
+    # Under an inch everywhere: no bands, no contours, no depth labels (never a band drawn for noise, never zeros shown
+    # as snow). The map still shows relief, outline, runs, lifts and the Base / Top markers with elevations; the app
+    # says "No snow in the forecast" where the legend would be. (Brian 2026-11-20, Revelstoke)
+    nosnow = bool(inside.max() < 1.0)
+    if nosnow:
+        log(f"WARNING {rid}: no snow in the forecast (max {inside.max():.2f} in inside the outline): drawing terrain only, no snow layers")
     lo_in, hi_in = np.floor(inside.min()), np.ceil(inside.max())
     step = 1 if hi_in - lo_in <= 4 else 2 if hi_in - lo_in <= 16 else 3   # narrow range (a quiet run): every inch, so the map is never label-less
     while (hi_in - lo_in) / step > 14:
@@ -748,8 +754,11 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     levels = list(np.arange(math.floor(lo_in / step) * step + step, hi_in, step))
     sc_ = px / sn
     sig2 = 0.01
-    lines, _ = contours(snow, levels, sig2, sc_)
-    _, fill = contours(snow, [float(math.floor(lo_in))] + levels, sig2, sc_)
+    if nosnow:
+        levels, lines, fill = [], [], []
+    else:
+        lines, _ = contours(snow, levels, sig2, sc_)
+        _, fill = contours(snow, [float(math.floor(lo_in))] + levels, sig2, sc_)
 
     def Pf(la, lo):
         return g4.P(la, lo)
@@ -806,7 +815,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     for word, (zz, x, y, sv) in marks:
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(11):.1f}" fill="#ffffff" stroke="{INK}" stroke-width="{sw(2):.1f}"/>')
         lab.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(4):.1f}" fill="{INK}"/>')
-        txt = f'{word} {sv:.0f}"  ·  {zz * FT:,.0f} ft'
+        txt = f'{word}  ·  {zz * FT:,.0f} ft' if nosnow else f'{word} {sv:.0f}"  ·  {zz * FT:,.0f} ft'
         tw = 0.62 * sw(30) * len(txt)           # rough text width; keep the whole label inside the frame
         left = x + sw(18) + tw > px - sw(12)
         lab += halo(x - sw(18) if left else x + sw(18), y, txt,
@@ -870,7 +879,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
             "frame": "fractions of this picture, 0-1 from the top-left",
             "depth": [dict(zip(("x", "y"), fr(x, y, x0_, y0_, w_, h_)), **{"in": lv_}) for lv_, x, y in depth_pts
                       if x0_ <= x <= x0_ + w_ and y0_ <= y <= y0_ + h_],
-            "marks": [dict(zip(("x", "y"), fr(x, y, x0_, y0_, w_, h_)), kind=w.lower(), **{"in": round(float(sv), 1)}, ft=round(float(zz) * FT))
+            "marks": [dict(zip(("x", "y"), fr(x, y, x0_, y0_, w_, h_)), kind=w.lower(), **{"in": None if nosnow else round(float(sv), 1)}, ft=round(float(zz) * FT))
                       for w, (zz, x, y, sv) in marks]}
         fx0, fx1 = (ox - ow / 2 / m_px - left) / Wc, (ox + ow / 2 / m_px - left) / Wc
         fy0, fy1 = (oy - oh / 2 / m_px) / px, (oy + oh / 2 / m_px) / px
@@ -901,6 +910,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
                    "mesh_vertex_spacing_m": round(region_m / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2)},
         "blender": bl,
         "svg_scale_vs_1800px_maps": round(s, 3),
+        "nosnow": nosnow,
         "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
         "levels_in": [float(x) for x in levels],
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,
