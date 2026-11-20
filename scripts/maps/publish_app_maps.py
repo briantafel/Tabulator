@@ -40,7 +40,7 @@ def entry(rid, d):
     if not a:
         raise ValueError(f"{rid}.json has no app block (was the run made with app=true?)")
     return {
-        "img": f"terrain/{rid}-sheet-baked.webp", "run": j["snow"]["run"], "label": j["caption_source"],
+        "img": f"terrain/{rid}-sheet-baked.webp", "run": j["snow"]["run"], "label": "NOAA NBM" if j.get("nosnow") else j["caption_source"],
         "base_in": None if j.get("nosnow") else j["base"][1], "top_in": None if j.get("nosnow") else j["top"][1],
         **({"nosnow": True} if j.get("nosnow") else {}),
         "base_ft": round(j["base"][0] * 3.28084), "top_ft": round(j["top"][0] * 3.28084),

@@ -3489,7 +3489,7 @@
  "revelstoke": {
   "img": "terrain/revelstoke-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -3660,7 +3660,7 @@
  "kicking-horse": {
   "img": "terrain/kicking-horse-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -3746,7 +3746,7 @@
  "kimberley": {
   "img": "terrain/kimberley-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -3832,7 +3832,7 @@
  "lake-louise": {
   "img": "terrain/lake-louise-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -3918,7 +3918,7 @@
  "fernie": {
   "img": "terrain/fernie-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4004,7 +4004,7 @@
  "silverstar": {
   "img": "terrain/silverstar-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4090,7 +4090,7 @@
  "big-white": {
   "img": "terrain/big-white-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4176,7 +4176,7 @@
  "marmot": {
   "img": "terrain/marmot-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4262,7 +4262,7 @@
  "sunshine": {
   "img": "terrain/sunshine-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4348,7 +4348,7 @@
  "killington": {
   "img": "terrain/killington-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4434,7 +4434,7 @@
  "le-massif": {
   "img": "terrain/le-massif-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4520,7 +4520,7 @@
  "sun-peaks": {
   "img": "terrain/sun-peaks-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4606,7 +4606,7 @@
  "whiteface": {
   "img": "terrain/whiteface-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4692,7 +4692,7 @@
  "blue-mountain": {
   "img": "terrain/blue-mountain-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 Tabulator terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4778,7 +4778,7 @@
  "norquay": {
   "img": "terrain/norquay-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4864,7 +4864,7 @@
  "jay-peak": {
   "img": "terrain/jay-peak-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -4950,7 +4950,7 @@
  "stowe": {
   "img": "terrain/stowe-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -5036,7 +5036,7 @@
  "panorama": {
   "img": "terrain/panorama-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -5122,7 +5122,7 @@
  "tremblant": {
   "img": "terrain/tremblant-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
@@ -5208,7 +5208,7 @@
  "mont-sainte-anne": {
   "img": "terrain/mont-sainte-anne-sheet-baked.webp",
   "run": "2026-11-20T12:00:00+00:00",
-  "label": "NOAA NBM \u2022 not terrain-adjusted",
+  "label": "NOAA NBM",
   "base_in": null,
   "top_in": null,
   "nosnow": true,
