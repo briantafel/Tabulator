@@ -579,7 +579,12 @@ export default function Tabulator() {
               gridDates={projections ? dates.slice(0, MAX_DAYS) : sfDates}
               editorial={feed.snowfall
                 ? (oursReadoutMatches(feed.editorialOurs, feedRaw?.blend) ? feed.editorialOurs : null) /* written from our numbers, or nothing */
-                : feed.editorial} generatedAt={feed.generatedAt} weather={feed.weather?.resorts}
+                : feed.editorial}
+              /* Our read-out is checked against the blend it was written from
+                 (above), not the Snow-Forecast stamp: the blend job can start
+                 before the newest forecast.json lands, and that hid the whole
+                 read-out (2026-11-20). */
+              generatedAt={feed.snowfall ? feed.editorialOurs?.forecastGeneratedAt : feed.generatedAt} weather={feed.weather?.resorts}
               favs={favs} onToggleFav={toggleFav}
               /* The radar lists base resorts (forecast days only); open the
                  projected copy so the sheet shows the full horizon. Bug

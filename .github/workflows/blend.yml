@@ -84,7 +84,16 @@ jobs:
         timeout-minutes: 5
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: npm run readout:ours
+        # Write from the newest Snow-Forecast files on main, not the ones this
+        # run checked out (forecast.yml may have pushed in between).
+        run: |
+          git fetch -q origin main && git checkout origin/main -- public/forecast.json public/weather.json 2>/dev/null || echo "::warning::could not refresh forecast.json from main"
+          rc=0; npm run readout:ours || rc=$?
+          # Put this run's copies back so the commit below carries only the
+          # blend and the read-out (a staged forecast.json could later win a
+          # rebase over a newer one).
+          git checkout HEAD -- public/forecast.json public/weather.json
+          exit $rc
 
       - name: Commit our forecast
         id: projcommit
