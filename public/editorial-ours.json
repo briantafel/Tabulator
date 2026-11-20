@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-20T07:17:42.679Z",
- "forecastGeneratedAt": "2026-11-20T06:07:48.157Z",
+ "generatedAt": "2026-11-20T15:32:24.264Z",
+ "forecastGeneratedAt": "2026-11-20T15:25:35.848Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-20T07:17:40.144Z",
  "quiet": false,
@@ -8,63 +8,54 @@
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-20",
-  "to": "2026-11-24",
-  "days": 5,
-  "toLabel": "Tuesday Nov 24"
+  "to": "2026-11-25",
+  "days": 6,
+  "toLabel": "Wednesday Nov 25"
  },
- "overview": "A Pacific Northwest storm system brings snow to the Utah, Wyoming and Montana mountains through Saturday, then a weaker system follows around Monday. The Central Rockies get showers through Saturday and more fast-moving storms are possible through Thanksgiving week.",
+ "overview": "Storms come in off the Pacific one after another this week, hitting the Pacific Northwest and the Sierra first, then the Utah and Idaho mountains. The Rockies get a fast-moving series of weaker systems and wind.",
  "regions": [
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Snow here is set to rise late in the week. Rain comes first, and the mountains switch to snow as the week goes on. Cypress Mountain is forecast 36 inches through Wednesday, with its biggest day on Tuesday at 14 inches. Whistler sees snow on Wednesday, with a large day of 13 inches. Whistler's forecast shifts to rain as the week closes."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "A weak system crosses the northern Sierra over the weekend, bringing light rain to the Valley and snow above 4000 feet. A stronger holiday system follows mid-week with more mountain snow and gusty wind, though forecasters say the models disagree on its details. Palisades leads with 33 inches through Wednesday, and Sugar Bowl is close behind at 28 inches."
+  },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A storm from the Pacific Northwest passes over Utah through early Saturday, with snow focused increasingly on northern Utah. Powder Mountain leads with 10 inches, most of it on Friday. The NWS is calling for more, 12 to 20 inches Friday through Monday, and a Winter Storm Warning runs from Thursday night to Saturday."
+   "text": "A Pacific Northwest storm brings heavy snow to Utah's mountains through early Saturday, focused on the north. Snowbasin takes the largest share, 18 inches on Friday alone, and Powder Mountain gets 17 on the same day. A winter storm warning runs from Thursday night to Saturday. The weekend is dry, and another weaker system reaches northern Utah on Monday."
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Mt. Baker and Crystal Mountain get the next real snow. Snow starts Saturday night in light amounts, then the pattern turns active next week with several systems, gusty wind and rain at lower elevations. Mt. Baker leads with 26 inches through Wednesday, and Crystal Mountain gets 14 inches on Tuesday alone. Forecasters expect coastal flooding risk midweek."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A system brings snow to the western slopes and passes Friday, with the Tetons under a Winter Weather Advisory. Grand Targhee leads with 10 inches, 6 of them on Friday. Winds ease and more snow showers follow into Monday."
+   "text": "Snow falls across Wyoming and Idaho through Saturday as a system moves east. Grand Targhee leads with 25 inches over the period, peaking at 8 inches on Saturday. Jackson Hole is under a winter weather advisory from Thursday night through Friday night. Forecasters expect a warmer spell Tuesday and Wednesday, with the next system favoring areas west of the Divide."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Snow bands are pushing into the Reno area and beyond, with locally heavier bursts under the bands. Winds are strong this weekend, with gusts up to 40 mph on Sunday. Mammoth is forecast 9 inches through Wednesday, with snow likely Tuesday night and Wednesday and gusts reaching 55 mph on Tuesday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Moisture from a storm moving across the Intermountain West brings snow to the mountains through Saturday. Telluride and Crested Butte both expect about 7 inches. Some gusts could make travel harder, and a brief snow squall is possible near Interstate 70 Friday morning."
+   "text": "Snow showers reach the mountains tonight into Saturday, with some high valleys getting light accumulations. Colorado's northwest corner may see a brief squall threat Saturday morning. Telluride leads with 10 inches through Monday, peaking at 5 on Saturday. Forecasters say fast-moving storms are possible through much of Thanksgiving week."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Strong winds hit the Colorado mountains Friday, with gusts to 55 mph near Wolf Creek, followed by snow showers Friday night and Saturday. Wolf Creek leads with 8 inches through Friday, and Taos gets 2 inches on Saturday. Forecasters expect a dry, cold Sunday and more light snow Monday."
   }
  ],
- "ahead": {
-  "text": "The Climate Prediction Center expects a weaker, more progressive system to move through the West around Wednesday Nov 25 into the following days. It has less confidence in the details.",
-  "sources": [
-   {
-    "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-11-20T05:21:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-20T05:27:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS TFX Area Forecast Discussion",
-    "issuedAt": "2026-11-20T06:40:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-20T05:42:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-19T19:58:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-19T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
@@ -72,32 +63,52 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T06:14:31.129Z"
+   "issuedAt": "2026-11-20T15:32:09.392Z"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-20T09:48:00+00:00"
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-20T05:21:00+00:00"
+   "issuedAt": "2026-11-20T12:57:00+00:00"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-20T10:53:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T05:27:00+00:00"
+   "issuedAt": "2026-11-20T11:30:00+00:00"
   },
   {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-20T06:40:00+00:00"
+   "name": "NWS PIH Area Forecast Discussion",
+   "issuedAt": "2026-11-20T12:11:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-20T12:21:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-20T05:42:00+00:00"
+   "issuedAt": "2026-11-20T11:50:00+00:00"
+  },
+  {
+   "name": "NWS PUB Area Forecast Discussion",
+   "issuedAt": "2026-11-20T11:18:00+00:00"
+  },
+  {
+   "name": "NWS ABQ Area Forecast Discussion",
+   "issuedAt": "2026-11-20T11:44:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T07:17:42.679Z"
+   "issuedAt": "2026-11-20T15:32:24.264Z"
   }
  ],
  "api": {
   "day": "2026-11-20",
-  "calls": 6
+  "calls": 8
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
