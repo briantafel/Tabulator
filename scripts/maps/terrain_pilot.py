@@ -551,10 +551,11 @@ def run(out, rid, px=4096, work=None):
                            f'stroke-linecap="round" clip-path="url(#area)"/>' for _, gg, _a in runs])
     lb = []
     for _, gg, _a in lifts:
-        lb.append(f'<path d="{path([gg[0], gg[-1]])}" fill="none" stroke="{INK}" stroke-width="{sw(1.6):.2f}" clip-path="url(#area)"/>')
+        # lifts are not clipped to the outline: they run across the gaps between run areas (Brian 2026-11-19)
+        lb.append(f'<path d="{path([gg[0], gg[-1]])}" fill="none" stroke="{INK}" stroke-width="{sw(1.6):.2f}"/>')
         for la_, lo_ in (gg[0], gg[-1]):
             x, y = Pf(la_, lo_)
-            if 0 <= x < px and 0 <= y < px and mask[int(y), int(x)]:
+            if 0 <= x < px and 0 <= y < px:
                 lb.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{sw(3.2):.2f}" fill="{INK}"/>')
     over += layer("lifts", lb)
     over += layer("skiable terrain outline (from runs)", [f'<path d="{area_d}" fill="none" stroke="{INK}" stroke-opacity="0.55" '
