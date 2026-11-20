@@ -280,7 +280,7 @@ def trace_outline(runs, g, m_px):
     r_close = 110 / m_px
     grown = distance_transform_edt(~raw) <= r_close
     mask = binary_fill_holes(distance_transform_edt(grown) > r_close * 0.85)
-    del grown, raw
+    del grown
     r_open = 100 / m_px
     eroded = distance_transform_edt(mask) > r_open
     opened = distance_transform_edt(~eroded) <= r_open
@@ -294,6 +294,11 @@ def trace_outline(runs, g, m_px):
         if keep.sum() > 0.5 * mask.sum():
             trimmed = float((mask.sum() - keep.sum()) * m_px * m_px / 4046.86)
             mask = keep
+    # every mapped run stays inside the outline: the open/trim steps above only smooth the shape, they must
+    # never remove a run (Brian 2026-11-19: lifts ended where runs had been trimmed away)
+    mask = mask | (distance_transform_edt(~raw) <= 60 / m_px)
+    trimmed = 0.0
+    del raw
     if mask.mean() < 0.0005:
         sys.exit("skiable-terrain mask is nearly empty (no runs mapped?); refusing to draw")
     return mask, trimmed
