@@ -759,7 +759,7 @@
   "2026-11-20": {
    "palisades": 3,
    "heavenly": 1,
-   "kirkwood": 2,
+   "kirkwood": 1,
    "sugar-bowl": 4,
    "northstar": 2,
    "mt-rose": 0,
@@ -770,31 +770,31 @@
    "crystal": 0,
    "stevens-pass": 0,
    "mt-bachelor": 0,
-   "telluride": 6,
+   "telluride": 5,
    "crested-butte": 9,
-   "aspen-highlands": 6,
+   "aspen-highlands": 7,
    "steamboat": 2,
-   "vail": 2,
+   "vail": 3,
    "breckenridge": 1,
-   "arapahoe-basin": 1,
-   "snowbird": 7,
-   "alta": 7,
+   "arapahoe-basin": 0,
+   "snowbird": 6,
+   "alta": 6,
    "brighton": 6,
    "solitude": 6,
-   "park-city": 6,
-   "snowbasin": 11,
-   "powder-mountain": 16,
-   "jackson-hole": 10,
-   "grand-targhee": 16,
+   "park-city": 5,
+   "snowbasin": 16,
+   "powder-mountain": 24,
+   "jackson-hole": 8,
+   "grand-targhee": 13,
    "sun-valley": 0,
-   "big-sky": 5,
+   "big-sky": 6,
    "taos": 0,
    "wolf-creek": 6,
    "revelstoke": 0,
    "whistler": 0,
    "lake-louise": 0,
    "kicking-horse": 0,
-   "fernie": 1,
+   "fernie": 0,
    "red-mountain": 0,
    "whitewater": 0,
    "panorama": 0,
@@ -4505,7 +4505,7 @@
     "night": 0
    },
    "kirkwood": {
-    "am": 2,
+    "am": 1,
     "pm": 0,
     "night": 0
    },
@@ -4560,7 +4560,7 @@
     "night": 0
    },
    "telluride": {
-    "am": 3,
+    "am": 2,
     "pm": 0,
     "night": 3
    },
@@ -4571,7 +4571,7 @@
    },
    "aspen-highlands": {
     "am": 1,
-    "pm": 0,
+    "pm": 1,
     "night": 5
    },
    "steamboat": {
@@ -4581,7 +4581,7 @@
    },
    "vail": {
     "am": 0,
-    "pm": 0,
+    "pm": 1,
     "night": 2
    },
    "breckenridge": {
@@ -4592,15 +4592,15 @@
    "arapahoe-basin": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 0
    },
    "snowbird": {
-    "am": 6,
+    "am": 5,
     "pm": 1,
     "night": 0
    },
    "alta": {
-    "am": 6,
+    "am": 5,
     "pm": 1,
     "night": 0
    },
@@ -4615,29 +4615,29 @@
     "night": 0
    },
    "park-city": {
-    "am": 5,
+    "am": 4,
     "pm": 1,
     "night": 0
    },
    "snowbasin": {
-    "am": 7,
-    "pm": 2,
-    "night": 2
+    "am": 8,
+    "pm": 5,
+    "night": 3
    },
    "powder-mountain": {
-    "am": 10,
-    "pm": 3,
-    "night": 3
+    "am": 12,
+    "pm": 8,
+    "night": 4
    },
    "jackson-hole": {
     "am": 0,
-    "pm": 5,
+    "pm": 3,
     "night": 5
    },
    "grand-targhee": {
-    "am": 1,
-    "pm": 8,
-    "night": 7
+    "am": 0,
+    "pm": 4,
+    "night": 9
    },
    "sun-valley": {
     "am": 0,
@@ -4647,7 +4647,7 @@
    "big-sky": {
     "am": 0,
     "pm": 0,
-    "night": 5
+    "night": 6
    },
    "taos": {
     "am": 0,
@@ -4655,9 +4655,9 @@
     "night": 0
    },
    "wolf-creek": {
-    "am": 0,
+    "am": 1,
     "pm": 2,
-    "night": 4
+    "night": 3
    },
    "revelstoke": {
     "am": 0,
@@ -4681,7 +4681,7 @@
    },
    "fernie": {
     "am": 0,
-    "pm": 1,
+    "pm": 0,
     "night": 0
    },
    "red-mountain": {
@@ -4781,5 +4781,5 @@
    }
   }
  },
- "updatedAt": "2026-11-20T15:25:35.848Z"
+ "updatedAt": "2026-11-20T21:13:50.901Z"
 }

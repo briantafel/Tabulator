@@ -1,58 +1,57 @@
 {
- "generatedAt": "2026-11-20T16:20:30.919Z",
- "forecastGeneratedAt": "2026-11-20T15:25:35.848Z",
+ "generatedAt": "2026-11-20T21:20:44.371Z",
+ "forecastGeneratedAt": "2026-11-20T21:13:50.901Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-20T16:20:28.099Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-20",
   "to": "2026-11-25",
   "days": 6,
   "toLabel": "Wednesday Nov 25"
  },
- "overview": "A Pacific storm track keeps the West busy through the week. Cascades and Coast Mountains get the wettest pattern, with a stronger system midweek. Utah and Tahoe catch the weekend systems, and the Rockies see fast-moving storms and cold shots.",
+ "overview": null,
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Snow comes to the Coast Mountains on Saturday night, but Sunday and Monday bring mostly showers and rain. Tuesday and Wednesday are the payoff, with snow and rain mixing in. Cypress Mountain has the biggest stretch, with 23 inches forecast for Wednesday alone and a 54-inch total."
+   "text": "Cypress Mountain is forecast for about 54\". Whistler follows."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weak system brings light snow above 4000 feet over the weekend, with Monday as a break. A stronger holiday system follows midweek, with rain in the Valley and more mountain snow. Palisades has the biggest run, with 14 inches forecast for Wednesday and a 29-inch total. Winter Storm Warning is in effect from Friday."
+   "text": "Palisades is forecast for about 29\". Sugar Bowl and Kirkwood follow."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A Pacific Northwest storm brings snow to Utah's mountains through early Saturday, focused on the north. Snow levels drop to valley floors Friday night. Snowbasin gets the heavy hit, with 14 inches forecast Friday and a 22-inch total. A weaker system follows Monday, mostly across northern and central Utah."
+   "text": "Snowbasin is forecast for about 22\", 14\" of it Friday. Powder Mountain and Brighton follow. Winter Storm Warning at Snowbasin from Friday to Saturday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Dry, foggy mornings give way to a weak system Saturday evening, with light rain in the lowlands and snow in the mountains. The pattern turns more active next week, with multiple rounds of rain, mountain snow and gusty winds. Mt. Baker has the biggest total at 26 inches, with 12 inches on Wednesday. The NWS is calling for more at Crystal Mountain, 29 inches Saturday night through Wednesday night."
+   "text": "Mt. Baker is forecast for about 26\". Crystal Mountain and Mt. Bachelor follow. The National Weather Service has rain mixed in at Mt. Baker Wednesday and Wednesday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Snow is spreading into western Wyoming and southwest Montana through Friday, with the heaviest snow in the afternoon and evening. Grand Targhee has the best run, with 10 inches on Saturday and a 21-inch total. Dense fog lingers on the plains. A milder spell follows, with the next system affecting western mountains around Thanksgiving."
+   "text": "Grand Targhee is forecast for about 21\". Jackson Hole and Big Sky follow. Winter Weather Advisory at Grand Targhee from Thursday night to Friday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A fast-moving storm brings mountain snow through Saturday, with winds gusting hard on the peaks. A cold front pushes in colder air behind it, and temperatures drop sharply for the weekend. Telluride has 12 inches in total, with 7 inches on Monday. Fast-moving storms are possible through much of Thanksgiving week."
+   "text": "Telluride is forecast for about 12\", 7\" of it Monday. Breckenridge and Aspen Highlands follow."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Snow bands are hitting the Reno area and Carson City area this morning under a Winter Weather Advisory. Mammoth has 7 inches in total, with 4 inches on Sunday. Winds ramp up Sunday and again Tuesday night into Wednesday, with snow likely midweek."
+   "text": "Mammoth is forecast for about 7\", 4\" of it Sunday. The NWS is calling for more at Mammoth: 4 to 11 inches Friday through Wednesday."
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Strong winds hit the higher peaks today, with light snow over the Continental Divide spreading into the southeast mountains on Saturday. Cold air settles in behind a front Saturday night, with the coldest nights Sunday and Monday. Wolf Creek has 8 inches in total, with 4 inches on Saturday."
+   "text": "Wolf Creek is forecast for about 8\", 4\" of it Saturday. Taos follows."
   }
  ],
  "ahead": null,
@@ -63,55 +62,11 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T15:32:09.392Z"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-20T09:48:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-20T12:57:00+00:00"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T10:53:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:20:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:30:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:56:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:50:00+00:00"
-  },
-  {
-   "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:33:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-20T12:21:00+00:00"
-  },
-  {
-   "name": "NWS PUB Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:18:00+00:00"
-  },
-  {
-   "name": "NWS ABQ Area Forecast Discussion",
-   "issuedAt": "2026-11-20T15:59:00+00:00"
+   "issuedAt": "2026-11-20T21:20:32.072Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T16:20:30.919Z"
+   "issuedAt": "2026-11-20T21:20:44.371Z"
   }
  ],
  "api": {

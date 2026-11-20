@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-20T15:32:09.614Z",
- "forecastGeneratedAt": "2026-11-20T15:25:35.848Z",
+ "generatedAt": "2026-11-20T21:20:32.259Z",
+ "forecastGeneratedAt": "2026-11-20T21:13:50.901Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -10,85 +10,85 @@
   "days": 6,
   "toLabel": "Wednesday Nov 25"
  },
- "overview": "The next systems come in from the Pacific. Western Washington and the Coast Mountains get repeated rounds of rain and mountain snow, while the Sierra, Utah and Colorado see snow showers and colder air behind a front. The Rockies stay unsettled through the weekend.",
+ "overview": "Storms come in off the Pacific and swing through the Northwest, Utah and the Sierra in turn. Cold air settles in behind them, and the next wave is expected to bring snow to the Cascades and Coast Mountains through midweek.",
  "regions": [
   {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "A cold front and a dip in the jet stream bring snow to western Wyoming and Montana through Friday night, with the heaviest snow expected in the afternoon and evening. Teton and Togwotee passes see the most. Grand Targhee leads with 11\" for the week. The National Weather Service calls for 12 to 27 inches over Friday through Wednesday night, and a winter weather advisory is in effect Thursday night into Friday night."
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "A weak system brings light snow to the Cascade passes Saturday evening into Sunday, then a break Monday. A stronger, wetter system arrives Tuesday with rain and snow and gusty winds, and forecasters expect multiple rounds through the second half of the week. Crystal Mountain has the best outlook, with 19\" in the forecast, most of it Tuesday."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler's snow comes in a few bursts. Periods of snow arrive Saturday night, then flurries Sunday and Monday. Tuesday brings rain to the resort, and Wednesday is mostly showers and rain, so the big totals fall before the mild, wet midweek. Whistler's 13\" is the highest on the chart."
+   "text": "Snow from the Pacific systems lands mostly on the upper mountains. Whistler sees snow Monday and Tuesday before rain moves in Tuesday night and Wednesday. Cypress Mountain sits lower and sees mostly rain and showers through Tuesday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A winter storm warning is in effect until 10 AM today above 4,000 feet, then a weaker system brings light snow and rain Saturday into Sunday. Sugar Bowl is the top resort on the chart, with a 5\" day Sunday. The National Weather Service calls for 13 to 26 inches over Friday through Wednesday night, with a holiday-week storm still uncertain in its track and strength."
+   "text": "A weak system brings light snow to the Sierra and southern Cascades over the weekend, with the heaviest falling Sunday. A stronger storm arrives midweek with rain in the Valley and snow in the mountains, though forecasters expect less snow than the last storm. Sugar Bowl has the most in the forecast at 10\" so far."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A Pacific Northwest storm brings snow to Utah's mountains through early Saturday, focused more on the north as it goes. Snow levels drop to the northern valley floors Friday night. Powder Mountain leads the range. A winter storm warning runs Thursday night through Saturday, and the National Weather Service calls for 9 to 19 inches there from Friday through Wednesday night."
+   "text": "A Pacific storm brings snow to northern Utah on Friday, with a Winter Storm Warning in place through Saturday. Dry, cold weather follows over the weekend. Another weaker system brings snow Monday into Wednesday. Powder Mountain leads at 11\"."
   },
   {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "A ridge brings dry weather and fog today. Light rain and mountain snow arrive Saturday evening and last through Sunday, with snow levels near 2,000 feet. Next week turns more active, with multiple systems bringing rain, snow and gusty winds from Monday on. Stevens Pass and Crystal Mountain are each forecast 16 to 29 inches or more by the National Weather Service over Saturday night through Wednesday night."
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Snow showers move through the western mountains and Montana's northern peaks through the weekend, with a Winter Weather Advisory for Friday night. Cold temperatures hold into early next week before a warmer, drier spell midweek. Grand Targhee sees 9\" in the forecast."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A storm moves across Colorado tonight and Saturday, with the heaviest mountain snow in the northwest and gusty winds over the peaks. A cold front brings colder air Saturday. Telluride leads with 7\" for the week. Snow showers return Monday, and Wednesday's chances are light. Thanksgiving week looks fast-moving and changeable."
+   "text": "A cold front brings light snow to the Colorado mountains Friday and Saturday, then fast-moving systems with little moisture come through early next week. Telluride leads with 7\" in the forecast. Travelers over the Thanksgiving holiday should expect possible icy or snowy high passes."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-20T15:25:35.848Z"
+   "issuedAt": "2026-11-20T21:13:50.901Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T15:32:09.392Z"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:30:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:56:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-20T09:48:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-20T12:57:00+00:00"
+   "issuedAt": "2026-11-20T21:20:32.072Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T10:53:00+00:00"
+   "issuedAt": "2026-11-20T19:02:00+00:00"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-20T20:55:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-20T12:21:00+00:00"
+  },
+  {
+   "name": "NWS SLC Area Forecast Discussion",
+   "issuedAt": "2026-11-20T17:42:00+00:00"
+  },
+  {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-20T19:32:00+00:00"
+  },
+  {
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-20T20:24:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:50:00+00:00"
-  },
-  {
-   "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-20T11:33:00+00:00"
+   "issuedAt": "2026-11-20T18:08:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T15:32:09.614Z"
+   "issuedAt": "2026-11-20T21:20:32.259Z"
   }
  ],
  "api": {
   "day": "2026-11-20",
-  "calls": 6
+  "calls": 8
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
