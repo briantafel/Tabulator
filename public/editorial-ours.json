@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-21T00:20:36.283Z",
- "forecastGeneratedAt": "2026-11-20T21:13:50.901Z",
+ "generatedAt": "2026-11-21T02:18:03.679Z",
+ "forecastGeneratedAt": "2026-11-21T02:11:21.886Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-21T00:20:32.821Z",
  "quiet": false,
@@ -12,22 +12,27 @@
   "days": 5,
   "toLabel": "Wednesday Nov 25"
  },
- "overview": "A ridge gives way to a series of Pacific fronts from Monday on, bringing mountain snow and rain to the Cascades and Sierra, while British Columbia's Coast Mountains get more rain and mixed precipitation than deep snow.",
+ "overview": "A ridge gives the Cascades and Sierra a dry, foggy stretch, then a series of storms arrives from the Pacific from Sunday into midweek. The Sierra's Sunday system is weak, and the midweek storm is expected to be wetter and snowier than the one before.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A weak system brings light snow showers to the Cascades this weekend, then a stronger front arrives Monday and stays through Tuesday. Crystal Mountain leads the region with 19 inches over the five days, with its biggest day Tuesday at 10 inches. Snow levels hover near 2,500 feet, so the snow is light but steady."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Environment Canada shows the snow here is brief. Whistler gets 19 inches over the window, peaking at 8 inches Tuesday, but rain takes over Tuesday night and continues into Wednesday. Cypress Mountain sees mostly rain and totals 5 inches. Expect wet, heavy snow at the top and rain lower down."
+   "text": "Fog and cold start the weekend. A low offshore brings light showers from Saturday afternoon into Sunday, with snow levels around 2,500 feet. Stevens Pass is the top bet at 11 inches. Light snow mixing with rain follows Monday through Wednesday, with Mt. Baker at 15 inches."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weak system crosses the Sierra Sunday with light snow above 4,000 feet. Sugar Bowl and Palisades get the most, about 6 to 9 inches. A break comes Monday before a stronger system arrives mid-week. The NWS is calling for more, 11 to 21 inches at Sugar Bowl and 9 to 22 inches at Palisades, Sunday through Wednesday night."
+   "text": "Cold, foggy mornings Saturday, then a weak system brings light snow above about 4,000 feet Sunday. Monday is dry. A stronger storm arrives midweek, with forecasters less sure of its totals. Sugar Bowl leads at 13 inches. The NWS calls for 21 inches at Sugar Bowl from Sunday through Wednesday night."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Snow fades to flurries Sunday and Monday, then rain and showers take over midweek. Whistler is the best bet at 15 inches, mostly from Monday through Wednesday."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "A clear, bitterly cold night Saturday brings freezing fog to the Martis and Sierra valleys. A fast, weak storm brings light snow Sunday, enough to make the drive home hard in the evening. Monday afternoon through Tuesday evening is the best travel window. Mammoth gets 9 inches, with a stronger midweek system bringing more snow."
   }
  ],
  "ahead": null,
@@ -38,7 +43,7 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T21:20:32.072Z"
+   "issuedAt": "2026-11-21T02:17:53.672Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
@@ -49,13 +54,17 @@
    "issuedAt": "2026-11-20T20:55:00+00:00"
   },
   {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-20T21:42:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T00:20:36.283Z"
+   "issuedAt": "2026-11-21T02:18:03.679Z"
   }
  ],
  "api": {
   "day": "2026-11-21",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

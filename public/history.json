@@ -765,29 +765,29 @@
    "mt-rose": 0,
    "sierra-at-tahoe": 1,
    "homewood": 2,
-   "mammoth": 1,
+   "mammoth": 2,
    "mt-baker": 0,
    "crystal": 0,
    "stevens-pass": 0,
    "mt-bachelor": 0,
    "telluride": 5,
    "crested-butte": 9,
-   "aspen-highlands": 7,
+   "aspen-highlands": 8,
    "steamboat": 2,
    "vail": 3,
    "breckenridge": 1,
-   "arapahoe-basin": 0,
-   "snowbird": 6,
-   "alta": 6,
-   "brighton": 6,
-   "solitude": 6,
-   "park-city": 5,
-   "snowbasin": 16,
-   "powder-mountain": 24,
-   "jackson-hole": 8,
-   "grand-targhee": 13,
+   "arapahoe-basin": 1,
+   "snowbird": 7,
+   "alta": 7,
+   "brighton": 7,
+   "solitude": 7,
+   "park-city": 6,
+   "snowbasin": 12,
+   "powder-mountain": 18,
+   "jackson-hole": 7,
+   "grand-targhee": 12,
    "sun-valley": 0,
-   "big-sky": 6,
+   "big-sky": 5,
    "taos": 0,
    "wolf-creek": 6,
    "revelstoke": 0,
@@ -4536,7 +4536,7 @@
    },
    "mammoth": {
     "am": 0,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "mt-baker": {
@@ -4572,7 +4572,7 @@
    "aspen-highlands": {
     "am": 1,
     "pm": 1,
-    "night": 5
+    "night": 6
    },
    "steamboat": {
     "am": 2,
@@ -4581,8 +4581,8 @@
    },
    "vail": {
     "am": 0,
-    "pm": 1,
-    "night": 2
+    "pm": 0,
+    "night": 3
    },
    "breckenridge": {
     "am": 0,
@@ -4592,52 +4592,52 @@
    "arapahoe-basin": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "snowbird": {
     "am": 5,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "alta": {
     "am": 5,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "brighton": {
     "am": 5,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "solitude": {
     "am": 5,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "park-city": {
     "am": 4,
-    "pm": 1,
+    "pm": 2,
     "night": 0
    },
    "snowbasin": {
     "am": 8,
-    "pm": 5,
-    "night": 3
+    "pm": 3,
+    "night": 1
    },
    "powder-mountain": {
     "am": 12,
-    "pm": 8,
-    "night": 4
+    "pm": 4,
+    "night": 2
    },
    "jackson-hole": {
     "am": 0,
-    "pm": 3,
+    "pm": 2,
     "night": 5
    },
    "grand-targhee": {
     "am": 0,
     "pm": 4,
-    "night": 9
+    "night": 8
    },
    "sun-valley": {
     "am": 0,
@@ -4647,7 +4647,7 @@
    "big-sky": {
     "am": 0,
     "pm": 0,
-    "night": 6
+    "night": 5
    },
    "taos": {
     "am": 0,
@@ -4656,8 +4656,8 @@
    },
    "wolf-creek": {
     "am": 1,
-    "pm": 2,
-    "night": 3
+    "pm": 1,
+    "night": 4
    },
    "revelstoke": {
     "am": 0,
@@ -4781,5 +4781,5 @@
    }
   }
  },
- "updatedAt": "2026-11-20T21:13:50.901Z"
+ "updatedAt": "2026-11-21T02:11:21.886Z"
 }

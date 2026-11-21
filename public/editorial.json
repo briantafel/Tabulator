@@ -1,61 +1,51 @@
 {
- "generatedAt": "2026-11-20T21:20:32.259Z",
- "forecastGeneratedAt": "2026-11-20T21:13:50.901Z",
+ "generatedAt": "2026-11-21T02:17:53.867Z",
+ "forecastGeneratedAt": "2026-11-21T02:11:21.886Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-20",
+  "from": "2026-11-21",
   "to": "2026-11-25",
-  "days": 6,
+  "days": 5,
   "toLabel": "Wednesday Nov 25"
  },
- "overview": "Storms come in off the Pacific and swing through the Northwest, Utah and the Sierra in turn. Cold air settles in behind them, and the next wave is expected to bring snow to the Cascades and Coast Mountains through midweek.",
+ "overview": "Systems keep arriving from the Pacific through the week. A weak one brings light snow Sunday, a break Monday, then a stronger storm by Tuesday that hits the Cascades and Sierra hardest. Coast Mountains get a wetter mix with rain mixing in by midweek.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A weak system brings light snow to the Cascade passes Saturday evening into Sunday, then a break Monday. A stronger, wetter system arrives Tuesday with rain and snow and gusty winds, and forecasters expect multiple rounds through the second half of the week. Crystal Mountain has the best outlook, with 19\" in the forecast, most of it Tuesday."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Snow from the Pacific systems lands mostly on the upper mountains. Whistler sees snow Monday and Tuesday before rain moves in Tuesday night and Wednesday. Cypress Mountain sits lower and sees mostly rain and showers through Tuesday."
+   "text": "A weak system brings light snow to mountains from Saturday into Sunday, with little impact expected. A break follows Monday, then a front arrives Tuesday, with snow levels near 2,500 feet early. Mt. Baker and Crystal Mountain each get most of their totals Tuesday, with 15 inches apiece for the week. Rain and snow mix by Wednesday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weak system brings light snow to the Sierra and southern Cascades over the weekend, with the heaviest falling Sunday. A stronger storm arrives midweek with rain in the Valley and snow in the mountains, though forecasters expect less snow than the last storm. Sugar Bowl has the most in the forecast at 10\" so far."
+   "text": "A weak system brings light snow Sunday and a dry Monday. A stronger storm arrives midweek and brings snow to the Sierra, though forecasters expect less than the last storm. Sugar Bowl sees the highest totals, with 13 inches. The NWS is calling for more, 11 to 21 inches from Sunday through Wednesday night at Sugar Bowl. Expect cold valley fog Saturday morning."
   },
   {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "A Pacific storm brings snow to northern Utah on Friday, with a Winter Storm Warning in place through Saturday. Dry, cold weather follows over the weekend. Another weaker system brings snow Monday into Wednesday. Powder Mountain leads at 11\"."
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Snow mostly stays light through Monday at Whistler and Cypress. Wetter weather moves in Tuesday as rain mixes in, and by Wednesday the snow level rises and rain dominates. Whistler gets its biggest day Tuesday, at 7 inches, for 15 inches in total."
   },
   {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "Snow showers move through the western mountains and Montana's northern peaks through the weekend, with a Winter Weather Advisory for Friday night. Cold temperatures hold into early next week before a warmer, drier spell midweek. Grand Targhee sees 9\" in the forecast."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "A cold front brings light snow to the Colorado mountains Friday and Saturday, then fast-moving systems with little moisture come through early next week. Telluride leads with 7\" in the forecast. Travelers over the Thanksgiving holiday should expect possible icy or snowy high passes."
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Expect cold, clear nights with valley fog Saturday. A fast, weak system brings light snow Sunday, with a bigger storm midweek that could make travel difficult. Forecasters suggest the best travel window is Monday afternoon through Tuesday evening. Mammoth's biggest day is Sunday, with 5 inches."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-20T21:13:50.901Z"
+   "issuedAt": "2026-11-21T02:11:21.886Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-20T21:20:32.072Z"
+   "issuedAt": "2026-11-21T02:17:53.672Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T19:02:00+00:00"
+   "issuedAt": "2026-11-20T23:09:00+00:00"
   },
   {
    "name": "NWS STO Area Forecast Discussion",
@@ -63,32 +53,16 @@
   },
   {
    "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-20T12:21:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-20T17:42:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-20T19:32:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-20T20:24:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-20T18:08:00+00:00"
+   "issuedAt": "2026-11-20T21:42:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-20T21:20:32.259Z"
+   "issuedAt": "2026-11-21T02:17:53.867Z"
   }
  ],
  "api": {
-  "day": "2026-11-20",
-  "calls": 8
+  "day": "2026-11-21",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
