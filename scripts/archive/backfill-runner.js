@@ -203,8 +203,17 @@ function monthsOf([from, to]) {
   return out;
 }
 
+/* Added 2026-11-21 (claude/state-2026-11-21-longrange.md): four older winters of SNOTEL daily
+   history, truth only. dynamical.org GEFS history for these winters is already in the archive;
+   with truth it gives six winters for long-range skill and leave-one-winter-out calibration.
+   Daily SWE/depth only (no Open-Meteo, no quota). BC ASWS is not extended, so Canada stays
+   two winters. */
+const OLD_WINTERS = [["2020-11-01", "2021-04-30"], ["2021-11-01", "2022-04-30"],
+  ["2022-11-01", "2023-04-30"], ["2023-11-01", "2024-04-30"]];
+
 const pieces = [
   ...WINTERS.map((w) => ({ key: `snotel-${year(w)}${SUF}`, kind: "snotel", winter: w })),
+  ...OLD_WINTERS.map((w) => ({ key: `snotel-${year(w)}${SUF}`, kind: "snotel", winter: w })),
   // Added 2026-11-10: daily highs/lows, the truth for scoring forecast temperatures.
   ...WINTERS.map((w) => ({ key: `snotel-temp-${year(w)}${SUF}`, kind: "snotel", winter: w, elements: DAILY_TEMP_ELEMENTS })),
   // Added 2026-11-11 (claude/temp-wind-plan.md T1): hourly TOBS for the lift-hours

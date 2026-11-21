@@ -33,7 +33,8 @@ def main():
         td = Path(td)
         out = td / "out"
         out.mkdir()
-        days = [date(2024, 12, 1) + timedelta(d) for d in range(40)] + [date(2025, 12, 1) + timedelta(d) for d in range(40)]
+        # Four winters: 2022-23 and 2023-24 (history, w2022/w2023), 2024-25 (train), 2025-26 (test).
+        days = [date(y, 12, 1) + timedelta(d) for y in (2022, 2023, 2024, 2025) for d in range(40)]
         obs = {(r, d): (15.0 if rng.random() < 0.3 else 0.0) for r in RESORTS for d in days}
         con = duckdb.connect()
         con.execute("SET TimeZone = 'UTC'")
@@ -71,7 +72,7 @@ def main():
         con.executemany("INSERT INTO d VALUES ('dynamical-ens', 'forecast', ?, ?, ?, ?, ?, 'precip', ?, ?, ?)",
                         [(r, i, i, vs, ve, v, mo, m) for i, r, mo, m, vs, ve, v in rows])
         # block 01–07Z at 06Z boundary: the -1 h block (06–12Z) straddles 07Z; keep it so day splitting is exercised.
-        for mon in ("2024-12", "2025-01", "2025-12", "2026-01"):
+        for mon in ("2022-12", "2023-01", "2023-12", "2024-01", "2024-12", "2025-01", "2025-12", "2026-01"):
             mdir = td / "archive" / "source=dynamical-ens" / f"month={mon}"
             mdir.mkdir(parents=True)
             con.execute(f"""COPY (SELECT * FROM d WHERE strftime(issued_at, '%Y-%m') = '{mon}')
@@ -101,6 +102,13 @@ def main():
                             WHERE fit_source = 'dynamical-ens:ecmwf_ifs_ens' AND fit = 'train' AND judged = 'test'
                               AND win = 24 AND threshold = 2.5""").fetchall()[0]
         assert cal[1] > 0 and cal[0] > 0, f"calibrating a no-skill ensemble toward climatology must help: {cal}"
+        # Older winters are scored and the leave-one-winter-out calibration runs (four winters).
+        wb = {x[0] for x in s.execute(f"SELECT DISTINCT winter FROM read_csv_auto('{out / 'longrange_winter_bss.csv'}')").fetchall()}
+        assert wb == {"w2022", "w2023", "train", "test"}, wb
+        lw = s.execute(f"""SELECT count(*), min(gain), max(winters) FROM read_csv_auto('{out / 'longrange_calibration_lowo.csv'}')
+                           WHERE win = 24 AND threshold = 10""").fetchall()[0]
+        assert lw[0] > 0 and lw[2] == 4 and lw[1] > -0.05, f"LOWO on perfect members: {lw}"
+        assert json.loads((out / "ens_calib_lowo.json").read_text())["judged"] is True
         cj = json.loads((out / "ens_calib.json").read_text())
         assert cj["cells"] and all(abs(c["b"]) < 0.5 for c in cj["cells"]
                                    if c["source"] == "dynamical-ens:ecmwf_ifs_ens" and c["window_h"] == 24

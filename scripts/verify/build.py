@@ -428,7 +428,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     LEFT JOIN ots o ON o.resort_id = f.resort_id AND o.local_date = f.local_date""")
     con.execute("""
     ALTER TABLE pairs ADD COLUMN split VARCHAR;
-    UPDATE pairs SET split = CASE winter WHEN 2024 THEN 'train' WHEN 2025 THEN 'test' ELSE 'live' END""")
+    UPDATE pairs SET split = CASE WHEN winter = 2024 THEN 'train' WHEN winter = 2025 THEN 'test' WHEN winter < 2024 THEN 'hist' ELSE 'live' END""")
     con.execute(f"COPY pairs TO '{out / 'pairs.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
 
     # CoCoRaHS / SNODAS / AMeDAS / SLF: scored on their own 24 h windows (windows.py).
@@ -629,7 +629,7 @@ def temperature(con, out: Path, paid_list: str) -> dict:
       SELECT *, 'lift', lift, obs_lift FROM l
     )
     SELECT source, paid, source_label, resort_id, region, tier, issue_key, lead_day, local_date, winter,
-           CASE winter WHEN 2024 THEN 'train' WHEN 2025 THEN 'test' ELSE 'live' END AS split,
+           CASE WHEN winter = 2024 THEN 'train' WHEN winter = 2025 THEN 'test' WHEN winter < 2024 THEN 'hist' ELSE 'live' END AS split,
            station_id, st_elev, pair_quality, elev AS fc_elev, n_members, var, fc_raw,
            fc_raw + {LAPSE_C_PER_M} * (elev - st_elev) AS fc_adj, obs
     FROM v WHERE fc_raw IS NOT NULL AND obs IS NOT NULL""")
