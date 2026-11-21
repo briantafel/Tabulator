@@ -5415,5 +5415,5651 @@
     ]
    }
   }
+ },
+ "verbier": {
+  "img": "terrain/verbier-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 36.3,
+  "top_in": 50.7,
+  "base_ft": 4459,
+  "top_ft": 10829,
+  "img_clean": "terrain/verbier-sheet.webp",
+  "range_in": [
+   28.8,
+   50.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.1005,
+     "y": 0.8891,
+     "in": 30.0
+    },
+    {
+     "x": 0.0831,
+     "y": 0.9339,
+     "in": 33.0
+    },
+    {
+     "x": 0.2902,
+     "y": 0.6052,
+     "in": 36.0
+    },
+    {
+     "x": 0.3427,
+     "y": 0.6504,
+     "in": 39.0
+    },
+    {
+     "x": 0.44,
+     "y": 0.7229,
+     "in": 42.0
+    },
+    {
+     "x": 0.7437,
+     "y": 0.3139,
+     "in": 45.0
+    },
+    {
+     "x": 0.6045,
+     "y": 0.7471,
+     "in": 48.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.7404,
+     "y": 0.0236,
+     "kind": "base",
+     "in": 36.3,
+     "ft": 4459
+    },
+    {
+     "x": 0.6326,
+     "y": 0.7521,
+     "kind": "top",
+     "in": 50.7,
+     "ft": 10829
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/verbier-full.webp",
+   "fill": "terrain/verbier-full-fill.svg",
+   "lines": "terrain/verbier-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2409,
+    "x1": 0.9384,
+    "y1": 0.6973
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1283,
+      "y": 0.6497,
+      "in": 30.0
+     },
+     {
+      "x": 0.1121,
+      "y": 0.6705,
+      "in": 33.0
+     },
+     {
+      "x": 0.3049,
+      "y": 0.5178,
+      "in": 36.0
+     },
+     {
+      "x": 0.3538,
+      "y": 0.5388,
+      "in": 39.0
+     },
+     {
+      "x": 0.4444,
+      "y": 0.5725,
+      "in": 42.0
+     },
+     {
+      "x": 0.7272,
+      "y": 0.3826,
+      "in": 45.0
+     },
+     {
+      "x": 0.5975,
+      "y": 0.5837,
+      "in": 48.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.724,
+      "y": 0.2478,
+      "kind": "base",
+      "in": 36.3,
+      "ft": 4459
+     },
+     {
+      "x": 0.6237,
+      "y": 0.5861,
+      "kind": "top",
+      "in": 50.7,
+      "ft": 10829
+     }
+    ]
+   }
+  }
+ },
+ "zermatt": {
+  "img": "terrain/zermatt-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 13.4,
+  "top_in": 37.5,
+  "base_ft": 5120,
+  "top_ft": 12505,
+  "img_clean": "terrain/zermatt-sheet.webp",
+  "range_in": [
+   6.2,
+   38.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6966,
+     "y": 0.0658,
+     "in": 9.0
+    },
+    {
+     "x": 0.7789,
+     "y": 0.1812,
+     "in": 12.0
+    },
+    {
+     "x": 0.7502,
+     "y": 0.1414,
+     "in": 15.0
+    },
+    {
+     "x": 0.457,
+     "y": 0.2714,
+     "in": 18.0
+    },
+    {
+     "x": 0.2266,
+     "y": 0.6536,
+     "in": 21.0
+    },
+    {
+     "x": 0.2701,
+     "y": 0.6527,
+     "in": 24.0
+    },
+    {
+     "x": 0.3913,
+     "y": 0.6744,
+     "in": 27.0
+    },
+    {
+     "x": 0.43,
+     "y": 0.6449,
+     "in": 30.0
+    },
+    {
+     "x": 0.4625,
+     "y": 0.6476,
+     "in": 33.0
+    },
+    {
+     "x": 0.5244,
+     "y": 0.7106,
+     "in": 36.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0884,
+     "y": 0.9579,
+     "kind": "base",
+     "in": 13.4,
+     "ft": 5120
+    },
+    {
+     "x": 0.5526,
+     "y": 0.6474,
+     "kind": "top",
+     "in": 37.5,
+     "ft": 12505
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/zermatt-full.webp",
+   "fill": "terrain/zermatt-full-fill.svg",
+   "lines": "terrain/zermatt-full-lines.svg",
+   "px": [
+    2162,
+    4096
+   ],
+   "ref": [
+    461.33,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.086,
+    "y0": 0.2097,
+    "x1": 0.914,
+    "y1": 0.7286
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6966,
+      "y": 0.2398,
+      "in": 9.0
+     },
+     {
+      "x": 0.7789,
+      "y": 0.3008,
+      "in": 12.0
+     },
+     {
+      "x": 0.7502,
+      "y": 0.2797,
+      "in": 15.0
+     },
+     {
+      "x": 0.457,
+      "y": 0.3484,
+      "in": 18.0
+     },
+     {
+      "x": 0.2266,
+      "y": 0.5502,
+      "in": 21.0
+     },
+     {
+      "x": 0.2701,
+      "y": 0.5498,
+      "in": 24.0
+     },
+     {
+      "x": 0.3913,
+      "y": 0.5612,
+      "in": 27.0
+     },
+     {
+      "x": 0.43,
+      "y": 0.5457,
+      "in": 30.0
+     },
+     {
+      "x": 0.4625,
+      "y": 0.547,
+      "in": 33.0
+     },
+     {
+      "x": 0.5244,
+      "y": 0.5803,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0884,
+      "y": 0.7109,
+      "kind": "base",
+      "in": 13.4,
+      "ft": 5120
+     },
+     {
+      "x": 0.5526,
+      "y": 0.547,
+      "kind": "top",
+      "in": 37.5,
+      "ft": 12505
+     }
+    ]
+   }
+  }
+ },
+ "engelberg": {
+  "img": "terrain/engelberg-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 29.3,
+  "top_in": 55.5,
+  "base_ft": 3920,
+  "top_ft": 9873,
+  "img_clean": "terrain/engelberg-sheet.webp",
+  "range_in": [
+   26.2,
+   55.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3744,
+     "y": 0.0502,
+     "in": 27.0
+    },
+    {
+     "x": 0.398,
+     "y": 0.1608,
+     "in": 30.0
+    },
+    {
+     "x": 0.0654,
+     "y": 0.2704,
+     "in": 33.0
+    },
+    {
+     "x": 0.095,
+     "y": 0.3808,
+     "in": 36.0
+    },
+    {
+     "x": 0.4942,
+     "y": 0.5025,
+     "in": 39.0
+    },
+    {
+     "x": 0.2997,
+     "y": 0.6925,
+     "in": 42.0
+    },
+    {
+     "x": 0.7071,
+     "y": 0.6287,
+     "in": 45.0
+    },
+    {
+     "x": 0.4147,
+     "y": 0.8856,
+     "in": 48.0
+    },
+    {
+     "x": 0.853,
+     "y": 0.7751,
+     "in": 51.0
+    },
+    {
+     "x": 0.8907,
+     "y": 0.8622,
+     "in": 54.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.2573,
+     "y": 0.1327,
+     "kind": "base",
+     "in": 29.3,
+     "ft": 3920
+    },
+    {
+     "x": 0.8595,
+     "y": 0.9556,
+     "kind": "top",
+     "in": 55.5,
+     "ft": 9873
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/engelberg-full.webp",
+   "fill": "terrain/engelberg-full-fill.svg",
+   "lines": "terrain/engelberg-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2483,
+    "x1": 0.9384,
+    "y1": 0.6899
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3827,
+      "y": 0.259,
+      "in": 27.0
+     },
+     {
+      "x": 0.4048,
+      "y": 0.3107,
+      "in": 30.0
+     },
+     {
+      "x": 0.0935,
+      "y": 0.3618,
+      "in": 33.0
+     },
+     {
+      "x": 0.1212,
+      "y": 0.4133,
+      "in": 36.0
+     },
+     {
+      "x": 0.4949,
+      "y": 0.4702,
+      "in": 39.0
+     },
+     {
+      "x": 0.3128,
+      "y": 0.5588,
+      "in": 42.0
+     },
+     {
+      "x": 0.6941,
+      "y": 0.5291,
+      "in": 45.0
+     },
+     {
+      "x": 0.4205,
+      "y": 0.649,
+      "in": 48.0
+     },
+     {
+      "x": 0.8306,
+      "y": 0.5974,
+      "in": 51.0
+     },
+     {
+      "x": 0.8659,
+      "y": 0.6381,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2731,
+      "y": 0.2976,
+      "kind": "base",
+      "in": 29.3,
+      "ft": 3920
+     },
+     {
+      "x": 0.8366,
+      "y": 0.6817,
+      "kind": "top",
+      "in": 55.5,
+      "ft": 9873
+     }
+    ]
+   }
+  }
+ },
+ "laax": {
+  "img": "terrain/laax-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 22.8,
+  "top_in": 36.5,
+  "base_ft": 3562,
+  "top_ft": 9758,
+  "img_clean": "terrain/laax-sheet.webp",
+  "range_in": [
+   22.2,
+   36.6
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5136,
+     "y": 0.7236,
+     "in": 24.0
+    },
+    {
+     "x": 0.4701,
+     "y": 0.6149,
+     "in": 26.0
+    },
+    {
+     "x": 0.4196,
+     "y": 0.4476,
+     "in": 28.0
+    },
+    {
+     "x": 0.3353,
+     "y": 0.2718,
+     "in": 30.0
+    },
+    {
+     "x": 0.2626,
+     "y": 0.1825,
+     "in": 32.0
+    },
+    {
+     "x": 0.1272,
+     "y": 0.1575,
+     "in": 34.0
+    },
+    {
+     "x": 0.0498,
+     "y": 0.0869,
+     "in": 36.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.7925,
+     "y": 0.6791,
+     "kind": "base",
+     "in": 22.8,
+     "ft": 3562
+    },
+    {
+     "x": 0.0301,
+     "y": 0.0804,
+     "kind": "top",
+     "in": 36.5,
+     "ft": 9758
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/laax-full.webp",
+   "fill": "terrain/laax-full-fill.svg",
+   "lines": "terrain/laax-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2605,
+    "x1": 0.9384,
+    "y1": 0.6778
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5125,
+      "y": 0.5696,
+      "in": 24.0
+     },
+     {
+      "x": 0.4733,
+      "y": 0.5208,
+      "in": 26.0
+     },
+     {
+      "x": 0.4278,
+      "y": 0.4456,
+      "in": 28.0
+     },
+     {
+      "x": 0.3519,
+      "y": 0.3666,
+      "in": 30.0
+     },
+     {
+      "x": 0.2864,
+      "y": 0.3264,
+      "in": 32.0
+     },
+     {
+      "x": 0.1645,
+      "y": 0.3152,
+      "in": 34.0
+     },
+     {
+      "x": 0.0948,
+      "y": 0.2834,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7637,
+      "y": 0.5496,
+      "kind": "base",
+      "in": 22.8,
+      "ft": 3562
+     },
+     {
+      "x": 0.0771,
+      "y": 0.2805,
+      "kind": "top",
+      "in": 36.5,
+      "ft": 9758
+     }
+    ]
+   }
+  }
+ },
+ "andermatt": {
+  "img": "terrain/andermatt-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 19.9,
+  "top_in": 32.5,
+  "base_ft": 4723,
+  "top_ft": 9628,
+  "img_clean": "terrain/andermatt-sheet.webp",
+  "range_in": [
+   19.8,
+   32.5
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3421,
+     "y": 0.111,
+     "in": 20.0
+    },
+    {
+     "x": 0.5295,
+     "y": 0.2081,
+     "in": 22.0
+    },
+    {
+     "x": 0.4928,
+     "y": 0.2858,
+     "in": 24.0
+    },
+    {
+     "x": 0.4363,
+     "y": 0.459,
+     "in": 26.0
+    },
+    {
+     "x": 0.475,
+     "y": 0.5855,
+     "in": 28.0
+    },
+    {
+     "x": 0.5337,
+     "y": 0.7721,
+     "in": 30.0
+    },
+    {
+     "x": 0.6228,
+     "y": 0.7969,
+     "in": 32.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.302,
+     "y": 0.0932,
+     "kind": "base",
+     "in": 19.9,
+     "ft": 4723
+    },
+    {
+     "x": 0.6395,
+     "y": 0.8417,
+     "kind": "top",
+     "in": 32.5,
+     "ft": 9628
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/andermatt-full.webp",
+   "fill": "terrain/andermatt-full-fill.svg",
+   "lines": "terrain/andermatt-full-lines.svg",
+   "px": [
+    3476,
+    4096
+   ],
+   "ref": [
+    741.71,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2829,
+    "y0": 0.0732,
+    "x1": 0.7171,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3421,
+      "y": 0.1391,
+      "in": 20.0
+     },
+     {
+      "x": 0.5295,
+      "y": 0.2214,
+      "in": 22.0
+     },
+     {
+      "x": 0.4928,
+      "y": 0.2874,
+      "in": 24.0
+     },
+     {
+      "x": 0.4363,
+      "y": 0.4343,
+      "in": 26.0
+     },
+     {
+      "x": 0.475,
+      "y": 0.5417,
+      "in": 28.0
+     },
+     {
+      "x": 0.5337,
+      "y": 0.6999,
+      "in": 30.0
+     },
+     {
+      "x": 0.6228,
+      "y": 0.721,
+      "in": 32.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.302,
+      "y": 0.124,
+      "kind": "base",
+      "in": 19.9,
+      "ft": 4723
+     },
+     {
+      "x": 0.6395,
+      "y": 0.759,
+      "kind": "top",
+      "in": 32.5,
+      "ft": 9628
+     }
+    ]
+   }
+  }
+ },
+ "st-moritz": {
+  "img": "terrain/st-moritz-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 10.6,
+  "top_in": 9.8,
+  "base_ft": 5691,
+  "top_ft": 9914,
+  "img_clean": "terrain/st-moritz-sheet.webp",
+  "range_in": [
+   9.4,
+   11.9
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4887,
+     "y": 0.6014,
+     "in": 10.0
+    },
+    {
+     "x": 0.4255,
+     "y": 0.2721,
+     "in": 11.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.8338,
+     "y": 0.4689,
+     "kind": "base",
+     "in": 10.6,
+     "ft": 5691
+    },
+    {
+     "x": 0.1512,
+     "y": 0.5845,
+     "kind": "top",
+     "in": 9.8,
+     "ft": 9914
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/st-moritz-full.webp",
+   "fill": "terrain/st-moritz-full-fill.svg",
+   "lines": "terrain/st-moritz-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2761,
+    "x1": 0.9384,
+    "y1": 0.6621
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.49,
+      "y": 0.5153,
+      "in": 10.0
+     },
+     {
+      "x": 0.4322,
+      "y": 0.3654,
+      "in": 11.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8051,
+      "y": 0.455,
+      "kind": "base",
+      "in": 10.6,
+      "ft": 5691
+     },
+     {
+      "x": 0.1817,
+      "y": 0.5076,
+      "kind": "top",
+      "in": 9.8,
+      "ft": 9914
+     }
+    ]
+   }
+  }
+ },
+ "st-anton": {
+  "img": "terrain/st-anton-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 19.0,
+  "top_in": 25.1,
+  "base_ft": 4223,
+  "top_ft": 8662,
+  "img_clean": "terrain/st-anton-sheet.webp",
+  "range_in": [
+   18.9,
+   25.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7536,
+     "y": 0.4499,
+     "in": 20.0
+    },
+    {
+     "x": 0.5138,
+     "y": 0.3523,
+     "in": 22.0
+    },
+    {
+     "x": 0.5195,
+     "y": 0.258,
+     "in": 24.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.8857,
+     "y": 0.4096,
+     "kind": "base",
+     "in": 19.0,
+     "ft": 4223
+    },
+    {
+     "x": 0.4356,
+     "y": 0.1886,
+     "kind": "top",
+     "in": 25.1,
+     "ft": 8662
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/st-anton-full.webp",
+   "fill": "terrain/st-anton-full-fill.svg",
+   "lines": "terrain/st-anton-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3131,
+    "x1": 0.9384,
+    "y1": 0.6251
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7294,
+      "y": 0.4465,
+      "in": 20.0
+     },
+     {
+      "x": 0.5127,
+      "y": 0.4026,
+      "in": 22.0
+     },
+     {
+      "x": 0.5179,
+      "y": 0.3601,
+      "in": 24.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8488,
+      "y": 0.4284,
+      "kind": "base",
+      "in": 19.0,
+      "ft": 4223
+     },
+     {
+      "x": 0.442,
+      "y": 0.3289,
+      "kind": "top",
+      "in": 25.1,
+      "ft": 8662
+     }
+    ]
+   }
+  }
+ },
+ "lech-zurs": {
+  "img": "terrain/lech-zurs-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 22.2,
+  "top_in": 26.2,
+  "base_ft": 4698,
+  "top_ft": 7980,
+  "img_clean": "terrain/lech-zurs-sheet.webp",
+  "range_in": [
+   22.2,
+   28.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6592,
+     "y": 0.562,
+     "in": 24.0
+    },
+    {
+     "x": 0.2327,
+     "y": 0.2598,
+     "in": 26.0
+    },
+    {
+     "x": 0.1695,
+     "y": 0.0694,
+     "in": 28.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.5447,
+     "y": 0.242,
+     "kind": "base",
+     "in": 22.2,
+     "ft": 4699
+    },
+    {
+     "x": 0.4609,
+     "y": 0.8287,
+     "kind": "top",
+     "in": 26.2,
+     "ft": 7980
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/lech-zurs-full.webp",
+   "fill": "terrain/lech-zurs-full-fill.svg",
+   "lines": "terrain/lech-zurs-full-lines.svg",
+   "px": [
+    2248,
+    4096
+   ],
+   "ref": [
+    479.68,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1018,
+    "y0": 0.2039,
+    "x1": 0.8982,
+    "y1": 0.7343
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6592,
+      "y": 0.5032,
+      "in": 24.0
+     },
+     {
+      "x": 0.2327,
+      "y": 0.3372,
+      "in": 26.0
+     },
+     {
+      "x": 0.1695,
+      "y": 0.2327,
+      "in": 28.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5447,
+      "y": 0.3275,
+      "kind": "base",
+      "in": 22.2,
+      "ft": 4699
+     },
+     {
+      "x": 0.4609,
+      "y": 0.6496,
+      "kind": "top",
+      "in": 26.2,
+      "ft": 7980
+     }
+    ]
+   }
+  }
+ },
+ "ischgl": {
+  "img": "terrain/ischgl-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 17.9,
+  "top_in": 16.8,
+  "base_ft": 4460,
+  "top_ft": 9404,
+  "img_clean": "terrain/ischgl-sheet.webp",
+  "range_in": [
+   15.0,
+   18.2
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7884,
+     "y": 0.3494,
+     "in": 16.0
+    },
+    {
+     "x": 0.1264,
+     "y": 0.0628,
+     "in": 18.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.1534,
+     "y": 0.0251,
+     "kind": "base",
+     "in": 17.9,
+     "ft": 4460
+    },
+    {
+     "x": 0.4387,
+     "y": 0.4731,
+     "kind": "top",
+     "in": 16.8,
+     "ft": 9404
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/ischgl-full.webp",
+   "fill": "terrain/ischgl-full-fill.svg",
+   "lines": "terrain/ischgl-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2326,
+    "x1": 0.9384,
+    "y1": 0.7056
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7817,
+      "y": 0.3958,
+      "in": 16.0
+     },
+     {
+      "x": 0.1356,
+      "y": 0.2564,
+      "in": 18.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1619,
+      "y": 0.238,
+      "kind": "base",
+      "in": 17.9,
+      "ft": 4460
+     },
+     {
+      "x": 0.4404,
+      "y": 0.456,
+      "kind": "top",
+      "in": 16.8,
+      "ft": 9404
+     }
+    ]
+   }
+  }
+ },
+ "solden": {
+  "img": "terrain/solden-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 8.5,
+  "top_in": 15.5,
+  "base_ft": 4434,
+  "top_ft": 10684,
+  "img_clean": "terrain/solden-sheet.webp",
+  "range_in": [
+   8.4,
+   15.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.8671,
+     "y": 0.3851,
+     "in": 10.0
+    },
+    {
+     "x": 0.7289,
+     "y": 0.4711,
+     "in": 12.0
+    },
+    {
+     "x": 0.2542,
+     "y": 0.8722,
+     "in": 14.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9405,
+     "y": 0.1342,
+     "kind": "base",
+     "in": 8.5,
+     "ft": 4434
+    },
+    {
+     "x": 0.1087,
+     "y": 0.8411,
+     "kind": "top",
+     "in": 15.5,
+     "ft": 10684
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/solden-full.webp",
+   "fill": "terrain/solden-full-fill.svg",
+   "lines": "terrain/solden-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2482,
+    "x1": 0.9384,
+    "y1": 0.6901
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8388,
+      "y": 0.4163,
+      "in": 10.0
+     },
+     {
+      "x": 0.7113,
+      "y": 0.4558,
+      "in": 12.0
+     },
+     {
+      "x": 0.2736,
+      "y": 0.6404,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9065,
+      "y": 0.3008,
+      "kind": "base",
+      "in": 8.5,
+      "ft": 4434
+     },
+     {
+      "x": 0.1394,
+      "y": 0.6261,
+      "kind": "top",
+      "in": 15.5,
+      "ft": 10684
+     }
+    ]
+   }
+  }
+ },
+ "obergurgl": {
+  "img": "terrain/obergurgl-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 9.9,
+  "top_in": 15.6,
+  "base_ft": 5864,
+  "top_ft": 9900,
+  "img_clean": "terrain/obergurgl-sheet.webp",
+  "range_in": [
+   9.9,
+   15.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4076,
+     "y": 0.2215,
+     "in": 10.0
+    },
+    {
+     "x": 0.3383,
+     "y": 0.7324,
+     "in": 12.0
+    },
+    {
+     "x": 0.455,
+     "y": 0.845,
+     "in": 14.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.4047,
+     "y": 0.237,
+     "kind": "base",
+     "in": 9.9,
+     "ft": 5864
+    },
+    {
+     "x": 0.8449,
+     "y": 0.4989,
+     "kind": "top",
+     "in": 15.6,
+     "ft": 9900
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/obergurgl-full.webp",
+   "fill": "terrain/obergurgl-full-fill.svg",
+   "lines": "terrain/obergurgl-full-lines.svg",
+   "px": [
+    2451,
+    4096
+   ],
+   "ref": [
+    522.99,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.135,
+    "y0": 0.182,
+    "x1": 0.8654,
+    "y1": 0.7562
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4078,
+      "y": 0.3025,
+      "in": 10.0
+     },
+     {
+      "x": 0.3386,
+      "y": 0.6082,
+      "in": 12.0
+     },
+     {
+      "x": 0.4552,
+      "y": 0.6755,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.405,
+      "y": 0.3117,
+      "kind": "base",
+      "in": 9.9,
+      "ft": 5864
+     },
+     {
+      "x": 0.845,
+      "y": 0.4684,
+      "kind": "top",
+      "in": 15.6,
+      "ft": 9900
+     }
+    ]
+   }
+  }
+ },
+ "kitzbuhel": {
+  "img": "terrain/kitzbuhel-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 6.1,
+  "top_in": 9.2,
+  "base_ft": 2515,
+  "top_ft": 6539,
+  "img_clean": "terrain/kitzbuhel-sheet.webp",
+  "range_in": [
+   5.3,
+   9.9
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3437,
+     "y": 0.2047,
+     "in": 6.0
+    },
+    {
+     "x": 0.5297,
+     "y": 0.9081,
+     "in": 8.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.572,
+     "y": 0.1601,
+     "kind": "base",
+     "in": 6.1,
+     "ft": 2515
+    },
+    {
+     "x": 0.3989,
+     "y": 0.8734,
+     "kind": "top",
+     "in": 9.2,
+     "ft": 6539
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/kitzbuhel-full.webp",
+   "fill": "terrain/kitzbuhel-full-fill.svg",
+   "lines": "terrain/kitzbuhel-full-lines.svg",
+   "px": [
+    3127,
+    4096
+   ],
+   "ref": [
+    667.24,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2139,
+    "y0": 0.093,
+    "x1": 0.7864,
+    "y1": 0.8452
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3438,
+      "y": 0.2437,
+      "in": 6.0
+     },
+     {
+      "x": 0.5299,
+      "y": 0.7807,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5722,
+      "y": 0.2096,
+      "kind": "base",
+      "in": 6.1,
+      "ft": 2515
+     },
+     {
+      "x": 0.3991,
+      "y": 0.7542,
+      "kind": "top",
+      "in": 9.2,
+      "ft": 6539
+     }
+    ]
+   }
+  }
+ },
+ "chamonix": {
+  "img": "terrain/chamonix-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 39.2,
+  "top_in": 61.8,
+  "base_ft": 4056,
+  "top_ft": 9067,
+  "img_clean": "terrain/chamonix-sheet.webp",
+  "range_in": [
+   39.0,
+   62.5
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3466,
+     "y": 0.1584,
+     "in": 42.0
+    },
+    {
+     "x": 0.5004,
+     "y": 0.1901,
+     "in": 45.0
+    },
+    {
+     "x": 0.1181,
+     "y": 0.6115,
+     "in": 48.0
+    },
+    {
+     "x": 0.4925,
+     "y": 0.4351,
+     "in": 51.0
+    },
+    {
+     "x": 0.3685,
+     "y": 0.6252,
+     "in": 54.0
+    },
+    {
+     "x": 0.6359,
+     "y": 0.5889,
+     "in": 57.0
+    },
+    {
+     "x": 0.4809,
+     "y": 0.879,
+     "in": 60.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.148,
+     "y": 0.072,
+     "kind": "base",
+     "in": 39.2,
+     "ft": 4056
+    },
+    {
+     "x": 0.5121,
+     "y": 0.9369,
+     "kind": "top",
+     "in": 61.8,
+     "ft": 9067
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/chamonix-full.webp",
+   "fill": "terrain/chamonix-full-fill.svg",
+   "lines": "terrain/chamonix-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.239,
+    "x1": 0.9384,
+    "y1": 0.6992
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.347,
+      "y": 0.2989,
+      "in": 42.0
+     },
+     {
+      "x": 0.5007,
+      "y": 0.3147,
+      "in": 45.0
+     },
+     {
+      "x": 0.1189,
+      "y": 0.5247,
+      "in": 48.0
+     },
+     {
+      "x": 0.4928,
+      "y": 0.4368,
+      "in": 51.0
+     },
+     {
+      "x": 0.369,
+      "y": 0.5315,
+      "in": 54.0
+     },
+     {
+      "x": 0.636,
+      "y": 0.5134,
+      "in": 57.0
+     },
+     {
+      "x": 0.4812,
+      "y": 0.658,
+      "in": 60.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1488,
+      "y": 0.2558,
+      "kind": "base",
+      "in": 39.2,
+      "ft": 4056
+     },
+     {
+      "x": 0.5123,
+      "y": 0.6868,
+      "kind": "top",
+      "in": 61.8,
+      "ft": 9067
+     }
+    ]
+   }
+  }
+ },
+ "val-disere-tignes": {
+  "img": "terrain/val-disere-tignes-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 31.1,
+  "top_in": 57.8,
+  "base_ft": 5119,
+  "top_ft": 11319,
+  "img_clean": "terrain/val-disere-tignes-sheet.webp",
+  "range_in": [
+   28.4,
+   58.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6135,
+     "y": 0.5995,
+     "in": 30.0
+    },
+    {
+     "x": 0.6552,
+     "y": 0.6149,
+     "in": 33.0
+    },
+    {
+     "x": 0.6628,
+     "y": 0.6872,
+     "in": 36.0
+    },
+    {
+     "x": 0.2407,
+     "y": 0.5693,
+     "in": 39.0
+    },
+    {
+     "x": 0.1674,
+     "y": 0.4207,
+     "in": 42.0
+    },
+    {
+     "x": 0.2089,
+     "y": 0.3312,
+     "in": 45.0
+    },
+    {
+     "x": 0.1738,
+     "y": 0.3354,
+     "in": 48.0
+    },
+    {
+     "x": 0.1201,
+     "y": 0.7688,
+     "in": 51.0
+    },
+    {
+     "x": 0.1072,
+     "y": 0.8157,
+     "in": 54.0
+    },
+    {
+     "x": 0.0753,
+     "y": 0.8179,
+     "in": 57.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.2873,
+     "y": 0.172,
+     "kind": "base",
+     "in": 31.1,
+     "ft": 5119
+    },
+    {
+     "x": 0.0672,
+     "y": 0.8073,
+     "kind": "top",
+     "in": 57.8,
+     "ft": 11319
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/val-disere-tignes-full.webp",
+   "fill": "terrain/val-disere-tignes-full-fill.svg",
+   "lines": "terrain/val-disere-tignes-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3206,
+    "x1": 0.9384,
+    "y1": 0.6177
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6016,
+      "y": 0.5134,
+      "in": 30.0
+     },
+     {
+      "x": 0.6388,
+      "y": 0.5202,
+      "in": 33.0
+     },
+     {
+      "x": 0.6456,
+      "y": 0.5524,
+      "in": 36.0
+     },
+     {
+      "x": 0.2687,
+      "y": 0.5,
+      "in": 39.0
+     },
+     {
+      "x": 0.2033,
+      "y": 0.4338,
+      "in": 42.0
+     },
+     {
+      "x": 0.2403,
+      "y": 0.394,
+      "in": 45.0
+     },
+     {
+      "x": 0.209,
+      "y": 0.3959,
+      "in": 48.0
+     },
+     {
+      "x": 0.161,
+      "y": 0.5888,
+      "in": 51.0
+     },
+     {
+      "x": 0.1495,
+      "y": 0.6096,
+      "in": 54.0
+     },
+     {
+      "x": 0.121,
+      "y": 0.6106,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3104,
+      "y": 0.3231,
+      "kind": "base",
+      "in": 31.1,
+      "ft": 5119
+     },
+     {
+      "x": 0.1139,
+      "y": 0.6059,
+      "kind": "top",
+      "in": 57.8,
+      "ft": 11319
+     }
+    ]
+   }
+  }
+ },
+ "val-thorens": {
+  "img": "terrain/val-thorens-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 36.5,
+  "top_in": 56.1,
+  "base_ft": 5973,
+  "top_ft": 10408,
+  "img_clean": "terrain/val-thorens-sheet.webp",
+  "range_in": [
+   35.9,
+   56.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.1411,
+     "y": 0.2863,
+     "in": 36.0
+    },
+    {
+     "x": 0.3502,
+     "y": 0.3845,
+     "in": 39.0
+    },
+    {
+     "x": 0.4314,
+     "y": 0.4532,
+     "in": 42.0
+    },
+    {
+     "x": 0.6675,
+     "y": 0.5996,
+     "in": 45.0
+    },
+    {
+     "x": 0.5248,
+     "y": 0.7719,
+     "in": 48.0
+    },
+    {
+     "x": 0.9085,
+     "y": 0.4955,
+     "in": 51.0
+    },
+    {
+     "x": 0.3494,
+     "y": 0.9335,
+     "in": 54.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.1391,
+     "y": 0.296,
+     "kind": "base",
+     "in": 36.5,
+     "ft": 5973
+    },
+    {
+     "x": 0.3245,
+     "y": 0.9363,
+     "kind": "top",
+     "in": 56.1,
+     "ft": 10409
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/val-thorens-full.webp",
+   "fill": "terrain/val-thorens-full-fill.svg",
+   "lines": "terrain/val-thorens-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2484,
+    "x1": 0.9384,
+    "y1": 0.6898
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1679,
+      "y": 0.3705,
+      "in": 36.0
+     },
+     {
+      "x": 0.3615,
+      "y": 0.4158,
+      "in": 39.0
+     },
+     {
+      "x": 0.4368,
+      "y": 0.4475,
+      "in": 42.0
+     },
+     {
+      "x": 0.6554,
+      "y": 0.5151,
+      "in": 45.0
+     },
+     {
+      "x": 0.5233,
+      "y": 0.5946,
+      "in": 48.0
+     },
+     {
+      "x": 0.8786,
+      "y": 0.467,
+      "in": 51.0
+     },
+     {
+      "x": 0.3607,
+      "y": 0.6692,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.166,
+      "y": 0.3749,
+      "kind": "base",
+      "in": 36.5,
+      "ft": 5973
+     },
+     {
+      "x": 0.3378,
+      "y": 0.6705,
+      "kind": "top",
+      "in": 56.1,
+      "ft": 10409
+     }
+    ]
+   }
+  }
+ },
+ "la-grave": {
+  "img": "terrain/la-grave-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 57.0,
+  "top_in": 64.3,
+  "base_ft": 10474,
+  "top_ft": 11602,
+  "img_clean": "terrain/la-grave-sheet.webp",
+  "range_in": [
+   56.2,
+   64.5
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5912,
+     "y": 0.5385,
+     "in": 58.0
+    },
+    {
+     "x": 0.4529,
+     "y": 0.6673,
+     "in": 60.0
+    },
+    {
+     "x": 0.3149,
+     "y": 0.7382,
+     "in": 62.0
+    },
+    {
+     "x": 0.2386,
+     "y": 0.8526,
+     "in": 64.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.7714,
+     "y": 0.1148,
+     "kind": "base",
+     "in": 57.0,
+     "ft": 10474
+    },
+    {
+     "x": 0.2262,
+     "y": 0.8809,
+     "kind": "top",
+     "in": 64.3,
+     "ft": 11602
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/la-grave-full.webp",
+   "fill": "terrain/la-grave-full-fill.svg",
+   "lines": "terrain/la-grave-full-lines.svg",
+   "px": [
+    2483,
+    4096
+   ],
+   "ref": [
+    529.82,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1397,
+    "y0": 0.2144,
+    "x1": 0.8607,
+    "y1": 0.7238
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5915,
+      "y": 0.4924,
+      "in": 58.0
+     },
+     {
+      "x": 0.4531,
+      "y": 0.5705,
+      "in": 60.0
+     },
+     {
+      "x": 0.3151,
+      "y": 0.6135,
+      "in": 62.0
+     },
+     {
+      "x": 0.2387,
+      "y": 0.6829,
+      "in": 64.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7717,
+      "y": 0.2356,
+      "kind": "base",
+      "in": 57.0,
+      "ft": 10474
+     },
+     {
+      "x": 0.2263,
+      "y": 0.7,
+      "kind": "top",
+      "in": 64.3,
+      "ft": 11602
+     }
+    ]
+   }
+  }
+ },
+ "les-arcs": {
+  "img": "terrain/les-arcs-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 35.9,
+  "top_in": 64.2,
+  "base_ft": 4007,
+  "top_ft": 10500,
+  "img_clean": "terrain/les-arcs-sheet.webp",
+  "range_in": [
+   33.4,
+   64.4
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.9003,
+     "y": 0.3171,
+     "in": 36.0
+    },
+    {
+     "x": 0.8774,
+     "y": 0.3487,
+     "in": 39.0
+    },
+    {
+     "x": 0.0413,
+     "y": 0.7191,
+     "in": 42.0
+    },
+    {
+     "x": 0.129,
+     "y": 0.7043,
+     "in": 45.0
+    },
+    {
+     "x": 0.2946,
+     "y": 0.5505,
+     "in": 48.0
+    },
+    {
+     "x": 0.5279,
+     "y": 0.637,
+     "in": 51.0
+    },
+    {
+     "x": 0.4247,
+     "y": 0.5948,
+     "in": 54.0
+    },
+    {
+     "x": 0.7148,
+     "y": 0.7245,
+     "in": 57.0
+    },
+    {
+     "x": 0.7716,
+     "y": 0.7259,
+     "in": 60.0
+    },
+    {
+     "x": 0.749,
+     "y": 0.7774,
+     "in": 63.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.2028,
+     "y": 0.1613,
+     "kind": "base",
+     "in": 35.9,
+     "ft": 4007
+    },
+    {
+     "x": 0.7544,
+     "y": 0.795,
+     "kind": "top",
+     "in": 64.2,
+     "ft": 10500
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/les-arcs-full.webp",
+   "fill": "terrain/les-arcs-full-fill.svg",
+   "lines": "terrain/les-arcs-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.281,
+    "x1": 0.9384,
+    "y1": 0.6572
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8631,
+      "y": 0.3865,
+      "in": 36.0
+     },
+     {
+      "x": 0.8424,
+      "y": 0.4008,
+      "in": 39.0
+     },
+     {
+      "x": 0.0844,
+      "y": 0.5681,
+      "in": 42.0
+     },
+     {
+      "x": 0.164,
+      "y": 0.5615,
+      "in": 45.0
+     },
+     {
+      "x": 0.314,
+      "y": 0.4919,
+      "in": 48.0
+     },
+     {
+      "x": 0.5256,
+      "y": 0.531,
+      "in": 51.0
+     },
+     {
+      "x": 0.432,
+      "y": 0.512,
+      "in": 54.0
+     },
+     {
+      "x": 0.695,
+      "y": 0.5706,
+      "in": 57.0
+     },
+     {
+      "x": 0.7465,
+      "y": 0.5712,
+      "in": 60.0
+     },
+     {
+      "x": 0.726,
+      "y": 0.5945,
+      "in": 63.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2308,
+      "y": 0.316,
+      "kind": "base",
+      "in": 35.9,
+      "ft": 4007
+     },
+     {
+      "x": 0.7308,
+      "y": 0.6024,
+      "kind": "top",
+      "in": 64.2,
+      "ft": 10500
+     }
+    ]
+   }
+  }
+ },
+ "alpe-dhuez": {
+  "img": "terrain/alpe-dhuez-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 25.7,
+  "top_in": 69.2,
+  "base_ft": 4253,
+  "top_ft": 10804,
+  "img_clean": "terrain/alpe-dhuez-sheet.webp",
+  "range_in": [
+   20.5,
+   69.2
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4865,
+     "y": 0.169,
+     "in": 24.0
+    },
+    {
+     "x": 0.4572,
+     "y": 0.359,
+     "in": 28.0
+    },
+    {
+     "x": 0.5734,
+     "y": 0.7348,
+     "in": 32.0
+    },
+    {
+     "x": 0.4862,
+     "y": 0.3972,
+     "in": 36.0
+    },
+    {
+     "x": 0.4944,
+     "y": 0.4886,
+     "in": 40.0
+    },
+    {
+     "x": 0.5501,
+     "y": 0.4761,
+     "in": 44.0
+    },
+    {
+     "x": 0.578,
+     "y": 0.4647,
+     "in": 48.0
+    },
+    {
+     "x": 0.603,
+     "y": 0.4057,
+     "in": 52.0
+    },
+    {
+     "x": 0.7359,
+     "y": 0.5141,
+     "in": 56.0
+    },
+    {
+     "x": 0.7382,
+     "y": 0.4676,
+     "in": 60.0
+    },
+    {
+     "x": 0.7655,
+     "y": 0.3996,
+     "in": 64.0
+    },
+    {
+     "x": 0.7609,
+     "y": 0.3715,
+     "in": 68.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.5421,
+     "y": 0.0757,
+     "kind": "base",
+     "in": 25.7,
+     "ft": 4253
+    },
+    {
+     "x": 0.7505,
+     "y": 0.3694,
+     "kind": "top",
+     "in": 69.2,
+     "ft": 10804
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/alpe-dhuez-full.webp",
+   "fill": "terrain/alpe-dhuez-full-fill.svg",
+   "lines": "terrain/alpe-dhuez-full-lines.svg",
+   "px": [
+    3039,
+    4096
+   ],
+   "ref": [
+    648.46,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2056,
+    "y0": 0.1061,
+    "x1": 0.7947,
+    "y1": 0.8322
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4867,
+      "y": 0.2235,
+      "in": 24.0
+     },
+     {
+      "x": 0.4573,
+      "y": 0.3645,
+      "in": 28.0
+     },
+     {
+      "x": 0.5735,
+      "y": 0.6433,
+      "in": 32.0
+     },
+     {
+      "x": 0.4863,
+      "y": 0.3928,
+      "in": 36.0
+     },
+     {
+      "x": 0.4945,
+      "y": 0.4607,
+      "in": 40.0
+     },
+     {
+      "x": 0.5503,
+      "y": 0.4514,
+      "in": 44.0
+     },
+     {
+      "x": 0.5782,
+      "y": 0.4429,
+      "in": 48.0
+     },
+     {
+      "x": 0.6032,
+      "y": 0.3992,
+      "in": 52.0
+     },
+     {
+      "x": 0.7361,
+      "y": 0.4796,
+      "in": 56.0
+     },
+     {
+      "x": 0.7384,
+      "y": 0.4451,
+      "in": 60.0
+     },
+     {
+      "x": 0.7657,
+      "y": 0.3946,
+      "in": 64.0
+     },
+     {
+      "x": 0.7612,
+      "y": 0.3738,
+      "in": 68.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5423,
+      "y": 0.1543,
+      "kind": "base",
+      "in": 25.7,
+      "ft": 4253
+     },
+     {
+      "x": 0.7507,
+      "y": 0.3722,
+      "kind": "top",
+      "in": 69.2,
+      "ft": 10804
+     }
+    ]
+   }
+  }
+ },
+ "cervinia": {
+  "img": "terrain/cervinia-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 13.4,
+  "top_in": 37.5,
+  "base_ft": 5120,
+  "top_ft": 12505,
+  "img_clean": "terrain/cervinia-sheet.webp",
+  "range_in": [
+   6.2,
+   38.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.6966,
+     "y": 0.0658,
+     "in": 9.0
+    },
+    {
+     "x": 0.7789,
+     "y": 0.1812,
+     "in": 12.0
+    },
+    {
+     "x": 0.7502,
+     "y": 0.1414,
+     "in": 15.0
+    },
+    {
+     "x": 0.457,
+     "y": 0.2714,
+     "in": 18.0
+    },
+    {
+     "x": 0.2266,
+     "y": 0.6536,
+     "in": 21.0
+    },
+    {
+     "x": 0.2701,
+     "y": 0.6527,
+     "in": 24.0
+    },
+    {
+     "x": 0.3913,
+     "y": 0.6744,
+     "in": 27.0
+    },
+    {
+     "x": 0.43,
+     "y": 0.6449,
+     "in": 30.0
+    },
+    {
+     "x": 0.4625,
+     "y": 0.6476,
+     "in": 33.0
+    },
+    {
+     "x": 0.5244,
+     "y": 0.7106,
+     "in": 36.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0884,
+     "y": 0.9579,
+     "kind": "base",
+     "in": 13.4,
+     "ft": 5120
+    },
+    {
+     "x": 0.5526,
+     "y": 0.6474,
+     "kind": "top",
+     "in": 37.5,
+     "ft": 12505
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/cervinia-full.webp",
+   "fill": "terrain/cervinia-full-fill.svg",
+   "lines": "terrain/cervinia-full-lines.svg",
+   "px": [
+    2162,
+    4096
+   ],
+   "ref": [
+    461.33,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.086,
+    "y0": 0.2097,
+    "x1": 0.914,
+    "y1": 0.7286
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6966,
+      "y": 0.2398,
+      "in": 9.0
+     },
+     {
+      "x": 0.7789,
+      "y": 0.3008,
+      "in": 12.0
+     },
+     {
+      "x": 0.7502,
+      "y": 0.2797,
+      "in": 15.0
+     },
+     {
+      "x": 0.457,
+      "y": 0.3484,
+      "in": 18.0
+     },
+     {
+      "x": 0.2266,
+      "y": 0.5502,
+      "in": 21.0
+     },
+     {
+      "x": 0.2701,
+      "y": 0.5498,
+      "in": 24.0
+     },
+     {
+      "x": 0.3913,
+      "y": 0.5612,
+      "in": 27.0
+     },
+     {
+      "x": 0.43,
+      "y": 0.5457,
+      "in": 30.0
+     },
+     {
+      "x": 0.4625,
+      "y": 0.547,
+      "in": 33.0
+     },
+     {
+      "x": 0.5244,
+      "y": 0.5803,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0884,
+      "y": 0.7109,
+      "kind": "base",
+      "in": 13.4,
+      "ft": 5120
+     },
+     {
+      "x": 0.5526,
+      "y": 0.547,
+      "kind": "top",
+      "in": 37.5,
+      "ft": 12505
+     }
+    ]
+   }
+  }
+ },
+ "courmayeur": {
+  "img": "terrain/courmayeur-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 37.0,
+  "top_in": 59.3,
+  "base_ft": 3966,
+  "top_ft": 9002,
+  "img_clean": "terrain/courmayeur-sheet.webp",
+  "range_in": [
+   36.6,
+   59.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7933,
+     "y": 0.4903,
+     "in": 39.0
+    },
+    {
+     "x": 0.3013,
+     "y": 0.2066,
+     "in": 42.0
+    },
+    {
+     "x": 0.4055,
+     "y": 0.2208,
+     "in": 45.0
+    },
+    {
+     "x": 0.4252,
+     "y": 0.3318,
+     "in": 48.0
+    },
+    {
+     "x": 0.1957,
+     "y": 0.6072,
+     "in": 51.0
+    },
+    {
+     "x": 0.2085,
+     "y": 0.8023,
+     "in": 54.0
+    },
+    {
+     "x": 0.0658,
+     "y": 0.8607,
+     "in": 57.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9502,
+     "y": 0.3997,
+     "kind": "base",
+     "in": 37.0,
+     "ft": 3966
+    },
+    {
+     "x": 0.1294,
+     "y": 0.935,
+     "kind": "top",
+     "in": 59.3,
+     "ft": 9002
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/courmayeur-full.webp",
+   "fill": "terrain/courmayeur-full-fill.svg",
+   "lines": "terrain/courmayeur-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2576,
+    "x1": 0.9384,
+    "y1": 0.6807
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7753,
+      "y": 0.4646,
+      "in": 39.0
+     },
+     {
+      "x": 0.3139,
+      "y": 0.3318,
+      "in": 42.0
+     },
+     {
+      "x": 0.4116,
+      "y": 0.3385,
+      "in": 45.0
+     },
+     {
+      "x": 0.4301,
+      "y": 0.3904,
+      "in": 48.0
+     },
+     {
+      "x": 0.2149,
+      "y": 0.5193,
+      "in": 51.0
+     },
+     {
+      "x": 0.2269,
+      "y": 0.6106,
+      "in": 54.0
+     },
+     {
+      "x": 0.093,
+      "y": 0.6379,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9225,
+      "y": 0.4222,
+      "kind": "base",
+      "in": 37.0,
+      "ft": 3966
+     },
+     {
+      "x": 0.1527,
+      "y": 0.6727,
+      "kind": "top",
+      "in": 59.3,
+      "ft": 9002
+     }
+    ]
+   }
+  }
+ },
+ "livigno": {
+  "img": "terrain/livigno-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 10.2,
+  "top_in": 11.0,
+  "base_ft": 5946,
+  "top_ft": 9154,
+  "img_clean": "terrain/livigno-sheet.webp",
+  "range_in": [
+   9.7,
+   11.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7273,
+     "y": 0.5707,
+     "in": 10.0
+    },
+    {
+     "x": 0.2465,
+     "y": 0.4233,
+     "in": 11.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.6396,
+     "y": 0.2984,
+     "kind": "base",
+     "in": 10.2,
+     "ft": 5946
+    },
+    {
+     "x": 0.1981,
+     "y": 0.529,
+     "kind": "top",
+     "in": 11.0,
+     "ft": 9154
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/livigno-full.webp",
+   "fill": "terrain/livigno-full-fill.svg",
+   "lines": "terrain/livigno-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3391,
+    "x1": 0.9384,
+    "y1": 0.5991
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.707,
+      "y": 0.5012,
+      "in": 10.0
+     },
+     {
+      "x": 0.2697,
+      "y": 0.4343,
+      "in": 11.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6272,
+      "y": 0.3776,
+      "kind": "base",
+      "in": 10.2,
+      "ft": 5946
+     },
+     {
+      "x": 0.2257,
+      "y": 0.4823,
+      "kind": "top",
+      "in": 11.0,
+      "ft": 9154
+     }
+    ]
+   }
+  }
+ },
+ "val-gardena": {
+  "img": "terrain/val-gardena-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 2.8,
+  "top_in": 6.5,
+  "base_ft": 4141,
+  "top_ft": 8223,
+  "img_clean": "terrain/val-gardena-sheet.webp",
+  "range_in": [
+   2.7,
+   6.5
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5339,
+     "y": 0.4842,
+     "in": 4.0
+    },
+    {
+     "x": 0.3946,
+     "y": 0.0845,
+     "in": 6.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0402,
+     "y": 0.2655,
+     "kind": "base",
+     "in": 2.8,
+     "ft": 4141
+    },
+    {
+     "x": 0.405,
+     "y": 0.0204,
+     "kind": "top",
+     "in": 6.5,
+     "ft": 8223
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/val-gardena-full.webp",
+   "fill": "terrain/val-gardena-full-fill.svg",
+   "lines": "terrain/val-gardena-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2416,
+    "x1": 0.9384,
+    "y1": 0.6967
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5321,
+      "y": 0.4617,
+      "in": 4.0
+     },
+     {
+      "x": 0.4014,
+      "y": 0.2747,
+      "in": 6.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0691,
+      "y": 0.3594,
+      "kind": "base",
+      "in": 2.8,
+      "ft": 4141
+     },
+     {
+      "x": 0.4112,
+      "y": 0.2447,
+      "kind": "top",
+      "in": 6.5,
+      "ft": 8223
+     }
+    ]
+   }
+  }
+ },
+ "niseko": {
+  "img": "terrain/niseko-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 8.9,
+  "top_in": 15.7,
+  "base_ft": 845,
+  "top_ft": 3865,
+  "img_clean": "terrain/niseko-sheet.webp",
+  "range_in": [
+   8.8,
+   15.9
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.7971,
+     "y": 0.5529,
+     "in": 10.0
+    },
+    {
+     "x": 0.6943,
+     "y": 0.4177,
+     "in": 12.0
+    },
+    {
+     "x": 0.4529,
+     "y": 0.4569,
+     "in": 14.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9037,
+     "y": 0.6849,
+     "kind": "base",
+     "in": 8.9,
+     "ft": 845
+    },
+    {
+     "x": 0.3453,
+     "y": 0.4284,
+     "kind": "top",
+     "in": 15.7,
+     "ft": 3865
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/niseko-full.webp",
+   "fill": "terrain/niseko-full-fill.svg",
+   "lines": "terrain/niseko-full-lines.svg",
+   "px": [
+    2144,
+    4096
+   ],
+   "ref": [
+    457.48,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0825,
+    "y0": 0.2209,
+    "x1": 0.9175,
+    "y1": 0.7173
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7971,
+      "y": 0.4968,
+      "in": 10.0
+     },
+     {
+      "x": 0.6943,
+      "y": 0.426,
+      "in": 12.0
+     },
+     {
+      "x": 0.4529,
+      "y": 0.4465,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9037,
+      "y": 0.5659,
+      "kind": "base",
+      "in": 8.9,
+      "ft": 845
+     },
+     {
+      "x": 0.3453,
+      "y": 0.4316,
+      "kind": "top",
+      "in": 15.7,
+      "ft": 3865
+     }
+    ]
+   }
+  }
+ },
+ "rusutsu": {
+  "img": "terrain/rusutsu-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 6.8,
+  "top_in": 10.3,
+  "base_ft": 1409,
+  "top_ft": 3247,
+  "img_clean": "terrain/rusutsu-sheet.webp",
+  "range_in": [
+   6.6,
+   10.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.515,
+     "y": 0.5714,
+     "in": 8.0
+    },
+    {
+     "x": 0.6352,
+     "y": 0.8491,
+     "in": 10.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.3214,
+     "y": 0.1564,
+     "kind": "base",
+     "in": 6.8,
+     "ft": 1409
+    },
+    {
+     "x": 0.6098,
+     "y": 0.8629,
+     "kind": "top",
+     "in": 10.3,
+     "ft": 3247
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/rusutsu-full.webp",
+   "fill": "terrain/rusutsu-full-fill.svg",
+   "lines": "terrain/rusutsu-full-lines.svg",
+   "px": [
+    2403,
+    4096
+   ],
+   "ref": [
+    512.75,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1277,
+    "y0": 0.1893,
+    "x1": 0.8727,
+    "y1": 0.7489
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5152,
+      "y": 0.511,
+      "in": 8.0
+     },
+     {
+      "x": 0.6355,
+      "y": 0.674,
+      "in": 10.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3215,
+      "y": 0.2675,
+      "kind": "base",
+      "in": 6.8,
+      "ft": 1409
+     },
+     {
+      "x": 0.6101,
+      "y": 0.682,
+      "kind": "top",
+      "in": 10.3,
+      "ft": 3247
+     }
+    ]
+   }
+  }
+ },
+ "kiroro": {
+  "img": "terrain/kiroro-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 14.9,
+  "top_in": 19.8,
+  "base_ft": 1729,
+  "top_ft": 3881,
+  "img_clean": "terrain/kiroro-sheet.webp",
+  "range_in": [
+   14.8,
+   19.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.2712,
+     "y": 0.4172,
+     "in": 16.0
+    },
+    {
+     "x": 0.6046,
+     "y": 0.6512,
+     "in": 18.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0556,
+     "y": 0.1672,
+     "kind": "base",
+     "in": 14.9,
+     "ft": 1729
+    },
+    {
+     "x": 0.9366,
+     "y": 0.6759,
+     "kind": "top",
+     "in": 19.8,
+     "ft": 3881
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/kiroro-full.webp",
+   "fill": "terrain/kiroro-full-fill.svg",
+   "lines": "terrain/kiroro-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3002,
+    "x1": 0.9384,
+    "y1": 0.638
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.283,
+      "y": 0.4299,
+      "in": 16.0
+     },
+     {
+      "x": 0.5996,
+      "y": 0.5407,
+      "in": 18.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0783,
+      "y": 0.3116,
+      "kind": "base",
+      "in": 14.9,
+      "ft": 1729
+     },
+     {
+      "x": 0.9149,
+      "y": 0.5524,
+      "kind": "top",
+      "in": 19.8,
+      "ft": 3881
+     }
+    ]
+   }
+  }
+ },
+ "furano": {
+  "img": "terrain/furano-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 3.2,
+  "top_in": 15.3,
+  "base_ft": 782,
+  "top_ft": 3488,
+  "img_clean": "terrain/furano-sheet.webp",
+  "range_in": [
+   3.1,
+   15.5
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.8509,
+     "y": 0.2478,
+     "in": 4.0
+    },
+    {
+     "x": 0.6692,
+     "y": 0.3006,
+     "in": 6.0
+    },
+    {
+     "x": 0.5314,
+     "y": 0.3352,
+     "in": 8.0
+    },
+    {
+     "x": 0.388,
+     "y": 0.7095,
+     "in": 10.0
+    },
+    {
+     "x": 0.2608,
+     "y": 0.6103,
+     "in": 12.0
+    },
+    {
+     "x": 0.1147,
+     "y": 0.7241,
+     "in": 14.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9399,
+     "y": 0.1847,
+     "kind": "base",
+     "in": 3.2,
+     "ft": 783
+    },
+    {
+     "x": 0.0634,
+     "y": 0.762,
+     "kind": "top",
+     "in": 15.3,
+     "ft": 3488
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/furano-full.webp",
+   "fill": "terrain/furano-full-fill.svg",
+   "lines": "terrain/furano-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3015,
+    "x1": 0.9384,
+    "y1": 0.6367
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8342,
+      "y": 0.3494,
+      "in": 4.0
+     },
+     {
+      "x": 0.6613,
+      "y": 0.3744,
+      "in": 6.0
+     },
+     {
+      "x": 0.5301,
+      "y": 0.3909,
+      "in": 8.0
+     },
+     {
+      "x": 0.3936,
+      "y": 0.5686,
+      "in": 10.0
+     },
+     {
+      "x": 0.2726,
+      "y": 0.5215,
+      "in": 12.0
+     },
+     {
+      "x": 0.1336,
+      "y": 0.5755,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9188,
+      "y": 0.3194,
+      "kind": "base",
+      "in": 3.2,
+      "ft": 783
+     },
+     {
+      "x": 0.0848,
+      "y": 0.5935,
+      "kind": "top",
+      "in": 15.3,
+      "ft": 3488
+     }
+    ]
+   }
+  }
+ },
+ "asahidake": {
+  "img": "terrain/asahidake-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 19.1,
+  "top_in": 26.0,
+  "base_ft": 3638,
+  "top_ft": 5226,
+  "img_clean": "terrain/asahidake-sheet.webp",
+  "range_in": [
+   19.0,
+   26.4
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.279,
+     "y": 0.6977,
+     "in": 20.0
+    },
+    {
+     "x": 0.5639,
+     "y": 0.5665,
+     "in": 22.0
+    },
+    {
+     "x": 0.7321,
+     "y": 0.2702,
+     "in": 24.0
+    },
+    {
+     "x": 0.8777,
+     "y": 0.2391,
+     "in": 26.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0787,
+     "y": 0.6481,
+     "kind": "base",
+     "in": 19.1,
+     "ft": 3638
+    },
+    {
+     "x": 0.8662,
+     "y": 0.2737,
+     "kind": "top",
+     "in": 26.0,
+     "ft": 5226
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/asahidake-full.webp",
+   "fill": "terrain/asahidake-full-fill.svg",
+   "lines": "terrain/asahidake-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3016,
+    "x1": 0.9384,
+    "y1": 0.6366
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2817,
+      "y": 0.5667,
+      "in": 20.0
+     },
+     {
+      "x": 0.5634,
+      "y": 0.5019,
+      "in": 22.0
+     },
+     {
+      "x": 0.7298,
+      "y": 0.3557,
+      "in": 24.0
+     },
+     {
+      "x": 0.8737,
+      "y": 0.3404,
+      "in": 26.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0836,
+      "y": 0.5422,
+      "kind": "base",
+      "in": 19.1,
+      "ft": 3638
+     },
+     {
+      "x": 0.8623,
+      "y": 0.3575,
+      "kind": "top",
+      "in": 26.0,
+      "ft": 5226
+     }
+    ]
+   }
+  }
+ },
+ "hakuba-happo": {
+  "img": "terrain/hakuba-happo-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 16.5,
+  "top_in": 33.5,
+  "base_ft": 2475,
+  "top_ft": 6010,
+  "img_clean": "terrain/hakuba-happo-sheet.webp",
+  "range_in": [
+   16.5,
+   33.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.8675,
+     "y": 0.6051,
+     "in": 18.0
+    },
+    {
+     "x": 0.6741,
+     "y": 0.5272,
+     "in": 21.0
+    },
+    {
+     "x": 0.4906,
+     "y": 0.4874,
+     "in": 24.0
+    },
+    {
+     "x": 0.3892,
+     "y": 0.541,
+     "in": 27.0
+    },
+    {
+     "x": 0.2567,
+     "y": 0.6746,
+     "in": 30.0
+    },
+    {
+     "x": 0.0982,
+     "y": 0.697,
+     "in": 33.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9437,
+     "y": 0.6671,
+     "kind": "base",
+     "in": 16.5,
+     "ft": 2475
+    },
+    {
+     "x": 0.0569,
+     "y": 0.7042,
+     "kind": "top",
+     "in": 33.5,
+     "ft": 6009
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/hakuba-happo-full.webp",
+   "fill": "terrain/hakuba-happo-full-fill.svg",
+   "lines": "terrain/hakuba-happo-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3415,
+    "x1": 0.9384,
+    "y1": 0.5968
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8485,
+      "y": 0.5188,
+      "in": 18.0
+     },
+     {
+      "x": 0.6652,
+      "y": 0.482,
+      "in": 21.0
+     },
+     {
+      "x": 0.4913,
+      "y": 0.4631,
+      "in": 24.0
+     },
+     {
+      "x": 0.3953,
+      "y": 0.4885,
+      "in": 27.0
+     },
+     {
+      "x": 0.2697,
+      "y": 0.5517,
+      "in": 30.0
+     },
+     {
+      "x": 0.1195,
+      "y": 0.5623,
+      "in": 33.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9208,
+      "y": 0.5482,
+      "kind": "base",
+      "in": 16.5,
+      "ft": 2475
+     },
+     {
+      "x": 0.0804,
+      "y": 0.5657,
+      "kind": "top",
+      "in": 33.5,
+      "ft": 6009
+     }
+    ]
+   }
+  }
+ },
+ "myoko-akakura": {
+  "img": "terrain/myoko-akakura-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 8.4,
+  "top_in": 15.4,
+  "base_ft": 2404,
+  "top_ft": 4904,
+  "img_clean": "terrain/myoko-akakura-sheet.webp",
+  "range_in": [
+   8.3,
+   15.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5508,
+     "y": 0.4936,
+     "in": 10.0
+    },
+    {
+     "x": 0.3999,
+     "y": 0.5139,
+     "in": 12.0
+    },
+    {
+     "x": 0.1648,
+     "y": 0.5696,
+     "in": 14.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9403,
+     "y": 0.6751,
+     "kind": "base",
+     "in": 8.4,
+     "ft": 2404
+    },
+    {
+     "x": 0.0702,
+     "y": 0.4945,
+     "kind": "top",
+     "in": 15.4,
+     "ft": 4904
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/myoko-akakura-full.webp",
+   "fill": "terrain/myoko-akakura-full-fill.svg",
+   "lines": "terrain/myoko-akakura-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3496,
+    "x1": 0.9384,
+    "y1": 0.5886
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5487,
+      "y": 0.4661,
+      "in": 10.0
+     },
+     {
+      "x": 0.4048,
+      "y": 0.4757,
+      "in": 12.0
+     },
+     {
+      "x": 0.1806,
+      "y": 0.5022,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.92,
+      "y": 0.5525,
+      "kind": "base",
+      "in": 8.4,
+      "ft": 2404
+     },
+     {
+      "x": 0.0904,
+      "y": 0.4665,
+      "kind": "top",
+      "in": 15.4,
+      "ft": 4904
+     }
+    ]
+   }
+  }
+ },
+ "nozawa-onsen": {
+  "img": "terrain/nozawa-onsen-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 7.0,
+  "top_in": 9.6,
+  "base_ft": 1851,
+  "top_ft": 5395,
+  "img_clean": "terrain/nozawa-onsen-sheet.webp",
+  "range_in": [
+   7.0,
+   9.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.0416,
+     "y": 0.5396,
+     "in": 7.0
+    },
+    {
+     "x": 0.4386,
+     "y": 0.6053,
+     "in": 8.0
+    },
+    {
+     "x": 0.4705,
+     "y": 0.42,
+     "in": 9.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0434,
+     "y": 0.5298,
+     "kind": "base",
+     "in": 7.0,
+     "ft": 1851
+    },
+    {
+     "x": 0.812,
+     "y": 0.9214,
+     "kind": "top",
+     "in": 9.6,
+     "ft": 5395
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/nozawa-onsen-full.webp",
+   "fill": "terrain/nozawa-onsen-full-fill.svg",
+   "lines": "terrain/nozawa-onsen-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2656,
+    "x1": 0.9384,
+    "y1": 0.6726
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.0726,
+      "y": 0.4875,
+      "in": 7.0
+     },
+     {
+      "x": 0.443,
+      "y": 0.5182,
+      "in": 8.0
+     },
+     {
+      "x": 0.4727,
+      "y": 0.4319,
+      "in": 9.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0742,
+      "y": 0.483,
+      "kind": "base",
+      "in": 7.0,
+      "ft": 1851
+     },
+     {
+      "x": 0.7913,
+      "y": 0.6653,
+      "kind": "top",
+      "in": 9.6,
+      "ft": 5395
+     }
+    ]
+   }
+  }
+ },
+ "shiga-kogen": {
+  "img": "terrain/shiga-kogen-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 2.6,
+  "top_in": 4.6,
+  "base_ft": 4368,
+  "top_ft": 7557,
+  "img_clean": "terrain/shiga-kogen-sheet.webp",
+  "range_in": [
+   2.6,
+   4.6
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4741,
+     "y": 0.492,
+     "in": 3.0
+    },
+    {
+     "x": 0.5841,
+     "y": 0.206,
+     "in": 4.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.4315,
+     "y": 0.5182,
+     "kind": "base",
+     "in": 2.6,
+     "ft": 4368
+    },
+    {
+     "x": 0.614,
+     "y": 0.9624,
+     "kind": "top",
+     "in": 4.6,
+     "ft": 7557
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/shiga-kogen-full.webp",
+   "fill": "terrain/shiga-kogen-full-fill.svg",
+   "lines": "terrain/shiga-kogen-full-lines.svg",
+   "px": [
+    3320,
+    4096
+   ],
+   "ref": [
+    708.42,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.3003,
+    "y0": 0.0732,
+    "x1": 0.6997,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4741,
+      "y": 0.4626,
+      "in": 3.0
+     },
+     {
+      "x": 0.5841,
+      "y": 0.2307,
+      "in": 4.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4315,
+      "y": 0.4839,
+      "kind": "base",
+      "in": 2.6,
+      "ft": 4368
+     },
+     {
+      "x": 0.614,
+      "y": 0.844,
+      "kind": "top",
+      "in": 4.6,
+      "ft": 7557
+     }
+    ]
+   }
+  }
+ },
+ "portillo": {
+  "img": "terrain/portillo-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.6,
+  "top_in": 2.4,
+  "base_ft": 8459,
+  "top_ft": 10973,
+  "img_clean": "terrain/portillo-sheet.webp",
+  "range_in": [
+   0.6,
+   2.6
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.2138,
+     "y": 0.7505,
+     "in": 1.0
+    },
+    {
+     "x": 0.1409,
+     "y": 0.4247,
+     "in": 2.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.3301,
+     "y": 0.8784,
+     "kind": "base",
+     "in": 0.6,
+     "ft": 8459
+    },
+    {
+     "x": 0.8319,
+     "y": 0.1231,
+     "kind": "top",
+     "in": 2.4,
+     "ft": 10973
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/portillo-full.webp",
+   "fill": "terrain/portillo-full-fill.svg",
+   "lines": "terrain/portillo-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2748,
+    "x1": 0.9384,
+    "y1": 0.6634
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2237,
+      "y": 0.5898,
+      "in": 1.0
+     },
+     {
+      "x": 0.1533,
+      "y": 0.4329,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3361,
+      "y": 0.6514,
+      "kind": "base",
+      "in": 0.6,
+      "ft": 8459
+     },
+     {
+      "x": 0.8209,
+      "y": 0.2876,
+      "kind": "top",
+      "in": 2.4,
+      "ft": 10973
+     }
+    ]
+   }
+  }
+ },
+ "valle-nevado": {
+  "img": "terrain/valle-nevado-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.9,
+  "top_in": 1.7,
+  "base_ft": 9380,
+  "top_ft": 12055,
+  "img_clean": "terrain/valle-nevado-sheet.webp",
+  "range_in": [
+   0.8,
+   1.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3801,
+     "y": 0.8315,
+     "in": 1.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.336,
+     "y": 0.9106,
+     "kind": "base",
+     "in": 0.9,
+     "ft": 9380
+    },
+    {
+     "x": 0.7295,
+     "y": 0.2125,
+     "kind": "top",
+     "in": 1.7,
+     "ft": 12055
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/valle-nevado-full.webp",
+   "fill": "terrain/valle-nevado-full-fill.svg",
+   "lines": "terrain/valle-nevado-full-lines.svg",
+   "px": [
+    3428,
+    4096
+   ],
+   "ref": [
+    731.46,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.257,
+    "y0": 0.0732,
+    "x1": 0.743,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3801,
+      "y": 0.7464,
+      "in": 1.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.336,
+      "y": 0.8127,
+      "kind": "base",
+      "in": 0.9,
+      "ft": 9380
+     },
+     {
+      "x": 0.7295,
+      "y": 0.2286,
+      "kind": "top",
+      "in": 1.7,
+      "ft": 12055
+     }
+    ]
+   }
+  }
+ },
+ "la-parva": {
+  "img": "terrain/la-parva-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.5,
+  "top_in": 1.7,
+  "base_ft": 8683,
+  "top_ft": 11724,
+  "img_clean": "terrain/la-parva-sheet.webp",
+  "range_in": [
+   0.4,
+   1.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4036,
+     "y": 0.6107,
+     "in": 1.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0617,
+     "y": 0.6962,
+     "kind": "base",
+     "in": 0.5,
+     "ft": 8683
+    },
+    {
+     "x": 0.8827,
+     "y": 0.2886,
+     "kind": "top",
+     "in": 1.7,
+     "ft": 11724
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/la-parva-full.webp",
+   "fill": "terrain/la-parva-full-fill.svg",
+   "lines": "terrain/la-parva-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3087,
+    "x1": 0.9384,
+    "y1": 0.6295
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4092,
+      "y": 0.5212,
+      "in": 1.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0862,
+      "y": 0.5615,
+      "kind": "base",
+      "in": 0.5,
+      "ft": 8683
+     },
+     {
+      "x": 0.8618,
+      "y": 0.3696,
+      "kind": "top",
+      "in": 1.7,
+      "ft": 11724
+     }
+    ]
+   }
+  }
+ },
+ "el-colorado": {
+  "img": "terrain/el-colorado-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.5,
+  "top_in": 1.6,
+  "base_ft": 8492,
+  "top_ft": 11418,
+  "img_clean": "terrain/el-colorado-sheet.webp",
+  "range_in": [
+   0.5,
+   1.6
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4638,
+     "y": 0.6409,
+     "in": 1.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0472,
+     "y": 0.6736,
+     "kind": "base",
+     "in": 0.5,
+     "ft": 8492
+    },
+    {
+     "x": 0.9411,
+     "y": 0.2494,
+     "kind": "top",
+     "in": 1.6,
+     "ft": 11418
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/el-colorado-full.webp",
+   "fill": "terrain/el-colorado-full-fill.svg",
+   "lines": "terrain/el-colorado-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3416,
+    "x1": 0.9384,
+    "y1": 0.5967
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4666,
+      "y": 0.5344,
+      "in": 1.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0787,
+      "y": 0.5496,
+      "kind": "base",
+      "in": 0.5,
+      "ft": 8492
+     },
+     {
+      "x": 0.9109,
+      "y": 0.3526,
+      "kind": "top",
+      "in": 1.6,
+      "ft": 11418
+     }
+    ]
+   }
+  }
+ },
+ "corralco": {
+  "img": "terrain/corralco-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 5018,
+  "top_ft": 7888,
+  "img_clean": "terrain/corralco-sheet.webp",
+  "range_in": [
+   0.0,
+   0.0
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5781,
+     "y": 0.1955,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.6919,
+     "y": 0.7215,
+     "kind": "base",
+     "in": null,
+     "ft": 5018
+    },
+    {
+     "x": 0.1996,
+     "y": 0.0603,
+     "kind": "top",
+     "in": null,
+     "ft": 7888
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/corralco-full.webp",
+   "fill": "terrain/corralco-full-fill.svg",
+   "lines": "terrain/corralco-full-lines.svg",
+   "px": [
+    2894,
+    4096
+   ],
+   "ref": [
+    617.52,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1907,
+    "y0": 0.1399,
+    "x1": 0.8093,
+    "y1": 0.7983
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5781,
+      "y": 0.2539,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6919,
+      "y": 0.6257,
+      "kind": "base",
+      "in": null,
+      "ft": 5018
+     },
+     {
+      "x": 0.1996,
+      "y": 0.1584,
+      "kind": "top",
+      "in": null,
+      "ft": 7888
+     }
+    ]
+   }
+  }
+ },
+ "las-lenas": {
+  "img": "terrain/las-lenas-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 1.7,
+  "top_in": 1.7,
+  "base_ft": 7267,
+  "top_ft": 11218,
+  "img_clean": "terrain/las-lenas-sheet.webp",
+  "range_in": [
+   1.7,
+   1.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [],
+   "marks": [
+    {
+     "x": 0.9499,
+     "y": 0.4871,
+     "kind": "base",
+     "in": 1.7,
+     "ft": 7267
+    },
+    {
+     "x": 0.2615,
+     "y": 0.3036,
+     "kind": "top",
+     "in": 1.7,
+     "ft": 11218
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/las-lenas-full.webp",
+   "fill": "terrain/las-lenas-full-fill.svg",
+   "lines": "terrain/las-lenas-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3184,
+    "x1": 0.9384,
+    "y1": 0.6198
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9213,
+      "y": 0.4631,
+      "kind": "base",
+      "in": 1.7,
+      "ft": 7267
+     },
+     {
+      "x": 0.277,
+      "y": 0.3774,
+      "kind": "top",
+      "in": 1.7,
+      "ft": 11218
+     }
+    ]
+   }
+  }
+ },
+ "cerro-catedral": {
+  "img": "terrain/cerro-catedral-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 3397,
+  "top_ft": 6868,
+  "img_clean": "terrain/cerro-catedral-sheet.webp",
+  "range_in": [
+   0.0,
+   0.0
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.3845,
+     "y": 0.5003,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.9206,
+     "y": 0.4432,
+     "kind": "base",
+     "in": null,
+     "ft": 3397
+    },
+    {
+     "x": 0.0593,
+     "y": 0.5754,
+     "kind": "top",
+     "in": null,
+     "ft": 6868
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/cerro-catedral-full.webp",
+   "fill": "terrain/cerro-catedral-full-fill.svg",
+   "lines": "terrain/cerro-catedral-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3156,
+    "x1": 0.9384,
+    "y1": 0.6226
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3911,
+      "y": 0.4692,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8976,
+      "y": 0.4423,
+      "kind": "base",
+      "in": null,
+      "ft": 3397
+     },
+     {
+      "x": 0.0839,
+      "y": 0.5046,
+      "kind": "top",
+      "in": null,
+      "ft": 6868
+     }
+    ]
+   }
+  }
+ },
+ "chapelco": {
+  "img": "terrain/chapelco-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 4129,
+  "top_ft": 6474,
+  "img_clean": "terrain/chapelco-sheet.webp",
+  "range_in": [
+   0.0,
+   0.0
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.2914,
+     "y": 0.3785,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0654,
+     "y": 0.1763,
+     "kind": "base",
+     "in": null,
+     "ft": 4129
+    },
+    {
+     "x": 0.5508,
+     "y": 0.9309,
+     "kind": "top",
+     "in": null,
+     "ft": 6474
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/chapelco-full.webp",
+   "fill": "terrain/chapelco-full-fill.svg",
+   "lines": "terrain/chapelco-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2501,
+    "x1": 0.9384,
+    "y1": 0.6881
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2991,
+      "y": 0.4106,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0812,
+      "y": 0.3133,
+      "kind": "base",
+      "in": null,
+      "ft": 4129
+     },
+     {
+      "x": 0.5492,
+      "y": 0.6765,
+      "kind": "top",
+      "in": null,
+      "ft": 6474
+     }
+    ]
+   }
+  }
+ },
+ "cerro-castor": {
+  "img": "terrain/cerro-castor-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 1.4,
+  "top_in": 5.9,
+  "base_ft": 624,
+  "top_ft": 3107,
+  "img_clean": "terrain/cerro-castor-sheet.webp",
+  "range_in": [
+   1.4,
+   6.3
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.1894,
+     "y": 0.7119,
+     "in": 2.0
+    },
+    {
+     "x": 0.5539,
+     "y": 0.5146,
+     "in": 4.0
+    },
+    {
+     "x": 0.3713,
+     "y": 0.2121,
+     "in": 6.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.1329,
+     "y": 0.769,
+     "kind": "base",
+     "in": 1.4,
+     "ft": 624
+    },
+    {
+     "x": 0.4578,
+     "y": 0.2391,
+     "kind": "top",
+     "in": 5.9,
+     "ft": 3107
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/cerro-castor-full.webp",
+   "fill": "terrain/cerro-castor-full-fill.svg",
+   "lines": "terrain/cerro-castor-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3173,
+    "x1": 0.9384,
+    "y1": 0.621
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2041,
+      "y": 0.5698,
+      "in": 2.0
+     },
+     {
+      "x": 0.5516,
+      "y": 0.476,
+      "in": 4.0
+     },
+     {
+      "x": 0.3775,
+      "y": 0.3323,
+      "in": 6.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1502,
+      "y": 0.597,
+      "kind": "base",
+      "in": 1.4,
+      "ft": 624
+     },
+     {
+      "x": 0.46,
+      "y": 0.3451,
+      "kind": "top",
+      "in": 5.9,
+      "ft": 3107
+     }
+    ]
+   }
+  }
+ },
+ "gudauri": {
+  "img": "terrain/gudauri-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 19.6,
+  "top_in": 38.7,
+  "base_ft": 6526,
+  "top_ft": 10654,
+  "img_clean": "terrain/gudauri-sheet.webp",
+  "range_in": [
+   19.4,
+   38.7
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4064,
+     "y": 0.9142,
+     "in": 21.0
+    },
+    {
+     "x": 0.4415,
+     "y": 0.7771,
+     "in": 24.0
+    },
+    {
+     "x": 0.4807,
+     "y": 0.6897,
+     "in": 27.0
+    },
+    {
+     "x": 0.5152,
+     "y": 0.6173,
+     "in": 30.0
+    },
+    {
+     "x": 0.5294,
+     "y": 0.4678,
+     "in": 33.0
+    },
+    {
+     "x": 0.5823,
+     "y": 0.4248,
+     "in": 36.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.4083,
+     "y": 0.9693,
+     "kind": "base",
+     "in": 19.6,
+     "ft": 6526
+    },
+    {
+     "x": 0.5885,
+     "y": 0.3355,
+     "kind": "top",
+     "in": 38.7,
+     "ft": 10654
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/gudauri-full.webp",
+   "fill": "terrain/gudauri-full-fill.svg",
+   "lines": "terrain/gudauri-full-lines.svg",
+   "px": [
+    3366,
+    4096
+   ],
+   "ref": [
+    718.23,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.3445,
+    "y0": 0.0732,
+    "x1": 0.6555,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4064,
+      "y": 0.8094,
+      "in": 21.0
+     },
+     {
+      "x": 0.4415,
+      "y": 0.6967,
+      "in": 24.0
+     },
+     {
+      "x": 0.4807,
+      "y": 0.625,
+      "in": 27.0
+     },
+     {
+      "x": 0.5152,
+      "y": 0.5655,
+      "in": 30.0
+     },
+     {
+      "x": 0.5294,
+      "y": 0.4426,
+      "in": 33.0
+     },
+     {
+      "x": 0.5823,
+      "y": 0.4073,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4083,
+      "y": 0.8547,
+      "kind": "base",
+      "in": 19.6,
+      "ft": 6526
+     },
+     {
+      "x": 0.5885,
+      "y": 0.3339,
+      "kind": "top",
+      "in": 38.7,
+      "ft": 10654
+     }
+    ]
+   }
+  }
+ },
+ "goderdzi": {
+  "img": "terrain/goderdzi-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 27.4,
+  "top_in": 32.3,
+  "base_ft": 5576,
+  "top_ft": 7672,
+  "img_clean": "terrain/goderdzi-sheet.webp",
+  "range_in": [
+   27.3,
+   32.6
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.224,
+     "y": 0.1877,
+     "in": 28.0
+    },
+    {
+     "x": 0.5057,
+     "y": 0.5342,
+     "in": 30.0
+    },
+    {
+     "x": 0.7072,
+     "y": 0.9016,
+     "in": 32.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.2476,
+     "y": 0.0717,
+     "kind": "base",
+     "in": 27.4,
+     "ft": 5576
+    },
+    {
+     "x": 0.753,
+     "y": 0.9369,
+     "kind": "top",
+     "in": 32.3,
+     "ft": 7672
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/goderdzi-full.webp",
+   "fill": "terrain/goderdzi-full-fill.svg",
+   "lines": "terrain/goderdzi-full-lines.svg",
+   "px": [
+    2978,
+    4096
+   ],
+   "ref": [
+    635.44,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1994,
+    "y0": 0.1343,
+    "x1": 0.8006,
+    "y1": 0.8039
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.224,
+      "y": 0.2419,
+      "in": 28.0
+     },
+     {
+      "x": 0.5057,
+      "y": 0.4938,
+      "in": 30.0
+     },
+     {
+      "x": 0.7072,
+      "y": 0.761,
+      "in": 32.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2476,
+      "y": 0.1576,
+      "kind": "base",
+      "in": 27.4,
+      "ft": 5576
+     },
+     {
+      "x": 0.753,
+      "y": 0.7867,
+      "kind": "top",
+      "in": 32.3,
+      "ft": 7672
+     }
+    ]
+   }
+  }
+ },
+ "tetnuldi": {
+  "img": "terrain/tetnuldi-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 44.0,
+  "top_in": 57.6,
+  "base_ft": 7424,
+  "top_ft": 10361,
+  "img_clean": "terrain/tetnuldi-sheet.webp",
+  "range_in": [
+   42.2,
+   58.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.487,
+     "y": 0.392,
+     "in": 45.0
+    },
+    {
+     "x": 0.5391,
+     "y": 0.4759,
+     "in": 48.0
+    },
+    {
+     "x": 0.6947,
+     "y": 0.5393,
+     "in": 51.0
+    },
+    {
+     "x": 0.8455,
+     "y": 0.5467,
+     "in": 54.0
+    },
+    {
+     "x": 0.9368,
+     "y": 0.4426,
+     "in": 57.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.0476,
+     "y": 0.5212,
+     "kind": "base",
+     "in": 44.0,
+     "ft": 7424
+    },
+    {
+     "x": 0.944,
+     "y": 0.4223,
+     "kind": "top",
+     "in": 57.6,
+     "ft": 10361
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/tetnuldi-full.webp",
+   "fill": "terrain/tetnuldi-full-fill.svg",
+   "lines": "terrain/tetnuldi-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3815,
+    "x1": 0.9384,
+    "y1": 0.5567
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.488,
+      "y": 0.4186,
+      "in": 45.0
+     },
+     {
+      "x": 0.537,
+      "y": 0.4579,
+      "in": 48.0
+     },
+     {
+      "x": 0.6828,
+      "y": 0.4875,
+      "in": 51.0
+     },
+     {
+      "x": 0.8243,
+      "y": 0.491,
+      "in": 54.0
+     },
+     {
+      "x": 0.9099,
+      "y": 0.4423,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.076,
+      "y": 0.479,
+      "kind": "base",
+      "in": 44.0,
+      "ft": 7424
+     },
+     {
+      "x": 0.9167,
+      "y": 0.4328,
+      "kind": "top",
+      "in": 57.6,
+      "ft": 10361
+     }
+    ]
+   }
+  }
+ },
+ "hatsvali": {
+  "img": "terrain/hatsvali-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 45.7,
+  "top_in": 56.8,
+  "base_ft": 6119,
+  "top_ft": 7693,
+  "img_clean": "terrain/hatsvali-sheet.webp",
+  "range_in": [
+   45.5,
+   56.8
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.5107,
+     "y": 0.1404,
+     "in": 46.0
+    },
+    {
+     "x": 0.643,
+     "y": 0.2864,
+     "in": 48.0
+    },
+    {
+     "x": 0.5571,
+     "y": 0.4813,
+     "in": 50.0
+    },
+    {
+     "x": 0.4365,
+     "y": 0.6175,
+     "in": 52.0
+    },
+    {
+     "x": 0.5174,
+     "y": 0.7236,
+     "in": 54.0
+    },
+    {
+     "x": 0.5958,
+     "y": 0.7962,
+     "in": 56.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.447,
+     "y": 0.1333,
+     "kind": "base",
+     "in": 45.7,
+     "ft": 6119
+    },
+    {
+     "x": 0.6622,
+     "y": 0.8488,
+     "kind": "top",
+     "in": 56.8,
+     "ft": 7693
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/hatsvali-full.webp",
+   "fill": "terrain/hatsvali-full-fill.svg",
+   "lines": "terrain/hatsvali-full-lines.svg",
+   "px": [
+    2821,
+    4096
+   ],
+   "ref": [
+    601.94,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1825,
+    "y0": 0.1808,
+    "x1": 0.8171,
+    "y1": 0.7574
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5106,
+      "y": 0.2214,
+      "in": 46.0
+     },
+     {
+      "x": 0.6428,
+      "y": 0.322,
+      "in": 48.0
+     },
+     {
+      "x": 0.5569,
+      "y": 0.4562,
+      "in": 50.0
+     },
+     {
+      "x": 0.4364,
+      "y": 0.55,
+      "in": 52.0
+     },
+     {
+      "x": 0.5172,
+      "y": 0.6231,
+      "in": 54.0
+     },
+     {
+      "x": 0.5956,
+      "y": 0.6731,
+      "in": 56.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4468,
+      "y": 0.2165,
+      "kind": "base",
+      "in": 45.7,
+      "ft": 6119
+     },
+     {
+      "x": 0.6619,
+      "y": 0.7093,
+      "kind": "top",
+      "in": 56.8,
+      "ft": 7693
+     }
+    ]
+   }
+  }
+ },
+ "hemsedal": {
+  "img": "terrain/hemsedal-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 2114,
+  "top_ft": 4761,
+  "img_clean": "terrain/hemsedal-sheet.webp",
+  "range_in": [
+   0.0,
+   0.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4129,
+     "y": 0.5275,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.6682,
+     "y": 0.2093,
+     "kind": "base",
+     "in": null,
+     "ft": 2114
+    },
+    {
+     "x": 0.7348,
+     "y": 0.7958,
+     "kind": "top",
+     "in": null,
+     "ft": 4761
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/hemsedal-full.webp",
+   "fill": "terrain/hemsedal-full-fill.svg",
+   "lines": "terrain/hemsedal-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.322,
+    "x1": 0.9384,
+    "y1": 0.6163
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.419,
+      "y": 0.4819,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6571,
+      "y": 0.3338,
+      "kind": "base",
+      "in": null,
+      "ft": 2114
+     },
+     {
+      "x": 0.7193,
+      "y": 0.6068,
+      "kind": "top",
+      "in": null,
+      "ft": 4761
+     }
+    ]
+   }
+  }
+ },
+ "trysil": {
+  "img": "terrain/trysil-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "NOAA NBM",
+  "base_in": null,
+  "top_in": null,
+  "nosnow": true,
+  "base_ft": 1338,
+  "top_ft": 3635,
+  "img_clean": "terrain/trysil-sheet.webp",
+  "range_in": [
+   0.1,
+   0.1
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.4815,
+     "y": 0.4299,
+     "in": 0.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.7238,
+     "y": 0.2264,
+     "kind": "base",
+     "in": null,
+     "ft": 1338
+    },
+    {
+     "x": 0.2331,
+     "y": 0.6064,
+     "kind": "top",
+     "in": null,
+     "ft": 3636
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/trysil-full.webp",
+   "fill": "terrain/trysil-full-fill.svg",
+   "lines": "terrain/trysil-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2776,
+    "x1": 0.9384,
+    "y1": 0.6606
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4831,
+      "y": 0.4368,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7073,
+      "y": 0.3429,
+      "kind": "base",
+      "in": null,
+      "ft": 1338
+     },
+     {
+      "x": 0.2533,
+      "y": 0.5182,
+      "kind": "top",
+      "in": null,
+      "ft": 3636
+     }
+    ]
+   }
+  }
+ },
+ "narvik": {
+  "img": "terrain/narvik-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 5.9,
+  "top_in": 5.7,
+  "base_ft": 412,
+  "top_ft": 3306,
+  "img_clean": "terrain/narvik-sheet.webp",
+  "range_in": [
+   5.7,
+   6.0
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.147,
+     "y": 0.5597,
+     "in": 6.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.2807,
+     "y": 0.1302,
+     "kind": "base",
+     "in": 5.9,
+     "ft": 412
+    },
+    {
+     "x": 0.7977,
+     "y": 0.8234,
+     "kind": "top",
+     "in": 5.7,
+     "ft": 3306
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/narvik-full.webp",
+   "fill": "terrain/narvik-full-fill.svg",
+   "lines": "terrain/narvik-full-lines.svg",
+   "px": [
+    2446,
+    4096
+   ],
+   "ref": [
+    521.92,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.134,
+    "y0": 0.2064,
+    "x1": 0.866,
+    "y1": 0.7318
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.147,
+      "y": 0.5046,
+      "in": 6.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2807,
+      "y": 0.2482,
+      "kind": "base",
+      "in": 5.9,
+      "ft": 412
+     },
+     {
+      "x": 0.7977,
+      "y": 0.6621,
+      "kind": "top",
+      "in": 5.7,
+      "ft": 3306
+     }
+    ]
+   }
+  }
+ },
+ "are": {
+  "img": "terrain/are-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "base_in": 0.3,
+  "top_in": 2.7,
+  "base_ft": 1271,
+  "top_ft": 4320,
+  "img_clean": "terrain/are-sheet.webp",
+  "range_in": [
+   0.3,
+   2.9
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [
+    {
+     "x": 0.542,
+     "y": 0.469,
+     "in": 1.0
+    },
+    {
+     "x": 0.5561,
+     "y": 0.3774,
+     "in": 2.0
+    }
+   ],
+   "marks": [
+    {
+     "x": 0.5392,
+     "y": 0.5403,
+     "kind": "base",
+     "in": 0.3,
+     "ft": 1271
+    },
+    {
+     "x": 0.6668,
+     "y": 0.3386,
+     "kind": "top",
+     "in": 2.7,
+     "ft": 4320
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/are-full.webp",
+   "fill": "terrain/are-full-fill.svg",
+   "lines": "terrain/are-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3622,
+    "x1": 0.9384,
+    "y1": 0.576
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5379,
+      "y": 0.4552,
+      "in": 1.0
+     },
+     {
+      "x": 0.5505,
+      "y": 0.4143,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5354,
+      "y": 0.4871,
+      "kind": "base",
+      "in": 0.3,
+      "ft": 1271
+     },
+     {
+      "x": 0.6498,
+      "y": 0.397,
+      "kind": "top",
+      "in": 2.7,
+      "ft": 4320
+     }
+    ]
+   }
+  }
+ },
+ "riksgransen": {
+  "img": "terrain/riksgransen-sheet-baked.webp",
+  "run": "2026-11-20T12:00:00+00:00",
+  "label": "ECMWF IFS \u2022 not terrain-adjusted",
+  "base_in": 7.3,
+  "top_in": 7.3,
+  "base_ft": 1693,
+  "top_ft": 2952,
+  "img_clean": "terrain/riksgransen-sheet.webp",
+  "range_in": [
+   7.2,
+   7.4
+  ],
+  "labels": {
+   "frame": "fractions of this picture, 0-1 from the top-left",
+   "depth": [],
+   "marks": [
+    {
+     "x": 0.9154,
+     "y": 0.462,
+     "kind": "base",
+     "in": 7.3,
+     "ft": 1693
+    },
+    {
+     "x": 0.1206,
+     "y": 0.5233,
+     "kind": "top",
+     "in": 7.3,
+     "ft": 2952
+    }
+   ]
+  },
+  "full": {
+   "img": "terrain/riksgransen-full.webp",
+   "fill": "terrain/riksgransen-full-fill.svg",
+   "lines": "terrain/riksgransen-full-lines.svg",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.298,
+    "x1": 0.9384,
+    "y1": 0.6402
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9065,
+      "y": 0.4506,
+      "kind": "base",
+      "in": 7.3,
+      "ft": 1693
+     },
+     {
+      "x": 0.1292,
+      "y": 0.4805,
+      "kind": "top",
+      "in": 7.3,
+      "ft": 2952
+     }
+    ]
+   }
+  }
  }
 }
