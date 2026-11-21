@@ -94,6 +94,9 @@ def main():
         hz = s.execute(f"""SELECT skill_through_day, resort_beats_region_through_day FROM read_csv_auto('{out / 'longrange_horizon.csv'}')
                            WHERE source_label = 'dynamical-ens:gefs' AND split = 'test' AND win = 24 AND threshold = 10""").fetchall()
         assert hz == [(LEADS, LEADS)], hz
+        hz72 = s.execute(f"""SELECT skill_through_day FROM read_csv_auto('{out / 'longrange_horizon.csv'}')
+                             WHERE source_label = 'dynamical-ens:gefs' AND split = 'test' AND win = 72 AND threshold = 10""").fetchall()
+        assert hz72 == [(LEADS,)], f"72 h horizon counts from day 3: {hz72}"
         assert "Useful horizon" in (out / "longrange_report.md").read_text()
     print("test_longrange: ok")
 

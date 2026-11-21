@@ -67,6 +67,8 @@ THIN_EVENTS = 20
 N_BOOT = 400
 SEED = 20261121
 REL_BINS = [0.0, 0.05, 0.2, 0.4, 0.6, 0.8, 0.95, 1.0001]
+MATCHED = [("open-meteo-ensemble:ecmwf_ifs025", "dynamical-ens:ecmwf_ifs_ens"),
+           ("open-meteo-ensemble:gfs025", "dynamical-ens:gefs")]
 LEAD_GROUPS = {"1-3": (1, 3), "4-7": (4, 7), "8-10": (8, 10), "11-15": (11, 15)}
 
 
@@ -348,8 +350,11 @@ def score(con, parts: list[Path], out: Path) -> None:
                                              WHERE macro = 'ALL'""").fetchall():
         res = dict(con.execute("""SELECT lead_day, bss_lo FROM scores WHERE source_label = ? AND split = ? AND win = ?
                                   AND threshold = ? AND macro = 'ALL' AND NOT thin""", [src, split, win, t]).fetchall())
+        # Counting starts at the first lead the window can exist (day 1 for 24 h, day 3 for 72 h:
+        # a 72 h window needs three whole forecast days, and day 0 is never whole).
+        first = max(1, win // 24)
         h = 0
-        for lead in range(1, MAX_LEAD + 1):
+        for lead in range(first, MAX_LEAD + 1):
             if res.get(lead) is not None and res[lead] > 0:
                 h = lead
             else:
@@ -357,7 +362,7 @@ def score(con, parts: list[Path], out: Path) -> None:
         cut = 0
         rg = dict(con.execute("""SELECT lead_day, gain_lo FROM region WHERE source_label = ? AND split = ? AND win = ?
                                  AND threshold = ? AND macro = 'ALL'""", [src, split, win, t]).fetchall())
-        for lead in range(1, MAX_LEAD + 1):
+        for lead in range(first, MAX_LEAD + 1):
             if rg.get(lead) is not None and rg[lead] > 0:
                 cut = lead
             else:
@@ -368,7 +373,39 @@ def score(con, parts: list[Path], out: Path) -> None:
     if hz:
         con.executemany("INSERT INTO horizon VALUES (?, ?, ?, ?, ?, ?, ?)", hz)
 
-    for name in ("scores", "region", "rel", "horizon"):
+    # Same model, two pipes (live season): the app's days 7–10 come from Open-Meteo's copy; is it
+    # as good as dynamical.org's on IDENTICAL resort-days? Different start dates (Oct 29 vs Nov 11)
+    # mean different weather, so the plain live tables can't answer this.
+    h2h = []
+    for a_src, b_src in MATCHED:
+        recs = con.execute("""
+          WITH a AS (SELECT * FROM fl WHERE source_label = ? AND split = 'live' AND c IS NOT NULL),
+               b AS (SELECT * FROM fl WHERE source_label = ? AND split = 'live' AND c IS NOT NULL)
+          SELECT a.lead_day, a.win, a.t, a.local_date,
+                 sum(power(a.p - a.o, 2)), sum(power(b.p - b.o, 2)), sum(power(a.c - a.o, 2)), count(*), sum(a.o)
+          FROM a JOIN b USING (resort_id, lead_day, local_date, win, k)
+          GROUP BY a.lead_day, a.win, a.t, a.local_date""", [a_src, b_src]).fetchall()
+        g: dict[tuple, list] = {}
+        for r in recs:
+            g.setdefault(r[:3], []).append(r[4:])
+        for (lead, win, t), v in sorted(g.items()):
+            x = np.array(v, dtype=float)
+            idx = rng.integers(0, len(x), size=(N_BOOT, len(x)))
+            ba, bb, bc = x[:, 0], x[:, 1], x[:, 2]
+            if bc.sum() <= 0:
+                continue
+            d = (bb.sum() - ba.sum()) / bc.sum()  # BSS(a) − BSS(b)
+            with np.errstate(all="ignore"):
+                db = (bb[idx].sum(1) - ba[idx].sum(1)) / bc[idx].sum(1)
+            h2h.append((a_src, b_src, lead, win, t, int(x[:, 3].sum()), int(x[:, 4].sum()),
+                        1 - ba.sum() / bc.sum(), 1 - bb.sum() / bc.sum(), d,
+                        float(np.nanpercentile(db, 5)), float(np.nanpercentile(db, 95))))
+    con.execute("""CREATE TABLE h2h (a VARCHAR, b VARCHAR, lead_day INTEGER, win INTEGER, threshold DOUBLE, n INTEGER,
+                   events INTEGER, bss_a DOUBLE, bss_b DOUBLE, diff DOUBLE, diff_lo DOUBLE, diff_hi DOUBLE)""")
+    if h2h:
+        con.executemany(f"INSERT INTO h2h VALUES ({', '.join('?' * 12)})", h2h)
+
+    for name in ("scores", "region", "rel", "horizon", "h2h"):
         fname = {"rel": "reliability"}.get(name, name)
         con.execute(f"COPY (SELECT * FROM {name} ORDER BY ALL) TO '{out / f'longrange_{fname}.csv'}' (HEADER)")
 
@@ -412,7 +449,14 @@ def report(con) -> str:
         for win, ts in THR.items():
             for t in ts[1:]:
                 p += [f"\n## BSS by lead — {split}, {win} h ≥ {t:g} mm\n", bss_pivot(con, split, win, t)]
-    p += ["\n## Ensemble-mean hit rates, test winter, 72 h ≥ 25 mm, ALL\n",
+    p += ["\n## Same model, two pipes, live season, identical resort-days (a = what the app's days 7–10 use)\n",
+          "diff = BSS(a) − BSS(b); `~` = its 90% range includes 0.\n",
+          md(con, """SELECT a, b, win || ' h' AS hours, threshold AS mm, lead_day AS lead, n, events,
+                     round(bss_a, 2) AS bss_a, round(bss_b, 2) AS bss_b,
+                     printf('%.2f', diff) || CASE WHEN diff_lo > 0 OR diff_hi < 0 THEN '' ELSE ' ~' END AS diff
+                     FROM h2h WHERE (win = 24 AND threshold = 10) OR (win = 72 AND threshold = 25)
+                     ORDER BY a, hours, mm, lead"""),
+          "\n## Ensemble-mean hit rates, test winter, 72 h ≥ 25 mm, ALL\n",
           md(con, """SELECT source_label AS source, lead_day AS lead, n, events, round(base_rate, 2) AS base,
                      round(pod, 2) AS pod, round(far, 2) AS far, round(csi, 2) AS csi, round(freq_bias, 2) AS bias
                      FROM scores WHERE split = 'test' AND macro = 'ALL' AND win = 72 AND threshold = 25
