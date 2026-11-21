@@ -1,68 +1,55 @@
 {
- "generatedAt": "2026-11-21T06:14:31.186Z",
- "forecastGeneratedAt": "2026-11-21T06:07:51.420Z",
+ "generatedAt": "2026-11-21T14:44:39.023Z",
+ "forecastGeneratedAt": "2026-11-21T14:38:16.802Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-21",
-  "to": "2026-11-25",
-  "days": 5,
-  "toLabel": "Wednesday Nov 25"
+  "to": "2026-11-26",
+  "days": 6,
+  "toLabel": "Thursday Nov 26"
  },
- "overview": "A weak system brings light snow to the Cascades and Sierra this weekend. A stronger system arrives in the Sierra and Cascades around Tuesday, with a break on Monday. The Weather Prediction Center expects a wet pattern for Northern California and the Pacific Northwest next week.",
+ "overview": "Systems from the Pacific are the main story this week. A weak low brings light snow to the Cascades this weekend, then a more active pattern from Tuesday through the end of the week favors the Coast Mountains and northern Washington.",
  "regions": [
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "A weak system brings light snow to the mountains from Saturday evening into Sunday, and the main showers stay offshore. Snow is mostly light. Monday brings a short break. A stronger system arrives Tuesday with snow in the mountains and rain mixing in at lower elevations, and it lingers into Wednesday. Mt. Baker and Stevens Pass have the best totals for the week, with Mt. Baker at 15\" and Stevens Pass at 11\"."
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "A weak system crosses Sunday, bringing light snow above about 4,000 feet and light rain in the valleys. The National Weather Service expects little snow. A break comes Monday before a stronger storm arrives midweek, with rain in the valleys and snow in the mountains. Sugar Bowl shows the most snow for the week at 13\", and the Sierra forecasters expect the midweek storm to be wetter and windier than the last one."
-  },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Snow turns to flurries in the Coast Mountains through Monday. Rain and showers arrive Tuesday and Wednesday, so snow totals stay modest. Whistler has the most for the week at 15\", with most of it falling early in the week."
+   "text": "Snow comes and goes from Sunday, but warm air keeps the snow line high. Whistler gets the bulk of it, with its biggest day on Thursday, when a mix of rain and snow is expected. Cypress Mountain sees mostly rain after the Monday snow."
   },
   {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Cold, clear nights bring freezing fog to the valleys Saturday night. A fast-moving system brings snow to the Sierra Sunday, with limited moisture and little accumulation. Monday afternoon through Tuesday evening is the best travel window before a stronger storm arrives midweek with more snow. Mammoth expects 9\" for the week, with the heaviest snow Wednesday."
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "A low offshore brings light snow to the passes this weekend, then a more active pattern from Monday night through Thursday night. Mt. Baker and Crystal Mountain are the best bets, with heavy snow and gusty southeast wind expected Monday and Tuesday. The NWS is calling for more, 24 to 45 inches at Crystal Mountain over Saturday through Thursday night."
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Cold air keeps snow in the forecast for the BC Interior, mixed with sun and cloud early in the week. Revelstoke sees snow Monday night and again midweek. The bigger system arrives Thursday, when snow and rain are expected at Revelstoke, Whitewater and Kicking Horse."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-21T06:07:51.420Z"
+   "issuedAt": "2026-11-21T14:38:16.802Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-21T06:14:30.959Z"
+   "issuedAt": "2026-11-21T14:44:38.725Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-21T04:28:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-20T20:55:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-20T21:42:00+00:00"
+   "issuedAt": "2026-11-21T10:33:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T06:14:31.186Z"
+   "issuedAt": "2026-11-21T14:44:39.023Z"
   }
  ],
  "api": {
   "day": "2026-11-21",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

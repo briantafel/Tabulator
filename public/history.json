@@ -1,63 +1,5 @@
 {
  "days": {
-  "2026-11-07": {
-   "palisades": 0,
-   "heavenly": 0,
-   "kirkwood": 0,
-   "sugar-bowl": 0,
-   "northstar": 0,
-   "mt-rose": 0,
-   "sierra-at-tahoe": 0,
-   "homewood": 0,
-   "mammoth": 0,
-   "mt-baker": 2,
-   "crystal": 7,
-   "stevens-pass": 9,
-   "mt-bachelor": 1,
-   "telluride": 0,
-   "crested-butte": 0,
-   "aspen-highlands": 0,
-   "steamboat": 0,
-   "vail": 0,
-   "breckenridge": 0,
-   "arapahoe-basin": 0,
-   "snowbird": 0,
-   "alta": 0,
-   "brighton": 0,
-   "solitude": 0,
-   "snowbasin": 0,
-   "powder-mountain": 0,
-   "jackson-hole": 0,
-   "grand-targhee": 0,
-   "sun-valley": 0,
-   "big-sky": 0,
-   "taos": 0,
-   "wolf-creek": 0,
-   "revelstoke": 4,
-   "whistler": 37,
-   "lake-louise": 0,
-   "kicking-horse": 1,
-   "fernie": 0,
-   "red-mountain": 0,
-   "whitewater": 2,
-   "panorama": 0,
-   "kimberley": 0,
-   "big-white": 0,
-   "silverstar": 1,
-   "sun-peaks": 0,
-   "sunshine": 0,
-   "norquay": 0,
-   "marmot": 0,
-   "cypress": 0,
-   "whiteface": 0,
-   "stowe": 1,
-   "killington": 0,
-   "jay-peak": 4,
-   "tremblant": 0,
-   "le-massif": 2,
-   "mont-sainte-anne": 0,
-   "blue-mountain": 0
-  },
   "2026-11-08": {
    "palisades": 0,
    "heavenly": 0,
@@ -814,291 +756,68 @@
    "le-massif": 0,
    "mont-sainte-anne": 0,
    "blue-mountain": 0
+  },
+  "2026-11-21": {
+   "palisades": 3,
+   "heavenly": 0,
+   "kirkwood": 0,
+   "sugar-bowl": 3,
+   "northstar": 1,
+   "mt-rose": 0,
+   "sierra-at-tahoe": 1,
+   "homewood": 2,
+   "mammoth": 0,
+   "mt-baker": 0,
+   "crystal": 2,
+   "stevens-pass": 3,
+   "mt-bachelor": 3,
+   "telluride": 3,
+   "crested-butte": 1,
+   "aspen-highlands": 2,
+   "steamboat": 0,
+   "vail": 1,
+   "breckenridge": 1,
+   "arapahoe-basin": 3,
+   "snowbird": 0,
+   "alta": 0,
+   "brighton": 0,
+   "solitude": 0,
+   "park-city": 0,
+   "snowbasin": 2,
+   "powder-mountain": 2,
+   "jackson-hole": 4,
+   "grand-targhee": 7,
+   "sun-valley": 0,
+   "big-sky": 0,
+   "taos": 2,
+   "wolf-creek": 3,
+   "revelstoke": 0,
+   "whistler": 1,
+   "lake-louise": 0,
+   "kicking-horse": 0,
+   "fernie": 0,
+   "red-mountain": 0,
+   "whitewater": 0,
+   "panorama": 0,
+   "kimberley": 0,
+   "big-white": 0,
+   "silverstar": 0,
+   "sun-peaks": 0,
+   "sunshine": 0,
+   "norquay": 0,
+   "marmot": 0,
+   "cypress": 1,
+   "whiteface": 0,
+   "stowe": 0,
+   "killington": 0,
+   "jay-peak": 0,
+   "tremblant": 0,
+   "le-massif": 0,
+   "mont-sainte-anne": 0,
+   "blue-mountain": 0
   }
  },
  "parts": {
-  "2026-11-07": {
-   "palisades": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "heavenly": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "kirkwood": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "sugar-bowl": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "northstar": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "mt-rose": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "sierra-at-tahoe": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "homewood": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "mammoth": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "mt-baker": {
-    "am": 0,
-    "pm": 0,
-    "night": 2
-   },
-   "crystal": {
-    "am": 0,
-    "pm": 0,
-    "night": 7
-   },
-   "stevens-pass": {
-    "am": 0,
-    "pm": 0,
-    "night": 9
-   },
-   "mt-bachelor": {
-    "am": 0,
-    "pm": 0,
-    "night": 1
-   },
-   "telluride": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "crested-butte": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "aspen-highlands": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "steamboat": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "vail": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "breckenridge": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "arapahoe-basin": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "snowbird": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "alta": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "brighton": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "solitude": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "snowbasin": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "powder-mountain": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "jackson-hole": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "grand-targhee": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "sun-valley": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "big-sky": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "taos": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "wolf-creek": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "revelstoke": {
-    "am": 0,
-    "pm": 0,
-    "night": 4
-   },
-   "whistler": {
-    "am": 0,
-    "pm": 9,
-    "night": 28
-   },
-   "lake-louise": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "kicking-horse": {
-    "am": 0,
-    "pm": 0,
-    "night": 1
-   },
-   "fernie": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "red-mountain": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "whitewater": {
-    "am": 0,
-    "pm": 0,
-    "night": 2
-   },
-   "panorama": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "kimberley": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "big-white": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "silverstar": {
-    "am": 0,
-    "pm": 0,
-    "night": 1
-   },
-   "sun-peaks": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "sunshine": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "norquay": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "marmot": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "cypress": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "whiteface": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "stowe": {
-    "am": 0,
-    "pm": 0,
-    "night": 1
-   },
-   "killington": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "jay-peak": {
-    "am": 0,
-    "pm": 0,
-    "night": 4
-   },
-   "tremblant": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "le-massif": {
-    "am": 0,
-    "pm": 0,
-    "night": 2
-   },
-   "mont-sainte-anne": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   },
-   "blue-mountain": {
-    "am": 0,
-    "pm": 0,
-    "night": 0
-   }
-  },
   "2026-11-08": {
    "palisades": {
     "am": 0,
@@ -4779,7 +4498,294 @@
     "pm": 0,
     "night": 0
    }
+  },
+  "2026-11-21": {
+   "palisades": {
+    "am": 0,
+    "pm": 0,
+    "night": 3
+   },
+   "heavenly": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "kirkwood": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "sugar-bowl": {
+    "am": 0,
+    "pm": 0,
+    "night": 3
+   },
+   "northstar": {
+    "am": 0,
+    "pm": 0,
+    "night": 1
+   },
+   "mt-rose": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "sierra-at-tahoe": {
+    "am": 0,
+    "pm": 0,
+    "night": 1
+   },
+   "homewood": {
+    "am": 0,
+    "pm": 0,
+    "night": 2
+   },
+   "mammoth": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "mt-baker": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "crystal": {
+    "am": 0,
+    "pm": 0,
+    "night": 2
+   },
+   "stevens-pass": {
+    "am": 0,
+    "pm": 0,
+    "night": 3
+   },
+   "mt-bachelor": {
+    "am": 0,
+    "pm": 1,
+    "night": 2
+   },
+   "telluride": {
+    "am": 3,
+    "pm": 0,
+    "night": 0
+   },
+   "crested-butte": {
+    "am": 1,
+    "pm": 0,
+    "night": 0
+   },
+   "aspen-highlands": {
+    "am": 2,
+    "pm": 0,
+    "night": 0
+   },
+   "steamboat": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "vail": {
+    "am": 1,
+    "pm": 0,
+    "night": 0
+   },
+   "breckenridge": {
+    "am": 1,
+    "pm": 0,
+    "night": 0
+   },
+   "arapahoe-basin": {
+    "am": 3,
+    "pm": 0,
+    "night": 0
+   },
+   "snowbird": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "alta": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "brighton": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "solitude": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "park-city": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "snowbasin": {
+    "am": 2,
+    "pm": 0,
+    "night": 0
+   },
+   "powder-mountain": {
+    "am": 2,
+    "pm": 0,
+    "night": 0
+   },
+   "jackson-hole": {
+    "am": 2,
+    "pm": 2,
+    "night": 0
+   },
+   "grand-targhee": {
+    "am": 4,
+    "pm": 3,
+    "night": 0
+   },
+   "sun-valley": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "big-sky": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "taos": {
+    "am": 0,
+    "pm": 2,
+    "night": 0
+   },
+   "wolf-creek": {
+    "am": 1,
+    "pm": 2,
+    "night": 0
+   },
+   "revelstoke": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "whistler": {
+    "am": 0,
+    "pm": 0,
+    "night": 1
+   },
+   "lake-louise": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "kicking-horse": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "fernie": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "red-mountain": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "whitewater": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "panorama": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "kimberley": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "big-white": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "silverstar": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "sun-peaks": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "sunshine": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "norquay": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "marmot": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "cypress": {
+    "am": 0,
+    "pm": 0,
+    "night": 1
+   },
+   "whiteface": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "stowe": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "killington": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "jay-peak": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "tremblant": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "le-massif": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "mont-sainte-anne": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   },
+   "blue-mountain": {
+    "am": 0,
+    "pm": 0,
+    "night": 0
+   }
   }
  },
- "updatedAt": "2026-11-21T06:07:51.420Z"
+ "updatedAt": "2026-11-21T14:38:16.802Z"
 }
