@@ -73,6 +73,7 @@ export default function Detail({
   const body = useRef(null);
   const sheet = useRef(null);
   const drag = useRef(null);
+  const swipe = useRef(null);              // swipe-up-to-maximize (below)
   /* True only while a press that STARTED on the backdrop is still in flight.
      Everything else the scrim sees began inside the sheet. */
   const fromScrim = useRef(false);
@@ -281,6 +282,28 @@ export default function Detail({
     settle((d.h2 ?? d.h) > frame * ((REST + TALL) / 2));
   };
 
+  /* Brian, 2026-11-21: "if a user swipes up on any of the sheets while it's
+     not maximized, it should maximize. It should not rely on the small line
+     at the top." At rest the body has no scroller (see the scrollTop reset
+     above), so an upward swipe anywhere on the sheet has nothing else to mean.
+     Only a clear, mostly vertical swipe counts: taps on buttons and sideways
+     scrolls (the days wheel) are left alone. Once maximized the body scrolls
+     normally and this does nothing; shrinking stays on the handle. */
+  const swipeStart = (e) => {
+    if (max || drag.current || e.touches.length !== 1) { swipe.current = null; return; }
+    if (e.target.closest?.(".sheet-grab, input, textarea")) { swipe.current = null; return; }
+    const t = e.touches[0];
+    swipe.current = { x: t.clientX, y: t.clientY };
+  };
+  const swipeEnd = (e) => {
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s || max) return;
+    const t = e.changedTouches[0];
+    const dy = s.y - t.clientY, dx = Math.abs(t.clientX - s.x);
+    if (dy > GRAB && dy > dx * 1.5) settle(true);
+  };
+
   /* Brian: "the grabber on the resort sheet should never close the resort
      sheet. That's what the close button is for."
      Two things have to be true for that. The drag itself can only ever move
@@ -314,6 +337,9 @@ export default function Detail({
         ref={sheet}
         className={`sheet${max ? " max" : ""}`}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={swipeStart}
+        onTouchEnd={swipeEnd}
+        onTouchCancel={() => { swipe.current = null; }}
         role="dialog"
         aria-label={r.name}
       >
