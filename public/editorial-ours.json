@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-21T02:18:03.679Z",
+ "generatedAt": "2026-11-21T02:39:16.591Z",
  "forecastGeneratedAt": "2026-11-21T02:11:21.886Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-21T00:20:32.821Z",
+ "blendGeneratedAt": "2026-11-21T02:39:12.398Z",
  "quiet": false,
  "writer": "claude",
  "model": "claude-haiku-5-5",
@@ -12,34 +12,34 @@
   "days": 5,
   "toLabel": "Wednesday Nov 25"
  },
- "overview": "A ridge gives the Cascades and Sierra a dry, foggy stretch, then a series of storms arrives from the Pacific from Sunday into midweek. The Sierra's Sunday system is weak, and the midweek storm is expected to be wetter and snowier than the one before.",
+ "overview": "A weak system brings light snow to the Cascades and Sierra over the weekend, then a short break Monday. A stronger, wetter system follows midweek (Tuesday to Wednesday) across the Pacific Northwest, B.C. and the Sierra.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Fog and cold start the weekend. A low offshore brings light showers from Saturday afternoon into Sunday, with snow levels around 2,500 feet. Stevens Pass is the top bet at 11 inches. Light snow mixing with rain follows Monday through Wednesday, with Mt. Baker at 15 inches."
+   "text": "A weak system crosses the Cascades Saturday night into Sunday with light snow showers. The bulk of the moisture stays offshore, and the forecasters expect no impactful amounts. The next stronger system arrives Tuesday, bringing snow that turns to rain at lower levels, with Mt. Baker and Crystal Mountain getting the most. Stevens Pass sees its heaviest snow Tuesday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Cold, foggy mornings Saturday, then a weak system brings light snow above about 4,000 feet Sunday. Monday is dry. A stronger storm arrives midweek, with forecasters less sure of its totals. Sugar Bowl leads at 13 inches. The NWS calls for 21 inches at Sugar Bowl from Sunday through Wednesday night."
+   "text": "Sunday brings a fast, weak system with light snow that is mostly done by Sunday night, and Monday is dry. The midweek storm is expected to be less wet and snowy than the last one. Sugar Bowl and Palisades are forecast the most snow, with Wednesday the peak day. Kirkwood sees its snow Wednesday."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Snow fades to flurries Sunday and Monday, then rain and showers take over midweek. Whistler is the best bet at 15 inches, mostly from Monday through Wednesday."
+   "text": "Whistler and Cypress see little snow over the weekend, with flurries or showers in the mid-levels. Rain comes in more often through midweek, with the wettest and mildest air Tuesday and Wednesday. Snow stays limited, so expect soggy conditions at lower elevations."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "A clear, bitterly cold night Saturday brings freezing fog to the Martis and Sierra valleys. A fast, weak storm brings light snow Sunday, enough to make the drive home hard in the evening. Monday afternoon through Tuesday evening is the best travel window. Mammoth gets 9 inches, with a stronger midweek system bringing more snow."
+   "text": "Sunday's system is fast-moving with little moisture, so snow levels stay low and totals stay modest, but it can still make the drive home difficult Sunday evening. Monday afternoon through Tuesday evening is the best travel window before Thanksgiving. Mammoth gets its strongest snow Wednesday, and winds will be gusty."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-21T00:20:32.821Z"
+   "issuedAt": "2026-11-21T02:39:12.398Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -59,12 +59,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T02:18:03.679Z"
+   "issuedAt": "2026-11-21T02:39:16.591Z"
   }
  ],
  "api": {
   "day": "2026-11-21",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
