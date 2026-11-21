@@ -477,7 +477,7 @@ export default function Tabulator() {
                           disabled={mOff <= MONTH_MIN} aria-label="Previous month">&lt;</button>
                 )}
                 <span>
-                  Find me snow{mode === "days" ? " in" : ""}{" "}
+                  Find me snow{mode === "days" ? " across" : ""}{" "}
                   {mode === "calendar" && <em>{monthName(shownMonth)}</em>}
                 </span>
                 {mode === "calendar" && (
