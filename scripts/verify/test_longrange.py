@@ -97,6 +97,14 @@ def main():
         hz72 = s.execute(f"""SELECT skill_through_day FROM read_csv_auto('{out / 'longrange_horizon.csv'}')
                              WHERE source_label = 'dynamical-ens:gefs' AND split = 'test' AND win = 72 AND threshold = 10""").fetchall()
         assert hz72 == [(LEADS,)], f"72 h horizon counts from day 3: {hz72}"
+        cal = s.execute(f"""SELECT min(gain), count(*) FROM read_csv_auto('{out / 'longrange_calibration.csv'}')
+                            WHERE fit_source = 'dynamical-ens:ecmwf_ifs_ens' AND fit = 'train' AND judged = 'test'
+                              AND win = 24 AND threshold = 2.5""").fetchall()[0]
+        assert cal[1] > 0 and cal[0] > 0, f"calibrating a no-skill ensemble toward climatology must help: {cal}"
+        cj = json.loads((out / "ens_calib.json").read_text())
+        assert cj["cells"] and all(abs(c["b"]) < 0.5 for c in cj["cells"]
+                                   if c["source"] == "dynamical-ens:ecmwf_ifs_ens" and c["window_h"] == 24
+                                   and c["threshold_mm"] == 2.5), "no-skill members should get a slope near 0"
         assert "Useful horizon" in (out / "longrange_report.md").read_text()
     print("test_longrange: ok")
 

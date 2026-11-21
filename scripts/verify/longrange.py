@@ -405,9 +405,166 @@ def score(con, parts: list[Path], out: Path) -> None:
     if h2h:
         con.executemany(f"INSERT INTO h2h VALUES ({', '.join('?' * 12)})", h2h)
 
-    for name in ("scores", "region", "rel", "horizon", "h2h"):
-        fname = {"rel": "reliability"}.get(name, name)
+    model = calibrate(con, rng)
+    (out / "ens_calib.json").write_text(json.dumps(model, indent=1) + "\n")
+
+    for name in ("scores", "region", "rel", "horizon", "h2h", "calib", "calrel"):
+        fname = {"rel": "reliability", "calrel": "reliability_calibrated", "calib": "calibration"}.get(name, name)
         con.execute(f"COPY (SELECT * FROM {name} ORDER BY ALL) TO '{out / f'longrange_{fname}.csv'}' (HEADER)")
+
+
+# ------------------------------------------------------------------ calibration (2026-11-21)
+# Brian: "Yes" to calibrating ensemble probabilities. Reliability showed the ensembles are
+# overconfident at high probability (0.99 → ~0.78) and underconfident at low (0.11 → ~0.25).
+# Method (plain arithmetic, two/three numbers per cell): extended logistic recalibration,
+#   logit(p') = a + b·logit(p̃) + c·logit(climatology),   p̃ = (p·n + 0.5) / (n + 1)
+# fitted per source × lead day × window × threshold by maximum likelihood (Newton, tiny ridge).
+# Judged out of sample BOTH ways (fit 2024-25 → judge 2025-26, and the reverse), so one lucky
+# winter can't promote it. A cell is promoted only if the Brier gain's 90% range is above 0
+# in both directions. The same fits (on both winters) are also applied to Open-Meteo's copy of
+# the same model — the app's days 7–10 — and judged on the live season (thin; report only).
+CAL_SELF = ("dynamical-ens:ecmwf_ifs_ens", "dynamical-ens:gefs")
+CAL_TRANSFER = {"open-meteo-ensemble:ecmwf_ifs025": "dynamical-ens:ecmwf_ifs_ens",
+                "open-meteo-ensemble:gfs025": "dynamical-ens:gefs"}
+CAL_RIDGE = 1e-3
+CAL_MIN_EVENTS = 30
+
+
+def _logit(x):
+    x = np.clip(x, 1e-4, 1 - 1e-4)
+    return np.log(x / (1 - x))
+
+
+def _features(p, n, c):
+    pt = (p * n + 0.5) / (n + 1)
+    return np.column_stack([np.ones_like(p), _logit(pt), _logit(np.clip(c, 0.005, 0.995))])
+
+
+def fit_logistic(X, y, ridge=CAL_RIDGE, iters=50):
+    w = np.zeros(X.shape[1])
+    R = ridge * len(y) * np.diag([0.0] + [1.0] * (X.shape[1] - 1))
+    for _ in range(iters):
+        z = np.clip(X @ w, -30, 30)
+        q = 1 / (1 + np.exp(-z))
+        g = X.T @ (q - y) + R @ w
+        H = (X * (q * (1 - q))[:, None]).T @ X + R + 1e-9 * np.eye(X.shape[1])
+        step = np.linalg.solve(H, g)
+        w -= step
+        if np.max(np.abs(step)) < 1e-8:
+            break
+    return w
+
+
+def apply_logistic(w, X):
+    return 1 / (1 + np.exp(-np.clip(X @ w, -30, 30)))
+
+
+def calibrate(con, rng) -> dict:
+    srcs = tuple(CAL_SELF) + tuple(CAL_TRANSFER)
+    r = con.execute(f"""SELECT source_label, split, lead_day, win, t, datediff('day', DATE '1970-01-01', local_date) AS d,
+                               p, CAST(n_mem AS DOUBLE) AS n, c, o FROM fl
+                        WHERE c IS NOT NULL AND n_mem > 1 AND lead_day >= 1 AND source_label IN {srcs}
+                        ORDER BY source_label, lead_day, win, t, split""").fetchnumpy()
+    if not len(r["p"]):
+        return {}
+    keys = np.char.add(np.char.add(r["source_label"].astype(str), "|"),
+                       np.char.add(np.char.add(r["lead_day"].astype(str), "|"),
+                                   np.char.add(np.char.add(r["win"].astype(str), "|"), r["t"].astype(str))))
+    split = r["split"].astype(str)
+    data = np.column_stack([r["d"], r["p"], r["n"], r["c"], r["o"]]).astype(float)
+    arr: dict[tuple, dict] = {}
+    # Rows arrive sorted by cell, so each cell is one contiguous run.
+    uk, start = np.unique(keys, return_index=True)
+    order = np.argsort(start)
+    starts = start[order]
+    ends = np.append(starts[1:], len(keys))
+    for i, lo_, hi_ in zip(order, starts, ends):
+        src, lead, win, t = uk[i].split("|")
+        sp = split[lo_:hi_]
+        arr[(src, int(lead), int(win), float(t))] = {s: data[lo_:hi_][sp == s] for s in np.unique(sp)}
+
+    def judge(w, a):
+        X = _features(a[:, 1], a[:, 2], a[:, 3])
+        q = apply_logistic(w, X)
+        o, p, c, d = a[:, 4], a[:, 1], a[:, 3], a[:, 0]
+        days, inv = np.unique(d, return_inverse=True)
+        sr = np.bincount(inv, (p - o) ** 2, len(days))
+        sq = np.bincount(inv, (q - o) ** 2, len(days))
+        sc = np.bincount(inv, (c - o) ** 2, len(days))
+        if sc.sum() <= 0:
+            return None
+        idx = rng.integers(0, len(days), size=(N_BOOT, len(days)))
+        db = (sr[idx].sum(1) - sq[idx].sum(1)) / sc[idx].sum(1)
+        return (len(a), int(o.sum()), 1 - sr.sum() / sc.sum(), 1 - sq.sum() / sc.sum(),
+                (sr.sum() - sq.sum()) / sc.sum(), float(np.percentile(db, 5)), float(np.percentile(db, 95)), q)
+
+    out, coef, rel = [], {}, []
+    for (src, lead, win, t), sp in sorted(arr.items(), key=lambda kv: tuple(str(x) for x in kv[0])):
+        if src not in CAL_SELF:
+            continue
+        for fit_s, judge_s in (("train", "test"), ("test", "train")):
+            a, b = sp.get(fit_s), sp.get(judge_s)
+            if a is None or b is None or a[:, 4].sum() < CAL_MIN_EVENTS:
+                continue
+            w = fit_logistic(_features(a[:, 1], a[:, 2], a[:, 3]), a[:, 4])
+            j = judge(w, b)
+            if j is None:
+                continue
+            out.append((src, src, fit_s, judge_s, lead, win, t, *j[:7], *w))
+            if fit_s == "train" and judge_s == "test":
+                for lo, hi_ in zip(REL_BINS[:-1], REL_BINS[1:]):
+                    m = (j[7] >= lo) & (j[7] < hi_)
+                    if m.any():
+                        rel.append((src + " (calibrated)", win, t, lead, f"{lo:.2f}–{min(hi_, 1):.2f}", int(m.sum()),
+                                    float(j[7][m].mean()), float(b[m, 4].mean())))
+        both = [x for s in ("train", "test") if (x := sp.get(s)) is not None]
+        if both:
+            a = np.vstack(both)
+            if a[:, 4].sum() >= CAL_MIN_EVENTS:
+                coef[(src, lead, win, t)] = fit_logistic(_features(a[:, 1], a[:, 2], a[:, 3]), a[:, 4])
+    # Transfer: the both-winters fit of the same model, applied to Open-Meteo's copy, judged live.
+    for (src, lead, win, t), sp in arr.items():
+        base = CAL_TRANSFER.get(src)
+        if base is None or (base, lead, win, t) not in coef or "live" not in sp:
+            continue
+        j = judge(coef[(base, lead, win, t)], sp["live"])
+        if j is not None:
+            out.append((base, src, "train+test", "live", lead, win, t, *j[:7], *coef[(base, lead, win, t)]))
+    # Dynamical's own live check of the both-winters fit (what would ship).
+    for src in CAL_SELF:
+        for (s2, lead, win, t), w in coef.items():
+            if s2 != src or "live" not in arr.get((src, lead, win, t), {}):
+                continue
+            j = judge(w, arr[(src, lead, win, t)]["live"])
+            if j is not None:
+                out.append((src, src, "train+test", "live", lead, win, t, *j[:7], *w))
+    con.execute("""CREATE TABLE calib (fit_source VARCHAR, apply_source VARCHAR, fit VARCHAR, judged VARCHAR,
+                   lead_day INTEGER, win INTEGER, threshold DOUBLE, n INTEGER, events INTEGER, bss_raw DOUBLE,
+                   bss_cal DOUBLE, gain DOUBLE, gain_lo DOUBLE, gain_hi DOUBLE, a DOUBLE, b DOUBLE, c DOUBLE)""")
+    if out:
+        con.executemany(f"INSERT INTO calib VALUES ({', '.join('?' * 17)})", out)
+    con.execute("""CREATE TABLE calrel (source_label VARCHAR, win INTEGER, threshold DOUBLE, lead_day INTEGER,
+                   p_bin VARCHAR, n INTEGER, mean_p DOUBLE, observed DOUBLE)""")
+    if rel:
+        con.executemany("INSERT INTO calrel VALUES (?, ?, ?, ?, ?, ?, ?, ?)", rel)
+    # Promotion: gain range above 0 in BOTH directions.
+    prom = {}
+    for src, lead, win, t, ok in con.execute("""
+        SELECT fit_source, lead_day, win, threshold, count(*) = 2 AND bool_and(gain_lo > 0)
+        FROM calib WHERE fit_source = apply_source AND judged IN ('test', 'train')
+        GROUP BY ALL""").fetchall():
+        prom[(src, lead, win, t)] = bool(ok)
+    model = {"version": "ens-calib-v1",
+             "form": "logit(p') = a + b*logit((p*n+0.5)/(n+1)) + c*logit(clim); clim = resort x month base rate",
+             "fitted_on": "2024-25 + 2025-26 winters, SNOTEL/BC liquid, strict mid pairs",
+             "promote_rule": "Brier gain 90% range > 0 judged both ways (fit 2024-25 -> 2025-26 and reverse)",
+             "cells": [{"source": s, "lead_day": lead, "window_h": win, "threshold_mm": t,
+                        "a": round(float(w[0]), 4), "b": round(float(w[1]), 4), "c": round(float(w[2]), 4),
+                        "promoted": prom.get((s, lead, win, t), False)}
+                       for (s, lead, win, t), w in sorted(coef.items(), key=lambda kv: tuple(str(x) for x in kv[0]))]}
+    n_prom = sum(c["promoted"] for c in model["cells"])
+    log(f"calibration: {len(model['cells'])} cells fitted, {n_prom} promoted (gain real both ways)")
+    return model
 
 
 def md(con, sql: str, empty: str = "_no data yet_") -> str:
@@ -433,6 +590,15 @@ def bss_pivot(con, split: str, win: int, t: float) -> str:
       ON lead IN ({leads}) USING any_value(v) GROUP BY source ORDER BY source""")
 
 
+def cal_pivot(con, fit: str, judged: str) -> str:
+    leads = ", ".join(f"'{lead}'" for lead in range(1, MAX_LEAD + 1))
+    return md(con, f"""
+      PIVOT (SELECT fit_source || ' ' || win || 'h≥' || threshold AS row, CAST(lead_day AS VARCHAR) AS lead,
+                    printf('%+.2f', gain) || CASE WHEN gain_lo > 0 OR gain_hi < 0 THEN '' ELSE ' ~' END AS v
+             FROM calib WHERE fit = '{fit}' AND judged = '{judged}' AND fit_source = apply_source)
+      ON lead IN ({leads}) USING any_value(v) GROUP BY row ORDER BY row""")
+
+
 def report(con) -> str:
     p = ["# Long-range verification (days 0–15)\n",
          "Public models + public truth only. Liquid water vs SNOTEL / BC ASWS SWE gain, strict mid-tier pairs.",
@@ -449,7 +615,31 @@ def report(con) -> str:
         for win, ts in THR.items():
             for t in ts[1:]:
                 p += [f"\n## BSS by lead — {split}, {win} h ≥ {t:g} mm\n", bss_pivot(con, split, win, t)]
-    p += ["\n## Same model, two pipes, live season, identical resort-days (a = what the app's days 7–10 use)\n",
+    p += ["\n## Calibration (ens-calib-v1): Brier skill gain over the raw ensemble, judged out of sample\n",
+          "gain = BSS(calibrated) − BSS(raw). `~` = 90% range includes 0. Promoted = real gain in BOTH directions.\n",
+          "Fit 2024-25 → judged 2025-26:\n",
+          cal_pivot(con, "train", "test"),
+          "\nFit 2025-26 → judged 2024-25 (the reverse, so one winter can't carry it):\n",
+          cal_pivot(con, "test", "train"),
+          "\nPromoted cells (of fitted):\n",
+          md(con, """SELECT fit_source AS source, win || ' h' AS hours, threshold AS mm,
+                     count(*) FILTER (WHERE ok) AS promoted, count(*) AS leads,
+                     string_agg(CASE WHEN ok THEN CAST(lead_day AS VARCHAR) END, ',' ORDER BY lead_day) AS promoted_leads
+                     FROM (SELECT fit_source, win, threshold, lead_day, count(*) = 2 AND bool_and(gain_lo > 0) AS ok
+                           FROM calib WHERE fit_source = apply_source AND judged IN ('test', 'train') GROUP BY ALL)
+                     GROUP BY ALL ORDER BY source, hours, mm"""),
+          "\nBoth-winter fit applied live: dynamical.org's own ensembles, and Open-Meteo's copy (the app's days 7–10). Thin.\n",
+          md(con, """SELECT apply_source AS source, win || ' h' AS hours, threshold AS mm, lead_day AS lead, n, events,
+                     round(bss_raw, 2) AS raw, round(bss_cal, 2) AS cal,
+                     printf('%.2f', gain) || CASE WHEN gain_lo > 0 OR gain_hi < 0 THEN '' ELSE ' ~' END AS gain
+                     FROM calib WHERE judged = 'live' AND ((win = 24 AND threshold = 10) OR (win = 72 AND threshold = 25))
+                       AND lead_day IN (1, 3, 5, 7, 8, 9, 10, 12, 14) ORDER BY source, hours, lead"""),
+          "\nReliability after calibration (fit 2024-25, judged 2025-26), 72 h ≥ 25 mm, days 4–10 pooled:\n",
+          md(con, """SELECT source_label AS source, p_bin, sum(n) AS n, round(sum(mean_p * n) / sum(n), 2) AS forecast,
+                     round(sum(observed * n) / sum(n), 2) AS happened
+                     FROM calrel WHERE win = 72 AND threshold = 25 AND lead_day BETWEEN 4 AND 10
+                     GROUP BY ALL ORDER BY source, p_bin"""),
+          "\n## Same model, two pipes, live season, identical resort-days (a = what the app's days 7–10 use)\n",
           "diff = BSS(a) − BSS(b); `~` = its 90% range includes 0.\n",
           md(con, """SELECT a, b, win || ' h' AS hours, threshold AS mm, lead_day AS lead, n, events,
                      round(bss_a, 2) AS bss_a, round(bss_b, 2) AS bss_b,
