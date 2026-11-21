@@ -130,3 +130,13 @@ test("slr switch: our ratio's snow and members, all days or none per resort", ()
   delete mixed.projections.resorts.alta.days[2].snowSlr;
   assert.equal(extendFeed(mixed, NOW, { slr: true }).resorts.find((r) => r.id === "alta").days[6].snow, 6);
 });
+
+test("a file that still begins yesterday: dropping it first keeps all 10 days from today (2026-11-21)", async () => {
+  const { dropPast } = await import("../src/lib/forecast.js");
+  const today = new Date(2026, 10, 4, 12);   // the feed's first day, 11-03, is yesterday
+  const f = extendFeed(dropPast(feed(), today), Date.parse("2026-11-04T17:00:00Z"));
+  assert.equal(f.dates[0], "2026-11-04");
+  assert.equal(f.dates.length, 10);
+  assert.equal(f.sfDates.length, 5);
+  assert.equal(f.resorts.find((r) => r.id === "alta").days.length, 10);
+});

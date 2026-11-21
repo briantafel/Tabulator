@@ -172,7 +172,12 @@ export default function Tabulator() {
     return dropPast(snowOn ? applySnowfall(b, feedRaw.blend, Date.now(), { bands: bandsOn }) : b);
   }, [tempsOn, snowOn, bandsOn, feedRaw]);
   const feed = useMemo(() => {
-    const f = projections && feedRaw ? extendFeed(feedRaw, Date.now(), { slr: slrOn }) : feedRaw;
+    /* Past days go BEFORE the projections are appended: extendFeed budgets
+       MAX_DAYS from the days it is given, so a file that still began
+       yesterday spent a slot on it and every sheet ended a day short (9 days,
+       5 of them forecast, instead of 10 — Brian, 2026-11-21, Palisades from
+       Radar search). */
+    const f = projections && feedRaw ? extendFeed(dropPast(feedRaw), Date.now(), { slr: slrOn }) : feedRaw;
     const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
     return dropPast(snowOn ? applySnowfall(g, feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend));
   }, [projections, tempsOn, slrOn, snowOn, bandsOn, feedRaw]);
