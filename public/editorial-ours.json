@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-21T14:44:47.077Z",
+ "generatedAt": "2026-11-21T15:34:23.931Z",
  "forecastGeneratedAt": "2026-11-21T14:38:16.802Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-21T07:37:20.099Z",
+ "blendGeneratedAt": "2026-11-21T15:34:21.059Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,59 +16,44 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 61\". Whistler follows."
+   "text": "Cypress Mountain is forecast for about 78\". Whistler follows."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain is forecast for about 48\", 30\" of it Thursday. Mt. Baker and Mt. Bachelor follow."
+   "text": "Mt. Baker is forecast for about 44\", 25\" of it Thursday. Crystal Mountain and Stevens Pass follow."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 25\". Jackson Hole and Sun Valley follow."
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Palisades is forecast for about 18\". Kirkwood and Sugar Bowl follow. The NWS is calling for more at Kirkwood: 9 to 19 inches Sunday through Wednesday night."
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Killington is forecast for about 15\", all of it Thursday. Stowe and Jay Peak follow."
+   "text": "Grand Targhee is forecast for about 22\", 13\" of it Saturday. Jackson Hole and Sun Valley follow."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "RED Mountain is forecast for about 14\", 9\" of it Thursday. Whitewater and Revelstoke follow."
+   "text": "RED Mountain is forecast for about 13\", 9\" of it Thursday. Whitewater and Revelstoke follow."
   },
   {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Brighton is forecast for about 12\", 6\" of it Thursday. Solitude and Snowbasin follow."
-  },
-  {
-   "key": "the Okanagan",
-   "title": "Okanagan",
-   "text": "Sun Peaks is forecast for about 10\", 7\" of it Thursday. SilverStar and Big White follow."
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Palisades is forecast for about 10\". Sugar Bowl and Sierra-at-Tahoe follow. The NWS is calling for more at Palisades: 8 to 17 inches Sunday through Wednesday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Telluride is forecast for about 8\", 4\" of it Saturday. Aspen Highlands and Vail follow."
+   "text": "Telluride is forecast for about 8\", 4\" of it Monday. Breckenridge and Aspen Highlands follow."
   },
   {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Taos is forecast for about 6\", 3\" of it Saturday. Wolf Creek follows."
+   "key": "the Okanagan",
+   "title": "Okanagan",
+   "text": "Big White is forecast for about 6\", 3\" of it Thursday. Sun Peaks and SilverStar follow."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-21T07:37:20.099Z"
+   "issuedAt": "2026-11-21T15:34:21.059Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -76,7 +61,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T14:44:47.077Z"
+   "issuedAt": "2026-11-21T15:34:23.931Z"
   }
  ],
  "api": {
