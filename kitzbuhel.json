@@ -1,0 +1,237 @@
+{
+ "resort": "kitzbuhel",
+ "ski_area": "KitzSki",
+ "date_utc": "2026-11-21",
+ "frame_km": 26.433,
+ "px": 4096,
+ "m_per_px": 6.453,
+ "frame_bbox_lonlat": [
+  12.200216,
+  47.262498,
+  12.550896,
+  47.499949
+ ],
+ "crop": [
+  12.23256470622614,
+  47.27622209971255,
+  12.53572659377386,
+  47.48150740028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   20.9
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   874,
+   1291
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2094,
+  "heightmap_spacing_m": 12.91,
+  "heightmap_z_m": [
+   679.6,
+   2348.9
+  ],
+  "heightmap_quantisation_m": 0.025,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.5,
+  "darkest1pct_value": 139.0,
+  "median_value": 206.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 165.0,
+  "raw_p_hi": 219.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 21.12
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 4.00e-06 of the height range, 43011 distinct 16-bit levels sampled",
+  "blend_mb": 6.9,
+  "render_s": 1375.0,
+  "blender_wall_s": 1377
+ },
+ "svg_scale_vs_1800px_maps": 1.967,
+ "nosnow": false,
+ "inside_range_in": [
+  5.3,
+  9.9
+ ],
+ "levels_in": [
+  6.0,
+  8.0
+ ],
+ "base": [
+  766.5,
+  6.1
+ ],
+ "top": [
+  1993.1,
+  9.2
+ ],
+ "lifts": 62,
+ "lifts_dropped": [
+  {
+   "name": "(Projekt) Seilbahn Verbindung Skiwelt-Kitzb\u00fchel",
+   "type": "gondola",
+   "reason": "status proposed"
+  },
+  {
+   "name": "Panoramabahn Kitzb\u00fcheler Alpen I",
+   "type": "gondola",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 431,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 8064,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 30.244,
+  "full": {
+   "img": "kitzbuhel-full.webp",
+   "px": [
+    3127,
+    4096
+   ],
+   "ref": [
+    667.24,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2139,
+    "y0": 0.093,
+    "x1": 0.7864,
+    "y1": 0.8452
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3438,
+      "y": 0.2437,
+      "in": 6.0
+     },
+     {
+      "x": 0.5299,
+      "y": 0.7807,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5722,
+      "y": 0.2096,
+      "kind": "base",
+      "in": 6.1,
+      "ft": 2515
+     },
+     {
+      "x": 0.3991,
+      "y": 0.7542,
+      "kind": "top",
+      "in": 9.2,
+      "ft": 6539
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "kitzbuhel-sheet.webp",
+   "img": "kitzbuhel-sheet-baked.webp",
+   "side_m": 20182,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3437,
+      "y": 0.2047,
+      "in": 6.0
+     },
+     {
+      "x": 0.5297,
+      "y": 0.9081,
+      "in": 8.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.572,
+      "y": 0.1601,
+      "kind": "base",
+      "in": 6.1,
+      "ft": 2515
+     },
+     {
+      "x": 0.3989,
+      "y": 0.8734,
+      "kind": "top",
+      "in": 9.2,
+      "ft": 6539
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1196,
+  936,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 29,
+  "dem_s": 5,
+  "relief_s": 1379,
+  "snow_s": 266,
+  "vectors_s": 10,
+  "compose_s": 140,
+  "total_s": 1829
+ },
+ "files": [
+  "kitzbuhel-full.webp",
+  "kitzbuhel-heightmap16.png",
+  "kitzbuhel-meta.json",
+  "kitzbuhel-relief.png",
+  "kitzbuhel-sheet-baked.webp",
+  "kitzbuhel-sheet.webp",
+  "kitzbuhel-tiles.json",
+  "kitzbuhel-vectors.svg",
+  "kitzbuhel.blend",
+  "kitzbuhel.png",
+  "kitzbuhel.svg"
+ ]
+}

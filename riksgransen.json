@@ -1,0 +1,202 @@
+{
+ "resort": "riksgransen",
+ "ski_area": "Riksgr\u00e4nsen",
+ "date_utc": "2026-11-21",
+ "frame_km": 5.895,
+ "px": 4096,
+ "m_per_px": 1.439,
+ "frame_bbox_lonlat": [
+  18.059251,
+  68.390569,
+  18.203214,
+  68.443526
+ ],
+ "crop": [
+  18.075366635538245,
+  68.39731344767047,
+  18.172996364461753,
+  68.43322915232953
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   11.4
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   210,
+   571
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2256,
+  "heightmap_spacing_m": 2.88,
+  "heightmap_z_m": [
+   458.2,
+   1048.8
+  ],
+  "heightmap_quantisation_m": 0.009,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 not terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)",
+  "terrain_adjusted": false
+ },
+ "caption_source": "ECMWF IFS \u2022 not terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 56.5,
+  "darkest1pct_value": 144.0,
+  "median_value": 220.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 171.33,
+  "raw_p_hi": 209.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 5.07
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.14e-06 of the height range, 42689 distinct 16-bit levels sampled",
+  "blend_mb": 5.5,
+  "render_s": 1151.0,
+  "blender_wall_s": 1152
+ },
+ "svg_scale_vs_1800px_maps": 1.543,
+ "nosnow": false,
+ "inside_range_in": [
+  7.2,
+  7.4
+ ],
+ "levels_in": [],
+ "base": [
+  516.1,
+  7.3
+ ],
+ "top": [
+  899.9,
+  7.3
+ ],
+ "lifts": 6,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 23,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 597,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 6.745,
+  "full": {
+   "img": "riksgransen-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.298,
+    "x1": 0.9384,
+    "y1": 0.6402
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9065,
+      "y": 0.4506,
+      "kind": "base",
+      "in": 7.3,
+      "ft": 1693
+     },
+     {
+      "x": 0.1292,
+      "y": 0.4805,
+      "kind": "top",
+      "in": 7.3,
+      "ft": 2952
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "riksgransen-sheet.webp",
+   "img": "riksgransen-sheet-baked.webp",
+   "side_m": 2877,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9154,
+      "y": 0.462,
+      "kind": "base",
+      "in": 7.3,
+      "ft": 1693
+     },
+     {
+      "x": 0.1206,
+      "y": 0.5233,
+      "kind": "top",
+      "in": 7.3,
+      "ft": 2952
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1208,
+  1528,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 29,
+  "dem_s": 4,
+  "relief_s": 1155,
+  "snow_s": 141,
+  "vectors_s": 9,
+  "compose_s": 64,
+  "total_s": 1402
+ },
+ "files": [
+  "riksgransen-full.webp",
+  "riksgransen-heightmap16.png",
+  "riksgransen-meta.json",
+  "riksgransen-relief.png",
+  "riksgransen-sheet-baked.webp",
+  "riksgransen-sheet.webp",
+  "riksgransen-tiles.json",
+  "riksgransen-vectors.svg",
+  "riksgransen.blend",
+  "riksgransen.png",
+  "riksgransen.svg"
+ ]
+}

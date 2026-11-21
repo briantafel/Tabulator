@@ -1,0 +1,355 @@
+{
+ "resort": "cervinia",
+ "ski_area": "Zermatt - Breuil-Cervinia, Breuil-Cervinia Ski Paradise",
+ "date_utc": "2026-11-21",
+ "frame_km": 33.369,
+ "px": 4096,
+ "m_per_px": 8.147,
+ "frame_bbox_lonlat": [
+  7.502103,
+  45.801576,
+  7.933243,
+  46.101334
+ ],
+ "crop": [
+  7.606315603277574,
+  45.87903539971254,
+  7.8415773967224265,
+  46.04257770028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.5
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   1099,
+   1580
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2085,
+  "heightmap_spacing_m": 16.29,
+  "heightmap_z_m": [
+   962.0,
+   4542.3
+  ],
+  "heightmap_quantisation_m": 0.055,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.0,
+  "darkest1pct_value": 140.3,
+  "median_value": 206.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 156.67,
+  "raw_p_hi": 220.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 26.54
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 3.66e-06 of the height range, 38060 distinct 16-bit levels sampled",
+  "blend_mb": 6.8,
+  "render_s": 1509.0,
+  "blender_wall_s": 1510
+ },
+ "svg_scale_vs_1800px_maps": 1.241,
+ "nosnow": false,
+ "inside_range_in": [
+  6.2,
+  38.8
+ ],
+ "levels_in": [
+  9.0,
+  12.0,
+  15.0,
+  18.0,
+  21.0,
+  24.0,
+  27.0,
+  30.0,
+  33.0,
+  36.0
+ ],
+ "base": [
+  1560.5,
+  13.4
+ ],
+ "top": [
+  3811.5,
+  37.5
+ ],
+ "lifts": 61,
+ "lifts_dropped": [
+  {
+   "name": "Triftji (stillgelegt)",
+   "type": "t-bar",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Breitboden - Rosenritz",
+   "type": "chair_lift",
+   "reason": "status planned"
+  },
+  {
+   "name": "Hoht\u00e4lli - Stockhorn (geplant)",
+   "type": "cable_car",
+   "reason": "status proposed"
+  },
+  {
+   "name": "Cervino The One",
+   "type": "gondola",
+   "reason": "status proposed"
+  },
+  {
+   "name": "Testa",
+   "type": "t-bar",
+   "reason": "status disused"
+  },
+  {
+   "name": "Grenzlift (stillgelegt)",
+   "type": "t-bar",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Trockener Steg - Matterhorn glacier paradise",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Rote Nase",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 343,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 13129,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 38.18,
+  "full": {
+   "img": "cervinia-full.webp",
+   "px": [
+    2162,
+    4096
+   ],
+   "ref": [
+    461.33,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.086,
+    "y0": 0.2097,
+    "x1": 0.914,
+    "y1": 0.7286
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6966,
+      "y": 0.2398,
+      "in": 9.0
+     },
+     {
+      "x": 0.7789,
+      "y": 0.3008,
+      "in": 12.0
+     },
+     {
+      "x": 0.7502,
+      "y": 0.2797,
+      "in": 15.0
+     },
+     {
+      "x": 0.457,
+      "y": 0.3484,
+      "in": 18.0
+     },
+     {
+      "x": 0.2266,
+      "y": 0.5502,
+      "in": 21.0
+     },
+     {
+      "x": 0.2701,
+      "y": 0.5498,
+      "in": 24.0
+     },
+     {
+      "x": 0.3913,
+      "y": 0.5612,
+      "in": 27.0
+     },
+     {
+      "x": 0.43,
+      "y": 0.5457,
+      "in": 30.0
+     },
+     {
+      "x": 0.4625,
+      "y": 0.547,
+      "in": 33.0
+     },
+     {
+      "x": 0.5244,
+      "y": 0.5803,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0884,
+      "y": 0.7109,
+      "kind": "base",
+      "in": 13.4,
+      "ft": 5120
+     },
+     {
+      "x": 0.5526,
+      "y": 0.547,
+      "kind": "top",
+      "in": 37.5,
+      "ft": 12505
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "cervinia-sheet.webp",
+   "img": "cervinia-sheet-baked.webp",
+   "side_m": 17615,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6966,
+      "y": 0.0658,
+      "in": 9.0
+     },
+     {
+      "x": 0.7789,
+      "y": 0.1812,
+      "in": 12.0
+     },
+     {
+      "x": 0.7502,
+      "y": 0.1414,
+      "in": 15.0
+     },
+     {
+      "x": 0.457,
+      "y": 0.2714,
+      "in": 18.0
+     },
+     {
+      "x": 0.2266,
+      "y": 0.6536,
+      "in": 21.0
+     },
+     {
+      "x": 0.2701,
+      "y": 0.6527,
+      "in": 24.0
+     },
+     {
+      "x": 0.3913,
+      "y": 0.6744,
+      "in": 27.0
+     },
+     {
+      "x": 0.43,
+      "y": 0.6449,
+      "in": 30.0
+     },
+     {
+      "x": 0.4625,
+      "y": 0.6476,
+      "in": 33.0
+     },
+     {
+      "x": 0.5244,
+      "y": 0.7106,
+      "in": 36.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0884,
+      "y": 0.9579,
+      "kind": "base",
+      "in": 13.4,
+      "ft": 5120
+     },
+     {
+      "x": 0.5526,
+      "y": 0.6474,
+      "kind": "top",
+      "in": 37.5,
+      "ft": 12505
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1196,
+  1864,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 29,
+  "dem_s": 5,
+  "relief_s": 1513,
+  "snow_s": 11,
+  "vectors_s": 14,
+  "compose_s": 110,
+  "total_s": 1681
+ },
+ "files": [
+  "cervinia-full.webp",
+  "cervinia-heightmap16.png",
+  "cervinia-meta.json",
+  "cervinia-relief.png",
+  "cervinia-sheet-baked.webp",
+  "cervinia-sheet.webp",
+  "cervinia-tiles.json",
+  "cervinia-vectors.svg",
+  "cervinia.blend",
+  "cervinia.png",
+  "cervinia.svg"
+ ]
+}

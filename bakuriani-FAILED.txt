@@ -1,0 +1,14 @@
+bakuriani: RuntimeError: Copernicus GLO-30 failed after 3 tries: no DEM tiles could be opened, e.g. [('/vsicurl/https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N41_00_E043_00_DEM/Copernicus_DSM_COG_10_N41_00_E043_00_DEM.tif', 'HTTP response code: 404')]
+
+Traceback (most recent call last):
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 957, in main
+    run(a.out, a.resort, a.px, app=a.app, hires=a.hires)
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 647, in run
+    dem, dlon0, dlat1, dres, dem_info = load_dem_native(rbox, f_lat, f_lon, fine=hires)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 222, in load_dem_native
+    z = retry(lambda: merge_tiles(tiles_cop(bbox), bbox, res, Resampling.bilinear, False), "Copernicus GLO-30")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 74, in retry
+    raise RuntimeError(f"{what} failed after {tries} tries: {last}")
+RuntimeError: Copernicus GLO-30 failed after 3 tries: no DEM tiles could be opened, e.g. [('/vsicurl/https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N41_00_E043_00_DEM/Copernicus_DSM_COG_10_N41_00_E043_00_DEM.tif', 'HTTP response code: 404')]

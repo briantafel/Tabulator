@@ -1,0 +1,302 @@
+{
+ "resort": "courmayeur",
+ "ski_area": "Courmayeur",
+ "date_utc": "2026-11-21",
+ "frame_km": 9.742,
+ "px": 4096,
+ "m_per_px": 2.378,
+ "frame_bbox_lonlat": [
+  6.874652,
+  45.742025,
+  7.000144,
+  45.829536
+ ],
+ "crop": [
+  6.879695156367027,
+  45.76635269971254,
+  7.001032443632973,
+  45.85093170028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.6
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   334,
+   480
+  ],
+  "voids_filled_fraction": 0.00208,
+  "heightmap_px": 2174,
+  "heightmap_spacing_m": 4.76,
+  "heightmap_z_m": [
+   972.9,
+   4630.1
+  ],
+  "heightmap_quantisation_m": 0.056,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 56.1,
+  "darkest1pct_value": 143.0,
+  "median_value": 198.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 153.33,
+  "raw_p_hi": 219.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 8.08
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.32e-06 of the height range, 35251 distinct 16-bit levels sampled",
+  "blend_mb": 5.1,
+  "render_s": 1636.0,
+  "blender_wall_s": 1637
+ },
+ "svg_scale_vs_1800px_maps": 2.199,
+ "nosnow": false,
+ "inside_range_in": [
+  36.6,
+  59.7
+ ],
+ "levels_in": [
+  39.0,
+  42.0,
+  45.0,
+  48.0,
+  51.0,
+  54.0,
+  57.0
+ ],
+ "base": [
+  1208.9,
+  37.0
+ ],
+ "top": [
+  2743.9,
+  59.3
+ ],
+ "lifts": 20,
+ "lifts_dropped": [
+  {
+   "name": "Courmayeur",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Skyway Monte Bianco",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Skyway Monte Bianco",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Val Veny",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 191,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1191,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 11.146,
+  "full": {
+   "img": "courmayeur-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2576,
+    "x1": 0.9384,
+    "y1": 0.6807
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7753,
+      "y": 0.4646,
+      "in": 39.0
+     },
+     {
+      "x": 0.3139,
+      "y": 0.3318,
+      "in": 42.0
+     },
+     {
+      "x": 0.4116,
+      "y": 0.3385,
+      "in": 45.0
+     },
+     {
+      "x": 0.4301,
+      "y": 0.3904,
+      "in": 48.0
+     },
+     {
+      "x": 0.2149,
+      "y": 0.5193,
+      "in": 51.0
+     },
+     {
+      "x": 0.2269,
+      "y": 0.6106,
+      "in": 54.0
+     },
+     {
+      "x": 0.093,
+      "y": 0.6379,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9225,
+      "y": 0.4222,
+      "kind": "base",
+      "in": 37.0,
+      "ft": 3966
+     },
+     {
+      "x": 0.1527,
+      "y": 0.6727,
+      "kind": "top",
+      "in": 59.3,
+      "ft": 9002
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "courmayeur-sheet.webp",
+   "img": "courmayeur-sheet-baked.webp",
+   "side_m": 4558,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7933,
+      "y": 0.4903,
+      "in": 39.0
+     },
+     {
+      "x": 0.3013,
+      "y": 0.2066,
+      "in": 42.0
+     },
+     {
+      "x": 0.4055,
+      "y": 0.2208,
+      "in": 45.0
+     },
+     {
+      "x": 0.4252,
+      "y": 0.3318,
+      "in": 48.0
+     },
+     {
+      "x": 0.1957,
+      "y": 0.6072,
+      "in": 51.0
+     },
+     {
+      "x": 0.2085,
+      "y": 0.8023,
+      "in": 54.0
+     },
+     {
+      "x": 0.0658,
+      "y": 0.8607,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9502,
+      "y": 0.3997,
+      "kind": "base",
+      "in": 37.0,
+      "ft": 3966
+     },
+     {
+      "x": 0.1294,
+      "y": 0.935,
+      "kind": "top",
+      "in": 59.3,
+      "ft": 9002
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1336,
+  1208,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 5,
+  "relief_s": 1639,
+  "snow_s": 134,
+  "vectors_s": 11,
+  "compose_s": 100,
+  "total_s": 1917
+ },
+ "files": [
+  "courmayeur-full.webp",
+  "courmayeur-heightmap16.png",
+  "courmayeur-meta.json",
+  "courmayeur-relief.png",
+  "courmayeur-sheet-baked.webp",
+  "courmayeur-sheet.webp",
+  "courmayeur-tiles.json",
+  "courmayeur-vectors.svg",
+  "courmayeur.blend",
+  "courmayeur.png",
+  "courmayeur.svg"
+ ]
+}

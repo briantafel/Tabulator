@@ -1,0 +1,344 @@
+{
+ "resort": "verbier",
+ "ski_area": "4 Vall\u00e9es \u2013 Verbier/La Tzoumaz/Nendaz/Veysonnaz/Thyon",
+ "date_utc": "2026-11-21",
+ "frame_km": 37.999,
+ "px": 4096,
+ "m_per_px": 9.277,
+ "frame_bbox_lonlat": [
+  7.041856,
+  45.938757,
+  7.534224,
+  46.280108
+ ],
+ "crop": [
+  7.168721687251192,
+  46.03676059971254,
+  7.410719312748808,
+  46.20449940028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.4
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   1248,
+   1801
+  ],
+  "voids_filled_fraction": 0.0008,
+  "heightmap_px": 2080,
+  "heightmap_spacing_m": 18.56,
+  "heightmap_z_m": [
+   447.2,
+   4299.4
+  ],
+  "heightmap_quantisation_m": 0.059,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.7,
+  "darkest1pct_value": 142.0,
+  "median_value": 208.7,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 161.67,
+  "raw_p_hi": 221.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 30.16
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 3.21e-06 of the height range, 41122 distinct 16-bit levels sampled",
+  "blend_mb": 6.7,
+  "render_s": 1489.0,
+  "blender_wall_s": 1491
+ },
+ "svg_scale_vs_1800px_maps": 1.118,
+ "nosnow": false,
+ "inside_range_in": [
+  28.8,
+  50.8
+ ],
+ "levels_in": [
+  30.0,
+  33.0,
+  36.0,
+  39.0,
+  42.0,
+  45.0,
+  48.0
+ ],
+ "base": [
+  1359.2,
+  36.3
+ ],
+ "top": [
+  3300.8,
+  50.7
+ ],
+ "lifts": 71,
+ "lifts_dropped": [
+  {
+   "name": null,
+   "type": "platter",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Meina",
+   "type": "platter",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Savoleyres",
+   "type": "gondola",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "La Combyre",
+   "type": "drag_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Ch\u00e2ble - Mayens de Bruson",
+   "type": "gondola",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Mont-Gel\u00e9",
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": null,
+   "type": "magic_carpet",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": null,
+   "type": "cable_car",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Ch\u00e2ble - Verbier",
+   "type": "gondola",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [
+  {
+   "name": "L'Eteygeon",
+   "cluster_acres": 143
+  },
+  {
+   "name": "L'Eteygeon",
+   "cluster_acres": 143
+  },
+  {
+   "name": "Col des Mines, Vallon d'Arbi/Col des Mines",
+   "cluster_acres": 24
+  },
+  {
+   "name": "L'Eteygeon",
+   "cluster_acres": 143
+  }
+ ],
+ "runs": 343,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 6070,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 43.477,
+  "full": {
+   "img": "verbier-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2409,
+    "x1": 0.9384,
+    "y1": 0.6973
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1283,
+      "y": 0.6497,
+      "in": 30.0
+     },
+     {
+      "x": 0.1121,
+      "y": 0.6705,
+      "in": 33.0
+     },
+     {
+      "x": 0.3049,
+      "y": 0.5178,
+      "in": 36.0
+     },
+     {
+      "x": 0.3538,
+      "y": 0.5388,
+      "in": 39.0
+     },
+     {
+      "x": 0.4444,
+      "y": 0.5725,
+      "in": 42.0
+     },
+     {
+      "x": 0.7272,
+      "y": 0.3826,
+      "in": 45.0
+     },
+     {
+      "x": 0.5975,
+      "y": 0.5837,
+      "in": 48.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.724,
+      "y": 0.2478,
+      "kind": "base",
+      "in": 36.3,
+      "ft": 4459
+     },
+     {
+      "x": 0.6237,
+      "y": 0.5861,
+      "kind": "top",
+      "in": 50.7,
+      "ft": 10829
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "verbier-sheet.webp",
+   "img": "verbier-sheet-baked.webp",
+   "side_m": 17645,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1005,
+      "y": 0.8891,
+      "in": 30.0
+     },
+     {
+      "x": 0.0831,
+      "y": 0.9339,
+      "in": 33.0
+     },
+     {
+      "x": 0.2902,
+      "y": 0.6052,
+      "in": 36.0
+     },
+     {
+      "x": 0.3427,
+      "y": 0.6504,
+      "in": 39.0
+     },
+     {
+      "x": 0.44,
+      "y": 0.7229,
+      "in": 42.0
+     },
+     {
+      "x": 0.7437,
+      "y": 0.3139,
+      "in": 45.0
+     },
+     {
+      "x": 0.6045,
+      "y": 0.7471,
+      "in": 48.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7404,
+      "y": 0.0236,
+      "kind": "base",
+      "in": 36.3,
+      "ft": 4459
+     },
+     {
+      "x": 0.6326,
+      "y": 0.7521,
+      "kind": "top",
+      "in": 50.7,
+      "ft": 10829
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1412,
+  1380,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 28,
+  "dem_s": 8,
+  "relief_s": 1493,
+  "snow_s": 137,
+  "vectors_s": 13,
+  "compose_s": 106,
+  "total_s": 1784
+ },
+ "files": [
+  "verbier-full.webp",
+  "verbier-heightmap16.png",
+  "verbier-meta.json",
+  "verbier-relief.png",
+  "verbier-sheet-baked.webp",
+  "verbier-sheet.webp",
+  "verbier-tiles.json",
+  "verbier-vectors.svg",
+  "verbier.blend",
+  "verbier.png",
+  "verbier.svg"
+ ]
+}

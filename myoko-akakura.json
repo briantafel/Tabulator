@@ -1,0 +1,243 @@
+{
+ "resort": "myoko-akakura",
+ "ski_area": "\u8d64\u5009\u89b3\u5149\u30ea\u30be\u30fc\u30c8\u30b9\u30ad\u30fc\u5834, Akakura Kanko Ski Resort",
+ "date_utc": "2026-11-21",
+ "frame_km": 7.759,
+ "px": 4096,
+ "m_per_px": 1.894,
+ "frame_bbox_lonlat": [
+  138.115409,
+  36.855822,
+  138.202563,
+  36.925526
+ ],
+ "crop": [
+  138.13499425579388,
+  36.87053514571842,
+  138.1841808442061,
+  36.90987395428158
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   24.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   270,
+   338
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2206,
+  "heightmap_spacing_m": 3.79,
+  "heightmap_z_m": [
+   471.2,
+   2444.1
+  ],
+  "heightmap_quantisation_m": 0.03,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.6,
+  "darkest1pct_value": 139.3,
+  "median_value": 201.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 159.33,
+  "raw_p_hi": 214.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 6.53
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.01e-06 of the height range, 41220 distinct 16-bit levels sampled",
+  "blend_mb": 4.9,
+  "render_s": 1097.0,
+  "blender_wall_s": 1098
+ },
+ "svg_scale_vs_1800px_maps": 1.284,
+ "nosnow": false,
+ "inside_range_in": [
+  8.3,
+  15.8
+ ],
+ "levels_in": [
+  10.0,
+  12.0,
+  14.0
+ ],
+ "base": [
+  732.7,
+  8.4
+ ],
+ "top": [
+  1494.8,
+  15.4
+ ],
+ "lifts": 8,
+ "lifts_dropped": [
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status disused"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 11,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 458,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 8.878,
+  "full": {
+   "img": "myoko-akakura-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3496,
+    "x1": 0.9384,
+    "y1": 0.5886
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5487,
+      "y": 0.4661,
+      "in": 10.0
+     },
+     {
+      "x": 0.4048,
+      "y": 0.4757,
+      "in": 12.0
+     },
+     {
+      "x": 0.1806,
+      "y": 0.5022,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.92,
+      "y": 0.5525,
+      "kind": "base",
+      "in": 8.4,
+      "ft": 2404
+     },
+     {
+      "x": 0.0904,
+      "y": 0.4665,
+      "kind": "top",
+      "in": 15.4,
+      "ft": 4904
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "myoko-akakura-sheet.webp",
+   "img": "myoko-akakura-sheet-baked.webp",
+   "side_m": 3691,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5508,
+      "y": 0.4936,
+      "in": 10.0
+     },
+     {
+      "x": 0.3999,
+      "y": 0.5139,
+      "in": 12.0
+     },
+     {
+      "x": 0.1648,
+      "y": 0.5696,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9403,
+      "y": 0.6751,
+      "kind": "base",
+      "in": 8.4,
+      "ft": 2404
+     },
+     {
+      "x": 0.0702,
+      "y": 0.4945,
+      "kind": "top",
+      "in": 15.4,
+      "ft": 4904
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1584,
+  1356,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 4,
+  "relief_s": 1100,
+  "snow_s": 254,
+  "vectors_s": 13,
+  "compose_s": 85,
+  "total_s": 1484
+ },
+ "files": [
+  "myoko-akakura-full.webp",
+  "myoko-akakura-heightmap16.png",
+  "myoko-akakura-meta.json",
+  "myoko-akakura-relief.png",
+  "myoko-akakura-sheet-baked.webp",
+  "myoko-akakura-sheet.webp",
+  "myoko-akakura-tiles.json",
+  "myoko-akakura-vectors.svg",
+  "myoko-akakura.blend",
+  "myoko-akakura.png",
+  "myoko-akakura.svg"
+ ]
+}

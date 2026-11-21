@@ -1,0 +1,253 @@
+{
+ "resort": "nozawa-onsen",
+ "ski_area": "\u91ce\u6ca2\u6e29\u6cc9\u30b9\u30ad\u30fc\u5834, Nozawa Onsen",
+ "date_utc": "2026-11-21",
+ "frame_km": 10.595,
+ "px": 4096,
+ "m_per_px": 2.587,
+ "frame_bbox_lonlat": [
+  138.409364,
+  36.866132,
+  138.528403,
+  36.961309
+ ],
+ "crop": [
+  138.43829057580845,
+  36.892488217803326,
+  138.49978452419154,
+  36.94165298219668
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   24.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   362,
+   453
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2164,
+  "heightmap_spacing_m": 5.17,
+  "heightmap_z_m": [
+   290.3,
+   1664.7
+  ],
+  "heightmap_quantisation_m": 0.021,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.9,
+  "darkest1pct_value": 140.0,
+  "median_value": 209.7,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 169.0,
+  "raw_p_hi": 218.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 8.75
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.14e-06 of the height range, 47919 distinct 16-bit levels sampled",
+  "blend_mb": 6.6,
+  "render_s": 1320.0,
+  "blender_wall_s": 1321
+ },
+ "svg_scale_vs_1800px_maps": 1.175,
+ "nosnow": false,
+ "inside_range_in": [
+  7.0,
+  9.7
+ ],
+ "levels_in": [
+  7.0,
+  8.0,
+  9.0
+ ],
+ "base": [
+  564.1,
+  7.0
+ ],
+ "top": [
+  1644.5,
+  9.6
+ ],
+ "lifts": 16,
+ "lifts_dropped": [
+  {
+   "name": "\u6c34\u7121\u30c8\u30ea\u30d7\u30eb, Mizunashi Triple",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u6e6f\u306e\u5cf0\u30da\u30a2, Yunomine Pair",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u904a\u30ed\u30fc\u30c9, Yu Road (travelator)",
+   "type": "magic_carpet",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 55,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 2107,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 12.122,
+  "full": {
+   "img": "nozawa-onsen-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2656,
+    "x1": 0.9384,
+    "y1": 0.6726
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.0726,
+      "y": 0.4875,
+      "in": 7.0
+     },
+     {
+      "x": 0.443,
+      "y": 0.5182,
+      "in": 8.0
+     },
+     {
+      "x": 0.4727,
+      "y": 0.4319,
+      "in": 9.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0742,
+      "y": 0.483,
+      "kind": "base",
+      "in": 7.0,
+      "ft": 1851
+     },
+     {
+      "x": 0.7913,
+      "y": 0.6653,
+      "kind": "top",
+      "in": 9.6,
+      "ft": 5395
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "nozawa-onsen-sheet.webp",
+   "img": "nozawa-onsen-sheet-baked.webp",
+   "side_m": 4931,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.0416,
+      "y": 0.5396,
+      "in": 7.0
+     },
+     {
+      "x": 0.4386,
+      "y": 0.6053,
+      "in": 8.0
+     },
+     {
+      "x": 0.4705,
+      "y": 0.42,
+      "in": 9.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0434,
+      "y": 0.5298,
+      "kind": "base",
+      "in": 7.0,
+      "ft": 1851
+     },
+     {
+      "x": 0.812,
+      "y": 0.9214,
+      "kind": "top",
+      "in": 9.6,
+      "ft": 5395
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1476,
+  1352,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 28,
+  "dem_s": 3,
+  "relief_s": 1323,
+  "snow_s": 131,
+  "vectors_s": 10,
+  "compose_s": 73,
+  "total_s": 1569
+ },
+ "files": [
+  "nozawa-onsen-full.webp",
+  "nozawa-onsen-heightmap16.png",
+  "nozawa-onsen-meta.json",
+  "nozawa-onsen-relief.png",
+  "nozawa-onsen-sheet-baked.webp",
+  "nozawa-onsen-sheet.webp",
+  "nozawa-onsen-tiles.json",
+  "nozawa-onsen-vectors.svg",
+  "nozawa-onsen.blend",
+  "nozawa-onsen.png",
+  "nozawa-onsen.svg"
+ ]
+}

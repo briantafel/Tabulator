@@ -1,0 +1,245 @@
+{
+ "resort": "trysil",
+ "ski_area": "Trysil",
+ "date_utc": "2026-11-21",
+ "frame_km": 12.439,
+ "px": 4096,
+ "m_per_px": 3.037,
+ "frame_bbox_lonlat": [
+  12.081773,
+  61.254675,
+  12.314544,
+  61.366419
+ ],
+ "crop": [
+  12.138880592874843,
+  61.28354174684734,
+  12.258032307125157,
+  61.34073905315265
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   14.8
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   422,
+   878
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2147,
+  "heightmap_spacing_m": 6.07,
+  "heightmap_z_m": [
+   349.0,
+   1129.0
+  ],
+  "heightmap_quantisation_m": 0.012,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 not terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)",
+  "terrain_adjusted": false
+ },
+ "caption_source": "ECMWF IFS \u2022 not terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 60.0,
+  "darkest1pct_value": 153.0,
+  "median_value": 220.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 172.33,
+  "raw_p_hi": 207.0,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 10.19
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.82e-06 of the height range, 42895 distinct 16-bit levels sampled",
+  "blend_mb": 5.7,
+  "render_s": 1041.0,
+  "blender_wall_s": 1042
+ },
+ "svg_scale_vs_1800px_maps": 1.165,
+ "nosnow": true,
+ "inside_range_in": [
+  0.1,
+  0.1
+ ],
+ "levels_in": [],
+ "base": [
+  407.8,
+  0.1
+ ],
+ "top": [
+  1108.1,
+  0.1
+ ],
+ "lifts": 38,
+ "lifts_dropped": [
+  {
+   "name": "H3 Svart'n",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status proposed"
+  },
+  {
+   "name": null,
+   "type": "t-bar",
+   "reason": "status proposed"
+  },
+  {
+   "name": "Rulleb\u00e5nd",
+   "type": "magic_carpet",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "H\u00e5vi 2",
+   "type": "magic_carpet",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [
+  {
+   "name": null,
+   "cluster_acres": 6
+  }
+ ],
+ "runs": 445,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 2908,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 14.233,
+  "full": {
+   "img": "trysil-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2776,
+    "x1": 0.9384,
+    "y1": 0.6606
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4831,
+      "y": 0.4368,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7073,
+      "y": 0.3429,
+      "kind": "base",
+      "in": null,
+      "ft": 1338
+     },
+     {
+      "x": 0.2533,
+      "y": 0.5182,
+      "kind": "top",
+      "in": null,
+      "ft": 3636
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "trysil-sheet.webp",
+   "img": "trysil-sheet-baked.webp",
+   "side_m": 5737,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4815,
+      "y": 0.4299,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.7238,
+      "y": 0.2264,
+      "kind": "base",
+      "in": null,
+      "ft": 1338
+     },
+     {
+      "x": 0.2331,
+      "y": 0.6064,
+      "kind": "top",
+      "in": null,
+      "ft": 3636
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1456,
+  1324,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 4,
+  "relief_s": 1044,
+  "snow_s": 258,
+  "vectors_s": 10,
+  "compose_s": 87,
+  "total_s": 1430
+ },
+ "files": [
+  "trysil-full.webp",
+  "trysil-heightmap16.png",
+  "trysil-meta.json",
+  "trysil-relief.png",
+  "trysil-sheet-baked.webp",
+  "trysil-sheet.webp",
+  "trysil-tiles.json",
+  "trysil-vectors.svg",
+  "trysil.blend",
+  "trysil.png",
+  "trysil.svg"
+ ]
+}

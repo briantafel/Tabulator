@@ -1,0 +1,270 @@
+{
+ "resort": "hatsvali",
+ "ski_area": "Hatsvali, \u0425\u0430\u0446\u0432\u0430\u043b\u0438",
+ "date_utc": "2026-11-21",
+ "frame_km": 2.677,
+ "px": 4096,
+ "m_per_px": 0.654,
+ "frame_bbox_lonlat": [
+  42.718761,
+  43.010521,
+  42.751653,
+  43.034568
+ ],
+ "crop": [
+  42.71102792088955,
+  43.00667860986546,
+  42.76108177810029,
+  43.04327080028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.6
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   106,
+   145
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2507,
+  "heightmap_spacing_m": 1.31,
+  "heightmap_z_m": [
+   1407.2,
+   2384.7
+  ],
+  "heightmap_quantisation_m": 0.015,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 53.5,
+  "darkest1pct_value": 136.3,
+  "median_value": 227.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 155.33,
+  "raw_p_hi": 209.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 2.56
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 4.96e-07 of the height range, 50507 distinct 16-bit levels sampled",
+  "blend_mb": 4.3,
+  "render_s": 867.0,
+  "blender_wall_s": 868
+ },
+ "svg_scale_vs_1800px_maps": 3.463,
+ "nosnow": false,
+ "inside_range_in": [
+  45.5,
+  56.8
+ ],
+ "levels_in": [
+  46.0,
+  48.0,
+  50.0,
+  52.0,
+  54.0,
+  56.0
+ ],
+ "base": [
+  1865.1,
+  45.7
+ ],
+ "top": [
+  2344.7,
+  56.8
+ ],
+ "lifts": 4,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 11,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 264,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 3.063,
+  "full": {
+   "img": "hatsvali-full.webp",
+   "px": [
+    2821,
+    4096
+   ],
+   "ref": [
+    601.94,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1825,
+    "y0": 0.1808,
+    "x1": 0.8171,
+    "y1": 0.7574
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5106,
+      "y": 0.2214,
+      "in": 46.0
+     },
+     {
+      "x": 0.6428,
+      "y": 0.322,
+      "in": 48.0
+     },
+     {
+      "x": 0.5569,
+      "y": 0.4562,
+      "in": 50.0
+     },
+     {
+      "x": 0.4364,
+      "y": 0.55,
+      "in": 52.0
+     },
+     {
+      "x": 0.5172,
+      "y": 0.6231,
+      "in": 54.0
+     },
+     {
+      "x": 0.5956,
+      "y": 0.6731,
+      "in": 56.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4468,
+      "y": 0.2165,
+      "kind": "base",
+      "in": 45.7,
+      "ft": 6119
+     },
+     {
+      "x": 0.6619,
+      "y": 0.7093,
+      "kind": "top",
+      "in": 56.8,
+      "ft": 7693
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "hatsvali-sheet.webp",
+   "img": "hatsvali-sheet-baked.webp",
+   "side_m": 1843,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5107,
+      "y": 0.1404,
+      "in": 46.0
+     },
+     {
+      "x": 0.643,
+      "y": 0.2864,
+      "in": 48.0
+     },
+     {
+      "x": 0.5571,
+      "y": 0.4813,
+      "in": 50.0
+     },
+     {
+      "x": 0.4365,
+      "y": 0.6175,
+      "in": 52.0
+     },
+     {
+      "x": 0.5174,
+      "y": 0.7236,
+      "in": 54.0
+     },
+     {
+      "x": 0.5958,
+      "y": 0.7962,
+      "in": 56.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.447,
+      "y": 0.1333,
+      "kind": "base",
+      "in": 45.7,
+      "ft": 6119
+     },
+     {
+      "x": 0.6622,
+      "y": 0.8488,
+      "kind": "top",
+      "in": 56.8,
+      "ft": 7693
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1828,
+  864,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 42,
+  "dem_s": 4,
+  "relief_s": 870,
+  "snow_s": 620,
+  "vectors_s": 8,
+  "compose_s": 74,
+  "total_s": 1618
+ },
+ "files": [
+  "hatsvali-full.webp",
+  "hatsvali-heightmap16.png",
+  "hatsvali-meta.json",
+  "hatsvali-relief.png",
+  "hatsvali-sheet-baked.webp",
+  "hatsvali-sheet.webp",
+  "hatsvali-tiles.json",
+  "hatsvali-vectors.svg",
+  "hatsvali.blend",
+  "hatsvali.png",
+  "hatsvali.svg"
+ ]
+}

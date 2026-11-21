@@ -1,0 +1,277 @@
+{
+ "resort": "shiga-kogen",
+ "ski_area": "Shiga Kogen",
+ "date_utc": "2026-11-21",
+ "frame_km": 15.904,
+ "px": 4096,
+ "m_per_px": 3.883,
+ "frame_bbox_lonlat": [
+  138.418188,
+  36.648129,
+  138.596424,
+  36.790998
+ ],
+ "crop": [
+  138.43307214745556,
+  36.663361499712536,
+  138.58491395254447,
+  36.78506620028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   24.8
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   534,
+   666
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2125,
+  "heightmap_spacing_m": 7.77,
+  "heightmap_z_m": [
+   545.2,
+   2337.3
+  ],
+  "heightmap_quantisation_m": 0.027,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.1,
+  "darkest1pct_value": 138.0,
+  "median_value": 206.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 166.0,
+  "raw_p_hi": 220.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 12.89
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.81e-06 of the height range, 41573 distinct 16-bit levels sampled",
+  "blend_mb": 6.8,
+  "render_s": 869.0,
+  "blender_wall_s": 870
+ },
+ "svg_scale_vs_1800px_maps": 1.938,
+ "nosnow": false,
+ "inside_range_in": [
+  2.6,
+  4.6
+ ],
+ "levels_in": [
+  3.0,
+  4.0
+ ],
+ "base": [
+  1331.5,
+  2.6
+ ],
+ "top": [
+  2303.3,
+  4.6
+ ],
+ "lifts": 46,
+ "lifts_dropped": [
+  {
+   "name": "\u30d6\u30ca\u5e73\u30af\u30ef\u30c3\u30c9\u30ea\u30d5\u30c8",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c1\u9ad8\u901f\u30ea\u30d5\u30c8",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c5\u30ed\u30de\u30f3\u30b9\u30ea\u30d5\u30c8",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c2\u30ed\u30de\u30f3\u30b9\u30ea\u30d5\u30c8",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c1\u30ed\u30de\u30f3\u30b9\u30ea\u30d5\u30c8A\u7dda",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u84ee\u6c60\u30ed\u30fc\u30d7\u30a6\u30a7\u30a4",
+   "type": "cable_car",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c3\u30ed\u30de\u30f3\u30b9\u30ea\u30d5\u30c8",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u7b2c1\u30ed\u30de\u30f3\u30b9\u30ea\u30d5\u30c8B\u7dda",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u524d\u5c71\u30b5\u30de\u30fc\u30ea\u30d5\u30c8, Maeyama Summer Lift",
+   "type": "chair_lift",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "\u5fd7\u8cc0\u9ad8\u539f\u30ea\u30be\u30fc\u30c8\u30b4\u30f3\u30c9\u30e9, Shiga Kogen Resort Gondola",
+   "type": "gondola",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 194,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 3085,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 18.197,
+  "full": {
+   "img": "shiga-kogen-full.webp",
+   "px": [
+    3320,
+    4096
+   ],
+   "ref": [
+    708.42,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.3003,
+    "y0": 0.0732,
+    "x1": 0.6997,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4741,
+      "y": 0.4626,
+      "in": 3.0
+     },
+     {
+      "x": 0.5841,
+      "y": 0.2307,
+      "in": 4.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4315,
+      "y": 0.4839,
+      "kind": "base",
+      "in": 2.6,
+      "ft": 4368
+     },
+     {
+      "x": 0.614,
+      "y": 0.844,
+      "kind": "top",
+      "in": 4.6,
+      "ft": 7557
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "shiga-kogen-sheet.webp",
+   "img": "shiga-kogen-sheet-baked.webp",
+   "side_m": 12892,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4741,
+      "y": 0.492,
+      "in": 3.0
+     },
+     {
+      "x": 0.5841,
+      "y": 0.206,
+      "in": 4.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.4315,
+      "y": 0.5182,
+      "kind": "base",
+      "in": 2.6,
+      "ft": 4368
+     },
+     {
+      "x": 0.614,
+      "y": 0.9624,
+      "kind": "top",
+      "in": 4.6,
+      "ft": 7557
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1580,
+  872,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 20,
+  "dem_s": 5,
+  "relief_s": 872,
+  "snow_s": 23,
+  "vectors_s": 9,
+  "compose_s": 74,
+  "total_s": 1005
+ },
+ "files": [
+  "shiga-kogen-full.webp",
+  "shiga-kogen-heightmap16.png",
+  "shiga-kogen-meta.json",
+  "shiga-kogen-relief.png",
+  "shiga-kogen-sheet-baked.webp",
+  "shiga-kogen-sheet.webp",
+  "shiga-kogen-tiles.json",
+  "shiga-kogen-vectors.svg",
+  "shiga-kogen.blend",
+  "shiga-kogen.png",
+  "shiga-kogen.svg"
+ ]
+}

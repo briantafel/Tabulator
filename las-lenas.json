@@ -1,0 +1,201 @@
+{
+ "resort": "las-lenas",
+ "ski_area": "Las Le\u00f1as",
+ "date_utc": "2026-11-21",
+ "frame_km": 10.077,
+ "px": 4096,
+ "m_per_px": 2.46,
+ "frame_bbox_lonlat": [
+  -70.158347,
+  -35.184791,
+  -70.047645,
+  -35.094264
+ ],
+ "crop": [
+  -70.13244742616567,
+  -35.160655006284394,
+  -70.07364287383433,
+  -35.1125656937156
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   25.3
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   345,
+   422
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2170,
+  "heightmap_spacing_m": 4.92,
+  "heightmap_z_m": [
+   2070.4,
+   3779.2
+  ],
+  "heightmap_quantisation_m": 0.026,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.6,
+  "darkest1pct_value": 139.3,
+  "median_value": 209.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 163.33,
+  "raw_p_hi": 216.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 8.34
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.63e-06 of the height range, 45711 distinct 16-bit levels sampled",
+  "blend_mb": 5.5,
+  "render_s": 1361.0,
+  "blender_wall_s": 1362
+ },
+ "svg_scale_vs_1800px_maps": 1.209,
+ "nosnow": false,
+ "inside_range_in": [
+  1.7,
+  1.8
+ ],
+ "levels_in": [],
+ "base": [
+  2215.1,
+  1.7
+ ],
+ "top": [
+  3419.3,
+  1.7
+ ],
+ "lifts": 13,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 33,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 978,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 11.53,
+  "full": {
+   "img": "las-lenas-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3184,
+    "x1": 0.9384,
+    "y1": 0.6198
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9213,
+      "y": 0.4631,
+      "kind": "base",
+      "in": 1.7,
+      "ft": 7267
+     },
+     {
+      "x": 0.277,
+      "y": 0.3774,
+      "kind": "top",
+      "in": 1.7,
+      "ft": 11218
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "las-lenas-sheet.webp",
+   "img": "las-lenas-sheet-baked.webp",
+   "side_m": 4705,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [],
+    "marks": [
+     {
+      "x": 0.9499,
+      "y": 0.4871,
+      "kind": "base",
+      "in": 1.7,
+      "ft": 7267
+     },
+     {
+      "x": 0.2615,
+      "y": 0.3036,
+      "kind": "top",
+      "in": 1.7,
+      "ft": 11218
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1876,
+  1484,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 4,
+  "relief_s": 1364,
+  "snow_s": 15,
+  "vectors_s": 9,
+  "compose_s": 79,
+  "total_s": 1498
+ },
+ "files": [
+  "las-lenas-full.webp",
+  "las-lenas-heightmap16.png",
+  "las-lenas-meta.json",
+  "las-lenas-relief.png",
+  "las-lenas-sheet-baked.webp",
+  "las-lenas-sheet.webp",
+  "las-lenas-tiles.json",
+  "las-lenas-vectors.svg",
+  "las-lenas.blend",
+  "las-lenas.png",
+  "las-lenas.svg"
+ ]
+}

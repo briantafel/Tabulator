@@ -1,0 +1,291 @@
+{
+ "resort": "furano",
+ "ski_area": "\u5bcc\u826f\u91ce\u30b9\u30ad\u30fc\u5834, Furano ski resort, \u3075\u3089\u306e\u30b9\u30ad\u30fc\u5834",
+ "date_utc": "2026-11-21",
+ "frame_km": 7.954,
+ "px": 4096,
+ "m_per_px": 1.942,
+ "frame_bbox_lonlat": [
+  142.290493,
+  43.295273,
+  142.388718,
+  43.366722
+ ],
+ "crop": [
+  142.31272103175573,
+  43.31328363937673,
+  142.36601646824428,
+  43.35204976062328
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.5
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   277,
+   380
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2202,
+  "heightmap_spacing_m": 3.88,
+  "heightmap_z_m": [
+   155.3,
+   1331.5
+  ],
+  "heightmap_quantisation_m": 0.018,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 52.8,
+  "darkest1pct_value": 134.7,
+  "median_value": 204.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 163.0,
+  "raw_p_hi": 221.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 6.68
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 9.66e-07 of the height range, 41662 distinct 16-bit levels sampled",
+  "blend_mb": 5.9,
+  "render_s": 1230.0,
+  "blender_wall_s": 1231
+ },
+ "svg_scale_vs_1800px_maps": 1.235,
+ "nosnow": false,
+ "inside_range_in": [
+  3.1,
+  15.5
+ ],
+ "levels_in": [
+  4.0,
+  6.0,
+  8.0,
+  10.0,
+  12.0,
+  14.0
+ ],
+ "base": [
+  238.5,
+  3.2
+ ],
+ "top": [
+  1063.0,
+  15.3
+ ],
+ "lifts": 10,
+ "lifts_dropped": [
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 56,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 750,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 9.1,
+  "full": {
+   "img": "furano-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3015,
+    "x1": 0.9384,
+    "y1": 0.6367
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8342,
+      "y": 0.3494,
+      "in": 4.0
+     },
+     {
+      "x": 0.6613,
+      "y": 0.3744,
+      "in": 6.0
+     },
+     {
+      "x": 0.5301,
+      "y": 0.3909,
+      "in": 8.0
+     },
+     {
+      "x": 0.3936,
+      "y": 0.5686,
+      "in": 10.0
+     },
+     {
+      "x": 0.2726,
+      "y": 0.5215,
+      "in": 12.0
+     },
+     {
+      "x": 0.1336,
+      "y": 0.5755,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9188,
+      "y": 0.3194,
+      "kind": "base",
+      "in": 3.2,
+      "ft": 783
+     },
+     {
+      "x": 0.0848,
+      "y": 0.5935,
+      "kind": "top",
+      "in": 15.3,
+      "ft": 3488
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "furano-sheet.webp",
+   "img": "furano-sheet-baked.webp",
+   "side_m": 3776,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8509,
+      "y": 0.2478,
+      "in": 4.0
+     },
+     {
+      "x": 0.6692,
+      "y": 0.3006,
+      "in": 6.0
+     },
+     {
+      "x": 0.5314,
+      "y": 0.3352,
+      "in": 8.0
+     },
+     {
+      "x": 0.388,
+      "y": 0.7095,
+      "in": 10.0
+     },
+     {
+      "x": 0.2608,
+      "y": 0.6103,
+      "in": 12.0
+     },
+     {
+      "x": 0.1147,
+      "y": 0.7241,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9399,
+      "y": 0.1847,
+      "kind": "base",
+      "in": 3.2,
+      "ft": 783
+     },
+     {
+      "x": 0.0634,
+      "y": 0.762,
+      "kind": "top",
+      "in": 15.3,
+      "ft": 3488
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1552,
+  1388,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 26,
+  "dem_s": 3,
+  "relief_s": 1233,
+  "snow_s": 259,
+  "vectors_s": 10,
+  "compose_s": 99,
+  "total_s": 1631
+ },
+ "files": [
+  "furano-full.webp",
+  "furano-heightmap16.png",
+  "furano-meta.json",
+  "furano-relief.png",
+  "furano-sheet-baked.webp",
+  "furano-sheet.webp",
+  "furano-tiles.json",
+  "furano-vectors.svg",
+  "furano.blend",
+  "furano.png",
+  "furano.svg"
+ ]
+}

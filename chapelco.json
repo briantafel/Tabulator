@@ -1,0 +1,214 @@
+{
+ "resort": "chapelco",
+ "ski_area": "Chapelco Ski Resort",
+ "date_utc": "2026-11-21",
+ "frame_km": 6.956,
+ "px": 4096,
+ "m_per_px": 1.698,
+ "frame_bbox_lonlat": [
+  -71.343286,
+  -40.242065,
+  -71.261458,
+  -40.179575
+ ],
+ "crop": [
+  -71.32584176068642,
+  -40.22727524382301,
+  -71.2794952393136,
+  -40.191880956176995
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   23.6
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   244,
+   320
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2225,
+  "heightmap_spacing_m": 3.4,
+  "heightmap_z_m": [
+   904.6,
+   2189.4
+  ],
+  "heightmap_quantisation_m": 0.02,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 not terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)",
+  "terrain_adjusted": false
+ },
+ "caption_source": "ECMWF IFS \u2022 not terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.3,
+  "darkest1pct_value": 141.0,
+  "median_value": 224.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 165.0,
+  "raw_p_hi": 213.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 5.9
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.35e-06 of the height range, 45340 distinct 16-bit levels sampled",
+  "blend_mb": 5.4,
+  "render_s": 1264.0,
+  "blender_wall_s": 1265
+ },
+ "svg_scale_vs_1800px_maps": 1.289,
+ "nosnow": true,
+ "inside_range_in": [
+  0.0,
+  0.0
+ ],
+ "levels_in": [],
+ "base": [
+  1258.6,
+  0.0
+ ],
+ "top": [
+  1973.4,
+  0.0
+ ],
+ "lifts": 16,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 41,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 826,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 7.959,
+  "full": {
+   "img": "chapelco-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2501,
+    "x1": 0.9384,
+    "y1": 0.6881
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2991,
+      "y": 0.4106,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0812,
+      "y": 0.3133,
+      "kind": "base",
+      "in": null,
+      "ft": 4129
+     },
+     {
+      "x": 0.5492,
+      "y": 0.6765,
+      "kind": "top",
+      "in": null,
+      "ft": 6474
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "chapelco-sheet.webp",
+   "img": "chapelco-sheet-baked.webp",
+   "side_m": 3347,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2914,
+      "y": 0.3785,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0654,
+      "y": 0.1763,
+      "kind": "base",
+      "in": null,
+      "ft": 4129
+     },
+     {
+      "x": 0.5508,
+      "y": 0.9309,
+      "kind": "top",
+      "in": null,
+      "ft": 6474
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1188,
+  1264,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 28,
+  "dem_s": 4,
+  "relief_s": 1267,
+  "snow_s": 16,
+  "vectors_s": 10,
+  "compose_s": 79,
+  "total_s": 1405
+ },
+ "files": [
+  "chapelco-full.webp",
+  "chapelco-heightmap16.png",
+  "chapelco-meta.json",
+  "chapelco-relief.png",
+  "chapelco-sheet-baked.webp",
+  "chapelco-sheet.webp",
+  "chapelco-tiles.json",
+  "chapelco-vectors.svg",
+  "chapelco.blend",
+  "chapelco.png",
+  "chapelco.svg"
+ ]
+}

@@ -1,0 +1,237 @@
+{
+ "resort": "cerro-castor",
+ "ski_area": "Cerro Castor",
+ "date_utc": "2026-11-21",
+ "frame_km": 7.819,
+ "px": 4096,
+ "m_per_px": 1.909,
+ "frame_bbox_lonlat": [
+  -68.057163,
+  -54.751777,
+  -67.935557,
+  -54.681535
+ ],
+ "crop": [
+  -68.02866901868745,
+  -54.73376110709239,
+  -67.96291848131256,
+  -54.6957804929076
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   17.9
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   272,
+   471
+  ],
+  "voids_filled_fraction": 0.00212,
+  "heightmap_px": 2205,
+  "heightmap_spacing_m": 3.82,
+  "heightmap_z_m": [
+   143.7,
+   1082.7
+  ],
+  "heightmap_quantisation_m": 0.014,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.4,
+  "darkest1pct_value": 141.3,
+  "median_value": 210.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 166.0,
+  "raw_p_hi": 214.0,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 6.58
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.33e-06 of the height range, 45582 distinct 16-bit levels sampled",
+  "blend_mb": 6.2,
+  "render_s": 1343.0,
+  "blender_wall_s": 1344
+ },
+ "svg_scale_vs_1800px_maps": 1.23,
+ "nosnow": false,
+ "inside_range_in": [
+  1.4,
+  6.3
+ ],
+ "levels_in": [
+  2.0,
+  4.0,
+  6.0
+ ],
+ "base": [
+  190.2,
+  1.4
+ ],
+ "top": [
+  947.0,
+  5.9
+ ],
+ "lifts": 11,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 44,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1187,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 8.947,
+  "full": {
+   "img": "cerro-castor-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3173,
+    "x1": 0.9384,
+    "y1": 0.621
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2041,
+      "y": 0.5698,
+      "in": 2.0
+     },
+     {
+      "x": 0.5516,
+      "y": 0.476,
+      "in": 4.0
+     },
+     {
+      "x": 0.3775,
+      "y": 0.3323,
+      "in": 6.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1502,
+      "y": 0.597,
+      "kind": "base",
+      "in": 1.4,
+      "ft": 624
+     },
+     {
+      "x": 0.46,
+      "y": 0.3451,
+      "kind": "top",
+      "in": 5.9,
+      "ft": 3107
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "cerro-castor-sheet.webp",
+   "img": "cerro-castor-sheet-baked.webp",
+   "side_m": 3718,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1894,
+      "y": 0.7119,
+      "in": 2.0
+     },
+     {
+      "x": 0.5539,
+      "y": 0.5146,
+      "in": 4.0
+     },
+     {
+      "x": 0.3713,
+      "y": 0.2121,
+      "in": 6.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1329,
+      "y": 0.769,
+      "kind": "base",
+      "in": 1.4,
+      "ft": 624
+     },
+     {
+      "x": 0.4578,
+      "y": 0.2391,
+      "kind": "top",
+      "in": 5.9,
+      "ft": 3107
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1276,
+  1448,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 53,
+  "dem_s": 7,
+  "relief_s": 1346,
+  "snow_s": 262,
+  "vectors_s": 10,
+  "compose_s": 77,
+  "total_s": 1755
+ },
+ "files": [
+  "cerro-castor-full.webp",
+  "cerro-castor-heightmap16.png",
+  "cerro-castor-meta.json",
+  "cerro-castor-relief.png",
+  "cerro-castor-sheet-baked.webp",
+  "cerro-castor-sheet.webp",
+  "cerro-castor-tiles.json",
+  "cerro-castor-vectors.svg",
+  "cerro-castor.blend",
+  "cerro-castor.png",
+  "cerro-castor.svg"
+ ]
+}

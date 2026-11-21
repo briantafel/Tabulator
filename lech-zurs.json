@@ -1,0 +1,243 @@
+{
+ "resort": "lech-zurs",
+ "ski_area": "Lech/Z\u00fcrs",
+ "date_utc": "2026-11-21",
+ "frame_km": 16.302,
+ "px": 4096,
+ "m_per_px": 3.98,
+ "frame_bbox_lonlat": [
+  10.032899,
+  47.114114,
+  10.248382,
+  47.260557
+ ],
+ "crop": [
+  10.067021166055408,
+  47.14962419971254,
+  10.214342033944593,
+  47.24972070028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.0
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   547,
+   804
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2123,
+  "heightmap_spacing_m": 7.96,
+  "heightmap_z_m": [
+   932.6,
+   2796.2
+  ],
+  "heightmap_quantisation_m": 0.028,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.6,
+  "darkest1pct_value": 139.3,
+  "median_value": 206.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 161.0,
+  "raw_p_hi": 220.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 13.2
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.77e-06 of the height range, 39794 distinct 16-bit levels sampled",
+  "blend_mb": 6.8,
+  "render_s": 970.0,
+  "blender_wall_s": 970
+ },
+ "svg_scale_vs_1800px_maps": 1.555,
+ "nosnow": false,
+ "inside_range_in": [
+  22.2,
+  28.1
+ ],
+ "levels_in": [
+  24.0,
+  26.0,
+  28.0
+ ],
+ "base": [
+  1432.1,
+  22.2
+ ],
+ "top": [
+  2432.4,
+  26.2
+ ],
+ "lifts": 31,
+ "lifts_dropped": [
+  {
+   "name": "Auenfeldjet",
+   "type": "gondola",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 180,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 8349,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 18.652,
+  "full": {
+   "img": "lech-zurs-full.webp",
+   "px": [
+    2248,
+    4096
+   ],
+   "ref": [
+    479.68,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1018,
+    "y0": 0.2039,
+    "x1": 0.8982,
+    "y1": 0.7343
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6592,
+      "y": 0.5032,
+      "in": 24.0
+     },
+     {
+      "x": 0.2327,
+      "y": 0.3372,
+      "in": 26.0
+     },
+     {
+      "x": 0.1695,
+      "y": 0.2327,
+      "in": 28.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5447,
+      "y": 0.3275,
+      "kind": "base",
+      "in": 22.2,
+      "ft": 4699
+     },
+     {
+      "x": 0.4609,
+      "y": 0.6496,
+      "kind": "top",
+      "in": 26.2,
+      "ft": 7980
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "lech-zurs-sheet.webp",
+   "img": "lech-zurs-sheet-baked.webp",
+   "side_m": 8948,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6592,
+      "y": 0.562,
+      "in": 24.0
+     },
+     {
+      "x": 0.2327,
+      "y": 0.2598,
+      "in": 26.0
+     },
+     {
+      "x": 0.1695,
+      "y": 0.0694,
+      "in": 28.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.5447,
+      "y": 0.242,
+      "kind": "base",
+      "in": 22.2,
+      "ft": 4699
+     },
+     {
+      "x": 0.4609,
+      "y": 0.8287,
+      "kind": "top",
+      "in": 26.2,
+      "ft": 7980
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1264,
+  852,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 75,
+  "dem_s": 5,
+  "relief_s": 972,
+  "snow_s": 17,
+  "vectors_s": 10,
+  "compose_s": 77,
+  "total_s": 1157
+ },
+ "files": [
+  "lech-zurs-full.webp",
+  "lech-zurs-heightmap16.png",
+  "lech-zurs-meta.json",
+  "lech-zurs-relief.png",
+  "lech-zurs-sheet-baked.webp",
+  "lech-zurs-sheet.webp",
+  "lech-zurs-tiles.json",
+  "lech-zurs-vectors.svg",
+  "lech-zurs.blend",
+  "lech-zurs.png",
+  "lech-zurs.svg"
+ ]
+}

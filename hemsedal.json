@@ -1,0 +1,224 @@
+{
+ "resort": "hemsedal",
+ "ski_area": "Hemsedal skisenter",
+ "date_utc": "2026-11-21",
+ "frame_km": 10.566,
+ "px": 4096,
+ "m_per_px": 2.58,
+ "frame_bbox_lonlat": [
+  8.41319,
+  60.800914,
+  8.608046,
+  60.895833
+ ],
+ "crop": [
+  8.460855054575072,
+  60.826933193634396,
+  8.560214845424928,
+  60.8753294063656
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   15.1
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   361,
+   741
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2164,
+  "heightmap_spacing_m": 5.16,
+  "heightmap_z_m": [
+   588.7,
+   1736.3
+  ],
+  "heightmap_quantisation_m": 0.018,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.0,
+  "darkest1pct_value": 140.3,
+  "median_value": 220.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 166.33,
+  "raw_p_hi": 212.0,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 8.72
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 3.36e-06 of the height range, 42820 distinct 16-bit levels sampled",
+  "blend_mb": 5.9,
+  "render_s": 1038.0,
+  "blender_wall_s": 1039
+ },
+ "svg_scale_vs_1800px_maps": 1.16,
+ "nosnow": true,
+ "inside_range_in": [
+  0.0,
+  0.1
+ ],
+ "levels_in": [],
+ "base": [
+  644.2,
+  0.1
+ ],
+ "top": [
+  1451.2,
+  0.0
+ ],
+ "lifts": 23,
+ "lifts_dropped": [
+  {
+   "name": null,
+   "type": "chair_lift",
+   "reason": "status proposed"
+  },
+  {
+   "name": "R\u00f8ggelia",
+   "type": "gondola",
+   "reason": "status proposed"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 94,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1638,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 12.09,
+  "full": {
+   "img": "hemsedal-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.322,
+    "x1": 0.9384,
+    "y1": 0.6163
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.419,
+      "y": 0.4819,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6571,
+      "y": 0.3338,
+      "kind": "base",
+      "in": null,
+      "ft": 2114
+     },
+     {
+      "x": 0.7193,
+      "y": 0.6068,
+      "kind": "top",
+      "in": null,
+      "ft": 4761
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "hemsedal-sheet.webp",
+   "img": "hemsedal-sheet-baked.webp",
+   "side_m": 4918,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4129,
+      "y": 0.5275,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.6682,
+      "y": 0.2093,
+      "kind": "base",
+      "in": null,
+      "ft": 2114
+     },
+     {
+      "x": 0.7348,
+      "y": 0.7958,
+      "kind": "top",
+      "in": null,
+      "ft": 4761
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1384,
+  1420,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 26,
+  "dem_s": 3,
+  "relief_s": 1041,
+  "snow_s": 374,
+  "vectors_s": 15,
+  "compose_s": 83,
+  "total_s": 1543
+ },
+ "files": [
+  "hemsedal-full.webp",
+  "hemsedal-heightmap16.png",
+  "hemsedal-meta.json",
+  "hemsedal-relief.png",
+  "hemsedal-sheet-baked.webp",
+  "hemsedal-sheet.webp",
+  "hemsedal-tiles.json",
+  "hemsedal-vectors.svg",
+  "hemsedal.blend",
+  "hemsedal.png",
+  "hemsedal.svg"
+ ]
+}

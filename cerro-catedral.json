@@ -1,0 +1,214 @@
+{
+ "resort": "cerro-catedral",
+ "ski_area": "Cerro Catedral",
+ "date_utc": "2026-11-21",
+ "frame_km": 8.77,
+ "px": 4096,
+ "m_per_px": 2.141,
+ "frame_bbox_lonlat": [
+  -71.51702,
+  -41.208388,
+  -71.412366,
+  -41.129608
+ ],
+ "crop": [
+  -71.49218253510955,
+  -41.187408216155134,
+  -71.43711166489047,
+  -41.14595098384487
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   23.3
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   303,
+   403
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2188,
+  "heightmap_spacing_m": 4.28,
+  "heightmap_z_m": [
+   791.1,
+   2252.6
+  ],
+  "heightmap_quantisation_m": 0.022,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 not terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)",
+  "terrain_adjusted": false
+ },
+ "caption_source": "ECMWF IFS \u2022 not terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 53.6,
+  "darkest1pct_value": 136.7,
+  "median_value": 201.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 160.33,
+  "raw_p_hi": 218.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 7.32
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 9.13e-07 of the height range, 45621 distinct 16-bit levels sampled",
+  "blend_mb": 5.7,
+  "render_s": 1047.0,
+  "blender_wall_s": 1047
+ },
+ "svg_scale_vs_1800px_maps": 1.197,
+ "nosnow": true,
+ "inside_range_in": [
+  0.0,
+  0.0
+ ],
+ "levels_in": [],
+ "base": [
+  1035.4,
+  0.0
+ ],
+ "top": [
+  2093.5,
+  0.0
+ ],
+ "lifts": 33,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 101,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1743,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 10.034,
+  "full": {
+   "img": "cerro-catedral-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3156,
+    "x1": 0.9384,
+    "y1": 0.6226
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3911,
+      "y": 0.4692,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8976,
+      "y": 0.4423,
+      "kind": "base",
+      "in": null,
+      "ft": 3397
+     },
+     {
+      "x": 0.0839,
+      "y": 0.5046,
+      "kind": "top",
+      "in": null,
+      "ft": 6868
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "cerro-catedral-sheet.webp",
+   "img": "cerro-catedral-sheet-baked.webp",
+   "side_m": 4133,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3845,
+      "y": 0.5003,
+      "in": 0.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9206,
+      "y": 0.4432,
+      "kind": "base",
+      "in": null,
+      "ft": 3397
+     },
+     {
+      "x": 0.0593,
+      "y": 0.5754,
+      "kind": "top",
+      "in": null,
+      "ft": 6868
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1348,
+  1496,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 21,
+  "dem_s": 4,
+  "relief_s": 1049,
+  "snow_s": 17,
+  "vectors_s": 8,
+  "compose_s": 75,
+  "total_s": 1173
+ },
+ "files": [
+  "cerro-catedral-full.webp",
+  "cerro-catedral-heightmap16.png",
+  "cerro-catedral-meta.json",
+  "cerro-catedral-relief.png",
+  "cerro-catedral-sheet-baked.webp",
+  "cerro-catedral-sheet.webp",
+  "cerro-catedral-tiles.json",
+  "cerro-catedral-vectors.svg",
+  "cerro-catedral.blend",
+  "cerro-catedral.png",
+  "cerro-catedral.svg"
+ ]
+}

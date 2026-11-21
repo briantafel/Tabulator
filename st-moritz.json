@@ -1,0 +1,252 @@
+{
+ "resort": "st-moritz",
+ "ski_area": "Corviglia",
+ "date_utc": "2026-11-21",
+ "frame_km": 16.405,
+ "px": 4096,
+ "m_per_px": 4.005,
+ "frame_bbox_lonlat": [
+  9.714677,
+  46.43284,
+  9.92879,
+  46.580209
+ ],
+ "crop": [
+  9.769936606988004,
+  46.47546946183505,
+  9.873415093011996,
+  46.54668483816495
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.3
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   550,
+   799
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2123,
+  "heightmap_spacing_m": 8.01,
+  "heightmap_z_m": [
+   1679.0,
+   3306.2
+  ],
+  "heightmap_quantisation_m": 0.025,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.6,
+  "darkest1pct_value": 139.3,
+  "median_value": 208.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 159.0,
+  "raw_p_hi": 218.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 13.29
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.69e-06 of the height range, 43770 distinct 16-bit levels sampled",
+  "blend_mb": 6.8,
+  "render_s": 844.0,
+  "blender_wall_s": 844
+ },
+ "svg_scale_vs_1800px_maps": 1.1,
+ "nosnow": false,
+ "inside_range_in": [
+  9.4,
+  11.9
+ ],
+ "levels_in": [
+  10.0,
+  11.0
+ ],
+ "base": [
+  1734.6,
+  10.6
+ ],
+ "top": [
+  3021.9,
+  9.8
+ ],
+ "lifts": 44,
+ "lifts_dropped": [
+  {
+   "name": "Ponylift Marguns",
+   "type": "rope_tow",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "St.Moritz-Chantarella",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "St.Moritz-Chantarella",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "St.Moritz-Chantarella",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": null,
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 108,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 2764,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 18.77,
+  "full": {
+   "img": "st-moritz-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2761,
+    "x1": 0.9384,
+    "y1": 0.6621
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.49,
+      "y": 0.5153,
+      "in": 10.0
+     },
+     {
+      "x": 0.4322,
+      "y": 0.3654,
+      "in": 11.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8051,
+      "y": 0.455,
+      "kind": "base",
+      "in": 10.6,
+      "ft": 5691
+     },
+     {
+      "x": 0.1817,
+      "y": 0.5076,
+      "kind": "top",
+      "in": 9.8,
+      "ft": 9914
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "st-moritz-sheet.webp",
+   "img": "st-moritz-sheet-baked.webp",
+   "side_m": 7470,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.4887,
+      "y": 0.6014,
+      "in": 10.0
+     },
+     {
+      "x": 0.4255,
+      "y": 0.2721,
+      "in": 11.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.8338,
+      "y": 0.4689,
+      "kind": "base",
+      "in": 10.6,
+      "ft": 5691
+     },
+     {
+      "x": 0.1512,
+      "y": 0.5845,
+      "kind": "top",
+      "in": 9.8,
+      "ft": 9914
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1292,
+  1528,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 47,
+  "dem_s": 4,
+  "relief_s": 846,
+  "snow_s": 502,
+  "vectors_s": 8,
+  "compose_s": 60,
+  "total_s": 1466
+ },
+ "files": [
+  "st-moritz-full.webp",
+  "st-moritz-heightmap16.png",
+  "st-moritz-meta.json",
+  "st-moritz-relief.png",
+  "st-moritz-sheet-baked.webp",
+  "st-moritz-sheet.webp",
+  "st-moritz-tiles.json",
+  "st-moritz-vectors.svg",
+  "st-moritz.blend",
+  "st-moritz.png",
+  "st-moritz.svg"
+ ]
+}

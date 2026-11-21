@@ -1,0 +1,281 @@
+{
+ "resort": "andermatt",
+ "ski_area": "Gemsstock\u2013Andermatt",
+ "date_utc": "2026-11-21",
+ "frame_km": 5.279,
+ "px": 4096,
+ "m_per_px": 1.289,
+ "frame_bbox_lonlat": [
+  8.568912,
+  46.590883,
+  8.637948,
+  46.638304
+ ],
+ "crop": [
+  8.57089814732697,
+  46.59281639971254,
+  8.637064452673032,
+  46.63826540028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.2
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   190,
+   277
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2281,
+  "heightmap_spacing_m": 2.58,
+  "heightmap_z_m": [
+   1424.2,
+   2937.1
+  ],
+  "heightmap_quantisation_m": 0.023,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.1,
+  "darkest1pct_value": 138.0,
+  "median_value": 212.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 160.33,
+  "raw_p_hi": 218.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 4.59
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 9.98e-07 of the height range, 49785 distinct 16-bit levels sampled",
+  "blend_mb": 5.1,
+  "render_s": 1377.0,
+  "blender_wall_s": 1378
+ },
+ "svg_scale_vs_1800px_maps": 2.181,
+ "nosnow": false,
+ "inside_range_in": [
+  19.8,
+  32.5
+ ],
+ "levels_in": [
+  20.0,
+  22.0,
+  24.0,
+  26.0,
+  28.0,
+  30.0,
+  32.0
+ ],
+ "base": [
+  1439.6,
+  19.9
+ ],
+ "top": [
+  2934.6,
+  32.5
+ ],
+ "lifts": 8,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 55,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 733,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 6.04,
+  "full": {
+   "img": "andermatt-full.webp",
+   "px": [
+    3476,
+    4096
+   ],
+   "ref": [
+    741.71,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.2829,
+    "y0": 0.0732,
+    "x1": 0.7171,
+    "y1": 0.865
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3421,
+      "y": 0.1391,
+      "in": 20.0
+     },
+     {
+      "x": 0.5295,
+      "y": 0.2214,
+      "in": 22.0
+     },
+     {
+      "x": 0.4928,
+      "y": 0.2874,
+      "in": 24.0
+     },
+     {
+      "x": 0.4363,
+      "y": 0.4343,
+      "in": 26.0
+     },
+     {
+      "x": 0.475,
+      "y": 0.5417,
+      "in": 28.0
+     },
+     {
+      "x": 0.5337,
+      "y": 0.6999,
+      "in": 30.0
+     },
+     {
+      "x": 0.6228,
+      "y": 0.721,
+      "in": 32.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.302,
+      "y": 0.124,
+      "kind": "base",
+      "in": 19.9,
+      "ft": 4723
+     },
+     {
+      "x": 0.6395,
+      "y": 0.759,
+      "kind": "top",
+      "in": 32.5,
+      "ft": 9628
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "andermatt-sheet.webp",
+   "img": "andermatt-sheet-baked.webp",
+   "side_m": 4480,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3421,
+      "y": 0.111,
+      "in": 20.0
+     },
+     {
+      "x": 0.5295,
+      "y": 0.2081,
+      "in": 22.0
+     },
+     {
+      "x": 0.4928,
+      "y": 0.2858,
+      "in": 24.0
+     },
+     {
+      "x": 0.4363,
+      "y": 0.459,
+      "in": 26.0
+     },
+     {
+      "x": 0.475,
+      "y": 0.5855,
+      "in": 28.0
+     },
+     {
+      "x": 0.5337,
+      "y": 0.7721,
+      "in": 30.0
+     },
+     {
+      "x": 0.6228,
+      "y": 0.7969,
+      "in": 32.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.302,
+      "y": 0.0932,
+      "kind": "base",
+      "in": 19.9,
+      "ft": 4723
+     },
+     {
+      "x": 0.6395,
+      "y": 0.8417,
+      "kind": "top",
+      "in": 32.5,
+      "ft": 9628
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1580,
+  1184,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 3,
+  "relief_s": 1380,
+  "snow_s": 17,
+  "vectors_s": 10,
+  "compose_s": 92,
+  "total_s": 1530
+ },
+ "files": [
+  "andermatt-full.webp",
+  "andermatt-heightmap16.png",
+  "andermatt-meta.json",
+  "andermatt-relief.png",
+  "andermatt-sheet-baked.webp",
+  "andermatt-sheet.webp",
+  "andermatt-tiles.json",
+  "andermatt-vectors.svg",
+  "andermatt.blend",
+  "andermatt.png",
+  "andermatt.svg"
+ ]
+}

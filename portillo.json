@@ -1,0 +1,232 @@
+{
+ "resort": "portillo",
+ "ski_area": "Portillo",
+ "date_utc": "2026-11-21",
+ "frame_km": 6.693,
+ "px": 4096,
+ "m_per_px": 1.634,
+ "frame_bbox_lonlat": [
+  -70.166378,
+  -32.870334,
+  -70.09482,
+  -32.810212
+ ],
+ "crop": [
+  -70.15508371677494,
+  -32.85796600166288,
+  -70.10851998322507,
+  -32.81884299833711
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   26.0
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   236,
+   281
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2232,
+  "heightmap_spacing_m": 3.27,
+  "heightmap_z_m": [
+   2110.4,
+   4297.8
+  ],
+  "heightmap_quantisation_m": 0.033,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.0,
+  "darkest1pct_value": 137.7,
+  "median_value": 194.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 154.0,
+  "raw_p_hi": 218.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 5.7
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.25e-06 of the height range, 45210 distinct 16-bit levels sampled",
+  "blend_mb": 5.1,
+  "render_s": 1197.0,
+  "blender_wall_s": 1198
+ },
+ "svg_scale_vs_1800px_maps": 1.481,
+ "nosnow": false,
+ "inside_range_in": [
+  0.6,
+  2.6
+ ],
+ "levels_in": [
+  1.0,
+  2.0
+ ],
+ "base": [
+  2578.2,
+  0.6
+ ],
+ "top": [
+  3344.6,
+  2.4
+ ],
+ "lifts": 14,
+ "lifts_dropped": [
+  {
+   "name": null,
+   "type": "platter",
+   "reason": "status abandoned"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 30,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 478,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 7.658,
+  "full": {
+   "img": "portillo-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2748,
+    "x1": 0.9384,
+    "y1": 0.6634
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2237,
+      "y": 0.5898,
+      "in": 1.0
+     },
+     {
+      "x": 0.1533,
+      "y": 0.4329,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3361,
+      "y": 0.6514,
+      "kind": "base",
+      "in": 0.6,
+      "ft": 8459
+     },
+     {
+      "x": 0.8209,
+      "y": 0.2876,
+      "kind": "top",
+      "in": 2.4,
+      "ft": 10973
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "portillo-sheet.webp",
+   "img": "portillo-sheet-baked.webp",
+   "side_m": 3225,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2138,
+      "y": 0.7505,
+      "in": 1.0
+     },
+     {
+      "x": 0.1409,
+      "y": 0.4247,
+      "in": 2.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3301,
+      "y": 0.8784,
+      "kind": "base",
+      "in": 0.6,
+      "ft": 8459
+     },
+     {
+      "x": 0.8319,
+      "y": 0.1231,
+      "kind": "top",
+      "in": 2.4,
+      "ft": 10973
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1684,
+  1176,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 20,
+  "dem_s": 3,
+  "relief_s": 1199,
+  "snow_s": 11,
+  "vectors_s": 7,
+  "compose_s": 79,
+  "total_s": 1320
+ },
+ "files": [
+  "portillo-full.webp",
+  "portillo-heightmap16.png",
+  "portillo-meta.json",
+  "portillo-relief.png",
+  "portillo-sheet-baked.webp",
+  "portillo-sheet.webp",
+  "portillo-tiles.json",
+  "portillo-vectors.svg",
+  "portillo.blend",
+  "portillo.png",
+  "portillo.svg"
+ ]
+}

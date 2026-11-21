@@ -1,0 +1,232 @@
+{
+ "resort": "rusutsu",
+ "ski_area": "\u30eb\u30b9\u30c4\u30ea\u30be\u30fc\u30c8\u30b9\u30ad\u30fc\u5834, Rusutsu Resort Ski Area",
+ "date_utc": "2026-11-21",
+ "frame_km": 11.038,
+ "px": 4096,
+ "m_per_px": 2.695,
+ "frame_bbox_lonlat": [
+  140.847171,
+  42.678622,
+  140.982159,
+  42.777781
+ ],
+ "crop": [
+  140.87131554104062,
+  42.69886739971254,
+  140.9590868589594,
+  42.76333950028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   376,
+   512
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2159,
+  "heightmap_spacing_m": 5.39,
+  "heightmap_z_m": [
+   238.4,
+   1104.9
+  ],
+  "heightmap_quantisation_m": 0.013,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.9,
+  "darkest1pct_value": 140.0,
+  "median_value": 215.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 169.0,
+  "raw_p_hi": 213.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 9.09
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.08e-06 of the height range, 37116 distinct 16-bit levels sampled",
+  "blend_mb": 6.4,
+  "render_s": 1167.0,
+  "blender_wall_s": 1168
+ },
+ "svg_scale_vs_1800px_maps": 1.48,
+ "nosnow": false,
+ "inside_range_in": [
+  6.6,
+  10.3
+ ],
+ "levels_in": [
+  8.0,
+  10.0
+ ],
+ "base": [
+  429.5,
+  6.8
+ ],
+ "top": [
+  989.7,
+  10.3
+ ],
+ "lifts": 17,
+ "lifts_dropped": [
+  {
+   "name": "\u30bf\u30ef\u30fc\u30da\u30a2\u30ea\u30d5\u30c8, Tower Pair Lift",
+   "type": "chair_lift",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 27,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1460,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 12.63,
+  "full": {
+   "img": "rusutsu-full.webp",
+   "px": [
+    2403,
+    4096
+   ],
+   "ref": [
+    512.75,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.1277,
+    "y0": 0.1893,
+    "x1": 0.8727,
+    "y1": 0.7489
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.5152,
+      "y": 0.511,
+      "in": 8.0
+     },
+     {
+      "x": 0.6355,
+      "y": 0.674,
+      "in": 10.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3215,
+      "y": 0.2675,
+      "kind": "base",
+      "in": 6.8,
+      "ft": 1409
+     },
+     {
+      "x": 0.6101,
+      "y": 0.682,
+      "kind": "top",
+      "in": 10.3,
+      "ft": 3247
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "rusutsu-sheet.webp",
+   "img": "rusutsu-sheet-baked.webp",
+   "side_m": 6476,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.515,
+      "y": 0.5714,
+      "in": 8.0
+     },
+     {
+      "x": 0.6352,
+      "y": 0.8491,
+      "in": 10.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3214,
+      "y": 0.1564,
+      "kind": "base",
+      "in": 6.8,
+      "ft": 1409
+     },
+     {
+      "x": 0.6098,
+      "y": 0.8629,
+      "kind": "top",
+      "in": 10.3,
+      "ft": 3247
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1872,
+  1764,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 27,
+  "dem_s": 4,
+  "relief_s": 1170,
+  "snow_s": 496,
+  "vectors_s": 10,
+  "compose_s": 66,
+  "total_s": 1773
+ },
+ "files": [
+  "rusutsu-full.webp",
+  "rusutsu-heightmap16.png",
+  "rusutsu-meta.json",
+  "rusutsu-relief.png",
+  "rusutsu-sheet-baked.webp",
+  "rusutsu-sheet.webp",
+  "rusutsu-tiles.json",
+  "rusutsu-vectors.svg",
+  "rusutsu.blend",
+  "rusutsu.png",
+  "rusutsu.svg"
+ ]
+}

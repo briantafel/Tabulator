@@ -1,0 +1,11 @@
+nevados-de-chillan: nevados-de-chillan: OpenSkiMap area None not found or has no outline, and no nearby area matched by name
+
+Traceback (most recent call last):
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 957, in main
+    run(a.out, a.resort, a.px, app=a.app, hires=a.hires)
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/terrain_pilot.py", line 570, in run
+    rings, area_name = rm.ski_area(r, elev.get("osm_id"), elev.get("osm_name") or r.get("name"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Tabulator/Tabulator/scripts/maps/resort_map.py", line 128, in ski_area
+    sys.exit(f"{r['id']}: OpenSkiMap area {osm_id} not found or has no outline, and no nearby area matched by name")
+SystemExit: nevados-de-chillan: OpenSkiMap area None not found or has no outline, and no nearby area matched by name

@@ -1,0 +1,339 @@
+{
+ "resort": "val-disere-tignes",
+ "ski_area": "Tignes - Val d'Is\u00e8re",
+ "date_utc": "2026-11-21",
+ "frame_km": 36.547,
+ "px": 4096,
+ "m_per_px": 8.923,
+ "frame_bbox_lonlat": [
+  6.730761,
+  45.284195,
+  7.198727,
+  45.612497
+ ],
+ "crop": [
+  6.8547971099398515,
+  45.37919932468839,
+  7.077286590060148,
+  45.53526267531161
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   1201,
+   1712
+  ],
+  "voids_filled_fraction": 0.00058,
+  "heightmap_px": 2082,
+  "heightmap_spacing_m": 17.84,
+  "heightmap_z_m": [
+   724.0,
+   3837.2
+  ],
+  "heightmap_quantisation_m": 0.048,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 55.3,
+  "darkest1pct_value": 141.0,
+  "median_value": 210.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 157.33,
+  "raw_p_hi": 220.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 29.02
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 3.26e-06 of the height range, 36391 distinct 16-bit levels sampled",
+  "blend_mb": 6.8,
+  "render_s": 1135.0,
+  "blender_wall_s": 1136
+ },
+ "svg_scale_vs_1800px_maps": 1.082,
+ "nosnow": false,
+ "inside_range_in": [
+  28.4,
+  58.8
+ ],
+ "levels_in": [
+  30.0,
+  33.0,
+  36.0,
+  39.0,
+  42.0,
+  45.0,
+  48.0,
+  51.0,
+  54.0,
+  57.0
+ ],
+ "base": [
+  1560.4,
+  31.1
+ ],
+ "top": [
+  3449.9,
+  57.8
+ ],
+ "lifts": 82,
+ "lifts_dropped": [
+  {
+   "name": "Panoramic",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "3000",
+   "type": "platter",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Br\u00e9vi\u00e8res",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [
+  {
+   "name": "couloir de grande balme",
+   "cluster_acres": 12
+  },
+  {
+   "name": "Couloir de petite balme",
+   "cluster_acres": 12
+  }
+ ],
+ "runs": 413,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 9806,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 41.815,
+  "full": {
+   "img": "val-disere-tignes-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3206,
+    "x1": 0.9384,
+    "y1": 0.6177
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6016,
+      "y": 0.5134,
+      "in": 30.0
+     },
+     {
+      "x": 0.6388,
+      "y": 0.5202,
+      "in": 33.0
+     },
+     {
+      "x": 0.6456,
+      "y": 0.5524,
+      "in": 36.0
+     },
+     {
+      "x": 0.2687,
+      "y": 0.5,
+      "in": 39.0
+     },
+     {
+      "x": 0.2033,
+      "y": 0.4338,
+      "in": 42.0
+     },
+     {
+      "x": 0.2403,
+      "y": 0.394,
+      "in": 45.0
+     },
+     {
+      "x": 0.209,
+      "y": 0.3959,
+      "in": 48.0
+     },
+     {
+      "x": 0.161,
+      "y": 0.5888,
+      "in": 51.0
+     },
+     {
+      "x": 0.1495,
+      "y": 0.6096,
+      "in": 54.0
+     },
+     {
+      "x": 0.121,
+      "y": 0.6106,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.3104,
+      "y": 0.3231,
+      "kind": "base",
+      "in": 31.1,
+      "ft": 5119
+     },
+     {
+      "x": 0.1139,
+      "y": 0.6059,
+      "kind": "top",
+      "in": 57.8,
+      "ft": 11319
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "val-disere-tignes-sheet.webp",
+   "img": "val-disere-tignes-sheet-baked.webp",
+   "side_m": 16273,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.6135,
+      "y": 0.5995,
+      "in": 30.0
+     },
+     {
+      "x": 0.6552,
+      "y": 0.6149,
+      "in": 33.0
+     },
+     {
+      "x": 0.6628,
+      "y": 0.6872,
+      "in": 36.0
+     },
+     {
+      "x": 0.2407,
+      "y": 0.5693,
+      "in": 39.0
+     },
+     {
+      "x": 0.1674,
+      "y": 0.4207,
+      "in": 42.0
+     },
+     {
+      "x": 0.2089,
+      "y": 0.3312,
+      "in": 45.0
+     },
+     {
+      "x": 0.1738,
+      "y": 0.3354,
+      "in": 48.0
+     },
+     {
+      "x": 0.1201,
+      "y": 0.7688,
+      "in": 51.0
+     },
+     {
+      "x": 0.1072,
+      "y": 0.8157,
+      "in": 54.0
+     },
+     {
+      "x": 0.0753,
+      "y": 0.8179,
+      "in": 57.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2873,
+      "y": 0.172,
+      "kind": "base",
+      "in": 31.1,
+      "ft": 5119
+     },
+     {
+      "x": 0.0672,
+      "y": 0.8073,
+      "kind": "top",
+      "in": 57.8,
+      "ft": 11319
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1228,
+  1496,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 22,
+  "dem_s": 7,
+  "relief_s": 1137,
+  "snow_s": 384,
+  "vectors_s": 11,
+  "compose_s": 94,
+  "total_s": 1656
+ },
+ "files": [
+  "val-disere-tignes-full.webp",
+  "val-disere-tignes-heightmap16.png",
+  "val-disere-tignes-meta.json",
+  "val-disere-tignes-relief.png",
+  "val-disere-tignes-sheet-baked.webp",
+  "val-disere-tignes-sheet.webp",
+  "val-disere-tignes-tiles.json",
+  "val-disere-tignes-vectors.svg",
+  "val-disere-tignes.blend",
+  "val-disere-tignes.png",
+  "val-disere-tignes.svg"
+ ]
+}

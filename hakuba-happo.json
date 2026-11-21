@@ -1,0 +1,276 @@
+{
+ "resort": "hakuba-happo",
+ "ski_area": "\u767d\u99ac\u516b\u65b9\u5c3e\u6839, Hakuba Happo One",
+ "date_utc": "2026-11-21",
+ "frame_km": 8.411,
+ "px": 4096,
+ "m_per_px": 2.054,
+ "frame_bbox_lonlat": [
+  137.771889,
+  36.664152,
+  137.866134,
+  36.739712
+ ],
+ "crop": [
+  137.79338704846114,
+  36.683186962622166,
+  137.84452235153887,
+  36.72418403737783
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   24.8
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   291,
+   363
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2194,
+  "heightmap_spacing_m": 4.11,
+  "heightmap_z_m": [
+   683.1,
+   2461.4
+  ],
+  "heightmap_quantisation_m": 0.027,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.1,
+  "darkest1pct_value": 138.0,
+  "median_value": 197.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 161.33,
+  "raw_p_hi": 218.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 7.04
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.01e-06 of the height range, 41826 distinct 16-bit levels sampled",
+  "blend_mb": 5.8,
+  "render_s": 1204.0,
+  "blender_wall_s": 1206
+ },
+ "svg_scale_vs_1800px_maps": 1.235,
+ "nosnow": false,
+ "inside_range_in": [
+  16.5,
+  33.8
+ ],
+ "levels_in": [
+  18.0,
+  21.0,
+  24.0,
+  27.0,
+  30.0,
+  33.0
+ ],
+ "base": [
+  754.3,
+  16.5
+ ],
+ "top": [
+  1831.7,
+  33.5
+ ],
+ "lifts": 21,
+ "lifts_dropped": [
+  {
+   "name": "Jumping Stadium Chair",
+   "type": "chair_lift",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 43,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 980,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 9.624,
+  "full": {
+   "img": "hakuba-happo-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3415,
+    "x1": 0.9384,
+    "y1": 0.5968
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8485,
+      "y": 0.5188,
+      "in": 18.0
+     },
+     {
+      "x": 0.6652,
+      "y": 0.482,
+      "in": 21.0
+     },
+     {
+      "x": 0.4913,
+      "y": 0.4631,
+      "in": 24.0
+     },
+     {
+      "x": 0.3953,
+      "y": 0.4885,
+      "in": 27.0
+     },
+     {
+      "x": 0.2697,
+      "y": 0.5517,
+      "in": 30.0
+     },
+     {
+      "x": 0.1195,
+      "y": 0.5623,
+      "in": 33.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9208,
+      "y": 0.5482,
+      "kind": "base",
+      "in": 16.5,
+      "ft": 2475
+     },
+     {
+      "x": 0.0804,
+      "y": 0.5657,
+      "kind": "top",
+      "in": 33.5,
+      "ft": 6009
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "hakuba-happo-sheet.webp",
+   "img": "hakuba-happo-sheet-baked.webp",
+   "side_m": 3976,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.8675,
+      "y": 0.6051,
+      "in": 18.0
+     },
+     {
+      "x": 0.6741,
+      "y": 0.5272,
+      "in": 21.0
+     },
+     {
+      "x": 0.4906,
+      "y": 0.4874,
+      "in": 24.0
+     },
+     {
+      "x": 0.3892,
+      "y": 0.541,
+      "in": 27.0
+     },
+     {
+      "x": 0.2567,
+      "y": 0.6746,
+      "in": 30.0
+     },
+     {
+      "x": 0.0982,
+      "y": 0.697,
+      "in": 33.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9437,
+      "y": 0.6671,
+      "kind": "base",
+      "in": 16.5,
+      "ft": 2475
+     },
+     {
+      "x": 0.0569,
+      "y": 0.7042,
+      "kind": "top",
+      "in": 33.5,
+      "ft": 6009
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1672,
+  1384,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 25,
+  "dem_s": 3,
+  "relief_s": 1208,
+  "snow_s": 618,
+  "vectors_s": 13,
+  "compose_s": 88,
+  "total_s": 1956
+ },
+ "files": [
+  "hakuba-happo-full.webp",
+  "hakuba-happo-heightmap16.png",
+  "hakuba-happo-meta.json",
+  "hakuba-happo-relief.png",
+  "hakuba-happo-sheet-baked.webp",
+  "hakuba-happo-sheet.webp",
+  "hakuba-happo-tiles.json",
+  "hakuba-happo-vectors.svg",
+  "hakuba-happo.blend",
+  "hakuba-happo.png",
+  "hakuba-happo.svg"
+ ]
+}

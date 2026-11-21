@@ -1,0 +1,335 @@
+{
+ "resort": "engelberg",
+ "ski_area": "Engelberg Titlis",
+ "date_utc": "2026-11-21",
+ "frame_km": 11.882,
+ "px": 4096,
+ "m_per_px": 2.901,
+ "frame_bbox_lonlat": [
+  8.322285,
+  46.736879,
+  8.478176,
+  46.843613
+ ],
+ "crop": [
+  8.358067929866207,
+  46.76664379971255,
+  8.436389170133795,
+  46.82026490028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.2
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   404,
+   590
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2151,
+  "heightmap_spacing_m": 5.8,
+  "heightmap_z_m": [
+   649.5,
+   3192.6
+  ],
+  "heightmap_quantisation_m": 0.039,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.1,
+  "darkest1pct_value": 138.0,
+  "median_value": 211.0,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 153.0,
+  "raw_p_hi": 220.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 9.75
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 2.71e-06 of the height range, 41605 distinct 16-bit levels sampled",
+  "blend_mb": 6.1,
+  "render_s": 1233.0,
+  "blender_wall_s": 1234
+ },
+ "svg_scale_vs_1800px_maps": 1.143,
+ "nosnow": false,
+ "inside_range_in": [
+  26.2,
+  55.8
+ ],
+ "levels_in": [
+  27.0,
+  30.0,
+  33.0,
+  36.0,
+  39.0,
+  42.0,
+  45.0,
+  48.0,
+  51.0,
+  54.0
+ ],
+ "base": [
+  1194.7,
+  29.3
+ ],
+ "top": [
+  3009.3,
+  55.5
+ ],
+ "lifts": 27,
+ "lifts_dropped": [
+  {
+   "name": "Skilift Bitzistock",
+   "type": "t-bar",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "Standseilbahn Engelberg-Gerschnialp",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Standseilbahn Engelberg-Gerschnialp",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  },
+  {
+   "name": "Standseilbahn Engelberg-Gerschnialp",
+   "type": "funicular",
+   "reason": "terminal not on drawn skiable terrain"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 94,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1282,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 13.595,
+  "full": {
+   "img": "engelberg-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2483,
+    "x1": 0.9384,
+    "y1": 0.6899
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3827,
+      "y": 0.259,
+      "in": 27.0
+     },
+     {
+      "x": 0.4048,
+      "y": 0.3107,
+      "in": 30.0
+     },
+     {
+      "x": 0.0935,
+      "y": 0.3618,
+      "in": 33.0
+     },
+     {
+      "x": 0.1212,
+      "y": 0.4133,
+      "in": 36.0
+     },
+     {
+      "x": 0.4949,
+      "y": 0.4702,
+      "in": 39.0
+     },
+     {
+      "x": 0.3128,
+      "y": 0.5588,
+      "in": 42.0
+     },
+     {
+      "x": 0.6941,
+      "y": 0.5291,
+      "in": 45.0
+     },
+     {
+      "x": 0.4205,
+      "y": 0.649,
+      "in": 48.0
+     },
+     {
+      "x": 0.8306,
+      "y": 0.5974,
+      "in": 51.0
+     },
+     {
+      "x": 0.8659,
+      "y": 0.6381,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2731,
+      "y": 0.2976,
+      "kind": "base",
+      "in": 29.3,
+      "ft": 3920
+     },
+     {
+      "x": 0.8366,
+      "y": 0.6817,
+      "kind": "top",
+      "in": 55.5,
+      "ft": 9873
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "engelberg-sheet.webp",
+   "img": "engelberg-sheet-baked.webp",
+   "side_m": 5546,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.3744,
+      "y": 0.0502,
+      "in": 27.0
+     },
+     {
+      "x": 0.398,
+      "y": 0.1608,
+      "in": 30.0
+     },
+     {
+      "x": 0.0654,
+      "y": 0.2704,
+      "in": 33.0
+     },
+     {
+      "x": 0.095,
+      "y": 0.3808,
+      "in": 36.0
+     },
+     {
+      "x": 0.4942,
+      "y": 0.5025,
+      "in": 39.0
+     },
+     {
+      "x": 0.2997,
+      "y": 0.6925,
+      "in": 42.0
+     },
+     {
+      "x": 0.7071,
+      "y": 0.6287,
+      "in": 45.0
+     },
+     {
+      "x": 0.4147,
+      "y": 0.8856,
+      "in": 48.0
+     },
+     {
+      "x": 0.853,
+      "y": 0.7751,
+      "in": 51.0
+     },
+     {
+      "x": 0.8907,
+      "y": 0.8622,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.2573,
+      "y": 0.1327,
+      "kind": "base",
+      "in": 29.3,
+      "ft": 3920
+     },
+     {
+      "x": 0.8595,
+      "y": 0.9556,
+      "kind": "top",
+      "in": 55.5,
+      "ft": 9873
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1352,
+  1176,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 42,
+  "dem_s": 4,
+  "relief_s": 1235,
+  "snow_s": 259,
+  "vectors_s": 9,
+  "compose_s": 87,
+  "total_s": 1637
+ },
+ "files": [
+  "engelberg-full.webp",
+  "engelberg-heightmap16.png",
+  "engelberg-meta.json",
+  "engelberg-relief.png",
+  "engelberg-sheet-baked.webp",
+  "engelberg-sheet.webp",
+  "engelberg-tiles.json",
+  "engelberg-vectors.svg",
+  "engelberg.blend",
+  "engelberg.png",
+  "engelberg.svg"
+ ]
+}

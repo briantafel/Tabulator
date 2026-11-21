@@ -1,0 +1,281 @@
+{
+ "resort": "val-thorens",
+ "ski_area": "Val Thorens",
+ "date_utc": "2026-11-21",
+ "frame_km": 14.709,
+ "px": 4096,
+ "m_per_px": 3.591,
+ "frame_bbox_lonlat": [
+  6.481606,
+  45.22034,
+  6.669408,
+  45.35247
+ ],
+ "crop": [
+  6.528877217106441,
+  45.25829539971254,
+  6.621111782893559,
+  45.323183300287454
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   21.8
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   495,
+   704
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2132,
+  "heightmap_spacing_m": 7.18,
+  "heightmap_z_m": [
+   777.9,
+   3542.4
+  ],
+  "heightmap_quantisation_m": 0.042,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.2,
+  "darkest1pct_value": 138.3,
+  "median_value": 211.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 155.33,
+  "raw_p_hi": 217.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 11.96
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.42e-06 of the height range, 35395 distinct 16-bit levels sampled",
+  "blend_mb": 6.0,
+  "render_s": 1293.0,
+  "blender_wall_s": 1294
+ },
+ "svg_scale_vs_1800px_maps": 1.118,
+ "nosnow": false,
+ "inside_range_in": [
+  35.9,
+  56.3
+ ],
+ "levels_in": [
+  36.0,
+  39.0,
+  42.0,
+  45.0,
+  48.0,
+  51.0,
+  54.0
+ ],
+ "base": [
+  1820.6,
+  36.5
+ ],
+ "top": [
+  3172.5,
+  56.1
+ ],
+ "lifts": 27,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 298,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 5413,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 16.829,
+  "full": {
+   "img": "val-thorens-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.2484,
+    "x1": 0.9384,
+    "y1": 0.6898
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1679,
+      "y": 0.3705,
+      "in": 36.0
+     },
+     {
+      "x": 0.3615,
+      "y": 0.4158,
+      "in": 39.0
+     },
+     {
+      "x": 0.4368,
+      "y": 0.4475,
+      "in": 42.0
+     },
+     {
+      "x": 0.6554,
+      "y": 0.5151,
+      "in": 45.0
+     },
+     {
+      "x": 0.5233,
+      "y": 0.5946,
+      "in": 48.0
+     },
+     {
+      "x": 0.8786,
+      "y": 0.467,
+      "in": 51.0
+     },
+     {
+      "x": 0.3607,
+      "y": 0.6692,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.166,
+      "y": 0.3749,
+      "kind": "base",
+      "in": 36.5,
+      "ft": 5973
+     },
+     {
+      "x": 0.3378,
+      "y": 0.6705,
+      "kind": "top",
+      "in": 56.1,
+      "ft": 10409
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "val-thorens-sheet.webp",
+   "img": "val-thorens-sheet-baked.webp",
+   "side_m": 6793,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.1411,
+      "y": 0.2863,
+      "in": 36.0
+     },
+     {
+      "x": 0.3502,
+      "y": 0.3845,
+      "in": 39.0
+     },
+     {
+      "x": 0.4314,
+      "y": 0.4532,
+      "in": 42.0
+     },
+     {
+      "x": 0.6675,
+      "y": 0.5996,
+      "in": 45.0
+     },
+     {
+      "x": 0.5248,
+      "y": 0.7719,
+      "in": 48.0
+     },
+     {
+      "x": 0.9085,
+      "y": 0.4955,
+      "in": 51.0
+     },
+     {
+      "x": 0.3494,
+      "y": 0.9335,
+      "in": 54.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.1391,
+      "y": 0.296,
+      "kind": "base",
+      "in": 36.5,
+      "ft": 5973
+     },
+     {
+      "x": 0.3245,
+      "y": 0.9363,
+      "kind": "top",
+      "in": 56.1,
+      "ft": 10409
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1564,
+  1668,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 53,
+  "dem_s": 4,
+  "relief_s": 1296,
+  "snow_s": 140,
+  "vectors_s": 11,
+  "compose_s": 115,
+  "total_s": 1619
+ },
+ "files": [
+  "val-thorens-full.webp",
+  "val-thorens-heightmap16.png",
+  "val-thorens-meta.json",
+  "val-thorens-relief.png",
+  "val-thorens-sheet-baked.webp",
+  "val-thorens-sheet.webp",
+  "val-thorens-tiles.json",
+  "val-thorens-vectors.svg",
+  "val-thorens.blend",
+  "val-thorens.png",
+  "val-thorens.svg"
+ ]
+}

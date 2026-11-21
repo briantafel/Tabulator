@@ -1,0 +1,293 @@
+{
+ "resort": "niseko",
+ "ski_area": "\u30cb\u30bb\u30b3\u30e6\u30ca\u30a4\u30c6\u30c3\u30c9, Niseko United",
+ "date_utc": "2026-11-21",
+ "frame_km": 11.043,
+ "px": 4096,
+ "m_per_px": 2.696,
+ "frame_bbox_lonlat": [
+  140.605741,
+  42.815287,
+  140.741083,
+  42.914487
+ ],
+ "crop": [
+  140.63055429468318,
+  42.83345479971254,
+  140.71811840531683,
+  42.89763510028746
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.7
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   377,
+   514
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2159,
+  "heightmap_spacing_m": 5.39,
+  "heightmap_z_m": [
+   93.8,
+   1304.0
+  ],
+  "heightmap_quantisation_m": 0.018,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 54.0,
+  "darkest1pct_value": 137.7,
+  "median_value": 210.7,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 167.33,
+  "raw_p_hi": 212.33,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 9.1
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 1.14e-06 of the height range, 37882 distinct 16-bit levels sampled",
+  "blend_mb": 5.8,
+  "render_s": 738.0,
+  "blender_wall_s": 739
+ },
+ "svg_scale_vs_1800px_maps": 1.472,
+ "nosnow": false,
+ "inside_range_in": [
+  8.8,
+  15.9
+ ],
+ "levels_in": [
+  10.0,
+  12.0,
+  14.0
+ ],
+ "base": [
+  257.5,
+  8.9
+ ],
+ "top": [
+  1178.1,
+  15.7
+ ],
+ "lifts": 29,
+ "lifts_dropped": [
+  {
+   "name": "\u30ad\u30f3\u30b0\u7b2c2\u30af\u30ef\u30c3\u30c9\u30ea\u30d5\u30c8, King Quad #2, \u30ad\u30f3\u30b0\u7b2c2\u30af\u30ef\u30c3\u30c9",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30c0\u30a6\u30f3\u30d2\u30eb\u7b2c\uff11\u30ea\u30d5\u30c8B\u7dda, Downhill Chair B",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30ad\u30f3\u30b0\u7b2c1\u30da\u30a2\u30ea\u30d5\u30c8\u3000B\u7dda, King Pair #1 B, \u30ad\u30f3\u30b0\u7b2c1\u30da\u30a2A\u30fbB\u7dda",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u6771\u5c71\u30b4\u30f3\u30c9\u30e9, Higashiyama Gondola",
+   "type": "gondola",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30ef\u30f3\u30c0\u30fc\u30e9\u30f3\u30c9\u30c1\u30a7\u30a2A\u7dda, Wonderland Chair A",
+   "type": "chair_lift",
+   "reason": "status abandoned"
+  },
+  {
+   "name": "\u30db\u30ea\u30c7\u30fc\u7b2c\uff13\u30ea\u30d5\u30c8, Holiday Lift #3",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30db\u30ea\u30c7\u30fc\u7b2c\uff12\u30ea\u30d5\u30c8\u8de1, Holiday Lift #2 ruins",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30ad\u30f3\u30b0\u7b2c1\u30da\u30a2\u30ea\u30d5\u30c8\u3000A\u7dda, King Pair #1 A, \u30ad\u30f3\u30b0\u7b2c1\u30da\u30a2A\u30fbB\u7dda",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30c0\u30a6\u30f3\u30d2\u30eb\u7b2c\uff11\u30ea\u30d5\u30c8A\u7dda, Downhill Chair A",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": "\u30d5\u30a1\u30df\u30ea\u30fc\u30da\u30a2\u30ea\u30d5\u30c8, Family Pair",
+   "type": "chair_lift",
+   "reason": "status disused"
+  },
+  {
+   "name": null,
+   "type": "magic_carpet",
+   "reason": "status disused"
+  }
+ ],
+ "runs_dropped": [],
+ "runs": 182,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 1856,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 12.635,
+  "full": {
+   "img": "niseko-full.webp",
+   "px": [
+    2144,
+    4096
+   ],
+   "ref": [
+    457.48,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0825,
+    "y0": 0.2209,
+    "x1": 0.9175,
+    "y1": 0.7173
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7971,
+      "y": 0.4968,
+      "in": 10.0
+     },
+     {
+      "x": 0.6943,
+      "y": 0.426,
+      "in": 12.0
+     },
+     {
+      "x": 0.4529,
+      "y": 0.4465,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9037,
+      "y": 0.5659,
+      "kind": "base",
+      "in": 8.9,
+      "ft": 845
+     },
+     {
+      "x": 0.3453,
+      "y": 0.4316,
+      "kind": "top",
+      "in": 15.7,
+      "ft": 3865
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "niseko-sheet.webp",
+   "img": "niseko-sheet-baked.webp",
+   "side_m": 5781,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.7971,
+      "y": 0.5529,
+      "in": 10.0
+     },
+     {
+      "x": 0.6943,
+      "y": 0.4177,
+      "in": 12.0
+     },
+     {
+      "x": 0.4529,
+      "y": 0.4569,
+      "in": 14.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.9037,
+      "y": 0.6849,
+      "kind": "base",
+      "in": 8.9,
+      "ft": 845
+     },
+     {
+      "x": 0.3453,
+      "y": 0.4284,
+      "kind": "top",
+      "in": 15.7,
+      "ft": 3865
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1200,
+  1744,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 20,
+  "dem_s": 3,
+  "relief_s": 741,
+  "snow_s": 1213,
+  "vectors_s": 10,
+  "compose_s": 66,
+  "total_s": 2054
+ },
+ "files": [
+  "niseko-full.webp",
+  "niseko-heightmap16.png",
+  "niseko-meta.json",
+  "niseko-relief.png",
+  "niseko-sheet-baked.webp",
+  "niseko-sheet.webp",
+  "niseko-tiles.json",
+  "niseko-vectors.svg",
+  "niseko.blend",
+  "niseko.png",
+  "niseko.svg"
+ ]
+}

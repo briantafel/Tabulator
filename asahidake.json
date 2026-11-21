@@ -1,0 +1,248 @@
+{
+ "resort": "asahidake",
+ "ski_area": "\u65ed\u5cb3, Asahidake",
+ "date_utc": "2026-11-20",
+ "frame_km": 5.342,
+ "px": 4096,
+ "m_per_px": 1.304,
+ "frame_bbox_lonlat": [
+  142.779501,
+  43.631088,
+  142.845833,
+  43.67908
+ ],
+ "crop": [
+  142.793095352301,
+  43.64228828739202,
+  142.832303847699,
+  43.67065531260798
+ ],
+ "dem": {
+  "source": "Copernicus GLO-30 (30 m DSM)",
+  "native_res_deg": 0.0002777777777777778,
+  "native_res_m": [
+   30.9,
+   22.4
+  ],
+  "native_res_m_note": "N-S x E-W",
+  "native_shape": [
+   192,
+   266
+  ],
+  "voids_filled_fraction": 0.0,
+  "heightmap_px": 2278,
+  "heightmap_spacing_m": 2.61,
+  "heightmap_z_m": [
+   818.0,
+   2200.6
+  ],
+  "heightmap_quantisation_m": 0.021,
+  "upsample_note": "bicubic from the native grid; detail is limited by the native DEM, not the mesh"
+ },
+ "snow": {
+  "nbm_checked": false,
+  "nbm_check": "outside the NBM domain (CONUS + southern Canada)",
+  "source": "IFS",
+  "caption": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+  "run": "2026-11-20T12:00:00+00:00",
+  "grid": "IFS 0.25\u00b0 (28 km), via aws",
+  "slr": "12:1 placeholder (no temperature-dependent ratio yet)"
+ },
+ "caption_source": "ECMWF IFS \u2022 Tabulator terrain-adjusted",
+ "relief": {
+  "clipped_pct": 0.0,
+  "darkest1pct_grey_pct": 56.9,
+  "darkest1pct_value": 145.0,
+  "median_value": 215.3,
+  "raw_clipped_pct": 0.0,
+  "raw_p_lo": 169.0,
+  "raw_p_hi": 213.67,
+  "lights": "even",
+  "exposure": -0.9,
+  "exaggeration": 2.0,
+  "levels": {
+   "p_lo": 0.5,
+   "p_hi": 99.7,
+   "out_lo": 0.52,
+   "out_hi": 0.975,
+   "gamma": 0.85
+  },
+  "samples": 48,
+  "mesh_vertex_spacing_m": 4.64
+ },
+ "blender": {
+  "displacement_check": "displacement check: max error 9.16e-07 of the height range, 39839 distinct 16-bit levels sampled",
+  "blend_mb": 4.3,
+  "render_s": 885.0,
+  "blender_wall_s": 886
+ },
+ "svg_scale_vs_1800px_maps": 1.345,
+ "nosnow": false,
+ "inside_range_in": [
+  19.0,
+  26.4
+ ],
+ "levels_in": [
+  20.0,
+  22.0,
+  24.0,
+  26.0
+ ],
+ "base": [
+  1108.8,
+  19.1
+ ],
+ "top": [
+  1592.8,
+  26.0
+ ],
+ "lifts": 1,
+ "lifts_dropped": [],
+ "runs_dropped": [],
+ "runs": 7,
+ "outline": "skiable terrain from runs",
+ "outline_acres": 357,
+ "app": {
+  "ref_viewport": [
+   402.0,
+   874.0
+  ],
+  "band": {
+   "side": 10.0,
+   "top": 64.0,
+   "bottom": 118.0
+  },
+  "m_per_ref_px": 6.113,
+  "full": {
+   "img": "asahidake-full.webp",
+   "px": [
+    2043,
+    4096
+   ],
+   "ref": [
+    435.93,
+    874.0
+   ],
+   "focus": {
+    "x0": 0.0621,
+    "y0": 0.3016,
+    "x1": 0.9384,
+    "y1": 0.6366
+   },
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.2817,
+      "y": 0.5667,
+      "in": 20.0
+     },
+     {
+      "x": 0.5634,
+      "y": 0.5019,
+      "in": 22.0
+     },
+     {
+      "x": 0.7298,
+      "y": 0.3557,
+      "in": 24.0
+     },
+     {
+      "x": 0.8737,
+      "y": 0.3404,
+      "in": 26.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0836,
+      "y": 0.5422,
+      "kind": "base",
+      "in": 19.1,
+      "ft": 3638
+     },
+     {
+      "x": 0.8623,
+      "y": 0.3575,
+      "kind": "top",
+      "in": 26.0,
+      "ft": 5226
+     }
+    ]
+   }
+  },
+  "sheet": {
+   "img_clean": "asahidake-sheet.webp",
+   "img": "asahidake-sheet-baked.webp",
+   "side_m": 2635,
+   "labels": {
+    "frame": "fractions of this picture, 0-1 from the top-left",
+    "depth": [
+     {
+      "x": 0.279,
+      "y": 0.6977,
+      "in": 20.0
+     },
+     {
+      "x": 0.5639,
+      "y": 0.5665,
+      "in": 22.0
+     },
+     {
+      "x": 0.7321,
+      "y": 0.2702,
+      "in": 24.0
+     },
+     {
+      "x": 0.8777,
+      "y": 0.2391,
+      "in": 26.0
+     }
+    ],
+    "marks": [
+     {
+      "x": 0.0787,
+      "y": 0.6481,
+      "kind": "base",
+      "in": 19.1,
+      "ft": 3638
+     },
+     {
+      "x": 0.8662,
+      "y": 0.2737,
+      "kind": "top",
+      "in": 26.0,
+      "ft": 5226
+     }
+    ]
+   }
+  }
+ },
+ "busiest_crop_xy": [
+  1376,
+  1524,
+  1024
+ ],
+ "timing_s": {
+  "setup_s": 21,
+  "dem_s": 3,
+  "relief_s": 888,
+  "snow_s": 17,
+  "vectors_s": 8,
+  "compose_s": 64,
+  "total_s": 1001
+ },
+ "files": [
+  "asahidake-full.webp",
+  "asahidake-heightmap16.png",
+  "asahidake-meta.json",
+  "asahidake-relief.png",
+  "asahidake-sheet-baked.webp",
+  "asahidake-sheet.webp",
+  "asahidake-tiles.json",
+  "asahidake-vectors.svg",
+  "asahidake.blend",
+  "asahidake.png",
+  "asahidake.svg"
+ ]
+}
