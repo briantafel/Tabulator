@@ -28,7 +28,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120   # 2026-11-21: + long-range scoring of the past-winter ensembles
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -50,6 +50,7 @@ jobs:
       - name: Test the builder and the SLR fit
         run: |
           python3 scripts/verify/test_build.py
+          python3 scripts/verify/test_longrange.py
           python3 scripts/model/test_slr.py
           python3 scripts/model/test_blend.py
           python3 scripts/model/test_bands.py
@@ -89,11 +90,21 @@ jobs:
       - name: Daily accuracy digest
         run: python3 scripts/verify/digest.py archive out
 
+      # Long range (Brian, 2026-11-21): every ensemble scored out to day 15 against what fell,
+      # past winters included (read from the archive month by month). Public models +
+      # public truth only, so the report is published unsealed below. Runs after the
+      # digest and may not block the save; a failure turns the run red at the end.
+      - name: Long-range verification (days 0-15)
+        id: longrange
+        continue-on-error: true
+        run: python3 scripts/verify/longrange.py archive out
+
       - name: Save to the bucket
         if: success()
         run: |
           ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
           DAY=$(date -u +%Y-%m-%d)
+          rm -rf out/longrange_tmp
           aws s3 cp out/ "s3://$R2_BUCKET/verify/$DAY/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           echo "saved to verify/$DAY/ and verify/latest/"
@@ -120,7 +131,7 @@ jobs:
         if: always()
         run: |
           mkdir -p public-report
-          for f in blend_report.md bands_report.md temps_report.md; do
+          for f in blend_report.md bands_report.md temps_report.md longrange_report.md; do
             [ -f "out/$f" ] || { echo "::warning::out/$f missing"; continue; }
             if grep -qi "snow-forecast\|(paid)" "out/$f"; then
               echo "::error::out/$f mentions a paid source; not publishing it"; exit 1
@@ -144,3 +155,9 @@ jobs:
           name: verify-report-sealed
           path: sealed/
           retention-days: 7
+
+      - name: Fail loudly if long-range scoring failed
+        if: always() && steps.longrange.outcome == 'failure'
+        run: |
+          echo "::error::Long-range verification failed — see its step log. The rest of the report was saved."
+          exit 1

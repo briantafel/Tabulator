@@ -352,6 +352,16 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
       CASE WHEN d_precip IS NULL OR d_precip < 0 OR d_precip > {MAX_SWE_GAIN_MM} THEN NULL ELSE d_precip END AS obs_precip_gain_mm,
       (d_swe > {MAX_SWE_GAIN_MM} OR d_depth > {MAX_DEPTH_GAIN_CM}) AS sensor_flag
     FROM truth""")
+    # Daily liquid truth at strict mid-tier pairs, on its own (2026-11-21): longrange.py scores
+    # ensembles out to 15 days straight from the archive (past-winter dynamical-ens included)
+    # and needs truth for days no row in `pairs` happens to cover.
+    con.execute(f"""COPY (
+      SELECT t.resort_id, r.region, r.tz, t.local_date, t.truth_source, t.obs_swe_gain_mm AS obs,
+             CASE WHEN month(t.local_date) >= 7 THEN year(t.local_date) ELSE year(t.local_date) - 1 END AS winter
+      FROM truth2 t JOIN station_pairs p ON p.resort_id = t.resort_id AND p.tier = t.tier
+      JOIN resorts r ON r.resort_id = t.resort_id
+      WHERE t.tier = 'mid' AND p.pair_quality = 'strict' AND t.obs_swe_gain_mm IS NOT NULL
+    ) TO '{out / 'truth_daily.parquet'}' (FORMAT parquet)""")
 
     # SNOTEL peak depth gain (2026-11-17): the day's highest hourly depth (3-hour running median,
     # sensor noise is ±1–2 cm) minus the depth at local midnight. New snow settles within hours, so
