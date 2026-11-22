@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { parse } from "yaml";
 
 /* CI config is code, and it broke in a way nothing else would have caught:
@@ -38,6 +38,12 @@ for (const file of files) {
 
     assert.ok(doc.jobs && Object.keys(doc.jobs).length, `${file} has no jobs`);
     for (const [name, job] of Object.entries(doc.jobs)) {
+      // A job that calls a reusable workflow (`uses: ./.github/workflows/x.yml`) runs on that workflow's runner.
+      if (job.uses) {
+        assert.match(job.uses, /^\.\/\.github\/workflows\/[\w.-]+\.ya?ml$/, `job "${name}" calls something that is not a workflow in this repo`);
+        assert.ok(existsSync(DIR + job.uses.split("/").pop()), `job "${name}" calls ${job.uses}, which does not exist`);
+        continue;
+      }
       assert.ok(job["runs-on"], `job "${name}" has no runs-on`);
       const steps = job.steps ?? [];
       if (!steps.length && !job.uses) assert.fail(`job "${name}" has no steps`);
