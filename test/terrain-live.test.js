@@ -100,7 +100,7 @@ test("drawLive: bands, contours, labels inside the outline, Base / Top from the 
 test("Mid label text is the header's text, at both units", () => {
   const L = layoutMid({ x: 0.5, y: 0.5, cm: 24.99, ft: 8379 }, false, SHEET);
   assert.equal(L.text, snowWithUnit(24.99, false));
-  assert.equal(L.sub, "Mid · 8,379 ft");
+  assert.equal(L.sub, "Mid\u20028,379 ft");
   assert.equal(layoutMid({ x: 0.5, y: 0.5, cm: 25, ft: 8379 }, true, SHEET).text, snowWithUnit(25, true));
   assert.ok(L.cx - L.w / 2 >= 0 && L.cx + L.w / 2 <= SHEET.size);
 });

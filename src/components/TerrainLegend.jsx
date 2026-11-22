@@ -1,5 +1,5 @@
 import { depthText } from "../lib/terrainLabels.js";
-import { snowWithUnit } from "../lib/units.js";
+import { snowTxt, snowUnit } from "../lib/units.js";
 
 /* Legend for the full-screen Snow by terrain map (Brian, 2026-11-20): a floating
    card, inset from the screen edges, that lives outside the pan/zoom layer so it
@@ -27,7 +27,7 @@ export default function TerrainLegend({ range, label, day, metric, nosnow = fals
         const t = Math.min(0.9, Math.max(0.1, (midCm / 2.54 - range[0]) / (range[1] - range[0])));
         return (
           <div className="tmf-lg-mid" style={{ left: `${t * 100}%` }}>
-            <b>{snowWithUnit(midCm, metric)}</b><i aria-hidden="true" />
+            <b>{snowTxt(midCm, metric)}<u>{snowUnit(metric)}</u></b><i aria-hidden="true" />
           </div>
         );
       })()}

@@ -1674,7 +1674,7 @@ body { background: #F2F2F2; }
 .tm-cap b { font-weight: 600; color: var(--ink); }
 /* App-drawn map: Base · Mid · Top is too wide to share a line with the source, so it takes its own (Brian 2026-11-22). */
 .tm-cap-live { flex-direction: column; gap: calc(4 * var(--u)); }
-.tm-cap b.tm-cap-mid { font-size: calc(15 * var(--u)); font-weight: 800; color: var(--red); line-height: calc(13 * var(--u)); }
+.tm-cap b.tm-cap-mid { color: var(--red); }   /* same size and weight as Base and Top (Figma note); only the colour is the header's */
 
 /* Expand button on the terrain map (Figma 4030:511): 28 black square, 4 radius,
    8 in from the bottom-right corner, white two-arrow glyph. The hit area is
@@ -1731,6 +1731,8 @@ body { background: #F2F2F2; }
 /* Mid: the header's total at its place on the ramp (red like the header); the tick crosses the bar. */
 .tmf-lg-mid { position: relative; height: calc(24 * var(--u)); margin: calc(4 * var(--u)) 0 calc(2 * var(--u)); }
 .tmf-lg-mid b { position: absolute; bottom: calc(7 * var(--u)); left: 0; transform: translateX(-50%); font-size: calc(17 * var(--u)); font-weight: 800; line-height: 1; color: var(--red); white-space: nowrap; }
+/* the unit hangs off the right of the digits, so the tick sits under the centre of the number itself (Figma note) */
+.tmf-lg-mid b u { position: absolute; left: 100%; bottom: 0; text-decoration: none; }
 .tmf-lg-mid i { position: absolute; bottom: calc(-16 * var(--u)); left: 0; width: calc(3 * var(--u)); height: calc(22 * var(--u)); background: var(--red); transform: translateX(-50%); border-radius: 2px; box-shadow: 0 0 0 1px #fff; z-index: 1; }
 .tmf-legend.has-mid .tmf-lg-bar { position: relative; margin-top: calc(4 * var(--u)); }
 .tmf-lg-f span { font-size: calc(10 * var(--u)); color: #6e6e6e; white-space: nowrap; }

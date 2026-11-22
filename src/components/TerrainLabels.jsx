@@ -1,4 +1,4 @@
-import { DEPTH_INK, INK, layoutDepth, layoutMark, layoutMid, textWidth } from "../lib/terrainLabels.js";
+import { DEPTH_INK, INK, layoutDepth, layoutMark, layoutMid } from "../lib/terrainLabels.js";
 
 /* The Snow by terrain labels, drawn as SVG over the picture (Brian, 2026-11-20).
    viewBox is the picture in Figma px (358 on the sheet, 874 full screen), so
@@ -25,28 +25,38 @@ export default function TerrainLabels({ labels, metric, S, counter = false, scre
       {labels.mid && (() => {
         const L = layoutMid(labels.mid, metric, S);
         return (
-          <g {...at(L.cx, L.cy)}>
-            <rect x={-L.w / 2} y={-L.h / 2} width={L.w} height={L.h} rx={S.radius * 1.5} fill="#fff" style={{ stroke: "var(--red)" }} strokeWidth={Math.max(1, L.fs / 14)} />
-            <text x="0" y={-L.sfs * 0.62} textAnchor="middle" dominantBaseline="central" fontSize={L.fs} fontWeight="800" style={{ fill: "var(--red)" }}>{L.text}</text>
-            <text x="0" y={L.fs * 0.5} textAnchor="middle" dominantBaseline="central" fontSize={L.sfs} fontWeight="600" fill={INK}>{L.sub}</text>
+          <g {...at(L.cx - L.w / 2, L.cy)}>
+            <Tag tag={L.tag} S={S} valueStyle={{ fill: "var(--red)" }} />
           </g>
         );
       })()}
       {(labels.marks ?? []).map((m, i) => {
         const L = layoutMark(m, metric, S);
+        const off = S.ring / 2 + S.gap;
         return (
           <g key={`m${i}`} {...at(L.cx, L.cy)}>
             <circle r={S.ring / 2} fill="#fff" stroke={INK} strokeWidth={Math.max(1, S.ring / 10)} />
             <circle r={S.dot / 2} fill={INK} />
-            <text
-              x={L.tx - L.cx} y="0" textAnchor={L.flip ? "end" : "start"} dominantBaseline="central"
-              {...(screen ? { "data-mark": "", "data-w": textWidth(L.text, S.mark), "data-off": S.ring / 2 + S.gap } : {})}
-              fontSize={S.mark} fontWeight="700" fill={INK}
-              stroke="#fff" strokeWidth={S.mark / 3} strokeLinejoin="round" paintOrder="stroke"
-            >{L.text}</text>
+            {/* full screen re-flips this group against the real screen edge (TerrainFullscreen) */}
+            <g transform={`translate(${L.flip ? -off - L.tag.w : off}, 0)`}
+              {...(screen ? { "data-mark": "", "data-w": L.tag.w, "data-off": off } : {})}>
+              <Tag tag={L.tag} S={S} valueStyle={{ fill: DEPTH_INK }} />
+            </g>
           </g>
         );
       })}
     </svg>
+  );
+}
+
+/* One tag (Figma 2026-11-22): white box, the amount bold, then its elevation line; origin = left edge, vertical centre. */
+function Tag({ tag, S, valueStyle }) {
+  const { value, sub, vw, w, h } = tag;
+  return (
+    <>
+      <rect x="0" y={-h / 2} width={w} height={h} rx={S.radius} fill="#fff" />
+      {value && <text x={S.tagPadX} y="0" dominantBaseline="central" fontSize={S.tagVal} fontWeight="700" style={valueStyle}>{value}</text>}
+      <text x={S.tagPadX + (value ? vw + S.tagGap : 0)} y="0" dominantBaseline="central" fontSize={S.tagSub} fontWeight="600" fill={INK}>{sub}</text>
+    </>
   );
 }

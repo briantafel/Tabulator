@@ -19,7 +19,7 @@ export const SHEET = {
   gap: 4,                          // marker edge -> label
   depth: 11.5, padX: 4, padY: 1.5, // snow-depth label, bold, on a white rounded box
   radius: 2,
-  mid: 17,                         // Mid: the sheet's number at the sheet's elevation, larger than the contour labels
+  tagVal: 14, tagSub: 8.5, tagPadX: 4, tagPadY: 1.5, tagGap: 4,   // Base / Mid / Top tags (Figma, Brian 2026-11-22): amount, then its elevation
 };
 export const FULL = {
   size: 874,                       // the reference height; the picture is wider (S.w, set from the data)
@@ -28,7 +28,7 @@ export const FULL = {
   gap: 8.8,
   depth: 13, padX: 5.5, padY: 2.95,
   radius: 2,
-  mid: 22,
+  tagVal: 14, tagSub: 8.5, tagPadX: 4, tagPadY: 1.5, tagGap: 4,
 };
 
 export const INK = "#2b2f33";
@@ -61,15 +61,28 @@ export function textWidth(str, fs) {
   return em * fs;
 }
 
-/** Layout of one Base / Top marker in picture px (0..S.w, 0..S.h; both default to size). The label goes to
- *  the right of the marker and flips to the left when it would leave the frame. */
+/** Elevation line of a Base / Mid / Top tag: "Base  6,317 ft" (an en space between the word and the elevation). */
+export function tagSub(word, ft, metric) {
+  const elev = metric ? `${Math.round(ft / 3.28084).toLocaleString("en-US")} m` : `${ft.toLocaleString("en-US")} ft`;
+  return `${word}\u2002${elev}`;
+}
+
+/** A tag: white box, the amount in bold, then its elevation line. `value` null (no snow in the forecast): elevation only. */
+export function layoutTag(value, sub, S) {
+  const vw = value ? textWidth(value, S.tagVal) : 0, sw = textWidth(sub, S.tagSub) * 0.89;   // 0.89: textWidth over-reads narrow letters; calibrated to Figma's 52 px for "Mid  8,379 ft" at 8.5 px
+  const w = 2 * S.tagPadX + vw + (value ? S.tagGap : 0) + sw;
+  return { value, sub, vw, sw, w, h: S.tagVal * LH + 2 * S.tagPadY };
+}
+
+/** Layout of one Base / Top marker in picture px (0..S.w, 0..S.h; both default to size): the ring, and its tag to the
+ *  right of it, flipping to the left when the tag would leave the frame. */
 export function layoutMark(m, metric, S) {
   const W = S.w ?? S.size;
   const cx = m.x * W, cy = m.y * (S.h ?? S.size);
-  const text = markText(m, metric);
-  const w = textWidth(text, S.mark);
-  const flip = cx + S.ring / 2 + S.gap + w > W - S.gap;
-  return { cx, cy, text, flip, tx: flip ? cx - S.ring / 2 - S.gap : cx + S.ring / 2 + S.gap, h: S.mark * LH };
+  const word = m.kind === "top" ? "Top" : "Base";
+  const tag = layoutTag(m.in == null ? null : depthText(m.in, metric), tagSub(word, m.ft, metric), S);
+  const flip = cx + S.ring / 2 + S.gap + tag.w > W - S.gap;
+  return { cx, cy, text: markText(m, metric), tag, flip, tx: flip ? cx - S.ring / 2 - S.gap : cx + S.ring / 2 + S.gap, h: tag.h };
 }
 
 /** Layout of one snow-depth label: its centre and its box. Box and text stay
@@ -86,12 +99,9 @@ export function layoutDepth(d, metric, S) {
 /** Is there label data to draw? Needs the labels-free picture and at least one marker or contour label. */
 export const hasVectorLabels = (m) => !!(m && m.img_clean && m.labels && (m.labels.marks?.length || m.labels.depth?.length));
 
-/** The Mid label: the sheet's total, written by the same function as the header, over "Mid · 8,379 ft". */
+/** The Mid tag: the sheet's total, written by the same function as the header (red like the header), then "Mid  8,379 ft". */
 export function layoutMid(m, metric, S) {
-  const text = snowWithUnit(m.cm, metric);
-  const sub = `Mid · ${metric ? `${Math.round(m.ft / 3.28084).toLocaleString("en-US")} m` : `${m.ft.toLocaleString("en-US")} ft`}`;
+  const tag = layoutTag(snowWithUnit(m.cm, metric), tagSub("Mid", m.ft, metric), S);
   const W = S.w ?? S.size, H = S.h ?? S.size;
-  const fs = S.mid, sfs = Math.max(6, S.mid * 0.5), pad = fs * 0.35;
-  const w = Math.max(textWidth(text, fs), textWidth(sub, sfs)) + 2 * pad, h = fs * LH + sfs * LH + 2 * pad;
-  return { cx: Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, m.x * W)), cy: Math.min(H - h / 2 - 2, Math.max(h / 2 + 2, m.y * H)), text, sub, w, h, fs, sfs, pad };
+  return { cx: Math.min(W - tag.w / 2 - 2, Math.max(tag.w / 2 + 2, m.x * W)), cy: Math.min(H - tag.h / 2 - 2, Math.max(tag.h / 2 + 2, m.y * H)), tag, text: tag.value, sub: tag.sub, w: tag.w, h: tag.h };
 }

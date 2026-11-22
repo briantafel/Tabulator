@@ -6,7 +6,7 @@
    TerrainLabels reads. */
 import { computeField, levelsFor, sampleAt, windowLabel } from "./terrainField.js";
 import { contourRings, splitAtFrame, workspace } from "./terrainContours.js";
-import { FULL, SHEET, layoutMark, layoutMid, textWidth } from "./terrainLabels.js";
+import { FULL, SHEET, layoutMark, layoutMid } from "./terrainLabels.js";
 
 export const RAMP = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"];
 const r1 = (v) => Math.round(v * 10) / 10;
@@ -136,8 +136,8 @@ export function drawLive(live, grids, win) {
         const m = layoutMid({ x: (mx - x0) / fw, y: (my - y0) / fh, cm: win.totalCm, ft: Math.round(zc * 1000) }, false, S);
         return marks0.some((k) => {
           const L = layoutMark({ x: (k.x - x0) / fw, y: (k.y - y0) / fh, kind: k.kind, in: 1, ft: k.ft }, false, S);
-          const w = textWidth(L.text, S.mark) + S.ring + S.gap;
-          const cx2 = L.flip ? L.tx - w / 2 + S.ring / 2 : L.tx + w / 2 - S.ring / 2;
+          const w = L.tag.w + S.ring / 2 + S.gap;   // from the marker's centre to the tag's far edge
+          const cx2 = L.flip ? L.cx - w / 2 : L.cx + w / 2;
           return Math.abs(m.cx - cx2) * 2 < m.w + w && Math.abs(m.cy - L.cy) * 2 < m.h + L.h + 4;
         });
       };

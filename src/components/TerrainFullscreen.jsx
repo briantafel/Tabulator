@@ -85,8 +85,7 @@ export default function TerrainFullscreen({ src, alt, onClose, title = "Snow by 
         if (!c) continue;
         const cx = c.left + c.width / 2 - sl, w = +t.dataset.w, off = +t.dataset.off, m = 6;
         const flip = cx + off + w > vw - m && cx - off - w > m;
-        t.setAttribute("text-anchor", flip ? "end" : "start");
-        t.setAttribute("x", flip ? -off : off);
+        t.setAttribute("transform", `translate(${flip ? -off - w : off}, 0)`);
       }
     }
     const d = done.current;
