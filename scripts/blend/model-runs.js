@@ -9,7 +9,9 @@
  * one shows a stale forecast), and the reason is printed. */
 import { readFile, writeFile, appendFile } from "node:fs/promises";
 
-export const META_MODELS = { ecmwf_ifs025: "ecmwf_ifs025", gfs: "ncep_gfs025", gem: "cmc_gem_gdps" };
+// hrrr (2026-11-22, plan-near-term-models): gfs_seamless takes in each hourly HRRR run over the US, so a new HRRR run is a
+// new day-1 forecast even when GFS itself has not moved (lead-1 correlation gfs_seamless vs HRRR 0.94).
+export const META_MODELS = { ecmwf_ifs025: "ecmwf_ifs025", gfs: "ncep_gfs025", gem: "cmc_gem_gdps", hrrr: "ncep_hrrr_conus" };
 
 /** prev/cur: {model: isoInit|null}. Returns {changed:[models], reasons:[...]}; null/missing current counts as changed. */
 export function compare(prev, cur) {
