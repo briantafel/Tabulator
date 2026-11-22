@@ -48,6 +48,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
+      - name: Install (the NBM bucket reader needs numpy and eccodes)
+        run: pip install numpy eccodes eccodeslib
       - name: Live index
         run: |
           if git ls-remote --exit-code --heads origin terrain-live >/dev/null 2>&1; then
