@@ -10,9 +10,7 @@
  *    six-day forecast rather than showing old purple days.
  */
 
-/* Day 8 is as far as we show a number (Brian, 2026-11-22). Across six winters of ensemble data, storm-sized snow stays
-   predictable to about day 8 and is not dependable past it; later days belong to odds, not inches. */
-export const MAX_DAYS = 8;
+export const MAX_DAYS = 10;
 export const STALE_HOURS = 36;
 
 /** Snow-Forecast's number with the ensemble's spread around it. The spread
