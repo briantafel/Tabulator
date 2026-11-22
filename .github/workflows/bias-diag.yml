@@ -1,0 +1,30 @@
+name: bias-diag
+# Read-only: water bias by region from the latest verify pairs (public sources only). Prints only.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3"
+      - name: Fetch latest pairs
+        run: |
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" pairs.parquet --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors
+          ls -la pairs.parquet
+      - name: Diagnose
+        run: python3 scripts/model/bias_diag.py pairs.parquet public/blend.json
