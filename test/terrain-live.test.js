@@ -1,0 +1,96 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { readPng } from "../scripts/maps/png.mjs";
+import { readGrids, computeField, gaussianBlur, levelsFor, windowLabel, sampleAt } from "../src/lib/terrainField.js";
+import { contourRings, splitAtFrame, ringArea } from "../src/lib/terrainContours.js";
+import { drawLive, sheetWindow } from "../src/lib/terrainLive.js";
+
+const FX = new URL("./fixtures/terrain-live/", import.meta.url).pathname;
+const live = JSON.parse(readFileSync(FX + "live.json", "utf8"));
+const exp = JSON.parse(readFileSync(FX + "expected.json", "utf8"));
+const grids = readGrids(live, readPng(readFileSync(FX + "grid.png")), readPng(readFileSync(FX + "days.png")));
+
+test("the app's field equals the Python twin (live_grid.field) on the same bytes", () => {
+  const r = computeField(live, grids, exp.dates, exp.totalCm);
+  assert.ok(!r.hidden, r.hidden);
+  assert.ok(Math.abs(r.k - exp.k) < 1e-9, `k ${r.k} vs ${exp.k}`);
+  let worst = 0;
+  for (let i = 0; i < exp.F.length; i++) worst = Math.max(worst, Math.abs(r.F[i] - exp.F[i]));
+  assert.ok(worst < 1e-6, `max difference ${worst} in`);
+});
+
+test("blur matches scipy's reflect mode on a known case", () => {
+  // scipy.ndimage.gaussian_filter([0,0,1,0,0] as a 5x1 row, 1.0) -> symmetric, sums to 1
+  const f = new Float64Array([0, 0, 1, 0, 0]);
+  gaussianBlur(f, 5, 1, 1.0);
+  assert.ok(Math.abs(f.reduce((a, b) => a + b, 0) - 1) < 1e-12);
+  assert.ok(Math.abs(f[1] - f[3]) < 1e-12 && f[2] > f[1] && f[1] > f[0]);
+  assert.ok(Math.abs(f[2] - 0.39894347) < 1e-7 && Math.abs(f[0] - 0.05842299) < 1e-7, f.join());  // scipy: .05842299 .24210528 .39894347
+});
+
+test("a day the grids do not have, a missing total, or a total with no NBM pattern: hidden, never guessed", () => {
+  assert.ok(computeField(live, grids, ["2026-11-22", "2026-11-30"], 5).hidden);
+  assert.ok(computeField(live, grids, ["2026-11-22"], NaN).hidden);
+  assert.ok(computeField({ ...live, ref: { ...live.ref, a: [-50, -50, -50] } }, grids, ["2026-11-22"], 5).hidden);
+  const z = computeField(live, grids, ["2026-11-22"], 0);
+  assert.ok(!z.hidden && z.F.every((v) => v === 0), "a zero total is no snow, drawn as such");
+});
+
+test("the map's amount IS the sheet's: at the forecast point and height the window sums to the total", () => {
+  for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41]]) {
+    const r = computeField(live, grids, dates, cm);
+    const idx = dates.map((d) => live.dates.indexOf(d));
+    const ref = Math.max(0, idx.reduce((s, i) => s + live.ref.a[i], 0) + idx.reduce((s, i) => s + live.ref.g[i], 0) * live.ref.z_kft);
+    assert.ok(Math.abs(ref * r.k * 2.54 - cm) < 1e-9);
+  }
+});
+
+test("levels follow terrain_pilot.py's rule", () => {
+  assert.deepEqual(levelsFor(3.3, 16.2), { levels: [4, 6, 8, 10, 12, 14, 16], floor: 3 });   // = terrain_pilot.py
+  assert.deepEqual(levelsFor(0.9, 3.4), { levels: [1, 2, 3], floor: 0 });
+  assert.deepEqual(levelsFor(2, 60).levels.length <= 14, true);
+});
+
+test("window labels", () => {
+  assert.equal(windowLabel(["2026-11-22", "2026-11-23", "2026-11-27"]), "Nov 22–27");
+  assert.equal(windowLabel(["2026-11-29", "2026-12-03"]), "Nov 29 – Dec 3");
+  assert.equal(windowLabel(["2026-11-22"]), "Nov 22");
+});
+
+test("marching squares: a disc's ring has the disc's area, and closes on the frame where it is cut", () => {
+  const w = 80, h = 80, F = new Float64Array(w * h);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) F[j * w + i] = 30 - Math.hypot(i + 0.5 - 40, j + 0.5 - 40);
+  const rings = contourRings(F, w, h, 10);           // radius 20
+  assert.equal(rings.length, 1);
+  assert.ok(Math.abs(ringArea(rings[0]) - Math.PI * 400) / (Math.PI * 400) < 0.01, ringArea(rings[0]));
+  assert.equal(splitAtFrame(rings[0], w, h).length, 1, "a ring off the frame stays whole");
+  const G = new Float64Array(w * h);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) G[j * w + i] = 30 - Math.hypot(i + 0.5, j + 0.5 - 40);   // centred on the left edge
+  const cut = contourRings(G, w, h, 10);
+  assert.equal(cut.length, 1);
+  const parts = splitAtFrame(cut[0], w, h);
+  assert.equal(parts.length, 1, "the half-disc's arc, without the frame edge");
+  for (let i = 0; i < parts[0].length; i += 2) assert.ok(parts[0][i] > 0 || i === 0 || i === parts[0].length - 2);
+});
+
+test("drawLive: bands, contours, labels inside the outline, Base / Top from the same field", () => {
+  const sheet = { snowfall: "tabulator", win: [{ date: "2026-11-23", snow: 12 }, { date: "2026-11-24", snow: 8 }] };
+  const win = sheetWindow(sheet);
+  assert.deepEqual(win, { dates: ["2026-11-23", "2026-11-24"], totalCm: 20 });
+  const r = drawLive(live, grids, win);
+  assert.ok(!r.hidden, r.hidden);
+  assert.match(r.fill, /<path d="M/);
+  assert.equal(r.label, "Nov 23–24");
+  const F = computeField(live, grids, win.dates, win.totalCm).F;
+  assert.equal(r.base_in, Math.round(sampleAt(F, live, 60, 150) * 10) / 10);
+  assert.ok(r.range_in[0] <= r.range_in[1]);
+  for (const d of r.full.depth) assert.ok(d.x >= 0 && d.x <= 1 && d.y >= 0 && d.y <= 1);
+  assert.equal(r.sheet.marks.length, 2);
+});
+
+test("sheetWindow: only our own numbers, all of them", () => {
+  assert.equal(sheetWindow({ win: [{ date: "x", snow: 1 }] }), null);
+  assert.equal(sheetWindow({ snowfall: "tabulator", win: [{ date: "x", snow: null }] }), null);
+  assert.equal(sheetWindow({ snowfall: "tabulator", win: [] }), null);
+});

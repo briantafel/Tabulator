@@ -375,7 +375,7 @@ def anchor_setup(rid, r):
     start, end = A.window_utc(dates, tz)
     log(f"anchor: {rid} sheet days {dates[0]}..{dates[-1]} ({len(dates)}), blend {total_cm} cm = {total_cm / A.CM_PER_IN:.2f} in "
         f"at {pt[0]},{pt[1]} {z_m:.0f} m (blend {bl.get('fetchedAt')})")
-    return {"A": A, "dates": dates, "total_cm": total_cm, "z_m": z_m, "pt": pt, "blend_fetched": bl.get("fetchedAt"),
+    return {"A": A, "tz": tz, "dates": dates, "total_cm": total_cm, "z_m": z_m, "pt": pt, "blend_fetched": bl.get("fetchedAt"),
             "forecast_generated": fc.get("generatedAt"),
             "leads_for": lambda cycle: A.nbm_leads(cycle, start, end), "start": start, "end": end}
 
@@ -407,15 +407,17 @@ def anchor_apply(anc, sample, snow, snow_info, fbox):
     return snow * k
 
 
-def build_snow(rid, crop, lat_c, lon_c, work, leads_for=None):
-    """Returns (sample(LA, LO, dem_m) -> inches on that grid, info). NBM where it covers the resort, else IFS."""
+def build_snow(rid, crop, lat_c, lon_c, work, anc=None):
+    """Returns (sample(LA, LO, dem_m) -> inches on that grid, info, parts). NBM where it covers the resort, else IFS.
+    Anchored (anc): the field is the sum of per-day NBM parts (live_grid.py), and `parts` holds them for the app."""
+    leads_for = anc["leads_for"] if anc else None
     info = {"nbm_checked": False}
     nominal = 19.0 < lat_c < 56.0 and -140.0 < lon_c < -60.0
     if nominal:
         wide = (crop[0] - 0.16, crop[1] - 0.12, crop[2] + 0.16, crop[3] + 0.12)
         set_box(wide, 1400)
         info["nbm_checked"] = True
-        run, lat, lon, total, _ = sk.latest_nbm_snow(leads_for=leads_for)
+        run, lat, lon, total, blocks = sk.latest_nbm_snow(leads_for=leads_for)
         in_box = (lat > sk.S - 0.1) & (lat < sk.N + 0.1) & (lon > sk.W - 0.1) & (lon < sk.E + 0.1)
         log(f"NBM grid lat {lat.min():.2f}..{lat.max():.2f}, lon {lon.min():.2f}..{lon.max():.2f}; "
             f"{int(in_box.sum())} cells in the {wide[0]:.2f},{wide[1]:.2f},{wide[2]:.2f},{wide[3]:.2f} box")
@@ -442,12 +444,14 @@ def build_snow(rid, crop, lat_c, lon_c, work, leads_for=None):
                 except SystemExit as e:
                     cross = {"error": str(e.code)}
             info["cross_check"] = cross
+        if reason is None and anc:
+            return per_day_snow(anc, run, lat, lon, blocks, to_in, dem_w, wide, info)
         if reason is None:
             fine_w, grad_w = sk.downscale(dem_w, lat, lon, total, to_in)
             info.update(source="NBM", caption=CAPTION["nbm"], run=run.isoformat(), grid="NBM 2.5 km",
                         slr="NBM's own snow ratio", nbm_check="inside the NBM grid, values present")
             grad_w = _usable_grad(grad_w, info)
-            return _sampler(fine_w, grad_w, dem_w, wide), info
+            return _sampler(fine_w, grad_w, dem_w, wide), info, None
         if leads_for:
             raise SystemExit(f"anchor: NBM does not cover {rid} ({reason}); an anchored map needs NBM's pattern over the sheet's days")
         log(f"NBM does not cover {rid}: {reason} -> using ECMWF IFS")
@@ -468,7 +472,45 @@ def build_snow(rid, crop, lat_c, lon_c, work, leads_for=None):
     info.update(source="IFS", caption=CAPTION["ifs"], run=run.isoformat(), grid=f"IFS {spacing}° ({spacing * 111.32:.0f} km), via {src}",
                 slr=f"{SLR_IFS:g}:1 placeholder (no temperature-dependent ratio yet)")
     grad_w = _usable_grad(grad_w, info)
-    return _sampler(fine_w, grad_w, dem_w, wide), info
+    return _sampler(fine_w, grad_w, dem_w, wide), info, None
+
+
+def per_day_snow(anc, cycle, lat, lon, blocks, to_in, dem_w, wide, info):
+    """Anchored map: each of the sheet's local days downscaled on its own (live_grid.py), the window = their sum. So the
+    app can rebuild ANY window of those days with the same arithmetic. Days with no snow-vs-height gradient keep the
+    plain NBM field for that day."""
+    A = anc["A"]
+    if not blocks:
+        raise SystemExit("anchor: NBM returned no 6 h blocks; the per-day snow cannot be built")
+    ys = np.linspace(wide[3], wide[1], dem_w.shape[0])[::-1]
+    xs = np.linspace(wide[0], wide[2], dem_w.shape[1])
+    pa, pg, flat = [], [], []
+    for d in anc["dates"]:
+        a, b = A.window_utc([d], anc["tz"])
+        sel = [v for l_, v in blocks if a <= cycle + timedelta(hours=l_ - 3) < b]
+        if not sel:
+            raise SystemExit(f"anchor: NBM {cycle:%Y-%m-%d %HZ} has no 6 h block on {d}")
+        base, grad, zbar = sk.downscale_parts(dem_w, lat, lon, sum(sel), to_in)
+        if not (np.isfinite(grad).all() and float(grad.max()) > 0):
+            grad = np.zeros_like(base)
+            flat.append(d)
+        Ad = base - grad * zbar / 1000.0
+        if not np.isfinite(Ad).all():
+            raise SystemExit(f"anchor: NBM snow parts for {d} have missing values; refusing (missing is not zero)")
+        pa.append(Ad)
+        pg.append(grad)
+        log(f"  day {d}: {len(sel)} blocks, NBM {float(to_in(sum(sel)).max()):.1f} in max on the box"
+            + ("; no height gradient" if d in flat else ""))
+    caption = CAPTION["nbm"] if len(flat) < len(pa) else CAPTION["nbm"].split(" \u2022 ")[0] + " \u2022 not terrain-adjusted"
+    info.update(source="NBM", caption=caption, run=cycle.isoformat(), grid="NBM 2.5 km", per_day=True, flat_days=flat,
+                slr="NBM's own snow ratio", nbm_check="inside the NBM grid, values present")
+    rgi = lambda arr: RegularGridInterpolator((ys, xs), arr[::-1], bounds_error=True)  # noqa: E731
+    fA, fG = rgi(sum(pa)), rgi(sum(pg))
+
+    def sample(LA, LO, dem_m):
+        q = np.stack([LA, LO], -1)
+        return np.clip(fA(q) + fG(q) * dem_m * FT / 1000.0, 0, None)
+    return sample, info, {"dates": list(anc["dates"]), "A": [rgi(x) for x in pa], "G": [rgi(x) for x in pg]}
 
 
 def _usable_grad(grad_w, info):
@@ -687,6 +729,58 @@ def contours(field, levels, sigma, scale, flip=None):
     return lines, fill
 
 
+def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box, sig, sn, side_m, m_px, s, snow):
+    """Write <id>-grid.png and <id>-days.png (live_grid.py) and return their description for index.json. Checks the
+    app's arithmetic (its numpy twin) against this run's own full-resolution field and fails loudly on a real gap."""
+    import live_grid as LG
+    from scipy.ndimage import map_coordinates
+    W_, S_, E_, N_ = fbox
+    lat_of = lambda y: N_ - y / px * (N_ - S_)  # noqa: E731
+    lon_of = lambda x: W_ + (left + x) / px * (E_ - W_)  # noqa: E731
+    gw, gh = LG.fine_dims(Wc, px)
+    cw, ch = LG.coarse_dims(Wc, px)
+    fx, fy = LG.centres(gw, LG.CELL), LG.centres(gh, LG.CELL)
+    H = spl(lat_of(fy)[::-1], lon_of(fx))[::-1] * FT / 1000.0
+    m = mask[np.clip(fy.astype(int), 0, px - 1)][:, np.clip((left + fx).astype(int), 0, px - 1)]
+    cx, cy = LG.centres(cw, LG.CCELL), LG.centres(ch, LG.CCELL)
+    q = np.stack(np.meshgrid(lat_of(cy), lon_of(cx), indexing="ij"), -1)
+    A = [f(q) for f in parts["A"]]
+    G = [f(q) for f in parts["G"]]
+    grid_png, days_png, qm = LG.pack(H, m, A, G)
+    (out / f"{rid}-grid.png").write_bytes(grid_png)
+    (out / f"{rid}-days.png").write_bytes(days_png)
+    la, lo = anc["pt"]
+    pt = np.array([[la, lo]])
+    ref = {"z_kft": round(anc["z_m"] * FT / 1000.0, 6), "a": [round(float(f(pt)[0]), 6) for f in parts["A"]],
+           "g": [round(float(f(pt)[0]), 6) for f in parts["G"]]}
+    sigma = sig * (side_m / sn) / (LG.CELL * m_px)
+    deep_y, deep_x = np.unravel_index(int(np.argmax(distance_transform_edt(mask))), mask.shape)
+    live = {"v": LG.VERSION, "grid": f"{rid}-grid.png", "days": f"{rid}-days.png", "w": Wc, "h": px,
+            "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **qm,
+            "dates": parts["dates"], "tz": anc["tz"], "ref": ref, "sigma": round(sigma, 6), "stroke": round(1.6 * s, 4),
+            "floor_in": anc["A"].NBM_FLOOR_IN,
+            "marks": [{"kind": w.lower(), "x": round(x - left, 2), "y": round(y, 2), "ft": round(float(zz) * FT)}
+                      for w, (zz, x, y, sv) in marks],
+            "sheet": [box[0] - left, box[1], box[2] - box[0]], "deep": [float(deep_x - left), float(deep_y)]}
+    # --- check: the app's arithmetic on the packed (quantised) grids vs this run's field, for the anchored window
+    H2, m2, A2, G2 = LG.unpack(grid_png, days_png, live, len(parts["dates"]))
+    k = anc["record"]["scale"]
+    twin = LG.field(H2, A2, G2, range(len(parts["dates"])), sigma, k)
+    pyf = map_coordinates(snow, [np.broadcast_to((fy / 2 - 0.5)[:, None], (gh, gw)),
+                                 np.broadcast_to(((left + fx) / 2 - 0.5)[None, :], (gh, gw))], order=1, mode="nearest")
+    d = np.abs(twin - pyf)[m2]
+    chk = {"max_in": round(float(d.max()), 3), "p99_in": round(float(np.percentile(d, 99)), 3),
+           "mean_in": round(float(d.mean()), 4), "range_py": [round(float(pyf[m2].min()), 2), round(float(pyf[m2].max()), 2)],
+           "range_app": [round(float(twin[m2].min()), 2), round(float(twin[m2].max()), 2)]}
+    log(f"  live grid: {gw}x{gh} fine ({len(grid_png) / 1e3:.0f} KB), {cw}x{ch} x {2 * len(A)} coarse ({len(days_png) / 1e3:.0f} KB); "
+        f"app vs this run inside the outline: max {chk['max_in']} in, p99 {chk['p99_in']} in; range {chk['range_app']} vs {chk['range_py']}")
+    (out / f"{rid}-live-check.json").write_text(json.dumps(chk))
+    twin.astype("<f4").tofile(out / f"{rid}-live-twin.f32")
+    if chk["p99_in"] > 0.5 or chk["max_in"] > 1.5:
+        raise SystemExit(f"live grid: the app's field differs from this run's by up to {chk['max_in']} in (p99 {chk['p99_in']}); refusing")
+    return live
+
+
 # ---------------------------------------------------------------- main
 def run(out, rid, px=4096, work=None, app=False, hires=False):
     t_start = time.time()
@@ -842,7 +936,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     # --- snow
     t0 = time.time()
     anc = anchor_setup(rid, r)
-    sample, snow_info = build_snow(rid, crop, lat_c, lon_c, work, leads_for=anc["leads_for"] if anc else None)
+    sample, snow_info, parts = build_snow(rid, crop, lat_c, lon_c, work, anc=anc)
     sn = px // 2
     s_lat = fbox[3] - (np.arange(sn) + 0.5) * (fbox[3] - fbox[1]) / sn
     s_lon = fbox[0] + (np.arange(sn) + 0.5) * (fbox[2] - fbox[0]) / sn
@@ -1056,6 +1150,10 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
             "sheet": {"img_clean": f"{rid}-sheet.webp", "img": f"{rid}-sheet-baked.webp", "side_m": round(S_sheet),
                       "labels": mk(box[0], box[1], box[2] - box[0], box[3] - box[1])},
         }
+        if parts:
+            Image.fromarray(relief).crop(box).resize((1080, 1080), Image.LANCZOS).save(out / f"{rid}-sheet-relief.webp", "WEBP", quality=82, method=6)
+            app_info["live"] = export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box, sig, sn, side_m,
+                                           m_px, s, snow)
         for nm, f_ in (("full", out / f"{rid}-full.webp"), ("sheet", out / f"{rid}-sheet.webp")):
             log(f"  app {nm}: {f_.stat().st_size / 1e6:.2f} MB")
         del clean

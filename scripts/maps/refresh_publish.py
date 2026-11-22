@@ -21,6 +21,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 from publish_app_maps import entry  # noqa: E402
 
 FILES = ["{id}-full.webp", "{id}-full-fill.svg", "{id}-full-lines.svg", "{id}-sheet.webp", "{id}-sheet-baked.webp"]
+LIVE_FILES = ["{id}-grid.png", "{id}-days.png", "{id}-full-static.svg", "{id}-sheet-relief.webp"]   # maps drawn by the app
+
+
+def files_for(rid, e):
+    return [n.format(id=rid) for n in FILES + (LIVE_FILES if e.get("live") else [])]
 
 
 def publish(live, stage):
@@ -35,14 +40,15 @@ def publish(live, stage):
             continue
         try:
             e = entry(rid, d)
-            missing = [n.format(id=rid) for n in FILES if not (d / n.format(id=rid)).exists() or (d / n.format(id=rid)).stat().st_size == 0]
+            names = files_for(rid, e)
+            missing = [n for n in names if not (d / n).exists() or (d / n).stat().st_size == 0]
             if missing:
                 raise FileNotFoundError(f"missing or empty: {', '.join(missing)}")
             old = (idx.get(rid) or {}).get("run")
             if old and e["run"] < old:
                 raise ValueError(f"built from run {e['run']}, older than the live {old}: keeping the live map")
-            for n in FILES:
-                shutil.copy(d / n.format(id=rid), live / n.format(id=rid))
+            for n in names:
+                shutil.copy(d / n, live / n)
             idx[rid] = e
             done.append(rid)
             print(f"published {rid}: {e['label']}, run {e['run']}, range {e['range_in']}")
@@ -65,7 +71,7 @@ def fold_in(live, other):
         cur = li.get(rid) if isinstance(li.get(rid), dict) else None
         if cur and cur.get("run") and cur["run"] >= e["run"]:
             continue
-        names = [n.format(id=rid) for n in FILES]
+        names = files_for(rid, e)
         if not all((other / n).exists() for n in names):
             print(f"NOT folded in: {rid} (files missing in {other})", file=sys.stderr)
             continue

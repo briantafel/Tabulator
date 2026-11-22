@@ -6,6 +6,7 @@ From a terrain_pilot --app run's files (<id>-relief.png, <id>-vectors.svg, <id>.
   <id>-full.webp        relief only (no snow tint, no lines) cropped to the full-screen picture
   <id>-full-fill.svg    snow bands (the app draws it multiplied over the relief, 85% opacity)
   <id>-full-lines.svg   contours, runs, lifts, outline
+  <id>-full-static.svg  runs, lifts, outline (the app-drawn map adds its own bands and contours)
 Both SVGs use the full-screen picture's pixel coordinates (0..W, 0..H) and are drawn by the app inline, re-rendered at the
 zoom the viewer settles on. Paths are simplified to 0.35 px of the 4096 px frame (invisible even at 5x zoom).
 
@@ -114,6 +115,7 @@ def main(d, rid):
 
     a = write("fill", ["snow fill (multiply)"])
     b = write("lines", ["snow lines", "runs", "lifts", "skiable terrain outline (from runs)"])
+    c = write("static", ["runs", "lifts", "skiable terrain outline (from runs)"])      # live map: no snow lines, the app draws those
     print(f"{rid}: full {Wc}x{H} left={left}; fill {a / 1e3:.0f} KB, lines {b / 1e3:.0f} KB (was {sum(len(ET.tostring(g)) for g in groups.values()) / 1e3:.0f} KB)")
 
 

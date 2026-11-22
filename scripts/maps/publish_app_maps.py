@@ -39,7 +39,10 @@ def entry(rid, d):
     a = j.get("app")
     if not a:
         raise ValueError(f"{rid}.json has no app block (was the run made with app=true?)")
+    live = a.get("live")
     return {
+        **({"live": {**live, "grid": f"terrain/{rid}-grid.png", "days": f"terrain/{rid}-days.png",
+                     "static": f"terrain/{rid}-full-static.svg", "sheet_relief": f"terrain/{rid}-sheet-relief.webp"}} if live else {}),
         "img": f"terrain/{rid}-sheet-baked.webp", "run": j["snow"]["run"], "label": "NOAA NBM" if j.get("nosnow") else j["caption_source"],
         "base_in": None if j.get("nosnow") else j["base"][1], "top_in": None if j.get("nosnow") else j["top"][1],
         **({"nosnow": True} if j.get("nosnow") else {}),

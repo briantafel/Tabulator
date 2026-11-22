@@ -92,7 +92,10 @@ jobs:
                && python3 scripts/maps/app_vectors.py "out/$id" "$id" \
                && mkdir -p "stage/$id" \
                && cp "out/$id/$id.json" "out/$id/$id-full.webp" "out/$id/$id-full-fill.svg" "out/$id/$id-full-lines.svg" \
-                     "out/$id/$id-sheet.webp" "out/$id/$id-sheet-baked.webp" "stage/$id/"; then
+                     "out/$id/$id-sheet.webp" "out/$id/$id-sheet-baked.webp" "stage/$id/" \
+               && for f in "$id-grid.png" "$id-days.png" "$id-full-static.svg" "$id-sheet-relief.webp"; do
+                    if [ -f "out/$id/$f" ]; then cp "out/$id/$f" "stage/$id/"; fi
+                  done; then
               after=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
               if [ -n "$after" ] && [ "$after" != "$before" ]; then
                 gh release upload terrain-base --clobber "cache/$id-relief-cache.png" "cache/$id-relief-cache.json" \

@@ -148,6 +148,8 @@ export default function Tabulator() {
   const terrainZoomOn = terrainOn && (feedRaw?.flags?.terrainZoom ?? "off") !== "off";
   /* Snow by terrain labels drawn as vectors (2026-11-20). flags.json `terrainVectors: "off"` restores the baked-in labels. */
   const terrainVectorsOn = terrainOn && (feedRaw?.flags?.terrainVectors ?? "off") !== "off";
+  /* The map drawn by the app for the sheet's days (2026-11-22). flags.json `terrainLive: "off"` restores the pictures. */
+  const terrainLiveOn = terrainVectorsOn && (feedRaw?.flags?.terrainLive ?? "off") !== "off";
   const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
@@ -751,6 +753,7 @@ export default function Tabulator() {
         terrain={terrainOn}
         terrainZoom={terrainZoomOn}
         terrainVectors={terrainVectorsOn}
+        terrainLive={terrainLiveOn}
         reportedSnow={open && feedRaw?.season?.resorts?.[open.id] ? reported(feedRaw.season.resorts[open.id]) : undefined}
         onClose={() => setOpen(null)}
         fav={!!open && favs.includes(open.name)}

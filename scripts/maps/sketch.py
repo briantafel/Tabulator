@@ -243,7 +243,8 @@ def latest_nbm_snow(hours=120, leads_for=None):
             print(f"NBM {cycle:%Y-%m-%d %HZ}: leads not all posted yet", file=sys.stderr)
             continue
         cdir = os.environ.get("NBM_CACHE")      # a batch of resorts in one job downloads the national field once
-        cfile = os.path.join(cdir, f"nbm-{cycle:%Y%m%d%H}-{need[0]}-{need[-1]}.npz") if cdir else None
+        # (an anchored map needs the 6 h blocks themselves, per day: no national-total cache for it)
+        cfile = os.path.join(cdir, f"nbm-{cycle:%Y%m%d%H}-{need[0]}-{need[-1]}.npz") if cdir and not leads_for else None
         if cfile and os.path.exists(cfile):
             z = np.load(cfile)
             NBM_NX = int(z["nx"])
@@ -608,6 +609,13 @@ def nbm_cells_layer(lat, lon, total_m):
 
 
 def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0, margin=(0.15, 0.2), min_cnt=50, min_nb=8):
+    base, grad_px, zbar_px = downscale_parts(dem_m, lat, lon, total_m, to_in, radius_km, margin, min_cnt, min_nb)
+    fine = np.clip(base + grad_px * (dem_m * 3.28084 - zbar_px) / 1000.0, 0, None)
+    print(f"  downscale: fine max {fine.max():.1f} in", file=sys.stderr)
+    return fine, grad_px
+
+
+def downscale_parts(dem_m, lat, lon, total_m, to_in, radius_km=10.0, margin=(0.15, 0.2), min_cnt=50, min_nb=8):
     """Sketch of terrain downscaling, from NBM alone (no PRISM yet, not yet scored).
 
     1. Assign every map pixel to its nearest NBM cell; a cell's terrain height = mean of
@@ -616,7 +624,8 @@ def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0, margin=(0.15, 0.2
        (weighted least squares): the local "inches per 1,000 ft". Never negative.
     3. Fine snow = smooth NBM field + gradient x (pixel height - smoothed cell height).
        The added term averages ~0 over a cell, so cell totals are kept.
-    Returns (inches per pixel, gradient in in/1000 ft per pixel)."""
+    downscale_parts returns (base inches, gradient in/1000 ft, smoothed cell height ft) per pixel; downscale combines
+    them as base + gradient x (pixel height - cell height) / 1000, never below 0."""
     from scipy.spatial import cKDTree
     k = math.cos(math.radians(LAT0)) * 111.32
     box = (lat > S - margin[0]) & (lat < N + margin[0]) & (lon > W - margin[1]) & (lon < E + margin[1])
@@ -654,10 +663,10 @@ def downscale(dem_m, lat, lon, total_m, to_in, radius_km=10.0, margin=(0.15, 0.2
     full[np.where(box)[0]] = grad / 39.3701
     grad_px = to_in(full)
     base = to_in(total_m)
-    fine = np.clip(base + grad_px * (dem_m * 3.28084 - zbar_px) / 1000.0, 0, None)
-    print(f"  downscale: gradient median {np.median(grad[seen & (grad > 0)]):.1f} in/1000 ft, "
-          f"max {grad.max():.1f}; fine max {fine.max():.1f} in vs cell max {cval.max():.1f}")
-    return fine, grad_px
+    pos = grad[seen & (grad > 0)]
+    print(f"  downscale: gradient median {np.median(pos) if pos.size else 0:.1f} in/1000 ft, "
+          f"max {grad.max():.1f}; cell max {cval.max():.1f} in", file=sys.stderr)
+    return base, grad_px, zbar_px
 
 
 RANGE_LABELS = {}   # resort name -> "lo–hi"" shown beside its name

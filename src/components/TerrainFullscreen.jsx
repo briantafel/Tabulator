@@ -128,6 +128,7 @@ export default function TerrainFullscreen({ src, alt, onClose, title = "Snow by 
 
   useEffect(() => {
     if (!vec) return undefined;
+    if (vec.inline) { setLayers(vec.inline); return undefined; }          // drawn by the app (terrainLive)
     let live = true;
     Promise.all([fetch(vec.fill), fetch(vec.lines)])
       .then((rs) => Promise.all(rs.map((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })))

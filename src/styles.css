@@ -1657,6 +1657,9 @@ body { background: #F2F2F2; }
 .tm-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .tm-vec { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; font-family: Inter, system-ui, sans-serif; }
 .tm-vec text { font-family: inherit; }
+.tm-live { animation: tm-live-in 0.35s ease-out both; }
+@keyframes tm-live-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tm-live { animation: none; } }
 .tm-h { display: flex; justify-content: space-between; align-items: baseline; }
 .tm-h span { font-size: calc(11 * var(--u)); color: #8A8A8A; }
 .tm-cap span { white-space: nowrap; }

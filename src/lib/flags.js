@@ -72,7 +72,10 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
 /* terrainVectors (2026-11-20): Snow by terrain labels (snow depth, Base / Top) drawn by the app as
    vectors over a labels-free picture, sized from Figma. Needs terrainMap. "off" restores the picture
    with the labels baked in. No Settings row. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off", terrainVectors: "off" });
+/* terrainLive (2026-11-22): the Snow by terrain map drawn by the app from per-day grids, for the days the sheet shows
+   (resorts whose index entry has `live`; Jackson Hole first). Needs terrainMap and terrainVectors. "off" restores the
+   finished pictures (hidden when their window is not the sheet's). No Settings row. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off", terrainVectors: "off", terrainLive: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */
