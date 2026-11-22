@@ -3,8 +3,10 @@ name: Terrain maps refresh (snow-by-terrain, every new forecast run)
 # Snow by terrain is a picture of ONE forecast run, so it goes stale the moment a newer run exists, and a stale map next
 # to a fresh forecast is a trust problem (Brian, 2026-11-22: Jackson Hole showed 5-18" beside a 1.5" forecast).
 #
-# This redraws every map that is older than the newest NOAA NBM run (ECMWF IFS for resorts outside the NBM) and
-# publishes them. The slow part, the Blender relief, does not depend on the forecast, so it is cached in the release
+# This redraws every app resort's map that is older than the newest NOAA NBM run (ECMWF IFS for resorts outside the
+# NBM) and publishes them. Archive-only resorts (no sheet in the app, 49 of 106 maps) are skipped: nothing shows them.
+# Two waves: the ANCHORED resorts first (their map must equal the sheet's total, so the app hides it until it is
+# redrawn: it must not wait behind the rest), then everything else. The second publish waits for the first. The slow part, the Blender relief, does not depend on the forecast, so it is cached in the release
 # `terrain-base` and only the snow layers are redrawn: minutes per resort instead of ~40.
 #
 # Runs after every blend (blend.yml dispatches it). Nothing due -> nothing happens. A map that is not refreshed is
@@ -43,9 +45,13 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.p.outputs.matrix }}
+      matrix_first: ${{ steps.p.outputs.matrix_first }}
+      count_first: ${{ steps.p.outputs.count_first }}
+      matrix_rest: ${{ steps.p.outputs.matrix_rest }}
+      count_rest: ${{ steps.p.outputs.count_rest }}
       count: ${{ steps.p.outputs.count }}
       cycle: ${{ steps.p.outputs.cycle }}
+      anchor: ${{ steps.p.outputs.anchor }}
     env:
       GH_TOKEN: ${{ github.token }}
       ONLY: ${{ inputs.resorts }}
@@ -77,152 +83,42 @@ jobs:
           [ "$FORCE" = "true" ] && args+=(--force)
           [ -n "$ONLY" ] && args+=(--only $ONLY)
           python3 scripts/maps/refresh_plan.py index.json "${args[@]}"
+          echo "anchor=$ANCHOR_RESORTS" >> "$GITHUB_OUTPUT"
 
-  render:
+  render-first:
     needs: plan
-    if: needs.plan.outputs.count != '0'
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-    strategy:
-      fail-fast: false
-      max-parallel: 20
-      matrix:
-        batch: ${{ fromJson(needs.plan.outputs.matrix) }}
-    env:
-      GH_TOKEN: ${{ github.token }}
-      IDS: ${{ matrix.batch }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - name: Install
-        run: |
-          sudo apt-get install -y -q fonts-inter >/dev/null || true
-          pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib ecmwf-opendata numpy
-      - name: Blender (only used when a relief is not cached)
-        run: |
-          sudo apt-get update -q >/dev/null
-          sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null || echo "apt install failed"
-          f=Blender4.2/blender-4.2.3-linux-x64.tar.xz
-          for u in https://download.blender.org/release/$f https://mirrors.ocf.berkeley.edu/blender/release/$f https://ftp.nluug.nl/pub/graphics/blender/release/$f; do
-            curl -fsSL --retry 4 --retry-delay 10 -o b.tar.xz "$u" && xz -t b.tar.xz && break
-            echo "download failed from $u"; rm -f b.tar.xz
-          done
-          [ -f b.tar.xz ] || { echo "::warning::Blender could not be downloaded: resorts without a cached relief will fail"; exit 0; }
-          tar -xf b.tar.xz
-          echo "BLENDER=$PWD/blender-4.2.3-linux-x64/blender" >> $GITHUB_ENV
-      - name: OpenSkiMap exports
-        run: |
-          mkdir -p osm
-          for k in ski_areas lifts runs; do
-            curl -fsSL --retry 5 --retry-delay 15 --retry-all-errors -o osm/$k.geojson https://tiles.openskimap.org/geojson/$k.geojson
-          done
-      - name: Cached reliefs (and earlier pilot renders to seed from)
-        run: |
-          mkdir -p cache seed
-          tags=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=30" --jq '.[].tag_name | select(startswith("terrain-pilot"))')
-          for id in $IDS; do
-            gh release download terrain-base -p "$id-relief-cache.*" -D cache --clobber 2>/dev/null || true
-            if [ -f "cache/$id-relief-cache.json" ] && [ -f "cache/$id-relief-cache.png" ]; then echo "$id: cached relief"; continue; fi
-            rm -f "cache/$id-relief-cache."*
-            for t in $tags; do
-              rm -rf "seed/$id"; mkdir -p "seed/$id"
-              gh release download "$t" -p "$id-relief.png" -p "$id-heightmap16.png" -p "$id.json" -D "seed/$id" 2>/dev/null || true
-              if [ -f "seed/$id/$id-relief.png" ] && [ -f "seed/$id/$id-heightmap16.png" ] && [ -f "seed/$id/$id.json" ]; then
-                echo "$id: seed candidate from $t"; break
-              fi
-              rm -rf "seed/$id"
-            done
-            [ -d "seed/$id" ] || echo "$id: no cached relief and no earlier render: Blender will run (~40 min)"
-          done
-      - name: Redraw the snow
-        run: |
-          mkdir -p out stage nbm
-          fails=""
-          for id in $IDS; do
-            echo "::group::$id"
-            before=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
-            if RELIEF_CACHE=cache RELIEF_SEED="seed/$id" NBM_CACHE=nbm OSM_DIR=osm \
-               python3 scripts/maps/terrain_pilot.py "out/$id" "$id" --app \
-               && python3 scripts/maps/app_vectors.py "out/$id" "$id" \
-               && mkdir -p "stage/$id" \
-               && cp "out/$id/$id.json" "out/$id/$id-full.webp" "out/$id/$id-full-fill.svg" "out/$id/$id-full-lines.svg" \
-                     "out/$id/$id-sheet.webp" "out/$id/$id-sheet-baked.webp" "stage/$id/"; then
-              after=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
-              if [ -n "$after" ] && [ "$after" != "$before" ]; then
-                gh release upload terrain-base --clobber "cache/$id-relief-cache.png" "cache/$id-relief-cache.json" \
-                  && echo "$id: relief cache saved" || echo "::warning::$id: could not save the relief cache (the next run renders it again)"
-              fi
-            else
-              echo "::error::$id failed"
-              fails="$fails $id"
-            fi
-            rm -rf "out/$id" "seed/$id"
-            echo "::endgroup::"
-          done
-          mkdir -p stage
-          echo "$fails" > "stage/FAILED-${{ strategy.job-index }}.txt"
-          [ -z "$(echo $fails)" ] || { echo "failed:$fails"; exit 1; }
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: stage-${{ strategy.job-index }}
-          path: stage
-          if-no-files-found: warn
+    if: needs.plan.outputs.count_first != '0'
+    uses: ./.github/workflows/terrain-render.yml
+    with:
+      matrix: ${{ needs.plan.outputs.matrix_first }}
+      prefix: stage-first
+      anchor: ${{ needs.plan.outputs.anchor }}
 
-  publish:
-    needs: [plan, render]
-    if: always() && needs.plan.result == 'success' && needs.plan.outputs.count != '0'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: stage-*
-          path: stage
-      - name: Fold the new maps into the live folder
-        id: pub
-        run: |
-          mkdir live
-          if git ls-remote --exit-code --heads origin terrain-live >/dev/null 2>&1; then
-            git fetch -q --depth 1 origin terrain-live
-            git archive FETCH_HEAD | tar -x -C live
-          else
-            cp -r public/terrain/. live/
-          fi
-          rc=0
-          python3 scripts/maps/refresh_publish.py live stage --also public/terrain || rc=$?
-          echo "rc=$rc" >> "$GITHUB_OUTPUT"
-          # Publish whatever was good even when some resorts failed: stale maps hide themselves after 30 h, and the
-          # failure below is loud.
-          cd live
-          git init -q -b terrain-live
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -q -m "Terrain maps from NBM ${{ needs.plan.outputs.cycle }} (run ${{ github.run_id }})"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" terrain-live
-          exit 0
-      - name: Redeploy the site
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml --ref main
-      - name: Loud failure
-        if: always() && (needs.render.result != 'success' || steps.pub.outputs.rc != '0')
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require("fs");
-            const failed = (fs.existsSync("stage") ? fs.readdirSync("stage", { recursive: true }) : [])
-              .filter((f) => /FAILED-\d+\.txt$/.test(f))
-              .map((f) => fs.readFileSync(`stage/${f}`, "utf8").trim()).filter(Boolean).join(" ");
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const title = "Terrain maps: refresh fell short";
-            const body = `Run: ${runUrl}\n\nRender result: ${{ needs.render.result }}; publish rc: ${{ steps.pub.outputs.rc }}.\nResorts that failed to redraw: ${failed || "(see the run)"}\n\nThose maps keep their old snow and the app hides any map older than 30 h.`;
-            const open = await github.rest.issues.listForRepo({ ...context.repo, state: "open", per_page: 50 });
-            const existing = open.data.find((i) => i.title === title);
-            if (existing) await github.rest.issues.createComment({ ...context.repo, issue_number: existing.number, body });
-            else await github.rest.issues.create({ ...context.repo, title, body });
-            core.setFailed("some terrain maps were not refreshed");
+  render-rest:
+    needs: plan
+    if: needs.plan.outputs.count_rest != '0'
+    uses: ./.github/workflows/terrain-render.yml
+    with:
+      matrix: ${{ needs.plan.outputs.matrix_rest }}
+      prefix: stage-rest
+      anchor: ${{ needs.plan.outputs.anchor }}
+
+  publish-first:
+    needs: [plan, render-first]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.count_first != '0'
+    uses: ./.github/workflows/terrain-publish.yml
+    with:
+      prefix: stage-first
+      cycle: ${{ needs.plan.outputs.cycle }}
+      render-result: ${{ needs.render-first.result }}
+
+  # Starts only after publish-first has finished (success or not): both force-push terrain-live, and the second must
+  # build on what the first pushed, never on the branch as it was before.
+  publish-rest:
+    needs: [plan, render-rest, publish-first]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.count_rest != '0' && needs.publish-first.result != 'cancelled'
+    uses: ./.github/workflows/terrain-publish.yml
+    with:
+      prefix: stage-rest
+      cycle: ${{ needs.plan.outputs.cycle }}
+      render-result: ${{ needs.render-rest.result }}

@@ -40,10 +40,14 @@ def is_ifs(entry):
     return "IFS" in (entry.get("label") or "")
 
 
-def plan(index, now, nbm_cycle, ifs_cycle, only=None, force=False, batch=6, anchored=()):
+def plan(index, now, nbm_cycle, ifs_cycle, only=None, force=False, batch=6, anchored=(), app_ids=None):
+    """(due ids, batches). app_ids: resorts that have a sheet in the app. A map for any other resort (archive-only) is
+    not drawn by the refresh unless named in `only`: nothing in the app shows it, and it was 46% of every run."""
     due = []
     for rid, e in index.items():
         if not isinstance(e, dict) or (only and rid not in only):
+            continue
+        if app_ids is not None and not only and rid not in app_ids:
             continue
         newest = ifs_cycle if is_ifs(e) else nbm_cycle
         run = datetime.fromisoformat(e["run"]) if e.get("run") else None
@@ -55,6 +59,23 @@ def plan(index, now, nbm_cycle, ifs_cycle, only=None, force=False, batch=6, anch
     # interleave so a batch is not 6 big-DEM Alpine resorts in a row
     batches = [" ".join(due[i::max(1, -(-len(due) // batch))]) for i in range(max(1, -(-len(due) // batch)))] if due else []
     return due, [b for b in batches if b]
+
+
+def plan_waves(index, now, nbm_cycle, ifs_cycle, only=None, force=False, batch=6, anchored=(), app_ids=None):
+    """Two waves so an anchored map (it must equal the sheet's total, so it is HIDDEN until redrawn) is not kept
+    waiting behind the rest. Wave 1 = the due anchored resorts, one per job; wave 2 = everything else due.
+    Returns (first batches, rest batches, due ids)."""
+    due, _ = plan(index, now, nbm_cycle, ifs_cycle, only, force, batch, anchored, app_ids)
+    first = [r for r in due if r in set(anchored)]
+    rest = [r for r in due if r not in set(anchored)]
+    sub = lambda ids, n: [b for b in (" ".join(ids[i::max(1, -(-len(ids) // n))]) for i in range(max(1, -(-len(ids) // n)))) if b] if ids else []  # noqa: E731
+    return list(first), sub(rest, batch), due
+
+
+def app_resorts(root=None):
+    """Ids of the resorts the app shows (src/data/resorts.json, not archiveOnly)."""
+    root = Path(root) if root else Path(__file__).resolve().parents[2]
+    return {r["id"] for r in json.loads((root / "src/data/resorts.json").read_text())["resorts"] if not r.get("archiveOnly")}
 
 
 def main():
@@ -69,13 +90,17 @@ def main():
     cyc = newest_nbm(now)
     if cyc is None:
         sys.exit("No NBM cycle with 6 h snow out to 120 h in the last two days: refusing to plan (the maps would not move)")
-    due, batches = plan(index, now, cyc, newest_ifs(now), a.only, a.force, a.batch,
-                        anchored=set(os.environ.get("ANCHOR_RESORTS", "").split()))
+    anchored = set(os.environ.get("ANCHOR_RESORTS", "").split())
+    first, rest, due = plan_waves(index, now, cyc, newest_ifs(now), a.only, a.force, a.batch, anchored, app_resorts())
     print(f"newest NBM cycle {cyc:%Y-%m-%d %HZ}; newest IFS cycle {newest_ifs(now):%Y-%m-%d %HZ}; {len(due)} of "
-          f"{sum(isinstance(v, dict) for v in index.values())} maps are due in {len(batches)} batches")
-    for b in batches:
+          f"{sum(isinstance(v, dict) for v in index.values())} maps are due (archive-only resorts are not drawn): "
+          f"{len(first)} anchored first, {len(rest)} batches after")
+    for b in first:
+        print("  first:", b)
+    for b in rest:
         print("  batch:", b)
-    out = {"matrix": json.dumps(batches), "count": str(len(due)), "cycle": cyc.isoformat()}
+    out = {"matrix_first": json.dumps(first), "count_first": str(len(first)), "matrix_rest": json.dumps(rest),
+           "count_rest": str(sum(len(b.split()) for b in rest)), "count": str(len(due)), "cycle": cyc.isoformat()}
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
             for k, v in out.items():

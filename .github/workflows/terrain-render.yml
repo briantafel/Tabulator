@@ -1,0 +1,116 @@
+name: Terrain render (reusable, called by terrain-refresh.yml)
+
+# Redraws the snow layers for a list of resort batches (one job per batch) and uploads the result as artifacts
+# `<prefix>-<n>`. Called twice by terrain-refresh.yml: the anchored resorts first, then everything else.
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        description: "JSON list of space-separated resort id batches"
+        type: string
+        required: true
+      prefix:
+        description: "artifact name prefix (stage-first / stage-rest)"
+        type: string
+        required: true
+      anchor:
+        description: "space-separated resort ids whose map totals are anchored to the sheet (anchor.py)"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        batch: ${{ fromJson(inputs.matrix) }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      IDS: ${{ matrix.batch }}
+      ANCHOR_RESORTS: ${{ inputs.anchor }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Install
+        run: |
+          sudo apt-get install -y -q fonts-inter >/dev/null || true
+          pip install ijson rasterio cairosvg scipy matplotlib pillow eccodes eccodeslib ecmwf-opendata numpy
+      - name: Blender (only used when a relief is not cached)
+        run: |
+          sudo apt-get update -q >/dev/null
+          sudo apt-get install -y -q libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6 >/dev/null || echo "apt install failed"
+          f=Blender4.2/blender-4.2.3-linux-x64.tar.xz
+          for u in https://download.blender.org/release/$f https://mirrors.ocf.berkeley.edu/blender/release/$f https://ftp.nluug.nl/pub/graphics/blender/release/$f; do
+            curl -fsSL --retry 4 --retry-delay 10 -o b.tar.xz "$u" && xz -t b.tar.xz && break
+            echo "download failed from $u"; rm -f b.tar.xz
+          done
+          [ -f b.tar.xz ] || { echo "::warning::Blender could not be downloaded: resorts without a cached relief will fail"; exit 0; }
+          tar -xf b.tar.xz
+          echo "BLENDER=$PWD/blender-4.2.3-linux-x64/blender" >> $GITHUB_ENV
+      - name: OpenSkiMap exports
+        run: |
+          mkdir -p osm
+          for k in ski_areas lifts runs; do
+            curl -fsSL --retry 5 --retry-delay 15 --retry-all-errors -o osm/$k.geojson https://tiles.openskimap.org/geojson/$k.geojson
+          done
+      - name: Cached reliefs (and earlier pilot renders to seed from)
+        run: |
+          mkdir -p cache seed
+          tags=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=30" --jq '.[].tag_name | select(startswith("terrain-pilot"))')
+          for id in $IDS; do
+            gh release download terrain-base -p "$id-relief-cache.*" -D cache --clobber 2>/dev/null || true
+            if [ -f "cache/$id-relief-cache.json" ] && [ -f "cache/$id-relief-cache.png" ]; then echo "$id: cached relief"; continue; fi
+            rm -f "cache/$id-relief-cache."*
+            for t in $tags; do
+              rm -rf "seed/$id"; mkdir -p "seed/$id"
+              gh release download "$t" -p "$id-relief.png" -p "$id-heightmap16.png" -p "$id.json" -D "seed/$id" 2>/dev/null || true
+              if [ -f "seed/$id/$id-relief.png" ] && [ -f "seed/$id/$id-heightmap16.png" ] && [ -f "seed/$id/$id.json" ]; then
+                echo "$id: seed candidate from $t"; break
+              fi
+              rm -rf "seed/$id"
+            done
+            [ -d "seed/$id" ] || echo "$id: no cached relief and no earlier render: Blender will run (~40 min)"
+          done
+      - name: Redraw the snow
+        run: |
+          mkdir -p out stage nbm
+          fails=""
+          for id in $IDS; do
+            echo "::group::$id"
+            before=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
+            if RELIEF_CACHE=cache RELIEF_SEED="seed/$id" NBM_CACHE=nbm OSM_DIR=osm \
+               python3 scripts/maps/terrain_pilot.py "out/$id" "$id" --app \
+               && python3 scripts/maps/app_vectors.py "out/$id" "$id" \
+               && mkdir -p "stage/$id" \
+               && cp "out/$id/$id.json" "out/$id/$id-full.webp" "out/$id/$id-full-fill.svg" "out/$id/$id-full-lines.svg" \
+                     "out/$id/$id-sheet.webp" "out/$id/$id-sheet-baked.webp" "stage/$id/"; then
+              after=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
+              if [ -n "$after" ] && [ "$after" != "$before" ]; then
+                gh release upload terrain-base --clobber "cache/$id-relief-cache.png" "cache/$id-relief-cache.json" \
+                  && echo "$id: relief cache saved" || echo "::warning::$id: could not save the relief cache (the next run renders it again)"
+              fi
+            else
+              echo "::error::$id failed"
+              fails="$fails $id"
+            fi
+            rm -rf "out/$id" "seed/$id"
+            echo "::endgroup::"
+          done
+          mkdir -p stage
+          echo "$fails" > "stage/FAILED-${{ strategy.job-index }}.txt"
+          [ -z "$(echo $fails)" ] || { echo "failed:$fails"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ inputs.prefix }}-${{ strategy.job-index }}
+          path: stage
+          if-no-files-found: warn
