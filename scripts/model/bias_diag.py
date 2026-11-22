@@ -58,3 +58,44 @@ for r in con.execute("""SELECT resort_id, count(*), sum(CAST(obs>=1 AS INT)), ro
    sum(CAST(obs<1 AND blend>=2.5 AS INT)), sum(CAST(obs<1 AS INT)) FROM b
    WHERE region='California' AND split='test' AND lead<=3 GROUP BY 1 ORDER BY 1""").fetchall():
     print("|".join(str(x) for x in r))
+
+# ---- Candidate: same rule as blend.py, refit on a different winter, judged on the live season only ----
+SHRINK, CLAMP, WET = 40, (0.5, 2.0), 1.0
+
+
+def fit(where):
+    con.execute(f"""CREATE OR REPLACE TABLE r AS SELECT model, lead, region, sum(obs) so, sum(fc) sf,
+      sum(CAST(obs >= {WET} AS INT)) wet FROM d WHERE {where} GROUP BY ALL""")
+    con.execute("CREATE OR REPLACE TABLE a AS SELECT model, lead, sum(so)/nullif(sum(sf),0) pooled FROM r GROUP BY ALL")
+    con.execute(f"""CREATE OR REPLACE TABLE cf AS SELECT r.model, r.lead, r.region,
+      least(greatest((r.wet/(r.wet+{SHRINK}.0)) * coalesce(r.so/nullif(r.sf,0), least(greatest(a.pooled,{CLAMP[0]}),{CLAMP[1]}))
+        + (1 - r.wet/(r.wet+{SHRINK}.0)) * least(greatest(a.pooled,{CLAMP[0]}),{CLAMP[1]}), {CLAMP[0]}), {CLAMP[1]}) f
+      FROM r JOIN a USING (model, lead)""")
+    con.execute(f"""CREATE OR REPLACE TABLE cw0 AS SELECT d.model, d.lead, 1.0/avg(power(d.fc*cf.f - d.obs, 2)) iw
+      FROM d JOIN cf USING (model, lead, region) WHERE {where} AND (d.obs >= {WET} OR d.fc*cf.f >= {WET}) GROUP BY ALL""")
+    con.execute("CREATE OR REPLACE TABLE cw AS SELECT model, lead, iw/sum(iw) OVER (PARTITION BY lead) w FROM cw0")
+
+
+def score(tag):
+    return con.execute(f"""WITH x AS (SELECT d.resort_id, d.region, d.local_date, d.lead, any_value(d.obs) obs,
+        sum(cw.w*d.fc*cf.f)/sum(cw.w) bl FROM d JOIN cw USING (model, lead) JOIN cf USING (model, lead, region)
+        WHERE d.split='live' GROUP BY ALL)
+      SELECT '{tag}', coalesce(region,'ALL'), CASE WHEN lead<=3 THEN '1-3' ELSE '4-7' END lg, count(*),
+        round(sum(bl)/nullif(sum(obs),0),2),
+        round(sum(CAST(bl>=2.5 AND obs>=2.5 AS INT))/nullif(sum(CAST(bl>=2.5 OR obs>=2.5 AS INT)),0),3),
+        round(sum(CAST(bl>=10 AND obs>=10 AS INT))/nullif(sum(CAST(bl>=10 OR obs>=10 AS INT)),0),3),
+        sum(CAST(obs<1 AND bl>=2.5 AS INT)), round(avg(abs(bl-obs)),2)
+      FROM x WHERE region <> 'Washington' GROUP BY GROUPING SETS ((region, lg), (lg)) ORDER BY 2, 3""").fetchall()
+
+
+# live-file factors, rebuilt into the same tables so all three are scored by one query
+con.execute("CREATE OR REPLACE TABLE cf AS SELECT model, lead, region, f FROM fac")
+con.execute("CREATE OR REPLACE TABLE cw AS SELECT model, lead, w FROM w")
+res = score("v1 live (fit 24-25)")
+fit("split = 'test'"); res += score("refit 25-26")
+fit("split IN ('train','test')"); res += score("refit both")
+print("\n== Live season 2026-27 only (neither fit saw it), Washington excluded (truth problem) ==")
+print("factors|region|leads|n|volume|CSI>=2.5|CSI>=10|FA>=2.5 on dry|mean abs err mm")
+for r in sorted(res, key=lambda r: (r[1], r[2], r[0])):
+    print("|".join(str(x) for x in r))
+print("Live season is ~3 weeks: treat differences as direction, not proof.")
