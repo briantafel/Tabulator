@@ -1,0 +1,44 @@
+name: Check HRRR as a blend member (days 1–2, no app change)
+
+# plan-near-term-models-2026-11-22, step 1. Reads the latest verify run's pairs (private bucket, verify/latest/pairs.parquet),
+# fits blend-v1 with and without HRRR on the same resort-days (2024-25), judges both on 2025-26, prints the gate.
+# Public models and SNOTEL only; no paid source is read. Report also saved to verify/latest/blend_hrrr_report.md.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas
+      - name: Test on synthetic pairs
+        run: python3 scripts/model/test_blend_hrrr.py
+      - name: Fetch pairs from the latest verify run
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" /tmp/pairs.parquet --endpoint-url "$ENDPOINT" --only-show-errors
+          ls -la /tmp/pairs.parquet
+      - name: Head-to-head
+        run: python3 scripts/model/blend_hrrr.py /tmp/pairs.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Refuse if the report names a paid source
+        run: |
+          if grep -qi "snow-forecast" out/blend_hrrr_report.md; then echo "::error::report names a paid source"; exit 1; fi
+      - name: Save
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
