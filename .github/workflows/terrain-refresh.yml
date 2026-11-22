@@ -33,7 +33,7 @@ on:
 # first; the rest join once it is checked. Anchored maps are redrawn every refresh and read public/forecast.json and
 # public/blend-forecast.json from this checkout of main (blend.yml pushes them before it dispatches this).
 env:
-  ANCHOR_RESORTS: ${{ inputs.anchor || 'jackson-hole' }}
+  ANCHOR_RESORTS: ${{ inputs.anchor || 'palisades heavenly kirkwood sugar-bowl northstar mt-rose sierra-at-tahoe homewood mammoth mt-baker crystal stevens-pass mt-bachelor telluride crested-butte aspen-highlands steamboat vail breckenridge arapahoe-basin snowbird alta brighton solitude park-city snowbasin powder-mountain jackson-hole grand-targhee sun-valley big-sky taos wolf-creek revelstoke whistler lake-louise kicking-horse fernie red-mountain whitewater panorama kimberley big-white silverstar sun-peaks sunshine norquay marmot cypress whiteface stowe killington jay-peak tremblant le-massif mont-sainte-anne blue-mountain' }}
 
 permissions:
   contents: write
