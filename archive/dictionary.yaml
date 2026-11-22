@@ -296,7 +296,7 @@ sources:
     name: Environment and Climate Change Canada daily climate observations
     kind: observation (ground truth for Canadian resorts) and mapping
     url: https://api.weather.gc.ca/collections/climate-stations and /climate-daily (OGC API Features)
-    cadence: in every archive run (twice daily); each run re-reads the last 30 days (manual stations report late; views keep the newest fetch). A one-time backfill (pieces eccc-daily-2025 and eccc-daily-2026, parser_version eccc-daily-history-1, workflow backfill.yml) adds 2024-11-01 → 2026-04-30.
+    cadence: in every archive run (twice daily); each run re-reads the last 30 days (manual stations report late; views keep the newest fetch). A one-time backfill (pieces eccc-daily-v2-2025 and eccc-daily-v2-2026, parser_version eccc-daily-history-2, workflow backfill.yml) adds 2024-11-01 → 2026-04-30.
     since: 2026-11-22
     raw: the station pages and each station's daily records as fetched, gzipped
     variables: total_snow (cm, 24 h snowfall), total_precip (mm, rain plus melted snow), snow_depth (cm, on the ground), temp_max and temp_min (°C); period_label daily; valid_start/valid_end = the UTC span of the station's local standard-time day
@@ -306,6 +306,7 @@ sources:
       - Null is missing (no row). A zero is a real zero; value_text holds ECCC's flag ("T" trace, "E" estimated, "M" missing).
       - Manual stations read once a day at a fixed hour; the day is a local standard-time day, not a midnight-to-midnight clock. Automatic stations do not measure snowfall (total_snow is empty), only depth and precipitation.
       - Values outside a per-variable range are dropped and counted; a unit shift (daily snow p99 above 120) fails the run.
+      - Station LATITUDE/LONGITUDE in the layer are packed degrees-minutes-seconds (485500000 = 48°55'00"); the collector uses the GeoJSON geometry. Rows with parser_version eccc-daily-history-1 (first backfill, 2026-11-22) mapped stations with misread coordinates: their station_id data rows are real, but their mapping rows (candidate_distance) are wrong. Use parser_version eccc-daily-2 / eccc-daily-history-2 only.
 
   nws:
     name: US National Weather Service gridpoint forecast

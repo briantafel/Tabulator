@@ -235,7 +235,7 @@ const pieces = [
     winter: [m[0] === w[0] ? new Date(Date.parse(m[0]) - 864e5).toISOString().slice(0, 10) : m[0], m[1]] }))),
   ...(REFILL.length ? [] : [{ key: "bc-asws-history", kind: "bcasws" }]), // BC resorts: refill by hand
   // Environment Canada daily climate stations, one piece per winter (no quota). Added 2026-11-22.
-  ...WINTERS.map((w) => ({ key: `eccc-daily-${year(w)}`, kind: "eccc", winter: w })),
+  ...WINTERS.map((w) => ({ key: `eccc-daily-v2-${year(w)}`, kind: "eccc", winter: w })),
   ...resorts.filter((r) => r.otsPath).map((r) => ({ key: `ots-history-${r.id}`, kind: "ots", resort: r })),
   // Model by model, not resort by resort: every ECMWF and GFS piece (new
   // resorts included) is fetched before the first GEM piece, so a GEM model
@@ -336,10 +336,10 @@ async function runPiece(p) {
     const stations = await eccc.fetchStations(resorts);
     const picks = eccc.pickStations(stations, resorts, { from, to });
     if (!picks.length) throw new Error("no Environment Canada station with daily data near any Canadian resort");
-    const res = await eccc.collectWindow({ picks, from, to, fetchedAt, runId, parserVersion: "eccc-daily-history-1", log });
+    const res = await eccc.collectWindow({ picks, from, to, fetchedAt, runId, parserVersion: "eccc-daily-history-2", log });
     if (res.failed.length) throw new Error(`${res.failed.length} stations failed: ${res.failed.slice(0, 3).join("; ")}`);
     if (!res.rows.length) throw new Error(`no readings for any chosen station in ${from} → ${to}`);
-    const rows = [...eccc.mappingRows(picks, { fetchedAt, runId, parserVersion: "eccc-daily-history-1" }), ...res.rows];
+    const rows = [...eccc.mappingRows(picks, { fetchedAt, runId, parserVersion: "eccc-daily-history-2" }), ...res.rows];
     const cov = eccc.coverage(picks, res.rows);
     for (const [id, c] of cov) log(`  · ${p.key} ${id}: ${c.reporting}/${c.stations} stations reported snow or precipitation`);
     log(`  · ${p.key}: ${res.stations} stations, ${res.rows.length} values (${res.faults} out-of-range dropped, ${res.silent.length} stations empty)`);

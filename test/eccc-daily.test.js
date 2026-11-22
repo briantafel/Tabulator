@@ -1,15 +1,26 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkUnits, coverage, dailyRows, dayWindow, parseStations, pickStations } from "../scripts/archive/eccc-daily.js";
+import { checkUnits, coverage, dailyRows, dayWindow, dms, parseStations, pickStations } from "../scripts/archive/eccc-daily.js";
 
 const feat = (id, lat, lon, elev, first = "1990-01-01 00:00:00", last = "2026-11-20 00:00:00", tz = "PST") => ({
-  properties: { CLIMATE_IDENTIFIER: id, STATION_NAME: `${id} n`, LATITUDE: Math.round(lat * 1e7), LONGITUDE: Math.round(lon * 1e7),
+  geometry: { type: "Point", coordinates: [lon, lat] },
+  properties: { CLIMATE_IDENTIFIER: id, STATION_NAME: `${id} n`, LATITUDE: 0, LONGITUDE: 0,
     ELEVATION: String(elev), TIMEZONE: tz, DLY_FIRST_DATE: first, DLY_LAST_DATE: last },
 });
 
-test("parseStations: degrees ×1e7, string elevation, loud when a field is gone", () => {
+test("dms: packed degrees-minutes-seconds (real station values), plain degrees pass through", () => {
+  assert.ok(Math.abs(dms(485500000) - 48.916667) < 1e-5); // CHEMAINUS BARE POINT
+  assert.ok(Math.abs(dms(-1234200000) + 123.7) < 1e-5);
+  assert.equal(dms(50.09), 50.09);
+});
+
+test("parseStations: geometry first, packed DMS as fallback, string elevation, loud when a field is gone or a position leaves Canada", () => {
   const s = parseStations([feat("A", 50.09, -122.95, 1835.0)]);
   assert.deepEqual([s[0].lat, s[0].lon, s[0].elevation_m, s[0].tz, s[0].first, s[0].last], [50.09, -122.95, 1835, "PST", "1990-01-01", "2026-11-20"]);
+  const noGeom = { properties: { ...feat("B", 0, 0, 10).properties, LATITUDE: 485500000, LONGITUDE: -1234200000 } };
+  const b = parseStations([noGeom])[0];
+  assert.ok(Math.abs(b.lat - 48.916667) < 1e-5 && Math.abs(b.lon + 123.7) < 1e-5);
+  assert.throws(() => parseStations([{ properties: { ...noGeom.properties, LATITUDE: 20000000, LONGITUDE: -1000000 } }]), /outside Canada/);
   assert.throws(() => parseStations([{ properties: { CLIMATE_IDENTIFIER: "A" } }]), /lost field/);
 });
 

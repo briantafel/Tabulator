@@ -20,7 +20,7 @@
 
 import { coordsOf, fetchText, saveRaw, sleep } from "./common.js";
 
-export const PARSER_VERSION = "eccc-daily-1";
+export const PARSER_VERSION = "eccc-daily-2";
 const BASE = "https://api.weather.gc.ca/collections";
 const RADIUS_KM = 35;
 const NEAREST = 8; // nearest stations kept per resort...
@@ -43,8 +43,15 @@ const km = ([a, b], [c, d]) => {
   const r = Math.PI / 180, x = Math.sin(((c - a) * r) / 2), y = Math.sin(((d - b) * r) / 2);
   return 12742 * Math.asin(Math.sqrt(x * x + Math.cos(a * r) * Math.cos(c * r) * y * y));
 };
-// The station layer stores degrees ×1e7 (485500000 = 48.55°); accept plain degrees too.
-const deg = (v) => (Math.abs(Number(v)) > 1000 ? Number(v) / 1e7 : Number(v));
+// The station layer's LATITUDE/LONGITUDE are degrees-minutes-seconds packed in one integer:
+// 485500000 = 48°55'00.000" = 48.9167 (found 2026-11-22; read as degrees ×1e7 it put stations tens of km off).
+// GeoJSON geometry, in plain degrees, is preferred; this is the fallback. Plain degrees pass through.
+export const dms = (v) => {
+  const n = Number(v), a = Math.abs(n);
+  if (a <= 1000) return n;
+  const d = Math.floor(a / 1e7), m = Math.floor((a % 1e7) / 1e5), sec = (a % 1e5) / 1e3;
+  return Math.sign(n) * (d + m / 60 + sec / 3600);
+};
 const day = (s) => (s ? String(s).slice(0, 10) : null);
 
 /** GeoJSON features → [{ id, name, lat, lon, elevation_m, tz, first, last }]. Throws when the fields we rely on are gone. */
@@ -56,11 +63,16 @@ export function parseStations(features) {
       if (!keys.includes(k)) throw new Error(`station layer lost field ${k}; it has: ${keys.join(", ")}`);
     }
   }
-  return features.map((f) => f.properties).map((p) => ({
-    id: String(p.CLIMATE_IDENTIFIER).trim(), name: p.STATION_NAME ?? null, lat: deg(p.LATITUDE), lon: deg(p.LONGITUDE),
+  const out = features.map((f) => { const p = f.properties, g = f.geometry?.coordinates;
+    return [p, Array.isArray(g) && Number.isFinite(g[0]) && Number.isFinite(g[1]) ? [g[1], g[0]] : [dms(p.LATITUDE), dms(p.LONGITUDE)]]; }).map(([p, [lat, lon]]) => ({
+    id: String(p.CLIMATE_IDENTIFIER).trim(), name: p.STATION_NAME ?? null, lat, lon,
     elevation_m: Number.isFinite(Number(p.ELEVATION)) && p.ELEVATION !== null ? Math.round(Number(p.ELEVATION)) : null,
     tz: p.TIMEZONE ?? null, first: day(p.DLY_FIRST_DATE), last: day(p.DLY_LAST_DATE),
   })).filter((s) => s.id && Number.isFinite(s.lat) && Number.isFinite(s.lon) && s.first);
+  // Every station is Canadian: a position outside the country means the coordinate format changed. Loud.
+  const bad = out.filter((s) => s.lat < 41 || s.lat > 84 || s.lon < -142 || s.lon > -52);
+  if (bad.length) throw new Error(`${bad.length} stations outside Canada (e.g. ${bad[0].id} at ${bad[0].lat}, ${bad[0].lon}) — coordinate format may have changed`);
+  return out;
 }
 
 /** Per Canadian resort: the NEAREST closest stations and the HIGHEST highest ones within 35 km that have daily
