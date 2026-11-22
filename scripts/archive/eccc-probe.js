@@ -6,7 +6,7 @@ import { UA, coordsOf } from "./common.js";
 const B = "https://api.weather.gc.ca/collections";
 const get = async (u) => { const r = await fetch(u, { headers: { "User-Agent": UA } }); if (!r.ok) throw new Error(`${r.status} ${u}`); return r.json(); };
 const out = (s) => console.log(s);
-const resorts = JSON.parse(readFileSync("src/data/resorts.json", "utf8")).filter((r) => r.region === "Canada");
+const resorts = JSON.parse(readFileSync("src/data/resorts.json", "utf8")).resorts.filter((r) => r.region === "Canada");
 
 const st = await get(`${B}/climate-stations/items?limit=1&f=json`);
 out("STATION SAMPLE " + JSON.stringify(st.features?.[0]?.properties));

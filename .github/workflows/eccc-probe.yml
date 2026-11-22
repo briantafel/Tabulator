@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - run: node scripts/archive/eccc-probe.js | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: set -o pipefail; node scripts/archive/eccc-probe.js | tee -a "$GITHUB_STEP_SUMMARY"
