@@ -1,0 +1,51 @@
+name: Promote long-range calibration
+
+# Copies the judged GEFS long-range calibration from the latest verify run (private bucket,
+# verify/latest/ens_calib_lowo.json) into public/longrange-calib.json, keeping ONLY the lead days
+# whose held-out Brier skill over climatology clears the stated floor (scripts/model/promote_longrange.py).
+# Public models and SNOTEL only; nothing paid. Then starts longrange.yml so the odds appear.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write   # a GITHUB_TOKEN push doesn't trigger workflows, so longrange.yml is started explicitly
+
+concurrency:
+  group: longrange-promote
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch the judged calibration
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/ens_calib_lowo.json" /tmp/ens_calib_lowo.json --endpoint-url "$ENDPOINT" --only-show-errors
+      - name: Keep the leads that earned it
+        run: python3 scripts/model/promote_longrange.py /tmp/ens_calib_lowo.json public/longrange-calib.json 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Show what shipped
+        run: python3 -c "import json;d=json.load(open('public/longrange-calib.json'));print('| lead | form | held-out skill vs climatology | raw |');print('|---|---|---|---|');[print(f'| {k} | {v[\"form\"]} | {v[\"bss_cal\"]} | {v[\"bss_raw\"]} |') for k,v in d['leads'].items()]" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name  "tabulator-bot"
+          git config user.email "actions@github.com"
+          git add public/longrange-calib.json
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "models: promote judged long-range calibration from verify/latest"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+      - name: Build the odds now
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run longrange.yml --ref main

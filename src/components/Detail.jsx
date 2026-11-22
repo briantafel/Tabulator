@@ -15,6 +15,7 @@ import RangeChart from "./RangeChart.jsx";
 import RollNumber from "./RollNumber.jsx";
 import AvalancheSection from "./Avalanche.jsx";
 import TerrainMap from "./TerrainMap.jsx";
+import LongRange from "./LongRange.jsx";
 import { CHECK_RING, CHECK_FULL, CAL_FRAME, CAL_PLUS, CAL_X, RT_X } from "./tripIcons.js";
 import { coldLow, stripWithOurTemps } from "../lib/temps.js";
 
@@ -34,7 +35,7 @@ const reducedMotion = () =>
 export default function Detail({
   r, metric, onClose, fav, onFav, trips, onAddToTrip, onNewTrip, onRemoveFromTrip,
   reports, weather, wxSource = "nws", history, projections = false, avalanche = null, reportedSnow = undefined,
-  terrain = false, terrainZoom = false, terrainVectors = false, terrainLive = false,
+  terrain = false, terrainZoom = false, terrainVectors = false, terrainLive = false, longRange = null,
 }) {
   const [adding, setAdding] = useState(false);
   /* Which total the headline shows (projections only): it rests on the
@@ -570,6 +571,11 @@ export default function Detail({
             <p className="sheet-warn">Map covers forecast days through {shortDate(lastForecastDate(r))}.</p>
           )}
           {max && terrain && !noForecast && <TerrainMap id={r.id} name={r.name} metric={metric} zoom={terrainZoom} vectors={terrainVectors} live={terrainLive} sheet={r} />}
+
+          {/* Long range (2026-11-22): after the map, never beside it; odds for the days past the last inch. flags.json `longRange`. */}
+          {max && longRange && (
+            <LongRange lr={longRange} id={r.id} days={r.days ?? []} forecastDays={(r.days ?? []).filter((d) => !d.projected).length} metric={metric} />
+          )}
 
           {max && avalanche && (
             <AvalancheSection

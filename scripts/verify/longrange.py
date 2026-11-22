@@ -660,8 +660,14 @@ def calibrate_lowo(con, rng) -> dict:
                          1 - sr.sum() / sc.sum(), 1 - sq.sum() / sc.sum(), gain, lo, hi, prom))
             if prom:
                 w = fit_logistic(X, o) if form != "spread" else fit_logistic(np.column_stack([np.zeros(len(o)), X]), o)
+                # bss_cal / bss_raw: pooled held-out Brier skill over climatology, calibrated and raw. The app's
+                # long-range odds ship a lead only if bss_cal clears a stated floor (scripts/model/promote_longrange.py):
+                # beating the raw ensemble is not the same as beating the base rate.
                 cells_out.append({"form": form, "lead_day": lead, "window_h": win, "threshold_mm": t,
-                                  "coef": [round(float(x), 4) for x in (w if form != "spread" else w[1:])]})
+                                  "coef": [round(float(x), 4) for x in (w if form != "spread" else w[1:])],
+                                  "bss_cal": round(float(1 - sq.sum() / sc.sum()), 4),
+                                  "bss_raw": round(float(1 - sr.sum() / sc.sum()), 4),
+                                  "gain_lo": round(lo, 4), "winters": int(used), "winters_better": int(better)})
     if rows:
         con.executemany(f"INSERT INTO lowo VALUES ({', '.join('?' * 14)})", rows)
     if wrows:

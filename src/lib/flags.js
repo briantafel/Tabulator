@@ -75,7 +75,9 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
 /* terrainLive (2026-11-22): the Snow by terrain map drawn by the app from per-day grids, for the days the sheet shows
    (resorts whose index entry has `live`; Jackson Hole first). Needs terrainMap and terrainVectors. "off" restores the
    finished pictures (hidden when their window is not the sheet's). No Settings row. */
-export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off", terrainVectors: "off", terrainLive: "off" });
+/* longRange (2026-11-22): odds, not inches, for the days past the sheet's last day (components/LongRange.jsx, public/longrange.json).
+   Shown only when the file is fresh and has a lead that beat climatology on held-out winters. No Settings row; "off" removes it. */
+export const FLAG_DEFAULTS = Object.freeze({ projections: "off", temps: "off", weatherSource: "off", slr: "off", blend: "off", season: "off", snowfall: "off", bands: "off", peakResort: "off", terrainMap: "off", terrainZoom: "off", terrainVectors: "off", terrainLive: "off", longRange: "off" });
 
 /** Only known keys and known modes. Anything else is "off", so a typo in the
  *  JSON can never switch something on by accident. */

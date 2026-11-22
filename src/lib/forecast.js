@@ -165,6 +165,9 @@ export async function loadForecast() {
   /* Season to date (scripts/season → lib/season.js), same rule. */
   const season = flags.season === "off" || preset ? null : await getJson("season.json", null);
 
+  /* Long-range odds (scripts/longrange), same rule; lib/longrange.js says when they are not shown. */
+  const longrange = flags.longRange === "off" || preset ? null : await getJson("longrange.json", null);
+
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 
   const rolled = rollSample(forecast, history, weather);
@@ -186,6 +189,7 @@ export async function loadForecast() {
     temps,
     blend,
     season,
+    longrange,
   };
 }
 

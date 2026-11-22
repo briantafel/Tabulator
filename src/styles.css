@@ -1756,3 +1756,9 @@ body { background: #F2F2F2; }
 .tmf-x svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .tmf-x:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: calc(8 * var(--u)); }
 @media (prefers-reduced-motion: reduce) { .tmf { animation: none; } }
+
+/* Long range odds (2026-11-22, components/LongRange.jsx): Snow by terrain's heading and caption, Avalanche's band; lit steps in the projected purple. */
+.lr .lr-kind { margin-top: calc(20 * var(--u)); }
+.lr .lr-band { margin-top: calc(6 * var(--u)); grid-template-columns: 112px minmax(0, 1fr) 48px; }
+.lr .lr-band i.lr-on { background: #9B59D0; }
+.lr .lr-p { font-size: calc(14 * var(--u)); line-height: calc(19 * var(--u)); color: var(--ink); }
