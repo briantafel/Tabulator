@@ -36,7 +36,7 @@ for k in ("matrix_first", "count_first", "matrix_rest", "count_rest", "cycle", "
     assert k in outs, k
 text = (WF / "terrain-refresh.yml").read_text()
 assert "needs.render." not in text and "needs.plan.outputs.matrix}" not in text, "old single-wave references left"
-assert "ANCHOR_RESORTS: jackson-hole" in text
+assert "ANCHOR_RESORTS: ${{ inputs.anchor || 'jackson-hole' }}" in text
 
 # ---- publish: the second wave builds on the first and never undoes it
 def stage(root, rid, run):
