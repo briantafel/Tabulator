@@ -1,30 +1,59 @@
 {
- "generatedAt": "2026-11-22T01:35:04.686Z",
- "forecastGeneratedAt": "2026-11-22T01:15:34.246Z",
+ "generatedAt": "2026-11-22T06:14:11.864Z",
+ "forecastGeneratedAt": "2026-11-22T06:07:44.776Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-22T01:35:00.155Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "writtenAt": "2026-11-22T06:14:11.864Z",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-22",
   "to": "2026-11-26",
   "days": 5,
   "toLabel": "Thursday Nov 26"
  },
- "overview": null,
+ "overview": "Snow in the Coast Mountains and Cascades is tied to a slow upper low this weekend, then a series of systems from Monday onward. Coast Mountains snow is heaviest Monday and Tuesday, with rain returning mid-week. Cascades snow comes in waves from Monday through the rest of the week.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 30\". Cypress Mountain follows."
+   "text": "A slow upper low off the coast brings light snow early in the week, with the steadiest snow Monday night into Tuesday as a front passes. Whistler is the standout, with a peak of 9 inches on Tuesday and a total of 32 inches. Wednesday turns to rain at lower levels, so the best days are Monday and Tuesday.",
+   "basis": "c5js78"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Baker is forecast for about 16\". Crystal Mountain and Stevens Pass follow. The NWS is calling for more at Crystal Mountain: 13 to 26 inches Sunday night through Thursday night."
+   "text": "A series of systems brings snow to Mt. Baker and Crystal from Monday through Thursday, with strong southeast winds on the ridges. Mt. Baker's biggest day is Monday at 7 inches, and Crystal's total is 11 inches. The NWS is calling for more at Crystal, 13 to 26 inches over Sunday night through Thursday night. A Winter Weather Advisory covers the Olympics, including Hurricane Ridge.",
+   "basis": "193xguc"
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Snow here comes in two pulses, one Monday night into Tuesday and a larger one Wednesday night into Thursday. Revelstoke is the strongest, with 8 inches on Thursday and 11 inches for the week. Whitewater and RED see lighter totals, and rain mixes in on Thursday at lower elevations.",
+   "basis": "17d9zdz"
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says a more active pattern could bring snow to the Pacific Northwest mountains around Saturday Nov 28 and Sunday Nov 29, though confidence is lower that far out. The Climate Prediction Center says the pattern stays unsettled into early December.",
+  "sources": [
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-22T04:14:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-21T19:13:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-21T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Tabulator model (totals)",
@@ -32,16 +61,20 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-22T01:22:27.720Z"
+   "issuedAt": "2026-11-22T06:14:04.008Z"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-22T04:14:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T01:35:04.686Z"
+   "issuedAt": "2026-11-22T06:14:11.864Z"
   }
  ],
  "api": {
   "day": "2026-11-22",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

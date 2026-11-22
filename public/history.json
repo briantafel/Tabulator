@@ -760,17 +760,17 @@
   "2026-11-21": {
    "palisades": 1,
    "heavenly": 0,
-   "kirkwood": 0,
+   "kirkwood": 1,
    "sugar-bowl": 2,
-   "northstar": 1,
+   "northstar": 0,
    "mt-rose": 0,
    "sierra-at-tahoe": 1,
-   "homewood": 1,
+   "homewood": 0,
    "mammoth": 0,
    "mt-baker": 0,
    "crystal": 2,
    "stevens-pass": 2,
-   "mt-bachelor": 4,
+   "mt-bachelor": 3,
    "telluride": 4,
    "crested-butte": 2,
    "aspen-highlands": 5,
@@ -790,7 +790,7 @@
    "sun-valley": 0,
    "big-sky": 0,
    "taos": 3,
-   "wolf-creek": 4,
+   "wolf-creek": 3,
    "revelstoke": 0,
    "whistler": 1,
    "lake-louise": 0,
@@ -4513,7 +4513,7 @@
    "kirkwood": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "sugar-bowl": {
     "am": 0,
@@ -4523,7 +4523,7 @@
    "northstar": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 0
    },
    "mt-rose": {
     "am": 0,
@@ -4538,7 +4538,7 @@
    "homewood": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 0
    },
    "mammoth": {
     "am": 0,
@@ -4563,7 +4563,7 @@
    "mt-bachelor": {
     "am": 0,
     "pm": 1,
-    "night": 3
+    "night": 2
    },
    "telluride": {
     "am": 4,
@@ -4662,7 +4662,7 @@
    },
    "wolf-creek": {
     "am": 2,
-    "pm": 2,
+    "pm": 1,
     "night": 0
    },
    "revelstoke": {
@@ -4787,5 +4787,5 @@
    }
   }
  },
- "updatedAt": "2026-11-22T01:15:34.246Z"
+ "updatedAt": "2026-11-22T06:07:44.776Z"
 }
