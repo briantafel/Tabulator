@@ -226,8 +226,9 @@ def newest_nbm_cycle(hours=120):
     return None
 
 
-def latest_nbm_snow(hours=120):
-    """Sum of NBM 6 h ASNOW blocks over `hours` from the newest 00z/12z cycle that has them."""
+def latest_nbm_snow(hours=120, leads_for=None):
+    """Sum of NBM 6 h ASNOW blocks over `hours` from the newest 00z/12z cycle that has them.
+    leads_for(cycle) -> block end-leads to sum instead (the anchored map: the sheet's local days, anchor.py)."""
     global NBM_NX
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
     import nbm
@@ -237,12 +238,12 @@ def latest_nbm_snow(hours=120):
         c = (now - timedelta(hours=3 + 12 * back)).replace(minute=0, second=0, microsecond=0)
         cycle = c.replace(hour=0 if c.hour < 12 else 12)
         leads = nbm.list_leads(cycle)
-        need = list(range(6, hours + 1, 6))
+        need = leads_for(cycle) if leads_for else list(range(6, hours + 1, 6))
         if not all(l in leads for l in need):
             print(f"NBM {cycle:%Y-%m-%d %HZ}: leads not all posted yet", file=sys.stderr)
             continue
         cdir = os.environ.get("NBM_CACHE")      # a batch of resorts in one job downloads the national field once
-        cfile = os.path.join(cdir, f"nbm-{cycle:%Y%m%d%H}-{hours}.npz") if cdir else None
+        cfile = os.path.join(cdir, f"nbm-{cycle:%Y%m%d%H}-{need[0]}-{need[-1]}.npz") if cdir else None
         if cfile and os.path.exists(cfile):
             z = np.load(cfile)
             NBM_NX = int(z["nx"])

@@ -31,4 +31,5 @@ assert rp.plan({"a": {"run": "2026-11-22T00:00:00+00:00", "label": "NOAA NBM"}},
 many = {f"r{i:03d}": {"run": "2026-11-20T12:00:00+00:00", "label": "NOAA NBM"} for i in range(106)}
 d, b = rp.plan(many, now, nbm_c, ifs_c, batch=6)
 assert len(d) == 106 and all(len(x.split()) <= 6 for x in b) and len(b) == 18, (len(b), [len(x.split()) for x in b])
+assert rp.plan(idx, now, nbm_c, ifs_c, only=["new-nbm"], anchored={"new-nbm"})[0] == ["new-nbm"], "anchored: always due"
 print("refresh plan tests passed")

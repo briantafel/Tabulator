@@ -44,6 +44,7 @@ def entry(rid, d):
         "base_in": None if j.get("nosnow") else j["base"][1], "top_in": None if j.get("nosnow") else j["top"][1],
         **({"nosnow": True} if j.get("nosnow") else {}),
         "base_ft": round(j["base"][0] * 3.28084), "top_ft": round(j["top"][0] * 3.28084),
+        **({"anchor": {k: j["anchor"][k] for k in ("dates", "label", "total_cm", "blend_fetched")}} if j.get("anchor") else {}),
         "img_clean": f"terrain/{rid}-sheet.webp", "range_in": j["inside_range_in"], "labels": a["sheet"]["labels"],
         "full": {"img": f"terrain/{rid}-full.webp", "fill": f"terrain/{rid}-full-fill.svg", "lines": f"terrain/{rid}-full-lines.svg",
                  "px": a["full"]["px"], "ref": a["full"]["ref"], "focus": a["full"]["focus"], "labels": a["full"]["labels"]},

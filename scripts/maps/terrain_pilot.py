@@ -18,7 +18,8 @@ and preview/<id>-1024.png, preview/<id>-crop1to1.png. Failures are loud: a FAILE
 (Ski area outline, lifts and runs: OpenSkiMap / OpenStreetMap contributors, ODbL.)
 """
 import argparse, base64, io, json, math, os, subprocess, sys, time, traceback
-from datetime import timedelta
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import numpy as np
@@ -353,7 +354,60 @@ def ifs_cells(work, box):
     return run, LA[sel], LO[sel], np.clip(swe[sel], 0, None) * SLR_IFS, spacing, src
 
 
-def build_snow(rid, crop, lat_c, lon_c, work):
+# ---------------------------------------------------------------- anchor (map totals = the sheet's forecast)
+ANCHOR_RESORTS = set(filter(None, os.environ.get("ANCHOR_RESORTS", "").split()))   # resorts drawn anchored (Jackson first)
+
+
+def anchor_setup(rid, r):
+    """None unless rid is anchored. Reads the forecast and blend the app ships (public/), works out the sheet's days."""
+    if rid not in ANCHOR_RESORTS:
+        return None
+    import anchor as A
+    pub = Path(os.environ.get("ANCHOR_PUBLIC", ROOT / "public"))
+    fc = json.loads((pub / "forecast.json").read_text())
+    bl = json.loads((pub / "blend-forecast.json").read_text())
+    tz = r.get("tz") or sys.exit(f"anchor: {rid} has no time zone")
+    pt = r.get("nws") or r.get("latlon") or sys.exit(f"anchor: {rid} has no forecast point (nws/latlon)")
+    today = datetime.now(ZoneInfo(tz)).date()
+    dates = A.sheet_dates(fc, rid, today)
+    total_cm = A.blend_total_cm(bl, rid, dates)
+    z_m = A.mid_elevation_m(fc, rid)
+    start, end = A.window_utc(dates, tz)
+    log(f"anchor: {rid} sheet days {dates[0]}..{dates[-1]} ({len(dates)}), blend {total_cm} cm = {total_cm / A.CM_PER_IN:.2f} in "
+        f"at {pt[0]},{pt[1]} {z_m:.0f} m (blend {bl.get('fetchedAt')})")
+    return {"A": A, "dates": dates, "total_cm": total_cm, "z_m": z_m, "pt": pt, "blend_fetched": bl.get("fetchedAt"),
+            "forecast_generated": fc.get("generatedAt"),
+            "leads_for": lambda cycle: A.nbm_leads(cycle, start, end), "start": start, "end": end}
+
+
+def anchor_apply(anc, sample, snow, snow_info, fbox):
+    """Scale the NBM pattern so its value at the blend's point and height is the sheet's total; check it is."""
+    A = anc["A"]
+    la, lo = anc["pt"]
+    if not (fbox[1] <= la <= fbox[3] and fbox[0] <= lo <= fbox[2]):
+        log(f"  anchor point {la},{lo} is outside the frame (still inside the wide snow field; sampled there)")
+    ref = float(sample(np.array([la]), np.array([lo]), np.array([anc["z_m"]]))[0])
+    k = A.scale(ref, anc["total_cm"])
+    want = anc["total_cm"] / A.CM_PER_IN
+    got = ref * k
+    if abs(got - want) > 0.01:
+        raise SystemExit(f"anchor: map at the blend point is {got:.3f} in, sheet total {want:.3f} in; refusing")
+    if k and not A.SCALE_WARN[0] <= k <= A.SCALE_WARN[1]:
+        log(f"  WARNING anchor: NBM and the blend disagree a lot here (scale x{k:.2f}); pattern is NBM's, amount the blend's")
+    log(f"  anchor: NBM {ref:.2f} in at the blend point -> x{k:.3f} -> {got:.2f} in = sheet total; "
+        f"map {snow.min() * k:.1f}-{snow.max() * k:.1f} in")
+    snow_info["run_nbm"] = snow_info["run"]
+    snow_info["slr"] = "the blend's (amount); NBM's own ratio shaped the pattern"
+    anc["record"] = {"dates": anc["dates"], "label": A.label(anc["dates"]), "total_cm": anc["total_cm"],
+                     "total_in": round(want, 2), "point": list(anc["pt"]), "elevation_m": anc["z_m"],
+                     "nbm_at_point_in": round(ref, 3), "scale": round(k, 4), "blend_fetched": anc["blend_fetched"],
+                     "forecast_generated": anc["forecast_generated"],
+                     "nbm_window_utc": [anc["start"].isoformat(), anc["end"].isoformat()],
+                     "method": "NBM pattern x (blend total / NBM at the blend's point and mid elevation); anchor.py"}
+    return snow * k
+
+
+def build_snow(rid, crop, lat_c, lon_c, work, leads_for=None):
     """Returns (sample(LA, LO, dem_m) -> inches on that grid, info). NBM where it covers the resort, else IFS."""
     info = {"nbm_checked": False}
     nominal = 19.0 < lat_c < 56.0 and -140.0 < lon_c < -60.0
@@ -361,7 +415,7 @@ def build_snow(rid, crop, lat_c, lon_c, work):
         wide = (crop[0] - 0.16, crop[1] - 0.12, crop[2] + 0.16, crop[3] + 0.12)
         set_box(wide, 1400)
         info["nbm_checked"] = True
-        run, lat, lon, total, _ = sk.latest_nbm_snow()
+        run, lat, lon, total, _ = sk.latest_nbm_snow(leads_for=leads_for)
         in_box = (lat > sk.S - 0.1) & (lat < sk.N + 0.1) & (lon > sk.W - 0.1) & (lon < sk.E + 0.1)
         log(f"NBM grid lat {lat.min():.2f}..{lat.max():.2f}, lon {lon.min():.2f}..{lon.max():.2f}; "
             f"{int(in_box.sum())} cells in the {wide[0]:.2f},{wide[1]:.2f},{wide[2]:.2f},{wide[3]:.2f} box")
@@ -394,6 +448,8 @@ def build_snow(rid, crop, lat_c, lon_c, work):
                         slr="NBM's own snow ratio", nbm_check="inside the NBM grid, values present")
             grad_w = _usable_grad(grad_w, info)
             return _sampler(fine_w, grad_w, dem_w, wide), info
+        if leads_for:
+            raise SystemExit(f"anchor: NBM does not cover {rid} ({reason}); an anchored map needs NBM's pattern over the sheet's days")
         log(f"NBM does not cover {rid}: {reason} -> using ECMWF IFS")
         info["nbm_check"] = f"not used: {reason}"
     else:
@@ -785,7 +841,8 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
 
     # --- snow
     t0 = time.time()
-    sample, snow_info = build_snow(rid, crop, lat_c, lon_c, work)
+    anc = anchor_setup(rid, r)
+    sample, snow_info = build_snow(rid, crop, lat_c, lon_c, work, leads_for=anc["leads_for"] if anc else None)
     sn = px // 2
     s_lat = fbox[3] - (np.arange(sn) + 0.5) * (fbox[3] - fbox[1]) / sn
     s_lon = fbox[0] + (np.arange(sn) + 0.5) * (fbox[2] - fbox[0]) / sn
@@ -795,6 +852,8 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     del LA, LO
     sig = max(1.0, 1.8 * m_old / (side_m / sn))             # old: gaussian 1.5 px then 1 px at ~m_old per px
     snow = gaussian_filter(snow, sig)
+    if anc:
+        snow = anchor_apply(anc, sample, snow, snow_info, fbox)
     timing["snow_s"] = round(time.time() - t0)
     log(f"snow field {snow.min():.1f}-{snow.max():.1f} in on the frame ({snow_info['source']} {snow_info['run']})")
 
@@ -1011,6 +1070,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
         "frame_km": round(side_m / 1000, 3), "px": px, "m_per_px": round(m_px, 3),
         "frame_bbox_lonlat": [round(v, 6) for v in fbox], "crop": crop,
         "dem": dem_info, "snow": snow_info, "caption_source": snow_info["caption"],
+        **({"anchor": anc["record"]} if anc else {}),
         "relief": {**st, "lights": "even", "exposure": EXPOSURE, "exaggeration": EXAG, "levels": LEVELS, "samples": meta["samples"],
                    "mesh_vertex_spacing_m": round(region_m / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2)},
         "blender": bl,

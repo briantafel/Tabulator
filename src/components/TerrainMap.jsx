@@ -3,6 +3,7 @@ import { snowWithUnit } from "../lib/units.js";
 import TerrainFullscreen from "./TerrainFullscreen.jsx";
 import TerrainLabels from "./TerrainLabels.jsx";
 import { SHEET, hasVectorLabels } from "../lib/terrainLabels.js";
+import { anchorMatches } from "../lib/terrainAnchor.js";
 
 /* Snow by terrain (Brian, 2026-11-19): one resort's skiable terrain on the white
    plaster relief, NBM's 5-day snow split by elevation with our terrain step.
@@ -26,7 +27,7 @@ function loadIndex() {
   return indexPromise;
 }
 
-export default function TerrainMap({ id, name = null, metric, zoom = false, vectors = false }) {
+export default function TerrainMap({ id, name = null, metric, zoom = false, vectors = false, sheet = null }) {
   const [m, setM] = useState(null);
   const [full, setFull] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -38,7 +39,9 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
   if (!m || failed) return null;
   const run = new Date(m.run);
   if (!(run > 0) || (Date.now() - run) / 3.6e6 > MAX_AGE_H) return null;
-  const day = run.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  /* Anchored (lib/terrainAnchor.js): shown only when its total IS the sheet's total; its header names its days. */
+  if (!anchorMatches(m.anchor, sheet)) return null;
+  const day = m.anchor?.label ?? run.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   /* terrainVectors (Brian, 2026-11-20): labels drawn by the app as vectors over a labels-free
      picture. Off, or no label data for this resort: the old picture with labels baked in. */
   const vec = vectors && hasVectorLabels(m);
@@ -48,10 +51,10 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
   const B = import.meta.env.BASE_URL;
   const fullSrc = fullPic ? `${B}${fullPic.img}` : src;
   const fullVec = fullPic?.fill && fullPic?.lines ? { fill: `${B}${fullPic.fill}`, lines: `${B}${fullPic.lines}`, px: fullPic.px } : null;
-  const alt = `Five-day snow across ${id} by terrain`;
+  const alt = m.anchor ? `Forecast snow across ${id} by terrain, ${day}` : `Five-day snow across ${id} by terrain`;
   return (
     <section className="tm" aria-label="Snow by terrain">
-      <div className="tm-h"><h3>Snow by terrain</h3><span>{day} run</span></div>
+      <div className="tm-h"><h3>Snow by terrain</h3><span>{m.anchor ? day : `${day} run`}</span></div>
       <div className="tm-img">
         <img src={src} alt={alt} onError={() => setFailed(true)} />
         {vec && <TerrainLabels labels={m.labels} metric={metric} S={SHEET} />}
@@ -66,7 +69,7 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
       </div>
       {zoom && full && <TerrainFullscreen src={fullSrc} alt={alt} title={name || "Snow by terrain"} metric={metric}
           labels={fullPic ? fullPic.labels : vec ? m.labels : null} pic={fullPic?.ref} focus={fullPic?.focus} vec={fullVec}
-          legend={vec && m.range_in ? { range: m.range_in, label: m.label, day, nosnow: !!m.nosnow } : null} onClose={() => setFull(false)} />}
+          legend={vec && m.range_in ? { range: m.range_in, label: m.label, day, nosnow: !!m.nosnow, anchored: !!m.anchor } : null} onClose={() => setFull(false)} />}
       <div className="tm-cap">
         <span>{m.label}</span>
         {m.nosnow ? <span>No snow in the forecast</span>

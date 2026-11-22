@@ -554,7 +554,7 @@ export default function Detail({
               line uses the next three days of this sheet's own forecast. */}
           {/* Snow by terrain (2026-11-19): between Weather and Avalanche, full sheet only.
               flags.json `terrainMap`; only resorts listed in public/terrain/index.json. */}
-          {max && terrain && <TerrainMap id={r.id} name={r.name} metric={metric} zoom={terrainZoom} vectors={terrainVectors} />}
+          {max && terrain && <TerrainMap id={r.id} name={r.name} metric={metric} zoom={terrainZoom} vectors={terrainVectors} sheet={r} />}
 
           {max && avalanche && (
             <AvalancheSection
