@@ -23,7 +23,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { readoutFacts, factsForWriter, templateReadout, validateReadout, onlyAheadProblems } from "../src/lib/readout.js";
+import { readoutFacts, factsForWriter, templateReadout, validateReadout, onlyAheadProblems, carryForward, regionBasis, REUSE_HOURS } from "../src/lib/readout.js";
 import { callClaude, parseReply, HAIKU, SONNET } from "./readout-api.js";
 import { gatherAhead } from "./discussions.js";
 import { buoyNow } from "./buoy-now.js";
@@ -119,8 +119,19 @@ export async function run({
   const key = env.ANTHROPIC_API_KEY;
   const fitted = facts.quiet ? null : fitForWriter(facts);
 
+  /* Nothing has moved since the last Claude read-out (same numbers in every
+     region, written under REUSE_HOURS ago): reuse it and save the calls.
+     The Tabulator read-out is rewritten on every forecast run even when the
+     blend it quotes hasn't changed. */
+  const carried = facts.quiet ? null : carryForward(prev, facts, now);
+  const fresh = carried?.complete && now.getTime() - Date.parse(carried.writtenAt) < REUSE_HOURS * 3600e3;
+  let writtenAt = null;
+
   if (facts.quiet) {
     out = { regions: [], overview: null, ahead: null };
+  } else if (fresh) {
+    out = carried; writer = "claude"; model = prev.model ?? null; writtenAt = carried.writtenAt;
+    log("readout: nothing has changed since the last read-out — reused, no API call");
   } else if (!key) {
     log("readout: no ANTHROPIC_API_KEY — template");
   } else if (!fitted) {
@@ -129,7 +140,7 @@ export async function run({
     model = env.READOUT_MODEL || HAIKU;
     let user = `Fact sheet:\n${fitted.text}`;
     for (let attempt = 1; attempt <= MAX_ATTEMPTS && !out && !status.fatal; attempt++) {
-      if (api.calls >= DAILY_CAP) { status.warnings.push(`daily cap of ${DAILY_CAP} API calls reached — template`); break; }
+      if (api.calls >= DAILY_CAP) { status.warnings.push(`daily cap of ${DAILY_CAP} API calls reached`); break; }
       api.calls++;
       const rec = { attempt, model };
       try {
@@ -175,6 +186,20 @@ export async function run({
     }
   }
 
+  /* No new draft: keep what still holds of the last Claude read-out (same
+     variant, under a day old, re-checked against today's facts) before
+     falling back to the bare template. */
+  if (!out && !facts.quiet) {
+    if (carried) {
+      out = carried; writer = "claude"; model = prev.model ?? null; writtenAt = carried.writtenAt;
+      status.warnings.push(`no new read-out — kept ${carried.kept.length} of ${facts.regions.length} regions from the one written ${carried.writtenAt}`);
+    }
+  }
+  if (writer === "claude" && !writtenAt) writtenAt = now.toISOString();
+  // Only regions Claude actually wrote get a basis, so a template sentence
+  // is never mistaken later for one worth carrying.
+  const claudeKeys = new Set(writer !== "claude" ? [] : out === carried ? carried.kept : out.regions.map((r) => r.key));
+
   if (!out) {
     out = templateReadout(facts);
     writer = "template"; model = null;
@@ -189,10 +214,14 @@ export async function run({
     ...(variant === "ours" ? { snowfall: "tabulator", blendGeneratedAt: blendStamp(blend) } : {}),
     quiet: facts.quiet,
     writer,
+    ...(writtenAt ? { writtenAt } : {}),
     ...(model ? { model } : {}),
     window: facts.window,
     overview: out.overview ?? null,
-    regions: out.regions.map((r) => ({ key: r.key, title: titles[r.key] ?? r.key, text: r.text })),
+    regions: out.regions.map((r) => {
+      const g = facts.regions.find((x) => x.key === r.key);
+      return { key: r.key, title: titles[r.key] ?? r.key, text: r.text, ...(g && claudeKeys.has(r.key) ? { basis: regionBasis(g) } : {}) };
+    }),
     ahead: out.ahead
       ? { text: out.ahead, sources: facts.ahead.map(({ source, issuedAt, url }) => ({ name: source, issuedAt, url })) }
       : null,

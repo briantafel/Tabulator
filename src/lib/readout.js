@@ -431,3 +431,69 @@ export const oursReadoutMatches = (editorial, blend) =>
 export const readoutMatches = (editorial, generatedAt) =>
   !!editorial && !editorial.quiet && !!editorial.regions?.length &&
   !!generatedAt && editorial.forecastGeneratedAt === generatedAt;
+
+/* ---------------------------------------------------------- carry forward */
+
+/** How long a Claude-written read-out may be carried into later runs. */
+export const CARRY_HOURS = 24;
+/** Under this age, an unchanged read-out is reused without calling the API. */
+export const REUSE_HOURS = 12;
+
+/**
+ * A short fingerprint of the numbers a region's text could quote: each
+ * resort's total, its day-by-day inches (with dates), the NWS-higher range
+ * and alert names. Saved with each region. If it differs, the forecast
+ * moved and the old sentence can't be trusted: the validator only checks
+ * that a number appears somewhere on today's sheet, so "Mt. Baker 15\""
+ * would pass even with Mt. Baker now at 47\" (2026-11-21 replay).
+ */
+export function regionBasis(g) {
+  const src = JSON.stringify((g.resorts ?? []).map((r) => [
+    r.id, r.totalIn, (r.days ?? []).map((d) => [d.date, d.in]),
+    r.nwsHigher ? [r.nwsHigher.fromIn, r.nwsHigher.toIn] : null,
+    (r.alerts ?? []).map((a) => a.event),
+  ]));
+  let h = 5381;
+  for (let i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+
+/**
+ * When no new Claude read-out can be had (daily cap reached, API down, or
+ * both drafts rejected), keep what still holds of the last one rather than
+ * dropping to the bare template (2026-11-21: the 07:37Z blend run used the
+ * day's last call; the 15:34Z and 21:18Z runs shipped "X is forecast for
+ * about N". Y follows." for every region).
+ *
+ * A region's earlier text is kept only if its numbers are unchanged (same
+ * basis) AND it passes today's validator. Others get the template sentence.
+ * The overview and look-ahead are kept only if they still pass. Returns
+ * null when nothing earlier is worth keeping; `complete` is true when every
+ * region, the overview and the look-ahead all carried over.
+ */
+export function carryForward(prev, facts, now = new Date()) {
+  if (!prev || prev.writer !== "claude" || facts.quiet || !Array.isArray(prev.regions)) return null;
+  const writtenAt = Date.parse(prev.writtenAt ?? prev.generatedAt);
+  if (!Number.isFinite(writtenAt) || now.getTime() - writtenAt > CARRY_HOURS * 3600e3) return null;
+
+  const earlier = new Map(prev.regions.filter((r) => r.basis).map((r) => [r.key, r]));
+  const template = new Map(templateReadout(facts).regions.map((r) => [r.key, r.text]));
+  const keep = new Set(facts.regions.filter((g) => earlier.get(g.key)?.basis === regionBasis(g)).map((g) => g.key));
+  const draft = () => ({
+    regions: facts.regions.map((g) => ({ key: g.key, text: keep.has(g.key) ? earlier.get(g.key).text : template.get(g.key) })),
+    overview: prev.overview ?? null,
+    ahead: prev.ahead?.text ?? null,
+  });
+
+  let problems = validateReadout(draft(), facts);
+  for (const k of [...keep]) if (problems.some((p) => p.startsWith("region ") && p.includes(`(${k})`))) keep.delete(k);
+  if (!keep.size) return null;
+  const out = draft();
+  problems = validateReadout(out, facts);
+  if (problems.some((p) => p.startsWith("overview"))) out.overview = null;
+  if (problems.some((p) => p.startsWith("ahead"))) out.ahead = null;
+  if (validateReadout(out, facts).length) return null;
+  const complete = keep.size === facts.regions.length && prev.regions.length === facts.regions.length
+    && out.overview === (prev.overview ?? null) && out.ahead === (prev.ahead?.text ?? null);
+  return { ...out, kept: [...keep], complete, writtenAt: new Date(writtenAt).toISOString() };
+}

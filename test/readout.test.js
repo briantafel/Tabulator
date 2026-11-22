@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse } from "yaml";
-import { readoutFacts, templateReadout, validateReadout, readoutMatches, accumulation, CUTOFF_IN } from "../src/lib/readout.js";
+import { readoutFacts, templateReadout, validateReadout, readoutMatches, accumulation, CUTOFF_IN, carryForward, regionBasis } from "../src/lib/readout.js";
 import { outlook } from "../src/lib/outlook.js";
 import { issuedAt, isFresh, afdAhead, cpcAhead } from "../scripts/discussions.js";
 import { parseReply } from "../scripts/readout-api.js";
@@ -360,4 +360,79 @@ test("a draft with a region problem still falls back to the template", async () 
   const api = fakeApi(() => ({ text: JSON.stringify(bad) }));
   const { editorial } = await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
   assert.equal(editorial.writer, "template");
+});
+
+// --- carrying the last Claude read-out forward -------------------------
+
+/** An earlier Claude read-out of the same facts, with prose of its own. */
+function earlierClaude({ at = "2026-10-30T07:00:00Z", extra = " A trough digs in from the west." } = {}) {
+  const t = templateReadout(facts0());
+  const basis = new Map(facts0().regions.map((g) => [g.key, regionBasis(g)]));
+  return {
+    generatedAt: at, writer: "claude", model: "claude-haiku-5-5",
+    overview: "A trough from the Pacific drives the week.",
+    regions: t.regions.map((r) => ({ key: r.key, title: r.key, text: r.text + extra, basis: basis.get(r.key) })),
+    ahead: null, api: { day: "2026-10-30", calls: DAILY_CAP },
+  };
+}
+
+test("cap reached: the earlier Claude read-out is kept, not swapped for the template", async () => {
+  const prev = earlierClaude();
+  const api = fakeApi(() => assert.fail("over the daily cap"));
+  const { editorial, status } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(api.calls.length, 0);
+  assert.equal(editorial.writer, "claude");
+  assert.equal(editorial.overview, null, "no forecaster discussion today, so the old overview fails the same check a new one would");
+  assert.deepEqual(editorial.regions.map((r) => r.text), prev.regions.map((r) => r.text));
+  assert.equal(editorial.writtenAt, "2026-10-30T07:00:00.000Z", "age runs from when it was written, not when it was carried");
+  assert.match(status.warnings.join(), /kept \d+ of \d+ regions/);
+});
+
+test("a carried region whose number no longer holds gets the template sentence", async () => {
+  const prev = earlierClaude();
+  prev.regions[0].text = "Something like 987\" is coming.";
+  const { editorial } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: fakeApi(() => assert.fail()).fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(editorial.regions[0].text, templateReadout(facts0()).regions[0].text);
+  if (prev.regions.length > 1) assert.equal(editorial.regions[1].text, prev.regions[1].text);
+});
+
+test("a region whose numbers moved is not carried, even if its numbers happen to appear elsewhere", async () => {
+  // 2026-11-21 replay: "Mt. Baker's total at 15\"" passed the validator
+  // with Mt. Baker at 47\", because 15 was someone else's number.
+  const prev = earlierClaude();
+  prev.regions[0].basis = "stale";
+  const { editorial } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: fakeApi(() => assert.fail()).fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(editorial.regions[0].text, templateReadout(facts0()).regions[0].text);
+  assert.equal(editorial.regions[0].basis, undefined, "a template sentence gets no basis, so it is never carried as Claude's");
+});
+
+test("old read-outs without a basis are never carried", () => {
+  const prev = earlierClaude();
+  for (const r of prev.regions) delete r.basis;
+  assert.equal(carryForward(prev, facts0(), NOW), null);
+});
+
+test("nothing moved since a recent read-out: reused with no API call", async () => {
+  const prev = { ...earlierClaude({ at: "2026-10-30T20:00:00Z" }), overview: null, api: { day: "2026-10-30", calls: 0 } };
+  const api = fakeApi(() => assert.fail("nothing changed — no call"));
+  const { editorial } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(api.calls.length, 0);
+  assert.equal(editorial.writer, "claude");
+  assert.deepEqual(editorial.api, { day: "2026-10-30", calls: 0 });
+});
+
+test("nothing older than a day is carried", async () => {
+  const prev = earlierClaude({ at: "2026-10-29T12:00:00Z" });
+  const { editorial } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: fakeApi(() => assert.fail()).fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(editorial.writer, "template");
+});
+
+test("past the reuse window, a fresh draft still wins over a carried one", async () => {
+  const prev = { ...earlierClaude(), api: { day: "2026-10-30", calls: 0 } };
+  const api = fakeApi(() => ({ text: goodText() }));
+  const { editorial } = await run({ root: await sandbox({ prev }), env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(api.calls.length, 1);
+  assert.deepEqual(editorial.regions.map((r) => r.text), templateReadout(facts0()).regions.map((r) => r.text));
+  assert.equal(editorial.writtenAt, NOW.toISOString());
+  assert.equal(carryForward(null, facts0(), NOW), null);
 });
