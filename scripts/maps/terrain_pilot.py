@@ -111,6 +111,13 @@ def relief_from_cache(rid, fp, h16, px, meta):
                         and r.get("exaggeration") == EXAG and r.get("exposure") == EXPOSURE and r.get("levels") == LEVELS
                         and r.get("samples") == meta["samples"]
                         and r.get("mesh_vertex_spacing_m") == round(meta["region_m"] / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2))
+                if not same:
+                    sh = np.asarray(Image.open(hp))
+                    log("  seed mismatch: heightmap " + ("same" if np.array_equal(sh, h16) else f"differs (seed {sh.shape} vs now {h16.shape}, "
+                        f"{int((sh != h16).sum()) if sh.shape == h16.shape else '-'} px)")
+                        + f"; px {j.get('px')} vs {px}; exag {r.get('exaggeration')} vs {EXAG}; exposure {r.get('exposure')} vs {EXPOSURE}; "
+                        f"levels {r.get('levels')} vs {LEVELS}; samples {r.get('samples')} vs {meta['samples']}; "
+                        f"spacing {r.get('mesh_vertex_spacing_m')} vs {round(meta['region_m'] / (meta['mesh_base'] * 2 ** meta['render_levels']), 2)}")
                 relief = np.asarray(Image.open(rp).convert("RGB")) if same else None
                 if same and relief.shape == (px, px, 3):
                     st = {k: r[k] for k in ("clipped_pct", "darkest1pct_grey_pct", "darkest1pct_value", "median_value", "raw_clipped_pct", "raw_p_lo", "raw_p_hi")}
