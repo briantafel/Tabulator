@@ -65,6 +65,9 @@ export function score(resort, a, b, history, today = localToday()) {
     cumulative: fc.map((d) => (cum += d.snow ?? 0)),
     before: before(history, resort.id, today),
     total: Number(fc.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
+    /* A window that holds only projected days has no forecast total at all. `total` stays 0 so the sort and rank keep
+       working; this flag is what the screens read, so they never show that 0 as "no snow" (missing is not zero). */
+    noForecast: win.length > 0 && fc.length === 0,
     projected: pj.length ? Number(pj.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)) : null,
     hi: tempMax.length ? Math.max(...tempMax) : null,
     lo: coldMin.length ? Math.min(...coldMin) : null,

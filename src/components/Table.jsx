@@ -66,7 +66,7 @@ export default function Table({ data, metric, onOpen, favs = [] }) {
             <span className="t-num t-before" title={r.before == null ? "No record for those days yet" : undefined}>
               {r.before == null ? "—" : snowWithUnit(r.before, metric)}
             </span>
-            <span className="t-num t-snow">{snowWithUnit(r.total, metric)}</span>
+            <span className="t-num t-snow" title={r.noForecast ? "No forecast yet" : undefined}>{r.noForecast ? "—" : snowWithUnit(r.total, metric)}</span>
             {/* Marker sits in a fixed slot BEFORE the number, so the number's
                 position never shifts between a flagged and an unflagged row. */}
             <span className="t-num t-flagged">

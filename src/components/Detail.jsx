@@ -25,6 +25,9 @@ const STAR =
 
 
 const INTRO_SEEN = new Set();
+/** The last day Snow-Forecast covers, for the notes on a window that starts after it. */
+const lastForecastDate = (r) => (r.days ?? []).filter((d) => !d.projected).at(-1)?.date ?? (r.winAll ?? r.win)[0].date;
+
 const reducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
@@ -45,9 +48,12 @@ export default function Detail({
   const [rolling, setRolling] = useState(false);
   const canProject = !!projections && r?.projected != null;
   const introKey = r ? `${r.id}|${r.total}|${r.projected}` : "";
+  /* A window with no forecast days (Nov 28–Dec 1 when Snow-Forecast ends Nov 27) has no forecast number: the projected
+     one stands in the headline, and there is nothing to cycle to (2026-11-22). */
+  const noForecast = !!r?.noForecast && canProject;
   useEffect(() => {
-    setSel("forecast");
-    if (!canProject || INTRO_SEEN.has(introKey) || reducedMotion()) { setIntro(false); return undefined; }
+    setSel(noForecast ? "projected" : "forecast");
+    if (!canProject || noForecast || INTRO_SEEN.has(introKey) || reducedMotion()) { setIntro(false); return undefined; }
     setIntro(true);
     const t = [
       setTimeout(() => setSel("projected"), 1300),
@@ -56,7 +62,7 @@ export default function Detail({
       setTimeout(() => { INTRO_SEEN.add(introKey); setIntro(false); }, 6300),
     ];
     return () => t.forEach(clearTimeout);
-  }, [introKey, canProject]);
+  }, [introKey, canProject, noForecast]);
   /* While digits are moving the total shows in a solid blend; the drifting
      gradient takes over once they settle (clip-to-text gradients over moving
      strips are unreliable in Safari). */
@@ -372,7 +378,7 @@ export default function Detail({
             <button
               className={`sheet-total sheet-total-tap is-${sel}${rolling ? " is-rolling" : ""}`}
               onClick={() => {
-                if (intro) return;
+                if (intro || noForecast) return;
                 setSel((v) => (v === "forecast" ? "projected" : v === "projected" ? "total" : "forecast"));
               }}
               aria-label={`Showing ${sel} snowfall. Tap to switch between forecast, projected and total.`}
@@ -447,6 +453,12 @@ export default function Detail({
           {rainRisk(r) && (
             <p className="sheet-warn">
               Freezing level stays above the mid station all window — expect rain, not snow.
+            </p>
+          )}
+
+          {noForecast && (
+            <p className="sheet-warn">
+              No forecast yet — Snow-Forecast ends {shortDate(lastForecastDate(r))}. Showing projected.
             </p>
           )}
 
@@ -554,7 +566,10 @@ export default function Detail({
               line uses the next three days of this sheet's own forecast. */}
           {/* Snow by terrain (2026-11-19): between Weather and Avalanche, full sheet only.
               flags.json `terrainMap`; only resorts listed in public/terrain/index.json. */}
-          {max && terrain && <TerrainMap id={r.id} name={r.name} metric={metric} zoom={terrainZoom} vectors={terrainVectors} live={terrainLive} sheet={r} />}
+          {max && terrain && noForecast && (
+            <p className="sheet-warn">Map covers forecast days through {shortDate(lastForecastDate(r))}.</p>
+          )}
+          {max && terrain && !noForecast && <TerrainMap id={r.id} name={r.name} metric={metric} zoom={terrainZoom} vectors={terrainVectors} live={terrainLive} sheet={r} />}
 
           {max && avalanche && (
             <AvalancheSection

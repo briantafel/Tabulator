@@ -28,12 +28,12 @@ test("bands centre on Snow-Forecast's number and never go below zero or exclude 
   assert.equal(bandAround(null, { p50: 1 }), null);
 });
 
-test("projected days are appended after SF's last date, up to day 10, flagged", () => {
+test("projected days are appended after SF's last date, up to day 8, flagged", () => {
   const f = extendFeed(feed(), NOW);
-  assert.equal(f.dates.length, 10);
+  assert.equal(f.dates.length, 8);
   assert.deepEqual(f.sfDates, sfDays.map((d) => d.date));
   const alta = f.resorts.find((r) => r.id === "alta");
-  assert.equal(alta.days.length, 6 + 4);           // 11-08 overlaps SF; 11-13 is past day 10
+  assert.equal(alta.days.length, 6 + 2);           // 11-08 overlaps SF; day 8 is the last one shown
   assert.equal(alta.days[6].date, "2026-11-09");
   assert.equal(alta.days[6].projected, true);
   assert.equal(alta.days[6].snow, 6);
@@ -55,7 +55,7 @@ test("totals, markers and rank stand on forecast days only", () => {
   const alta = f.resorts.find((r) => r.id === "alta");
   const s = score(alta, 0, 9, {});
   assert.equal(s.total, 36);           // 0+2+10+20+4+0 — SF only
-  assert.equal(s.projected, 24);       // four projected days × 6 cm
+  assert.equal(s.projected, 12);       // two projected days × 6 cm (day 8 is the cap)
   assert.equal(s.wind, 20);            // the 70 km/h projected wind does not raise the marker
   assert.equal(s.hi, -2);
   const plain = score(sfDays.length && { id: "x", days: sfDays }, 0, 5, {});
@@ -73,7 +73,7 @@ test("projected totals are added up member by member, models weighted equally", 
   assert.equal(projectedTotalRange(null, ["d1"]), null);
 });
 
-test("SF rolled forward a day before projections were rebuilt: still 10 days", () => {
+test("SF rolled forward a day before projections were rebuilt: still 8 days", () => {
   // Today's real case (2026-11-11): SF 11-11..11-16, projections built off the
   // 11-10..11-15 run, so 11-16 overlaps. With spare days built, 10 survive.
   const sf = ["2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16"];
@@ -85,9 +85,9 @@ test("SF rolled forward a day before projections were rebuilt: still 10 days", (
     resorts: [{ id: "a", days: sf.map(day) }],
     projections: { generatedAt: new Date(NOW).toISOString(), resorts: { a: { days: pdates.map(pd) } } },
   }, NOW);
-  assert.equal(f.dates.length, 10);
-  assert.equal(f.dates.at(-1), "2026-11-20");
-  assert.equal(f.resorts[0].days.length, 10);   // the spare 11-21 is trimmed
+  assert.equal(f.dates.length, 8);
+  assert.equal(f.dates.at(-1), "2026-11-18");
+  assert.equal(f.resorts[0].days.length, 8);   // the spare 11-21 is trimmed
 });
 
 test("a resort with no projections is flagged, not silently cut to six days", () => {
@@ -105,7 +105,7 @@ test("a carried-forward entry older than STALE_HOURS is dropped per resort (2026
   assert.equal(alta.projMissing, true);
   assert.equal(alta.days.length, 6);
   x.projections.resorts.alta.issuedAt = "2026-11-02T10:00:00Z"; // 34 h: still fresh
-  assert.equal(extendFeed(x, NOW).resorts.find((r) => r.id === "alta").days.length, 10);
+  assert.equal(extendFeed(x, NOW).resorts.find((r) => r.id === "alta").days.length, 8);
 });
 
 test("slr switch: our ratio's snow and members, all days or none per resort", () => {
@@ -131,12 +131,22 @@ test("slr switch: our ratio's snow and members, all days or none per resort", ()
   assert.equal(extendFeed(mixed, NOW, { slr: true }).resorts.find((r) => r.id === "alta").days[6].snow, 6);
 });
 
-test("a file that still begins yesterday: dropping it first keeps all 10 days from today (2026-11-21)", async () => {
+test("a file that still begins yesterday: dropping it first keeps all 8 days from today (2026-11-21)", async () => {
   const { dropPast } = await import("../src/lib/forecast.js");
   const today = new Date(2026, 10, 4, 12);   // the feed's first day, 11-03, is yesterday
   const f = extendFeed(dropPast(feed(), today), Date.parse("2026-11-04T17:00:00Z"));
   assert.equal(f.dates[0], "2026-11-04");
-  assert.equal(f.dates.length, 10);
+  assert.equal(f.dates.length, 8);
   assert.equal(f.sfDates.length, 5);
-  assert.equal(f.resorts.find((r) => r.id === "alta").days.length, 10);
+  assert.equal(f.resorts.find((r) => r.id === "alta").days.length, 8);
+});
+
+test("a window with only projected days has no forecast total: flagged, not shown as 0 (2026-11-22)", () => {
+  const f = extendFeed(feed(), NOW);
+  const alta = f.resorts.find((r) => r.id === "alta");
+  const only = score(alta, 6, alta.days.length - 1, {}, "2026-11-08");
+  assert.equal(only.noForecast, true);
+  assert.ok(only.projected > 0);
+  assert.equal(score(alta, 3, alta.days.length - 1, {}, "2026-11-08").noForecast, false);
+  assert.equal(score(alta, 0, 5, {}, "2026-11-08").noForecast, false);
 });
