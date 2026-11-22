@@ -1,14 +1,14 @@
 {
- "generatedAt": "2026-11-21T21:18:15.953Z",
- "forecastGeneratedAt": "2026-11-21T14:38:16.802Z",
+ "generatedAt": "2026-11-22T01:22:36.738Z",
+ "forecastGeneratedAt": "2026-11-22T01:15:34.246Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-21T21:18:12.886Z",
  "quiet": false,
  "writer": "template",
  "window": {
-  "from": "2026-11-21",
+  "from": "2026-11-22",
   "to": "2026-11-26",
-  "days": 6,
+  "days": 5,
   "toLabel": "Thursday Nov 26"
  },
  "overview": null,
@@ -16,27 +16,17 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 75\". Whistler follows."
+   "text": "Cypress Mountain is forecast for about 74\". Whistler follows."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Baker is forecast for about 47\". Crystal Mountain and Stevens Pass follow. The NWS is calling for more at Crystal Mountain: 24 to 45 inches Saturday through Thursday night."
-  },
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 16\", 11\" of it Saturday. Jackson Hole and Big Sky follow."
+   "text": "Mt. Baker is forecast for about 47\". Crystal Mountain and Stevens Pass follow."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
    "text": "RED Mountain is forecast for about 11\", 7\" of it Thursday. Whitewater and Revelstoke follow."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Telluride is forecast for about 9\", 5\" of it Monday. Breckenridge and Aspen Highlands follow."
   },
   {
    "key": "the Okanagan",
@@ -57,16 +47,16 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-21T14:44:38.725Z"
+   "issuedAt": "2026-11-22T01:22:27.720Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T21:18:15.953Z"
+   "issuedAt": "2026-11-22T01:22:36.738Z"
   }
  ],
  "api": {
-  "day": "2026-11-21",
-  "calls": 10
+  "day": "2026-11-22",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

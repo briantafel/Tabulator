@@ -1,55 +1,45 @@
 {
- "generatedAt": "2026-11-21T14:44:39.023Z",
- "forecastGeneratedAt": "2026-11-21T14:38:16.802Z",
+ "generatedAt": "2026-11-22T01:22:27.956Z",
+ "forecastGeneratedAt": "2026-11-22T01:15:34.246Z",
  "quiet": false,
- "writer": "claude",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
-  "from": "2026-11-21",
+  "from": "2026-11-22",
   "to": "2026-11-26",
-  "days": 6,
+  "days": 5,
   "toLabel": "Thursday Nov 26"
  },
- "overview": "Systems from the Pacific are the main story this week. A weak low brings light snow to the Cascades this weekend, then a more active pattern from Tuesday through the end of the week favors the Coast Mountains and northern Washington.",
+ "overview": null,
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Snow comes and goes from Sunday, but warm air keeps the snow line high. Whistler gets the bulk of it, with its biggest day on Thursday, when a mix of rain and snow is expected. Cypress Mountain sees mostly rain after the Monday snow."
+   "text": "Whistler is forecast for about 30\". Cypress Mountain follows."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A low offshore brings light snow to the passes this weekend, then a more active pattern from Monday night through Thursday night. Mt. Baker and Crystal Mountain are the best bets, with heavy snow and gusty southeast wind expected Monday and Tuesday. The NWS is calling for more, 24 to 45 inches at Crystal Mountain over Saturday through Thursday night."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Cold air keeps snow in the forecast for the BC Interior, mixed with sun and cloud early in the week. Revelstoke sees snow Monday night and again midweek. The bigger system arrives Thursday, when snow and rain are expected at Revelstoke, Whitewater and Kicking Horse."
+   "text": "Mt. Baker is forecast for about 16\". Crystal Mountain and Stevens Pass follow. The NWS is calling for more at Crystal Mountain: 13 to 26 inches Sunday night through Thursday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-21T14:38:16.802Z"
+   "issuedAt": "2026-11-22T01:15:34.246Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-21T14:44:38.725Z"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-21T10:33:00+00:00"
+   "issuedAt": "2026-11-22T01:22:27.720Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-21T14:44:39.023Z"
+   "issuedAt": "2026-11-22T01:22:27.956Z"
   }
  ],
  "api": {
-  "day": "2026-11-21",
-  "calls": 6
+  "day": "2026-11-22",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

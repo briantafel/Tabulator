@@ -758,26 +758,26 @@
    "blue-mountain": 0
   },
   "2026-11-21": {
-   "palisades": 3,
+   "palisades": 1,
    "heavenly": 0,
    "kirkwood": 0,
-   "sugar-bowl": 3,
+   "sugar-bowl": 2,
    "northstar": 1,
    "mt-rose": 0,
    "sierra-at-tahoe": 1,
-   "homewood": 2,
+   "homewood": 1,
    "mammoth": 0,
    "mt-baker": 0,
    "crystal": 2,
-   "stevens-pass": 3,
-   "mt-bachelor": 3,
-   "telluride": 3,
-   "crested-butte": 1,
-   "aspen-highlands": 2,
+   "stevens-pass": 2,
+   "mt-bachelor": 4,
+   "telluride": 4,
+   "crested-butte": 2,
+   "aspen-highlands": 5,
    "steamboat": 0,
    "vail": 1,
-   "breckenridge": 1,
-   "arapahoe-basin": 3,
+   "breckenridge": 4,
+   "arapahoe-basin": 6,
    "snowbird": 0,
    "alta": 0,
    "brighton": 0,
@@ -786,11 +786,11 @@
    "snowbasin": 2,
    "powder-mountain": 2,
    "jackson-hole": 4,
-   "grand-targhee": 7,
+   "grand-targhee": 6,
    "sun-valley": 0,
    "big-sky": 0,
-   "taos": 2,
-   "wolf-creek": 3,
+   "taos": 3,
+   "wolf-creek": 4,
    "revelstoke": 0,
    "whistler": 1,
    "lake-louise": 0,
@@ -4503,7 +4503,7 @@
    "palisades": {
     "am": 0,
     "pm": 0,
-    "night": 3
+    "night": 1
    },
    "heavenly": {
     "am": 0,
@@ -4518,7 +4518,7 @@
    "sugar-bowl": {
     "am": 0,
     "pm": 0,
-    "night": 3
+    "night": 2
    },
    "northstar": {
     "am": 0,
@@ -4538,7 +4538,7 @@
    "homewood": {
     "am": 0,
     "pm": 0,
-    "night": 2
+    "night": 1
    },
    "mammoth": {
     "am": 0,
@@ -4558,26 +4558,26 @@
    "stevens-pass": {
     "am": 0,
     "pm": 0,
-    "night": 3
+    "night": 2
    },
    "mt-bachelor": {
     "am": 0,
     "pm": 1,
-    "night": 2
+    "night": 3
    },
    "telluride": {
-    "am": 3,
+    "am": 4,
     "pm": 0,
     "night": 0
    },
    "crested-butte": {
-    "am": 1,
+    "am": 2,
     "pm": 0,
     "night": 0
    },
    "aspen-highlands": {
-    "am": 2,
-    "pm": 0,
+    "am": 4,
+    "pm": 1,
     "night": 0
    },
    "steamboat": {
@@ -4591,12 +4591,12 @@
     "night": 0
    },
    "breckenridge": {
-    "am": 1,
+    "am": 4,
     "pm": 0,
     "night": 0
    },
    "arapahoe-basin": {
-    "am": 3,
+    "am": 6,
     "pm": 0,
     "night": 0
    },
@@ -4641,7 +4641,7 @@
     "night": 0
    },
    "grand-targhee": {
-    "am": 4,
+    "am": 3,
     "pm": 3,
     "night": 0
    },
@@ -4656,12 +4656,12 @@
     "night": 0
    },
    "taos": {
-    "am": 0,
+    "am": 1,
     "pm": 2,
     "night": 0
    },
    "wolf-creek": {
-    "am": 1,
+    "am": 2,
     "pm": 2,
     "night": 0
    },
@@ -4787,5 +4787,5 @@
    }
   }
  },
- "updatedAt": "2026-11-21T14:38:16.802Z"
+ "updatedAt": "2026-11-22T01:15:34.246Z"
 }
