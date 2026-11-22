@@ -1672,6 +1672,8 @@ body { background: #F2F2F2; }
   font-size: calc(11 * var(--u)); line-height: calc(13 * var(--u)); color: #8A8A8A;
 }
 .tm-cap b { font-weight: 600; color: var(--ink); }
+/* App-drawn map: Base · Mid · Top is too wide to share a line with the source, so it takes its own (Brian 2026-11-22). */
+.tm-cap-live { flex-direction: column; gap: calc(4 * var(--u)); }
 .tm-cap b.tm-cap-mid { font-size: calc(15 * var(--u)); font-weight: 800; color: var(--red); line-height: calc(13 * var(--u)); }
 
 /* Expand button on the terrain map (Figma 4030:511): 28 black square, 4 radius,
