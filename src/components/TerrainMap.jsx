@@ -47,9 +47,15 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
         <div className="tm-img">
           <img src={`${B}${L.sheet_relief}`} alt={alt} onError={() => setFailed(true)} />
           {ready && (
-            <svg className="tm-vec tm-live" viewBox={`${L.sheet[0]} ${L.sheet[1]} ${L.sheet[2]} ${L.sheet[2]}`} aria-hidden="true" focusable="false">
-              <g dangerouslySetInnerHTML={{ __html: t.fillMarkup + t.linesMarkup }} />
-            </svg>
+            <>
+              {/* Same blend as full screen and as the finished picture: the fill multiplies into the relief at .85 */}
+              <svg className="tm-vec tm-live tm-live-fill" viewBox={`${L.sheet[0]} ${L.sheet[1]} ${L.sheet[2]} ${L.sheet[2]}`} aria-hidden="true" focusable="false">
+                <g dangerouslySetInnerHTML={{ __html: t.fillMarkup }} />
+              </svg>
+              <svg className="tm-vec tm-live" viewBox={`${L.sheet[0]} ${L.sheet[1]} ${L.sheet[2]} ${L.sheet[2]}`} aria-hidden="true" focusable="false">
+                <g dangerouslySetInnerHTML={{ __html: t.linesMarkup }} />
+              </svg>
+            </>
           )}
           {ready && <TerrainLabels labels={d.sheet} metric={metric} S={SHEET} />}
           {zoom && fullPic0 && ready && (

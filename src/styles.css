@@ -1658,6 +1658,9 @@ body { background: #F2F2F2; }
 .tm-vec { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; font-family: Inter, system-ui, sans-serif; }
 .tm-vec text { font-family: inherit; }
 .tm-live { animation: tm-live-in 0.35s ease-out both; }
+.tm-live-fill { mix-blend-mode: multiply; opacity: .85; }
+@keyframes tm-live-in-fill { from { opacity: 0; } to { opacity: .85; } }
+.tm-live-fill { animation-name: tm-live-in-fill; }
 @keyframes tm-live-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .tm-live { animation: none; } }
 .tm-h { display: flex; justify-content: space-between; align-items: baseline; }
