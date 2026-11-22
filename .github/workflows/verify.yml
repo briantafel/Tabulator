@@ -55,7 +55,7 @@ jobs:
           python3 scripts/model/test_blend.py
           python3 scripts/model/test_bands.py
           python3 scripts/model/test_temps.py
-          python3 scripts/model/test_temps.py
+          python3 scripts/model/test_ensmean.py
 
       - name: Download the archive
         run: |
@@ -99,6 +99,15 @@ jobs:
         continue-on-error: true
         run: python3 scripts/verify/longrange.py archive out
 
+      # Ensemble-mean water corrected on every past winter (Brian, 2026-11-22: "score five past
+      # winters instead of one"). Reads longrange's per-resort-day ensemble means BEFORE they are
+      # deleted below. Public models + public truth only; nothing reads it in the app.
+      - name: Ensemble-mean water (past winters)
+        id: ensmean
+        if: steps.longrange.outcome == 'success'
+        continue-on-error: true
+        run: python3 scripts/model/ensmean.py out
+
       - name: Save to the bucket
         if: success()
         run: |
@@ -131,7 +140,7 @@ jobs:
         if: always()
         run: |
           mkdir -p public-report
-          for f in blend_report.md bands_report.md temps_report.md longrange_report.md; do
+          for f in blend_report.md bands_report.md temps_report.md longrange_report.md ensmean_report.md; do
             [ -f "out/$f" ] || { echo "::warning::out/$f missing"; continue; }
             if grep -qi "snow-forecast\|(paid)" "out/$f"; then
               echo "::error::out/$f mentions a paid source; not publishing it"; exit 1
@@ -157,7 +166,7 @@ jobs:
           retention-days: 7
 
       - name: Fail loudly if long-range scoring failed
-        if: always() && steps.longrange.outcome == 'failure'
+        if: always() && (steps.longrange.outcome == 'failure' || steps.ensmean.outcome == 'failure')
         run: |
-          echo "::error::Long-range verification failed — see its step log. The rest of the report was saved."
+          echo "::error::Long-range or ensemble-mean verification failed — see the step logs. The rest of the report was saved."
           exit 1
