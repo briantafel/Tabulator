@@ -156,6 +156,7 @@ export function drawLive(live, grids, win) {
   const base = marks.find((m) => m.kind === "base"), top = marks.find((m) => m.kind === "top");
   return {
     fill, lines, nosnow, k: fld.k,
+    mid_cm: nosnow ? null : win.totalCm,                    // the sheet's own number, for the caption and legend
     range_in: [r1(lo), r1(hi)],
     base_in: base?.in ?? null, top_in: top?.in ?? null,
     label: windowLabel(win.dates),

@@ -66,12 +66,12 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
         </div>
         {zoom && full && ready && fullPic0 && <TerrainFullscreen src={`${B}${fullPic0.img}`} alt={alt} title={name || "Snow by terrain"} metric={metric}
             labels={d.full} pic={fullPic0.ref} focus={fullPic0.focus} vec={{ inline: fullInline, px: fullPic0.px }}
-            legend={{ range: d.range_in, label: m.label, day: d.label, nosnow: d.nosnow, anchored: true }} onClose={() => setFull(false)} />}
+            legend={{ range: d.range_in, label: m.label, day: d.label, nosnow: d.nosnow, anchored: true, midCm: d.mid_cm }} onClose={() => setFull(false)} />}
         {ready && (
           <div className="tm-cap">
             <span>{m.label}</span>
             {d.nosnow ? <span>No snow in the forecast</span>
-              : <span>Base <b>{snowWithUnit(d.base_in * 2.54, metric)}</b> · Top <b>{snowWithUnit(d.top_in * 2.54, metric)}</b></span>}
+              : <span>Base <b>{snowWithUnit(d.base_in * 2.54, metric)}</b> · Mid <b className="tm-cap-mid">{snowWithUnit(d.mid_cm, metric)}</b> · Top <b>{snowWithUnit(d.top_in * 2.54, metric)}</b></span>}
           </div>
         )}
       </section>

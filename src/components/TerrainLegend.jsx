@@ -1,11 +1,12 @@
 import { depthText } from "../lib/terrainLabels.js";
+import { snowWithUnit } from "../lib/units.js";
 
 /* Legend for the full-screen Snow by terrain map (Brian, 2026-11-20): a floating
    card, inset from the screen edges, that lives outside the pan/zoom layer so it
    never moves with the map. Gradient runs lowest -> highest snow on this map; the
    two end values are this map's real minimum and maximum (public/terrain/index.json
    `range_in`), in the viewer's unit. */
-export default function TerrainLegend({ range, label, day, metric, nosnow = false, anchored = false }) {
+export default function TerrainLegend({ range, label, day, metric, nosnow = false, anchored = false, midCm = null }) {
   /* Anchored maps (lib/terrainAnchor.js) cover the sheet's days, not a 5-day run: name the days. */
   const when = anchored ? day : `${day} run`;
   const what = anchored ? "Forecast snow" : "5-day snow";
@@ -19,8 +20,17 @@ export default function TerrainLegend({ range, label, day, metric, nosnow = fals
     );
   }
   return (
-    <div className="tmf-legend" role="group" aria-label="Snow by terrain legend">
+    <div className={`tmf-legend${midCm != null ? " has-mid" : ""}`} role="group" aria-label="Snow by terrain legend">
       <div className="tmf-lg-h"><b>{what}</b><span>{when}</span></div>
+      {midCm != null && range[1] > range[0] && (() => {
+        /* The header's number, at its place on the ramp (clamped so the label never leaves the card). */
+        const t = Math.min(0.9, Math.max(0.1, (midCm / 2.54 - range[0]) / (range[1] - range[0])));
+        return (
+          <div className="tmf-lg-mid" style={{ left: `${t * 100}%` }}>
+            <b>{snowWithUnit(midCm, metric)}</b><i aria-hidden="true" />
+          </div>
+        );
+      })()}
       <div className="tmf-lg-bar" aria-hidden="true" />
       <div className="tmf-lg-f">
         <b>{depthText(range[0], metric)}</b>
