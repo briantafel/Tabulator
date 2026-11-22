@@ -27,7 +27,7 @@ print(f"# Region {region}: {len(ids)} app resorts. blend-v1 applies ONE factor p
 print("## Volume ratio by resort (Σforecast ÷ Σobserved water), leads 1–5, strict station pairs, winters with truth\n")
 rows = con.execute("""
   WITH d AS (SELECT resort_id, any_value(station_id) st, any_value(round(station_km,1)) km, any_value(round(station_delev_m)) dz,
-                    split_part(source_label, ':', 2) AS model, lead_day AS lead, fc_amount fc, obs
+                    split_part(source_label, ':', 2) AS model, lead_day AS lead, local_date, fc_amount fc, obs
              FROM p WHERE source = 'open-meteo-previous-runs' AND space = 'liquid' AND pair_quality = 'strict'
                AND obs IS NOT NULL AND fc_amount IS NOT NULL AND lead_day BETWEEN 1 AND 5 AND split IN ('train','test')
              GROUP BY resort_id, source_label, lead_day, local_date, fc_amount, obs)
