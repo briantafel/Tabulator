@@ -1,0 +1,39 @@
+name: truth-coverage
+# Read-only: lists how far back each truth source goes, by winter. Prints only; nothing is archived or scored.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3"
+      - name: Source folders in the archive
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 ls "s3://$R2_BUCKET/archive/" --endpoint-url "$ENDPOINT"
+      - name: Download the truth sources only
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/" archive/ --endpoint-url "$ENDPOINT" --only-show-errors \
+            --exclude "*" --include "source=snotel*/*" --include "source=onthesnow/*" --include "source=cocorahs*/*" \
+            --include "source=snodas*/*" --include "source=nohrsc*/*" --include "source=bc-asws*/*"
+          echo "files: $(find archive -name '*.parquet' | wc -l), $(du -sh archive | cut -f1)"
+      - name: Coverage by winter
+        run: python3 scripts/verify/truth_coverage.py archive | tee coverage.txt
