@@ -133,3 +133,17 @@ test("tags never touch or overlap: Base, Top, Mid and the depth labels, in both 
     }
   }
 });
+
+test("Mid is not above the Top tag when there was room to put it below (Brian 2026-11-22)", () => {
+  let moved = 0;
+  for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [live.dates, 41], [live.dates, 160]]) {
+    const r = drawLive(live, grids, { dates, totalCm: cm });
+    for (const [f, S] of [[r.sheet, { ...SHEET, w: SHEET.size, h: SHEET.size }], [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }]]) {
+      const top = f.marks.find((k) => k.kind === "top");
+      if (!f.mid || !top || top.in == null) continue;
+      const m = layoutMid(f.mid, false, S), t = layoutMark(top, false, S);
+      if (m.cy >= t.cy) moved++;
+    }
+  }
+  assert.ok(moved > 0, "Mid ends up level with or below Top in at least some frames");
+});

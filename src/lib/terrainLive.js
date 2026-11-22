@@ -135,6 +135,24 @@ export function drawLive(live, grids, win) {
     const midF = mid && (!keep || (mid.x >= x0 && mid.x <= x0 + w && mid.y >= y0 && mid.y <= y0 + h))
       ? { x: f4((mid.x - x0) / w), y: f4((mid.y - y0) / h), cm: mid.cm, ft: mid.ft } : null;
     const marksF = marks.map((m) => ({ x: f4((m.x - x0) / w), y: f4((m.y - y0) / h), kind: m.kind, in: m.in, ft: m.ft }));
+    /* Mid never sits above the Top tag when it can help it (Brian 2026-11-22): nudge it down in small steps until it is at
+       least level with Top, as long as it stays clear of Base and Top and inside the picture; else it stays where it is. */
+    const topF = marksF.find((k) => k.kind === "top" && k.in != null);
+    if (midF && topF) {
+      const H = S.h ?? S.size, tc = layoutMark(topF, false, S).cy;
+      const boxOf = (m) => { const l = layoutMid(m, false, S); return { cx: l.cx, cy: l.cy, w: l.w, h: l.h }; };
+      const marksBoxes = marksF.map((k) => {
+        const L = layoutMark(k, false, S), w = L.tag.w + S.ring / 2 + S.gap + S.ring / 2;
+        return { cx: L.flip ? L.cx - (w - S.ring) / 2 : L.cx + (w - S.ring) / 2, cy: L.cy, w, h: Math.max(L.h, S.ring) };
+      });
+      if (boxOf(midF).cy < tc) {
+        for (let dy = 0.01; dy <= 0.25; dy += 0.01) {
+          const t = { ...midF, y: f4(midF.y + dy) }, b = boxOf(t);
+          if (b.cy + b.h / 2 > H - 2) break;
+          if (b.cy >= tc && !marksBoxes.some((o) => hit(b, o))) { midF.y = t.y; break; }
+        }
+      }
+    }
     const depthF = depth.filter((d) => !keep || (d.x >= x0 && d.x <= x0 + w && d.y >= y0 && d.y <= y0 + h))
       .map((d) => ({ x: f4((d.x - x0) / w), y: f4((d.y - y0) / h), in: d.in }));
     return {
