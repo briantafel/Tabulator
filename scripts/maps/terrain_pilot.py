@@ -776,7 +776,10 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
         f"app vs this run inside the outline: max {chk['max_in']} in, p99 {chk['p99_in']} in; range {chk['range_app']} vs {chk['range_py']}")
     (out / f"{rid}-live-check.json").write_text(json.dumps(chk))
     twin.astype("<f4").tofile(out / f"{rid}-live-twin.f32")
-    if chk["p99_in"] > 0.5 or chk["max_in"] > 1.5:
+    # Packing error grows with the field's range (Whistler's reaches 171 in: p99 0.61, max 1.07 on 16-bit height),
+    # so the limits are 0.5% / 1% of the top value, never below the old fixed 0.5 / 1.5 in.
+    top = max(chk["range_py"][1], chk["range_app"][1])
+    if chk["p99_in"] > max(0.5, 0.005 * top) or chk["max_in"] > max(1.5, 0.01 * top):
         raise SystemExit(f"live grid: the app's field differs from this run's by up to {chk['max_in']} in (p99 {chk['p99_in']}); refusing")
     return live
 
