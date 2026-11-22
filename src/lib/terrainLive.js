@@ -6,7 +6,7 @@
    TerrainLabels reads. */
 import { computeField, levelsFor, sampleAt, windowLabel } from "./terrainField.js";
 import { contourRings, splitAtFrame, workspace } from "./terrainContours.js";
-import { FULL, SHEET, layoutMark, layoutMid } from "./terrainLabels.js";
+import { FULL, SHEET, layoutMark, layoutMid, layoutDepth } from "./terrainLabels.js";
 
 export const RAMP = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"];
 const r1 = (v) => Math.round(v * 10) / 10;
@@ -108,22 +108,48 @@ export function drawLive(live, grids, win) {
   if (nosnow) depth.push({ x: live.deep[0], y: live.deep[1], in: 0 });
 
   const marks = live.marks.map((m) => ({ ...m, in: nosnow ? null : r1(sampleAt(F, live, m.x, m.y)) }));
-  const frac = (x0, y0, w, h, keep) => ({
-    frame: "fractions of this picture, 0-1 from the top-left",
-    mid: mid && (!keep || (mid.x >= x0 && mid.x <= x0 + w && mid.y >= y0 && mid.y <= y0 + h))
-      ? { x: +((mid.x - x0) / w).toFixed(4), y: +((mid.y - y0) / h).toFixed(4), cm: mid.cm, ft: mid.ft } : null,
-    depth: depth.filter(clear).filter((d) => !keep || (d.x >= x0 && d.x <= x0 + w && d.y >= y0 && d.y <= y0 + h))
-      .map((d) => ({ x: +((d.x - x0) / w).toFixed(4), y: +((d.y - y0) / h).toFixed(4), in: d.in })),
-    marks: marks.map((m) => ({ x: +((m.x - x0) / w).toFixed(4), y: +((m.y - y0) / h).toFixed(4), kind: m.kind, in: m.in, ft: m.ft })),
-  });
+  const SF = { ...FULL, w: (FULL.size * W) / H, h: FULL.size };
+  const SS = { ...SHEET, w: SHEET.size, h: SHEET.size };
+  /* Tags never touch or overlap (Brian 2026-11-22). Base, Top and Mid are fixed; a depth label that would touch one of
+     them, or an earlier depth label, is dropped. Judged in each picture's own frame at its own type size (full screen at
+     fit is the tightest: zooming spreads the map but not the type). */
+  const GAP = 5;
+  const hit = (a, b) => Math.abs(a.cx - b.cx) * 2 < a.w + b.w + GAP && Math.abs(a.cy - b.cy) * 2 < a.h + b.h + GAP;
+  const resolve = (S, midF, marksF, depthF) => {
+    const boxes = [];
+    if (midF) { const m = layoutMid(midF, false, S); boxes.push({ cx: m.cx, cy: m.cy, w: m.w, h: m.h }); }
+    for (const k of marksF) {
+      const L = layoutMark(k, false, S), w = L.tag.w + S.ring / 2 + S.gap + S.ring / 2;
+      boxes.push({ cx: L.flip ? L.cx - (w - S.ring) / 2 : L.cx + (w - S.ring) / 2, cy: L.cy, w, h: Math.max(L.h, S.ring) });
+    }
+    const out = [];
+    for (const d of [...depthF].sort((a, b) => b.in - a.in)) {
+      const L = layoutDepth(d, false, S), box = { cx: L.cx, cy: L.cy, w: L.w, h: L.h };
+      if (boxes.some((b) => hit(box, b))) continue;
+      boxes.push(box); out.push(d);
+    }
+    return out;
+  };
+  const frac = (x0, y0, w, h, keep, S) => {
+    const f4 = (v) => +v.toFixed(4);
+    const midF = mid && (!keep || (mid.x >= x0 && mid.x <= x0 + w && mid.y >= y0 && mid.y <= y0 + h))
+      ? { x: f4((mid.x - x0) / w), y: f4((mid.y - y0) / h), cm: mid.cm, ft: mid.ft } : null;
+    const marksF = marks.map((m) => ({ x: f4((m.x - x0) / w), y: f4((m.y - y0) / h), kind: m.kind, in: m.in, ft: m.ft }));
+    const depthF = depth.filter((d) => !keep || (d.x >= x0 && d.x <= x0 + w && d.y >= y0 && d.y <= y0 + h))
+      .map((d) => ({ x: f4((d.x - x0) / w), y: f4((d.y - y0) / h), in: d.in }));
+    return {
+      frame: "fractions of this picture, 0-1 from the top-left",
+      mid: midF,
+      depth: resolve(S, midF, marksF, depthF),
+      marks: marksF,
+    };
+  };
   /* Mid (Brian 2026-11-22): the sheet's own number at the sheet's elevation, so the header's total is printed on the map.
      Placed on the terrain at that elevation nearest the centre of that band. */
   let mid = null;
   if (!nosnow) {
     const zc = live.ref.z_kft, Hh = grids.H;
     const [bx, by, bs] = live.sheet;
-    const SF = { ...FULL, w: (FULL.size * W) / H, h: FULL.size };
-    const SS = { ...SHEET, w: SHEET.size, h: SHEET.size };
     const cand = [];
     let sx_ = 0, sy_ = 0;
     for (let p = 0; p < gw * gh; p++) if (M[p] && Math.abs(Hh[p] - zc) < 0.08) { cand.push(p); sx_ += p % gw; sy_ += Math.floor(p / gw); }
@@ -151,7 +177,6 @@ export function drawLive(live, grids, win) {
       mid = { x: ((pick % gw) + 0.5) * cell, y: (Math.floor(pick / gw) + 0.5) * cell, cm: win.totalCm, ft: Math.round(zc * 1000) };
     }
   }
-  const clear = (d) => !mid || Math.abs(d.x - mid.x) / W > 0.075 || Math.abs(d.y - mid.y) / H > 0.04;   // depth labels give way to it
   const [sx, sy, ss] = live.sheet;
   const base = marks.find((m) => m.kind === "base"), top = marks.find((m) => m.kind === "top");
   return {
@@ -160,7 +185,7 @@ export function drawLive(live, grids, win) {
     range_in: [r1(lo), r1(hi)],
     base_in: base?.in ?? null, top_in: top?.in ?? null,
     label: windowLabel(win.dates),
-    full: frac(0, 0, W, H, false),
-    sheet: frac(sx, sy, ss, ss, true),
+    full: frac(0, 0, W, H, false, SF),
+    sheet: frac(sx, sy, ss, ss, true, SS),
   };
 }

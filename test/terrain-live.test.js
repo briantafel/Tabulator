@@ -1,4 +1,4 @@
-import { layoutMid, SHEET } from "../src/lib/terrainLabels.js";
+import { layoutMid, layoutMark, layoutDepth, SHEET, FULL } from "../src/lib/terrainLabels.js";
 import { snowWithUnit } from "../src/lib/units.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -109,4 +109,27 @@ test("sheetWindow: only our own numbers, all of them", () => {
   assert.equal(sheetWindow({ win: [{ date: "x", snow: 1 }] }), null);
   assert.equal(sheetWindow({ snowfall: "tabulator", win: [{ date: "x", snow: null }] }), null);
   assert.equal(sheetWindow({ snowfall: "tabulator", win: [] }), null);
+});
+
+test("tags never touch or overlap: Base, Top, Mid and the depth labels, in both pictures (Brian 2026-11-22)", () => {
+  const frames = (r) => [
+    [r.sheet, { ...SHEET, w: SHEET.size, h: SHEET.size }],
+    [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }],
+  ];
+  for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41], [live.dates, 160]]) {
+    const r = drawLive(live, grids, { dates, totalCm: cm });
+    for (const [f, S] of frames(r)) {
+      const boxes = [];
+      if (f.mid) { const m = layoutMid(f.mid, false, S); boxes.push({ cx: m.cx, cy: m.cy, w: m.w, h: m.h, n: "mid" }); }
+      for (const k of f.marks) {
+        const L = layoutMark(k, false, S), w = L.tag.w + S.ring / 2 + S.gap;
+        boxes.push({ cx: L.flip ? L.cx - w / 2 : L.cx + w / 2, cy: L.cy, w, h: L.h, n: k.kind });
+      }
+      for (const d of f.depth) { const L = layoutDepth(d, false, S); boxes.push({ cx: L.cx, cy: L.cy, w: L.w, h: L.h, n: `${d.in}"` }); }
+      for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i], b = boxes[j];
+        assert.ok(Math.abs(a.cx - b.cx) * 2 >= a.w + b.w || Math.abs(a.cy - b.cy) * 2 >= a.h + b.h, `${a.n} touches ${b.n} (${cm} cm)`);
+      }
+    }
+  }
 });
