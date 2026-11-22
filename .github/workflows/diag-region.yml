@@ -1,0 +1,35 @@
+name: Diagnose regional wet bias (no app change)
+
+# 2026-11-22: Whistler's blend is 2.6x NBM. Per-resort volume ratios, the shared region factor, observed SLR vs slr-v3,
+# and live NBM vs models, from verify/latest/pairs.parquet. Public models and station truth only.
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: "region name in resorts.json"
+        default: "Canada"
+
+permissions:
+  contents: read
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas
+      - run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" /tmp/pairs.parquet --endpoint-url "$ENDPOINT" --only-show-errors
+      - run: python3 scripts/model/diag_region.py /tmp/pairs.parquet public/blend.json src/data/resorts.json "${{ inputs.region }}" | tee -a "$GITHUB_STEP_SUMMARY"
