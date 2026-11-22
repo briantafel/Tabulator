@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-22T01:22:36.738Z",
+ "generatedAt": "2026-11-22T01:35:04.686Z",
  "forecastGeneratedAt": "2026-11-22T01:15:34.246Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-21T21:18:12.886Z",
+ "blendGeneratedAt": "2026-11-22T01:35:00.155Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,34 +16,19 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 74\". Whistler follows."
+   "text": "Whistler is forecast for about 30\". Cypress Mountain follows."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Baker is forecast for about 47\". Crystal Mountain and Stevens Pass follow."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "RED Mountain is forecast for about 11\", 7\" of it Thursday. Whitewater and Revelstoke follow."
-  },
-  {
-   "key": "the Okanagan",
-   "title": "Okanagan",
-   "text": "Big White is forecast for about 7\", 4\" of it Thursday. Sun Peaks and SilverStar follow."
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Killington is forecast for about 6\", all of it Thursday. Blue Mountain and Whiteface follow."
+   "text": "Mt. Baker is forecast for about 16\". Crystal Mountain and Stevens Pass follow. The NWS is calling for more at Crystal Mountain: 13 to 26 inches Sunday night through Thursday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-21T21:18:12.886Z"
+   "issuedAt": "2026-11-22T01:35:00.155Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -51,12 +36,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T01:22:36.738Z"
+   "issuedAt": "2026-11-22T01:35:04.686Z"
   }
  ],
  "api": {
   "day": "2026-11-22",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
