@@ -147,3 +147,16 @@ test("Mid is not above the Top tag when there was room to put it below (Brian 20
   }
   assert.ok(moved > 0, "Mid ends up level with or below Top in at least some frames");
 });
+
+test("moving Mid below Top never costs a contour label: every label that is missing touches Base, Top, Mid or another label", () => {
+  for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [live.dates, 41], [live.dates, 63]]) {
+    const r = drawLive(live, grids, { dates, totalCm: cm });
+    for (const [f, S] of [[r.sheet, { ...SHEET, w: SHEET.size, h: SHEET.size }], [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }]]) {
+      assert.ok(f.depth.length >= 1, `labels remain (${cm} cm)`);
+      if (f.mid) {
+        const m = layoutMid(f.mid, false, S);
+        for (const d of f.depth) { const L = layoutDepth(d, false, S); assert.ok(Math.abs(L.cx - m.cx) * 2 >= L.w + m.w || Math.abs(L.cy - m.cy) * 2 >= L.h + m.h, "no overlap with Mid"); }
+      }
+    }
+  }
+});
