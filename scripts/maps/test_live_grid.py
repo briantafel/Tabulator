@@ -24,11 +24,18 @@ A = [-4 + 0.3 * cx + 0.2 * cy + d for d in (0.0, 1.5, 3.0)]    # inches (height 
 G = [np.clip(0.8 + 0.1 * cx - 0.05 * cy + 0.3 * d, 0, None) for d in (0, 1, 2)]   # in / 1000 ft
 dates = ["2026-11-22", "2026-11-23", "2026-11-24"]
 
-# 1. pack -> unpack: H within half an 8-bit step, the day parts within half a 16-bit step, the outline exact
+# 1. pack -> unpack: H within half a 16-bit step (v2), the day parts within half a 16-bit step, the outline exact
 gp, dp, q = LG.pack(H, mask, A, G)
 live = {**q, "dates": dates}
 H2, m2, A2, G2 = LG.unpack(gp, dp, live, 3)
-assert np.abs(H2 - H).max() <= (H.max() - H.min()) / 255 / 2 + 1e-12
+assert np.abs(H2 - H).max() <= (H.max() - H.min()) / 65535 / 2 + 1e-6  # hq is stored to 6 decimals
+# a v1 file (8-bit height in R, B empty) still reads as 8 bits
+import io as _io
+from PIL import Image as _I
+_g = np.asarray(_I.open(_io.BytesIO(gp)).convert("RGB")).copy(); _g[..., 2] = 0
+_b = _io.BytesIO(); _I.fromarray(_g, "RGB").save(_b, "PNG")
+H1, _, _, _ = LG.unpack(_b.getvalue(), dp, {**live, "v": 1}, 3)
+assert np.abs(H1 - H).max() <= (H.max() - H.min()) / 255 + 1e-9
 assert (m2 == mask).all()
 for a, a2, g, g2 in zip(A, A2, G, G2):
     assert np.abs(a2 - a).max() <= (a.max() - a.min()) / 65535 / 2 + 1e-12
@@ -59,7 +66,7 @@ if "--fixture" in sys.argv:
     out.mkdir(parents=True, exist_ok=True)
     (out / "grid.png").write_bytes(gp)
     (out / "days.png").write_bytes(dp)
-    meta = {"v": 1, "w": W, "h": Hpx, "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **q,
+    meta = {"v": LG.VERSION, "w": W, "h": Hpx, "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **q,
             "dates": dates, "ref": {"z_kft": 8.0, "a": [-3.0, -1.5, 0.0], "g": [0.8, 1.1, 1.4]}, "sigma": 0.8,
             "stroke": 1.0, "floor_in": 0.1, "marks": [{"kind": "base", "x": 60, "y": 150, "ft": 6400}, {"kind": "top", "x": 60, "y": 40, "ft": 10400}],
             "sheet": [10, 40, 100], "deep": [60.0, 100.0]}

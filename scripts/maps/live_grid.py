@@ -17,7 +17,9 @@ and the sheet can never disagree, whatever window is open. Everything is in the 
 (render px, 0..W across, 0..H down); a cell's value is at its centre.
 
 Files (8-bit RGB PNG, no colour profile, so a browser canvas reads the bytes back unchanged):
-  <id>-grid.png  fine grid, `cell` px:  R = H quantised to 8 bits over [hq0, hq1], G = 255 inside the outline
+  <id>-grid.png  fine grid, `cell` px:  H quantised to 16 bits over [hq0, hq1] (R high byte, B low byte; v1 files: R only,
+                 8 bits), G = 255 inside the outline. 16 bits since 2026-11-22: at Whistler (5,000 ft of vertical, a
+                 big storm, ~34 in per 1,000 ft) an 8-bit height step alone moved the field by over 1 in.
   <id>-days.png  coarse grid, `ccell` px, 2 bands per day stacked downwards (A_d, then G_d), each 16 bits
                  (R high byte, G low byte) over that band's own [lo, hi]
 """
@@ -31,7 +33,7 @@ from PIL import Image
 
 CELL = 4        # fine grid: 4 render px (~16 m at Jackson): H and the outline
 CCELL = 32      # coarse grid: 32 render px (~125 m): the per-day NBM parts, which vary over 2.5 km
-VERSION = 1
+VERSION = 2
 
 
 def centres(n, cell):
@@ -67,7 +69,8 @@ def pack(H_kft, mask, A, G):
         raise SystemExit("live grid: terrain has missing values; refusing")
     hq0, hq1 = float(H_kft.min()), float(H_kft.max())
     grid = np.zeros((gh, gw, 3), "uint8")
-    grid[..., 0] = q8(H_kft, hq0, hq1)
+    hv = q16(H_kft, hq0, hq1)
+    grid[..., 0], grid[..., 2] = hv >> 8, hv & 255
     grid[..., 1] = np.where(mask, 255, 0)
     bands, q = [], []
     for a, g in zip(A, G):
@@ -83,13 +86,14 @@ def pack(H_kft, mask, A, G):
             row += [lo, hi]
         q.append([round(x, 6) for x in row])
     days = np.concatenate(bands, 0)
-    return png(grid), png(days), {"hq": [round(hq0, 6), round(hq1, 6)], "q": q}
+    return png(grid), png(days), {"v": VERSION, "hq": [round(hq0, 6), round(hq1, 6)], "q": q}
 
 
 def unpack(grid_png, days_png, meta, ndays):
     """The inverse, as the app reads it (tests and the CI parity check)."""
     g = np.asarray(Image.open(io.BytesIO(grid_png)).convert("RGB"))
-    H = dq8(g[..., 0], *meta["hq"])
+    H = dq16((g[..., 0].astype("uint32") << 8) | g[..., 2], *meta["hq"]) if meta.get("v", 1) >= 2 \
+        else dq8(g[..., 0], *meta["hq"])
     mask = g[..., 1] > 127
     d = np.asarray(Image.open(io.BytesIO(days_png)).convert("RGB")).astype("uint32")
     ch = d.shape[0] // (2 * ndays)

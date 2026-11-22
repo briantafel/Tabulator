@@ -20,7 +20,8 @@ export function readGrids(live, grid, days) {
   const H = new Float64Array(gw * gh);
   const mask = new Uint8Array(gw * gh);
   for (let i = 0; i < gw * gh; i++) {
-    H[i] = h0 + (grid.data[4 * i] / 255) * (h1 - h0);
+    // v2 (2026-11-22): 16-bit height, R high byte, B low byte; v1 files: 8 bits in R
+    H[i] = h0 + ((live.v ?? 1) >= 2 ? ((grid.data[4 * i] << 8) | grid.data[4 * i + 2]) / 65535 : grid.data[4 * i] / 255) * (h1 - h0);
     mask[i] = grid.data[4 * i + 1] > 127 ? 1 : 0;
   }
   const band = (row0, lo, hi) => {

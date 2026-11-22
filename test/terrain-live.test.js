@@ -160,3 +160,11 @@ test("moving Mid below Top never costs a contour label: every label that is miss
     }
   }
 });
+
+test("v2 grids carry 16-bit height (R high, B low); v1 grids still read as 8 bits (2026-11-22)", () => {
+  const mk = (r, b) => ({ width: 1, height: 1, data: Uint8ClampedArray.from([r, 255, b, 255]) });
+  const days = { width: 1, height: 2, data: Uint8ClampedArray.from([0, 0, 0, 255, 0, 0, 0, 255]) };
+  const meta = { gw: 1, gh: 1, cw: 1, ch: 1, dates: ["2026-11-22"], hq: [0, 65.535], q: [[0, 1, 0, 1]] };
+  assert.equal(readGrids({ ...meta, v: 2 }, mk(1, 2), days).H[0].toFixed(3), "0.258");   // (1*256+2)/65535*65.535
+  assert.equal(readGrids({ ...meta, v: 1 }, mk(1, 2), days).H[0].toFixed(3), (65.535 / 255).toFixed(3));
+});
