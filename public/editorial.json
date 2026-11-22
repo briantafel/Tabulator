@@ -1,59 +1,53 @@
 {
- "generatedAt": "2026-11-22T06:14:04.316Z",
- "forecastGeneratedAt": "2026-11-22T06:07:44.776Z",
+ "generatedAt": "2026-11-22T14:38:58.407Z",
+ "forecastGeneratedAt": "2026-11-22T14:32:21.956Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-22T06:14:04.316Z",
+ "writtenAt": "2026-11-22T14:38:58.407Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-22",
-  "to": "2026-11-26",
-  "days": 5,
-  "toLabel": "Thursday Nov 26"
+  "to": "2026-11-27",
+  "days": 6,
+  "toLabel": "Friday Nov 27"
  },
- "overview": "A wet pattern runs along the coast all week. An upper low brings light snow to the Coast Mountains this weekend, then a series of systems hits the Pacific Northwest from Monday on, with rain mixing in at lower elevations.",
+ "overview": "A wet Pacific Northwest pattern runs through the week. Systems keep arriving from the Pacific, with the strongest one due Wednesday into Thursday, bringing heavy rain and mountain snow to the Cascades and the Coast Mountains.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Snow comes from a cold front over the weekend and early in the week, then rain takes over as the system warms. Whistler is the top pick, with 32\" for the week, most of it falling Monday through Tuesday. Cypress Mountain is mostly rain after Monday, so snow there is limited to the first part of the window.",
-   "basis": "c5js78"
+   "text": "Whistler has the most snow in this region, with 36 inches expected through Friday, and its biggest day is Wednesday at 11 inches. Snow levels are high, so the early Monday snow is the best of it, and rain is expected to mix in midweek. Cypress Mountain, with 13 inches, is more exposed to showers and rain, which could keep its snow-line lower.",
+   "basis": "d5uz0b"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of storm systems keeps the Cascades under gusty winds and mixed precipitation starting Monday. Snow levels rise and fall with each front, so the higher slopes do best. Mt. Baker leads with 20\" over the window, and Crystal Mountain has 11\". The NWS is calling for more at Crystal Mountain, 13 to 26 inches from Sunday night through Thursday night.",
-   "basis": "193xguc"
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "This region sits behind the main systems, so snow is lighter and comes in shorter bursts. Most of it arrives Thursday, when a cold system brings snow turning to rain. Revelstoke has the most at 11\" for the week, and Whitewater and RED Mountain follow with lighter totals.",
-   "basis": "17d9zdz"
+   "text": "Crystal Mountain has the most snow here, 20 inches through Friday, with its biggest day Thursday at 10 inches. Snow levels sit near 3,000 to 3,500 feet, and a stronger front Tuesday into Wednesday brings mountain snow and breezy winds. Winter Weather Advisory covers the Olympics through Monday afternoon.",
+   "basis": "1axpbd7"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-22T06:07:44.776Z"
+   "issuedAt": "2026-11-22T14:32:21.956Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-22T06:14:04.008Z"
+   "issuedAt": "2026-11-22T14:38:58.111Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T04:14:00+00:00"
+   "issuedAt": "2026-11-22T11:02:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T06:14:04.316Z"
+   "issuedAt": "2026-11-22T14:38:58.407Z"
   }
  ],
  "api": {
   "day": "2026-11-22",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
