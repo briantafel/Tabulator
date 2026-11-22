@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-22T14:38:58.407Z",
- "forecastGeneratedAt": "2026-11-22T14:32:21.956Z",
+ "generatedAt": "2026-11-22T21:14:14.817Z",
+ "forecastGeneratedAt": "2026-11-22T21:07:49.081Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-22T14:38:58.407Z",
+ "writtenAt": "2026-11-22T21:14:14.817Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-22",
@@ -11,43 +11,73 @@
   "days": 6,
   "toLabel": "Friday Nov 27"
  },
- "overview": "A wet Pacific Northwest pattern runs through the week. Systems keep arriving from the Pacific, with the strongest one due Wednesday into Thursday, bringing heavy rain and mountain snow to the Cascades and the Coast Mountains.",
+ "overview": "A string of Pacific systems keeps the Coast Mountains and Cascades wet through midweek, with the strongest front Wednesday. The Rockies get weaker, drier spells between cold, cloudy, snowy periods, with more active weather around Thanksgiving.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler has the most snow in this region, with 36 inches expected through Friday, and its biggest day is Wednesday at 11 inches. Snow levels are high, so the early Monday snow is the best of it, and rain is expected to mix in midweek. Cypress Mountain, with 13 inches, is more exposed to showers and rain, which could keep its snow-line lower.",
-   "basis": "d5uz0b"
+   "text": "A wave of steadier precipitation arrives Monday, then a stronger front Tuesday into Wednesday. Snow levels run high, so Whistler's snow falls above a rain line. Whistler's best day is Wednesday, with 14 inches, though rain is forecast to mix in as the front arrives. Cypress Mountain gets mostly rain and showers, with 6 inches Monday.",
+   "basis": "nvsuy8"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain has the most snow here, 20 inches through Friday, with its biggest day Thursday at 10 inches. Snow levels sit near 3,000 to 3,500 feet, and a stronger front Tuesday into Wednesday brings mountain snow and breezy winds. Winter Weather Advisory covers the Olympics through Monday afternoon.",
-   "basis": "1axpbd7"
+   "text": "A low offshore keeps showers going, then a stronger front moves in Tuesday into Wednesday. Snow levels sit around 3,000 to 3,500 feet, so the snow favors the higher slopes. Mt. Baker's biggest day is Wednesday, with 8 inches, and rain mixes in. The NWS is calling for more at Crystal Mountain, 12 to 28 inches from Sunday through Friday night.",
+   "basis": "17348hs"
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Mostly cloudy and cold with flurries through Tuesday, then a mix of sun and cloud. Snow returns Wednesday night and Thursday, with a mix of snow and rain. Revelstoke's best day is Thursday, with 4 inches, while Whitewater's is Thursday with 5 inches.",
+   "basis": "1fhdc"
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Cold and cloudy most of the week, with a chance of light snow showers Monday. Tuesday and Wednesday look drier before the next system arrives for Thanksgiving. Jackson Hole's best day is Friday, with 4 inches, and snow showers are likely through Thursday night.",
+   "basis": "4j1jy8"
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Dry and cool Sunday and Tuesday through Wednesday, with a quick system bringing rain and snow to the higher terrain Monday. Telluride's best day is Monday, with 3 inches. Steamboat's best day is Friday, with 6 inches from snow showers, and the forecasters say Thanksgiving week may stay active but details are still uncertain.",
+   "basis": "armcua"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-22T14:32:21.956Z"
+   "issuedAt": "2026-11-22T21:07:49.081Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-22T14:38:58.111Z"
+   "issuedAt": "2026-11-22T21:14:14.513Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T11:02:00+00:00"
+   "issuedAt": "2026-11-22T18:23:00+00:00"
+  },
+  {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-22T21:01:00+00:00"
+  },
+  {
+   "name": "NWS PIH Area Forecast Discussion",
+   "issuedAt": "2026-11-22T19:40:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-22T17:59:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T14:38:58.407Z"
+   "issuedAt": "2026-11-22T21:14:14.817Z"
   }
  ],
  "api": {
   "day": "2026-11-22",
-  "calls": 6
+  "calls": 8
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

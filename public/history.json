@@ -761,15 +761,15 @@
   "2026-11-22": {
    "palisades": 3,
    "heavenly": 0,
-   "kirkwood": 0,
+   "kirkwood": 1,
    "sugar-bowl": 3,
    "northstar": 2,
    "mt-rose": 1,
-   "sierra-at-tahoe": 0,
+   "sierra-at-tahoe": 1,
    "homewood": 2,
    "mammoth": 0,
-   "mt-baker": 0,
-   "crystal": 3,
+   "mt-baker": 1,
+   "crystal": 2,
    "stevens-pass": 0,
    "mt-bachelor": 0,
    "telluride": 0,
@@ -792,13 +792,13 @@
    "big-sky": 0,
    "taos": 0,
    "wolf-creek": 0,
-   "revelstoke": 0,
-   "whistler": 2,
+   "revelstoke": 1,
+   "whistler": 1,
    "lake-louise": 0,
-   "kicking-horse": 0,
-   "fernie": 1,
-   "red-mountain": 0,
-   "whitewater": 0,
+   "kicking-horse": 1,
+   "fernie": 2,
+   "red-mountain": 1,
+   "whitewater": 2,
    "panorama": 0,
    "kimberley": 0,
    "big-white": 0,
@@ -807,7 +807,7 @@
    "sunshine": 0,
    "norquay": 0,
    "marmot": 0,
-   "cypress": 3,
+   "cypress": 0,
    "whiteface": 0,
    "stowe": 0,
    "killington": 0,
@@ -4518,7 +4518,7 @@
    },
    "kirkwood": {
     "am": 0,
-    "pm": 0,
+    "pm": 1,
     "night": 0
    },
    "sugar-bowl": {
@@ -4527,8 +4527,8 @@
     "night": 0
    },
    "northstar": {
-    "am": 0,
-    "pm": 2,
+    "am": 1,
+    "pm": 1,
     "night": 0
    },
    "mt-rose": {
@@ -4538,7 +4538,7 @@
    },
    "sierra-at-tahoe": {
     "am": 0,
-    "pm": 0,
+    "pm": 1,
     "night": 0
    },
    "homewood": {
@@ -4554,11 +4554,11 @@
    "mt-baker": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "crystal": {
-    "am": 0,
-    "pm": 3,
+    "am": 1,
+    "pm": 1,
     "night": 0
    },
    "stevens-pass": {
@@ -4674,10 +4674,10 @@
    "revelstoke": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "whistler": {
-    "am": 1,
+    "am": 0,
     "pm": 1,
     "night": 0
    },
@@ -4689,22 +4689,22 @@
    "kicking-horse": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "fernie": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 2
    },
    "red-mountain": {
     "am": 0,
-    "pm": 0,
+    "pm": 1,
     "night": 0
    },
    "whitewater": {
     "am": 0,
-    "pm": 0,
-    "night": 0
+    "pm": 1,
+    "night": 1
    },
    "panorama": {
     "am": 0,
@@ -4747,9 +4747,9 @@
     "night": 0
    },
    "cypress": {
-    "am": 1,
-    "pm": 1,
-    "night": 1
+    "am": 0,
+    "pm": 0,
+    "night": 0
    },
    "whiteface": {
     "am": 0,
@@ -4793,5 +4793,5 @@
    }
   }
  },
- "updatedAt": "2026-11-22T14:32:21.956Z"
+ "updatedAt": "2026-11-22T21:07:49.081Z"
 }
