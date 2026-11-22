@@ -9,10 +9,13 @@ import { SHEET, hasVectorLabels } from "../lib/terrainLabels.js";
    Below Weather, above Avalanche; square, no rounded corners.
 
    public/terrain/index.json lists the resorts that have a map (Alta first). A
-   map is one NBM run, so it hides itself once that run is more than 48 hours
+   map is one NBM run, so it hides itself once that run is more than MAX_AGE_H hours
    old — no section beats a stale picture of snow. Missing index, missing
    resort, missing image: no section, never a placeholder. */
-const MAX_AGE_H = 48;
+/* A map is one forecast run and is redrawn after every run (terrain-refresh.yml, twice a day: a map is 8-23 h old in
+   normal service). Past 30 h a refresh has been missed, and a map beside a newer forecast is a trust problem, so hide it
+   rather than show old snow. (Was 48 h, Brian 2026-11-22.) */
+const MAX_AGE_H = 30;
 let indexPromise = null;
 function loadIndex() {
   if (!indexPromise) {

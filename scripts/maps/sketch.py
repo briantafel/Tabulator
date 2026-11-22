@@ -212,8 +212,23 @@ def snow_inches(path):
 
 
 # ---------------------------------------------------------------- NBM (2.5 km, own SLR)
+def newest_nbm_cycle(hours=120):
+    """The newest 00z/12z NBM cycle whose 6 h snow is posted out to `hours`, or None (same rule as latest_nbm_snow)."""
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
+    import nbm
+    now = datetime.now(timezone.utc)
+    for back in range(0, 4):
+        c = (now - timedelta(hours=3 + 12 * back)).replace(minute=0, second=0, microsecond=0)
+        cycle = c.replace(hour=0 if c.hour < 12 else 12)
+        leads = nbm.list_leads(cycle)
+        if all(l in leads for l in range(6, hours + 1, 6)):
+            return cycle
+    return None
+
+
 def latest_nbm_snow(hours=120):
     """Sum of NBM 6 h ASNOW blocks over `hours` from the newest 00z/12z cycle that has them."""
+    global NBM_NX
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
     import nbm
     import eccodes
@@ -226,6 +241,13 @@ def latest_nbm_snow(hours=120):
         if not all(l in leads for l in need):
             print(f"NBM {cycle:%Y-%m-%d %HZ}: leads not all posted yet", file=sys.stderr)
             continue
+        cdir = os.environ.get("NBM_CACHE")      # a batch of resorts in one job downloads the national field once
+        cfile = os.path.join(cdir, f"nbm-{cycle:%Y%m%d%H}-{hours}.npz") if cdir else None
+        if cfile and os.path.exists(cfile):
+            z = np.load(cfile)
+            NBM_NX = int(z["nx"])
+            print(f"NBM {cycle:%Y-%m-%d %HZ}: national field from the job cache", file=sys.stderr)
+            return cycle, z["lat"], z["lon"], z["total"], []
         total, lat, lon, blocks = None, None, None, []
         for l in need:
             key = leads[l]
@@ -239,7 +261,6 @@ def latest_nbm_snow(hours=120):
             vals = np.asarray(natural_order(gid, eccodes.codes_get_values(gid)), dtype="float64")
             missing = eccodes.codes_get(gid, "missingValue")
             if lat is None:
-                global NBM_NX
                 NBM_NX = eccodes.codes_get(gid, "Nx")
                 lat = np.asarray(eccodes.codes_get_array(gid, "latitudes"))
                 lon = np.asarray(eccodes.codes_get_array(gid, "longitudes"))
@@ -248,6 +269,9 @@ def latest_nbm_snow(hours=120):
             vals[vals == missing] = np.nan
             total = vals if total is None else total + vals
             blocks.append((l, vals))
+        if cfile:
+            os.makedirs(cdir, exist_ok=True)
+            np.savez_compressed(cfile, lat=lat, lon=lon, total=total, nx=NBM_NX)
         return cycle, lat, lon, total, blocks
     raise SystemExit("No NBM cycle with 6 h snow out to 120 h in the last 2 days")
 

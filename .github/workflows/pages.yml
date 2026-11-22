@@ -26,6 +26,29 @@ jobs:
       - run: npm ci
       - run: npm run lint   # catches hook-order mistakes (react-hooks/rules-of-hooks) before deploy
       - run: npm test
+      # Snow-by-terrain maps are refreshed after every forecast run and live on the orphan branch `terrain-live`
+      # (terrain-refresh.yml), not in main's history. Fold the newest ones into the bundle. If that branch is missing or
+      # looks incomplete, the maps committed on main are deployed instead and the log says so.
+      - name: Live terrain maps (terrain-live branch)
+        run: |
+          if git ls-remote --exit-code --heads origin terrain-live >/dev/null 2>&1; then
+            git fetch -q --depth 1 origin terrain-live
+            rm -rf /tmp/live && mkdir /tmp/live
+            git archive FETCH_HEAD | tar -x -C /tmp/live
+            if python3 - <<'PY'
+          import json, sys
+          n = lambda p: sum(isinstance(v, dict) for v in json.load(open(p)).values())
+          sys.exit(0 if n("/tmp/live/index.json") >= n("public/terrain/index.json") else 1)
+          PY
+            then
+              rm -rf public/terrain && mkdir -p public/terrain && cp -r /tmp/live/. public/terrain/
+              echo "terrain maps from terrain-live, refreshed $(python3 -c "import json;print(json.load(open('public/terrain/index.json')).get('_refreshed'))")"
+            else
+              echo "::warning::terrain-live has fewer maps than main; deploying the maps committed on main"
+            fi
+          else
+            echo "::warning::no terrain-live branch; deploying the maps committed on main"
+          fi
       - run: npm run build
         env:
           # Project pages serve from /<repo>/, so the bundle needs that base.

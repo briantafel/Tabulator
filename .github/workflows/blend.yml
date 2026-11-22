@@ -122,6 +122,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
 
+      # The terrain maps are one forecast run each; a new run means redrawing them (terrain-refresh.yml does nothing
+      # when every map is already from the newest run). Brian 2026-11-22: a map beside a different forecast is a
+      # trust problem.
+      - name: Refresh the terrain maps
+        if: steps.projcommit.outputs.pushed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run terrain-refresh.yml --ref main
+
       - name: Package raw files and Parquet
         run: |
           test -f out/manifest.json || { echo "::error::collect.js wrote no manifest"; exit 1; }

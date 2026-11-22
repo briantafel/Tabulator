@@ -62,6 +62,76 @@ def log(*a):
     print(*a, flush=True)
 
 
+# ---------------------------------------------------------------- relief cache
+# The Blender relief (plaster terrain, ~85% of a map's build time) does not depend on the forecast. Only snow,
+# labels and the composite do. So the relief is kept between runs and a forecast refresh redraws only the snow.
+# A cached relief is reused ONLY when its fingerprint matches: the heightmap pixels (terrain + frame + z range) and
+# every render parameter, plus the Blender script and the stitch/levels code. Anything that could change the
+# picture changes the fingerprint and forces a fresh render; a stale relief can never sit under a different frame.
+RELIEF_CACHE = os.environ.get("RELIEF_CACHE")      # dir holding <id>-relief-cache.{png,json}
+RELIEF_SEED = os.environ.get("RELIEF_SEED")        # dir with an earlier pilot run's <id>-{heightmap16,relief}.png + <id>.json
+
+
+def relief_fp(h16, meta):
+    import hashlib
+    import inspect
+    h = hashlib.sha256()
+    h.update(np.ascontiguousarray(h16).tobytes())
+    h.update(json.dumps({k: v for k, v in meta.items() if k != "id"}, sort_keys=True, default=float).encode())
+    h.update(Path(__file__).with_name("relief_heightmap.py").read_bytes())
+    h.update((inspect.getsource(stitch) + inspect.getsource(level)).encode())
+    return h.hexdigest()
+
+
+def relief_from_cache(rid, fp, h16, px, meta):
+    """(relief rgb, levels stats, blender info) from the cache or a matching earlier pilot run; None = render fresh."""
+    if RELIEF_CACHE:
+        d = Path(RELIEF_CACHE)
+        j, p = d / f"{rid}-relief-cache.json", d / f"{rid}-relief-cache.png"
+        if j.exists() and p.exists():
+            c = json.loads(j.read_text())
+            if c.get("fp") == fp:
+                relief = np.asarray(Image.open(p).convert("RGB"))
+                if relief.shape == (px, px, 3):
+                    log(f"  relief: reused from the cache ({p.stat().st_size / 1e6:.1f} MB); Blender skipped")
+                    return relief, c["st"], {**c["blender"], "reused": "cache"}
+                log("  relief cache has the wrong shape: rendering fresh")
+            else:
+                log("  relief cache is for a different terrain, frame or recipe: rendering fresh")
+    if RELIEF_SEED:
+        d = Path(RELIEF_SEED)
+        hp, rp, jp = d / f"{rid}-heightmap16.png", d / f"{rid}-relief.png", d / f"{rid}.json"
+        if hp.exists() and rp.exists() and jp.exists():
+            # An earlier pilot run's relief. The render recipe has not changed since the pilot's first commit, so the
+            # same heightmap pixels at the same size and the same recorded parameters mean the same relief.
+            try:
+                j = json.loads(jp.read_text())
+                r = j["relief"]
+                same = (np.array_equal(np.asarray(Image.open(hp)), h16) and j.get("px") == px
+                        and r.get("exaggeration") == EXAG and r.get("exposure") == EXPOSURE and r.get("levels") == LEVELS
+                        and r.get("samples") == meta["samples"]
+                        and r.get("mesh_vertex_spacing_m") == round(meta["region_m"] / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2))
+                relief = np.asarray(Image.open(rp).convert("RGB")) if same else None
+                if same and relief.shape == (px, px, 3):
+                    st = {k: r[k] for k in ("clipped_pct", "darkest1pct_grey_pct", "darkest1pct_value", "median_value", "raw_clipped_pct", "raw_p_lo", "raw_p_hi")}
+                    log("  relief: seeded from an earlier pilot run with the identical heightmap; Blender skipped")
+                    return relief, st, {**j.get("blender", {}), "reused": "pilot-seed"}
+                log("  earlier pilot relief does not match this heightmap or recipe: rendering fresh")
+            except Exception as e:  # noqa: BLE001
+                log(f"  could not use the earlier pilot relief ({e}): rendering fresh")
+    return None
+
+
+def relief_to_cache(rid, fp, relief_png, st, bl):
+    if not RELIEF_CACHE:
+        return
+    d = Path(RELIEF_CACHE)
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{rid}-relief-cache.png").write_bytes(relief_png)
+    (d / f"{rid}-relief-cache.json").write_text(json.dumps({"fp": fp, "st": st, "blender": {k: v for k, v in bl.items() if k != "reused"}}))
+    log(f"  relief cached for the next run ({len(relief_png) / 1e6:.1f} MB)")
+
+
 def retry(fn, what, tries=3, wait=20):
     last = None
     for i in range(tries):
@@ -690,10 +760,16 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
             "bump_distance": 0.0005 * m_px / m_old,
             "mesh_base": 256 if hires else 160, "render_levels": 4 if hires else 3, "viewport_levels": 1, "levels": LEVELS,
             "tiles": 2 if px >= 2048 else 1}
-    bl = run_blender(hm_png, meta, out / rid)
-    raw = stitch(out / rid, px)
-    relief, st = level(raw)
-    del raw
+    fp = relief_fp(h16, meta)
+    got = relief_from_cache(rid, fp, h16, px, meta)
+    if got:
+        relief, st, bl = got
+        bl.setdefault("blender_wall_s", 0)
+    else:
+        bl = run_blender(hm_png, meta, out / rid)
+        raw = stitch(out / rid, px)
+        relief, st = level(raw)
+        del raw
     log(f"  relief levels: clipped {st['clipped_pct']:.3f}% (raw {st['raw_clipped_pct']:.3f}%), darkest 1% at "
         f"{st['darkest1pct_value']:.0f}/255 = {st['darkest1pct_grey_pct']:.1f}% grey, median {st['median_value']:.0f}")
     if st["clipped_pct"] > 0.1 or not 50 <= st["darkest1pct_grey_pct"] <= 60:
@@ -865,6 +941,9 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     Image.fromarray(relief).save(rbuf, "PNG", optimize=True)
     rpng = rbuf.getvalue()
     (out / f"{rid}-relief.png").write_bytes(rpng)
+    if not (RELIEF_CACHE and (Path(RELIEF_CACHE) / f"{rid}-relief-cache.json").exists()
+            and json.loads((Path(RELIEF_CACHE) / f"{rid}-relief-cache.json").read_text()).get("fp") == fp):
+        relief_to_cache(rid, fp, rpng, st, bl)
     b64 = base64.b64encode(rpng).decode()
     img_layer = layer("relief (raster)", [f'<image width="{px}" height="{px}" xlink:href="data:image/png;base64,{b64}"/>'])
     (out / f"{rid}.svg").write_text("\n".join([head, defs] + img_layer + fill_layer + over + ["</svg>"]))
