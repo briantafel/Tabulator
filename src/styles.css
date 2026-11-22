@@ -1729,7 +1729,6 @@ body { background: #F2F2F2; }
 }
 .tmf-lg-f b { font-size: calc(13 * var(--u)); font-weight: 700; color: #1e1e1e; }
 /* Mid: the header's total at its place on the ramp (red like the header); the tick crosses the bar. */
-.tmf-legend.has-mid { position: relative; }
 .tmf-lg-mid { position: relative; height: calc(24 * var(--u)); margin: calc(4 * var(--u)) 0 calc(2 * var(--u)); }
 .tmf-lg-mid b { position: absolute; bottom: calc(7 * var(--u)); left: 0; transform: translateX(-50%); font-size: calc(17 * var(--u)); font-weight: 800; line-height: 1; color: var(--red); white-space: nowrap; }
 .tmf-lg-mid i { position: absolute; bottom: calc(-16 * var(--u)); left: 0; width: calc(3 * var(--u)); height: calc(22 * var(--u)); background: var(--red); transform: translateX(-50%); border-radius: 2px; box-shadow: 0 0 0 1px #fff; z-index: 1; }
