@@ -25,12 +25,15 @@ on:
         description: "Redraw the listed (or all) maps even if they are already from the newest run"
         type: boolean
         default: false
+      anchor:
+        description: "Resort ids to anchor to the sheet (empty = the list in ANCHOR_RESORTS below). Used to try resorts before they join the list."
+        default: ""
 
 # Resorts whose map totals are anchored to the sheet's forecast (scripts/maps/anchor.py; Brian 2026-11-22). Jackson Hole
 # first; the rest join once it is checked. Anchored maps are redrawn every refresh and read public/forecast.json and
 # public/blend-forecast.json from this checkout of main (blend.yml pushes them before it dispatches this).
 env:
-  ANCHOR_RESORTS: jackson-hole
+  ANCHOR_RESORTS: ${{ inputs.anchor || 'jackson-hole' }}
 
 permissions:
   contents: write
