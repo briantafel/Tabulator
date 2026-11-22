@@ -10,7 +10,7 @@
    Sizes are Figma's (file bVflJsT7BKiMyMFNddfyQi, 4025:511 resort sheet, 4026:546
    full screen), in px at a 402-wide phone: the sheet's map is 358 px across, the
    full-screen map is 874 px across at fit. */
-import { snowTxt, snowUnit } from "./units.js";
+import { snowTxt, snowUnit, snowWithUnit } from "./units.js";
 
 export const SHEET = {
   size: 358,
@@ -19,6 +19,7 @@ export const SHEET = {
   gap: 4,                          // marker edge -> label
   depth: 11.5, padX: 4, padY: 1.5, // snow-depth label, bold, on a white rounded box
   radius: 2,
+  mid: 17,                         // Mid: the sheet's number at the sheet's elevation, larger than the contour labels
 };
 export const FULL = {
   size: 874,                       // the reference height; the picture is wider (S.w, set from the data)
@@ -27,6 +28,7 @@ export const FULL = {
   gap: 8.8,
   depth: 13, padX: 5.5, padY: 2.95,
   radius: 2,
+  mid: 22,
 };
 
 export const INK = "#2b2f33";
@@ -83,3 +85,13 @@ export function layoutDepth(d, metric, S) {
 
 /** Is there label data to draw? Needs the labels-free picture and at least one marker or contour label. */
 export const hasVectorLabels = (m) => !!(m && m.img_clean && m.labels && (m.labels.marks?.length || m.labels.depth?.length));
+
+/** The Mid label: the sheet's total, written by the same function as the header, over "Mid · 8,379 ft". */
+export function layoutMid(m, metric, S) {
+  const text = snowWithUnit(m.cm, metric);
+  const sub = `Mid · ${metric ? `${Math.round(m.ft / 3.28084).toLocaleString("en-US")} m` : `${m.ft.toLocaleString("en-US")} ft`}`;
+  const W = S.w ?? S.size, H = S.h ?? S.size;
+  const fs = S.mid, sfs = Math.max(6, S.mid * 0.5), pad = fs * 0.35;
+  const w = Math.max(textWidth(text, fs), textWidth(sub, sfs)) + 2 * pad, h = fs * LH + sfs * LH + 2 * pad;
+  return { cx: Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, m.x * W)), cy: Math.min(H - h / 2 - 2, Math.max(h / 2 + 2, m.y * H)), text, sub, w, h, fs, sfs, pad };
+}

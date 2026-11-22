@@ -1,3 +1,5 @@
+import { layoutMid, SHEET } from "../src/lib/terrainLabels.js";
+import { snowWithUnit } from "../src/lib/units.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -87,6 +89,20 @@ test("drawLive: bands, contours, labels inside the outline, Base / Top from the 
   assert.ok(r.range_in[0] <= r.range_in[1]);
   for (const d of r.full.depth) assert.ok(d.x >= 0 && d.x <= 1 && d.y >= 0 && d.y <= 1);
   assert.equal(r.sheet.marks.length, 2);
+  /* Mid: the header's own number at the header's elevation, inside the frame, away from the contour labels */
+  assert.ok(r.full.mid, "mid label");
+  assert.equal(r.full.mid.cm, 20);
+  assert.equal(r.full.mid.ft, Math.round(live.ref.z_kft * 1000));
+  assert.ok(r.full.mid.x >= 0 && r.full.mid.x <= 1 && r.full.mid.y >= 0 && r.full.mid.y <= 1);
+  for (const d of r.full.depth) assert.ok(Math.abs(d.x - r.full.mid.x) > 0.075 || Math.abs(d.y - r.full.mid.y) > 0.04);
+});
+
+test("Mid label text is the header's text, at both units", () => {
+  const L = layoutMid({ x: 0.5, y: 0.5, cm: 24.99, ft: 8379 }, false, SHEET);
+  assert.equal(L.text, snowWithUnit(24.99, false));
+  assert.equal(L.sub, "Mid · 8,379 ft");
+  assert.equal(layoutMid({ x: 0.5, y: 0.5, cm: 25, ft: 8379 }, true, SHEET).text, snowWithUnit(25, true));
+  assert.ok(L.cx - L.w / 2 >= 0 && L.cx + L.w / 2 <= SHEET.size);
 });
 
 test("sheetWindow: only our own numbers, all of them", () => {

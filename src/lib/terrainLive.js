@@ -6,6 +6,7 @@
    TerrainLabels reads. */
 import { computeField, levelsFor, sampleAt, windowLabel } from "./terrainField.js";
 import { contourRings, splitAtFrame, workspace } from "./terrainContours.js";
+import { FULL, SHEET, layoutMark, layoutMid, textWidth } from "./terrainLabels.js";
 
 export const RAMP = ["#c9dcf2", "#9fc0ea", "#6f9fe0", "#3f7bd6", "#1d5ccc", "#0d3fb0", "#06268a"];
 const r1 = (v) => Math.round(v * 10) / 10;
@@ -109,10 +110,48 @@ export function drawLive(live, grids, win) {
   const marks = live.marks.map((m) => ({ ...m, in: nosnow ? null : r1(sampleAt(F, live, m.x, m.y)) }));
   const frac = (x0, y0, w, h, keep) => ({
     frame: "fractions of this picture, 0-1 from the top-left",
-    depth: depth.filter((d) => !keep || (d.x >= x0 && d.x <= x0 + w && d.y >= y0 && d.y <= y0 + h))
+    mid: mid && (!keep || (mid.x >= x0 && mid.x <= x0 + w && mid.y >= y0 && mid.y <= y0 + h))
+      ? { x: +((mid.x - x0) / w).toFixed(4), y: +((mid.y - y0) / h).toFixed(4), cm: mid.cm, ft: mid.ft } : null,
+    depth: depth.filter(clear).filter((d) => !keep || (d.x >= x0 && d.x <= x0 + w && d.y >= y0 && d.y <= y0 + h))
       .map((d) => ({ x: +((d.x - x0) / w).toFixed(4), y: +((d.y - y0) / h).toFixed(4), in: d.in })),
     marks: marks.map((m) => ({ x: +((m.x - x0) / w).toFixed(4), y: +((m.y - y0) / h).toFixed(4), kind: m.kind, in: m.in, ft: m.ft })),
   });
+  /* Mid (Brian 2026-11-22): the sheet's own number at the sheet's elevation, so the header's total is printed on the map.
+     Placed on the terrain at that elevation nearest the centre of that band. */
+  let mid = null;
+  if (!nosnow) {
+    const zc = live.ref.z_kft, Hh = grids.H;
+    const [bx, by, bs] = live.sheet;
+    const SF = { ...FULL, w: (FULL.size * W) / H, h: FULL.size };
+    const SS = { ...SHEET, w: SHEET.size, h: SHEET.size };
+    const cand = [];
+    let sx_ = 0, sy_ = 0;
+    for (let p = 0; p < gw * gh; p++) if (M[p] && Math.abs(Hh[p] - zc) < 0.08) { cand.push(p); sx_ += p % gw; sy_ += Math.floor(p / gw); }
+    if (cand.length) {
+      const cx = sx_ / cand.length, cy = sy_ / cand.length;
+      const dist = (p) => (p % gw - cx) ** 2 + (Math.floor(p / gw) - cy) ** 2;
+      cand.sort((a, b) => dist(a) - dist(b));
+      /* Mid must not sit on a Base / Top label, in the sheet's frame or in the full-screen frame. */
+      const hits = (S, x0, y0, fw, fh, mx, my) => {
+        const m = layoutMid({ x: (mx - x0) / fw, y: (my - y0) / fh, cm: win.totalCm, ft: Math.round(zc * 1000) }, false, S);
+        return marks0.some((k) => {
+          const L = layoutMark({ x: (k.x - x0) / fw, y: (k.y - y0) / fh, kind: k.kind, in: 1, ft: k.ft }, false, S);
+          const w = textWidth(L.text, S.mark) + S.ring + S.gap;
+          const cx2 = L.flip ? L.tx - w / 2 + S.ring / 2 : L.tx + w / 2 - S.ring / 2;
+          return Math.abs(m.cx - cx2) * 2 < m.w + w && Math.abs(m.cy - L.cy) * 2 < m.h + L.h + 4;
+        });
+      };
+      const marks0 = live.marks;
+      const inSheet = (x, y) => x >= bx + bs * 0.12 && x <= bx + bs * 0.88 && y >= by + bs * 0.12 && y <= by + bs * 0.88;
+      let pick = cand.find((p) => {
+        const x = ((p % gw) + 0.5) * cell, y = (Math.floor(p / gw) + 0.5) * cell;
+        return inSheet(x, y) && !hits(SS, bx, by, bs, bs, x, y) && !hits(SF, 0, 0, W, H, x, y);
+      });
+      if (pick === undefined) pick = cand.find((p) => inSheet(((p % gw) + 0.5) * cell, (Math.floor(p / gw) + 0.5) * cell)) ?? cand[0];
+      mid = { x: ((pick % gw) + 0.5) * cell, y: (Math.floor(pick / gw) + 0.5) * cell, cm: win.totalCm, ft: Math.round(zc * 1000) };
+    }
+  }
+  const clear = (d) => !mid || Math.abs(d.x - mid.x) / W > 0.075 || Math.abs(d.y - mid.y) / H > 0.04;   // depth labels give way to it
   const [sx, sy, ss] = live.sheet;
   const base = marks.find((m) => m.kind === "base"), top = marks.find((m) => m.kind === "top");
   return {

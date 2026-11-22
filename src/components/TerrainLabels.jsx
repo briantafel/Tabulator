@@ -1,4 +1,4 @@
-import { DEPTH_INK, INK, layoutDepth, layoutMark, textWidth } from "../lib/terrainLabels.js";
+import { DEPTH_INK, INK, layoutDepth, layoutMark, layoutMid, textWidth } from "../lib/terrainLabels.js";
 
 /* The Snow by terrain labels, drawn as SVG over the picture (Brian, 2026-11-20).
    viewBox is the picture in Figma px (358 on the sheet, 874 full screen), so
@@ -22,6 +22,16 @@ export default function TerrainLabels({ labels, metric, S, counter = false, scre
           </g>
         );
       })}
+      {labels.mid && (() => {
+        const L = layoutMid(labels.mid, metric, S);
+        return (
+          <g {...at(L.cx, L.cy)}>
+            <rect x={-L.w / 2} y={-L.h / 2} width={L.w} height={L.h} rx={S.radius * 1.5} fill="#fff" style={{ stroke: "var(--red)" }} strokeWidth={Math.max(1, L.fs / 14)} />
+            <text x="0" y={-L.sfs * 0.62} textAnchor="middle" dominantBaseline="central" fontSize={L.fs} fontWeight="800" style={{ fill: "var(--red)" }}>{L.text}</text>
+            <text x="0" y={L.fs * 0.5} textAnchor="middle" dominantBaseline="central" fontSize={L.sfs} fontWeight="600" fill={INK}>{L.sub}</text>
+          </g>
+        );
+      })()}
       {(labels.marks ?? []).map((m, i) => {
         const L = layoutMark(m, metric, S);
         return (
