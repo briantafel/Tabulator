@@ -28,3 +28,10 @@ export function localToday(now = new Date()) {
 
 /** "Dec 20" or "Dec 20–Dec 27": how a range is written everywhere. */
 export const rangeLabel = (a, b) => (!b || a === b ? shortDate(a) : `${shortDate(a)}–${shortDate(b)}`);
+
+/** The `n` days before `today` as "Nov 18–20" — what the "-3 days" number covers. */
+export function priorSpan(today, n = 3) {
+  const t = new Date(`${today}T12:00:00Z`);
+  const f = (k) => { const d = new Date(t); d.setUTCDate(d.getUTCDate() - k); return d.toISOString().slice(0, 10); };
+  return rangeLabel(f(n), f(1));
+}

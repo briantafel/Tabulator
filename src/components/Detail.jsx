@@ -2,7 +2,7 @@ import { localToday } from "../lib/dates.js";
 import { useEffect, useRef, useState } from "react";
 import TripWhen from "./TripWhen.jsx";
 import { snowWithUnit, tempTxt, windTxt, elevTxt, cmToIn, snowUnit } from "../lib/units.js";
-import { shortDate, weekdayShort } from "../lib/dates.js";
+import { shortDate, weekdayShort, priorSpan } from "../lib/dates.js";
 import { rainRisk, windSeverity, tempSeverity, before } from "../lib/scoring.js";
 import { resortVerdict } from "../lib/verdict.js";
 import { resortVoice } from "../lib/voice.js";
@@ -154,7 +154,9 @@ export default function Detail({
      describes the resort as it is now. Fixed at 3 (Brian, 2026-11-03), and
      null when any of those days is missing from history: shown as a dash,
      never a zero that would read as a dry spell. */
-  const recent = r ? before(history, r.id, localToday()) : null;
+  /* Read off the scored row so the sheet and every table cannot differ: score()
+     anchors `before` on today too. The fallback is for an unscored row. */
+  const recent = r ? (r.before !== undefined ? r.before : before(history, r.id, localToday())) : null;
 
   /* With our temperature model on (lib/temps.js), the strip keeps its sky
      and words but shows our high and lift-hours low, so the sheet shows one
@@ -439,7 +441,7 @@ export default function Detail({
                   {shortDate(pack.last)}
                 </b></span>
               )}
-              <span>-3 days: <b>{recent != null ? snowWithUnit(recent, metric) : "—"}</b></span>
+              <span title={`Snow on the mountain ${priorSpan(localToday())}`}>-3 days: <b>{recent != null ? snowWithUnit(recent, metric) : "—"}</b></span>
           </p>
 
           {rainRisk(r) && (

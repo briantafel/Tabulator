@@ -129,3 +129,13 @@ export function tripCountdown(trip, dates, today) {
   const reach = new Date(t(trip.start) - (dates.length - 1) * day).toISOString().slice(0, 10);
   return { daysOut, reach, horizon: dates.length };
 }
+
+/** The dates a sheet is showing, as { start, end } — what a trip made from
+ *  that sheet should keep. A sheet scored over Nov 21–26 used to save a trip
+ *  over whatever window the Mountains screen had open (four days), so its 22"
+ *  became 15" on the trip page. Null when the row carries no days. */
+export function sheetWindow(row) {
+  const days = row?.winAll?.length ? row.winAll : row?.win;
+  if (!days?.length) return null;
+  return { start: days[0].date, end: days[days.length - 1].date };
+}

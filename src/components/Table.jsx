@@ -2,6 +2,7 @@ import Dot from "./Dot.jsx";
 import { flags } from "../lib/scoring.js";
 import { bestOf } from "../lib/rank.js";
 import { snowWithUnit, tempTxt, windTxt } from "../lib/units.js";
+import { priorSpan, localToday } from "../lib/dates.js";
 
 /* Column labels follow the Figma: "-3 days" rather than "before", and the ↑
  * arrows carry the "this is a maximum" meaning that the old build had to
@@ -32,7 +33,7 @@ export default function Table({ data, metric, onOpen, favs = [] }) {
     <div className="table">
       <div className="t-head">
         <span>Resort</span>
-        <span>-3 days</span>
+        <span title={`Snow on the mountain ${priorSpan(localToday())}, whatever the dates picked`}>-3 days</span>
         <span>snow</span>
         <span>↑ temp</span>
         <span>↑ wind</span>

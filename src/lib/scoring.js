@@ -1,4 +1,5 @@
 import { rank } from "./rank.js";
+import { localToday } from "./dates.js";
 import { coldLow } from "./temps.js";
 import {
   HISTORY_DAYS,
@@ -28,8 +29,14 @@ export function before(history, resortId, startDate, days = HISTORY_DAYS) {
 }
 
 /** Scores one resort against a window of forecast days. All units metric,
- *  matching forecast.json. */
-export function score(resort, a, b, history) {
+ *  matching forecast.json.
+ *
+ *  `before` is the three days before TODAY, whatever the window is. It used to
+ *  be the three days before the window's first day, so the same resort showed
+ *  0.4" in a trip table and 0" on its sheet (the sheet has always read today).
+ *  It is a fact about the mountain now, so it has one anchor everywhere.
+ *  `today` is a parameter only so tests can pin it. */
+export function score(resort, a, b, history, today = localToday()) {
   const win = resort.days.slice(a, b + 1);
   const nums = (arr) => arr.filter((x) => typeof x === "number" && Number.isFinite(x));
 
@@ -56,7 +63,7 @@ export function score(resort, a, b, history) {
     win: fc,
     winAll: win,
     cumulative: fc.map((d) => (cum += d.snow ?? 0)),
-    before: before(history, resort.id, win[0]?.date),
+    before: before(history, resort.id, today),
     total: Number(fc.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)),
     projected: pj.length ? Number(pj.reduce((s, d) => s + (d.snow ?? 0), 0).toFixed(2)) : null,
     hi: tempMax.length ? Math.max(...tempMax) : null,

@@ -24,7 +24,7 @@ import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
 import { applyOurs, applySnowfall, blendFresh } from "./lib/ours.js";
 import { bySnow } from "./lib/rank.js";
-import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown } from "./lib/trips.js";
+import { addResort, addPlace, removeResort, removePlace, toWatchlist, withDates, tripWindow, tripCountdown, sheetWindow } from "./lib/trips.js";
 import { membersOf, titleOf } from "./lib/outlook.js";
 import { HORIZON_DAYS } from "./lib/constants.js";
 import { CAL_FRAME, CAL_PLUS } from "./components/tripIcons.js";
@@ -249,7 +249,7 @@ export default function Tabulator() {
      in it — "VSC trip 2027 · Jan 21–Jan 24", per the Add-to-trip design. It is
      not a bare saved window any more, which is what it was before.
      { id, name, label, resorts: [{ name, total }] } */
-  const newTrip = (resort, named, place) =>
+  const newTrip = (resort, named, place, win) =>
     setTrips((t) => {
       /* Brian names his own trips — the design shows "VSC trip 2027". Nothing
          in it says how he types that, so new trips get a neutral placeholder
@@ -261,8 +261,15 @@ export default function Tabulator() {
          and fell back to whatever the mountains screen was showing, so a
          four-day trip reported six days of snow. The label is a rendering of
          the range; these are the range. */
-      return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`, label,
-                      start: rs, end: re,
+      /* A trip made from a sheet keeps the dates THAT sheet showed (`win`),
+         not the Mountains screen's window — the radar and search sheets read
+         today to the end of the forecast, so Targhee's 22" over Nov 21–26
+         became 15" on a four-day trip. The Trips screen's New trip has no
+         sheet, so it still takes the Mountains window. */
+      const [ts, te] = win ? [win.start, win.end] : [rs, re];
+      return [...t, { id: `trip-${n}`, name: named || `Trip ${n}`,
+                      label: ts ? rangeLabel(ts, te) : label,
+                      start: ts, end: te,
                       // One resort from its sheet, or a whole place from the radar.
                       resorts: place ? addPlace([], resort, place)
                         : resort ? addResort([], resort) : [] }];
@@ -723,7 +730,7 @@ export default function Tabulator() {
         onOpen={(r) => { setPlace(null); setOpen(r); }}
         trips={trips}
         onAddToTrip={(id, list) => place && addToTrip(id, list, place.title)}
-        onNewTrip={(list, named) => place && newTrip(list, named, place.title)}
+        onNewTrip={(list, named) => place && newTrip(list, named, place.title, sheetWindow(place.rows[0]))}
         onRemoveFromTrip={(id) => place && removeFromTrip(id, null, place.title)}
         season={seasonOn ? feedRaw.season : null}
       />
@@ -746,7 +753,7 @@ export default function Tabulator() {
         onFav={() => open && toggleFav(open.name)}
         trips={trips}
         onAddToTrip={(id) => open && addToTrip(id, { name: open.name, total: open.total })}
-        onNewTrip={(named) => open && newTrip({ name: open.name, total: open.total }, named)}
+        onNewTrip={(named) => open && newTrip({ name: open.name, total: open.total }, named, undefined, sheetWindow(open))}
         onRemoveFromTrip={removeFromTrip}
       />
     </div>

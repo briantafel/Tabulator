@@ -87,9 +87,21 @@ test("score sums the window and tracks the running total", () => {
   assert.equal(s.win.length, 3);
 });
 
-test("-3 days reads the three days before the window from history", () => {
-  const s = score(RESORT, 0, 2, HISTORY);
+test("-3 days reads the three days before today from history", () => {
+  const s = score(RESORT, 0, 2, HISTORY, "2026-01-10");
   assert.equal(s.before, 12); // 2 + 4 + 6
+});
+
+test("-3 days is the same number whatever window is scored", () => {
+  // A trip table and a resort sheet showed 0.4" and 0" for one resort because
+  // one anchored on the window's first day and the other on today.
+  const today = "2026-01-10";
+  const a = score(RESORT, 0, 2, HISTORY, today).before;
+  const b = score(RESORT, 2, 5, HISTORY, today).before;
+  const c = score(RESORT, 0, 5, HISTORY, today).before;
+  assert.equal(a, 12);
+  assert.equal(b, a);
+  assert.equal(c, a);
 });
 
 test("-3 days is null, never zero, when history is short", () => {
@@ -98,7 +110,7 @@ test("-3 days is null, never zero, when history is short", () => {
   assert.equal(before({ "2026-01-09": { alta: 6 } }, "alta", "2026-01-10"), null);
   assert.equal(before({}, "alta", "2026-01-10"), null);
   assert.equal(before(null, "alta", "2026-01-10"), null);
-  assert.equal(score(RESORT, 0, 2, {}).before, null);
+  assert.equal(score(RESORT, 0, 2, {}, "2026-01-10").before, null);
 });
 
 test("temp takes the window max, wind the max, freezing level the min", () => {

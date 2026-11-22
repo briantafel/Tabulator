@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   addResort, addPlace, removePlace, removeResort, holdsPlace, isDirect,
-  toWatchlist, withDates, tripWindow, tripCountdown, WATCH_LABEL,
+  toWatchlist, withDates, tripWindow, tripCountdown, sheetWindow, WATCH_LABEL,
 } from "../src/lib/trips.js";
 
 const R = (name) => ({ name, total: 10 });
@@ -112,4 +112,16 @@ test("the countdown names when the forecast reaches the trip", () => {
   const c = tripCountdown({ start: "2026-12-20", end: "2026-12-27" }, DATES, "2026-11-17");
   assert.deepEqual(c, { daysOut: 33, reach: "2026-12-15", horizon: 6 });
   assert.equal(tripCountdown(toWatchlist({ id: "t", resorts: [] }), DATES, "2026-11-17"), null);
+});
+
+test("a trip made from a sheet keeps the dates that sheet showed", () => {
+  // Targhee on the radar: Nov 21-26 (22"). The trip used to take the Mountains
+  // window instead and read 15".
+  const d = (date) => ({ date });
+  const row = { win: [d("2026-11-21"), d("2026-11-22")], winAll: [d("2026-11-21"), d("2026-11-22"), d("2026-11-26")] };
+  assert.deepEqual(sheetWindow(row), { start: "2026-11-21", end: "2026-11-26" });
+  // Without projected days, `win` is the window.
+  assert.deepEqual(sheetWindow({ win: [d("2026-11-21"), d("2026-11-24")] }), { start: "2026-11-21", end: "2026-11-24" });
+  assert.equal(sheetWindow({ win: [] }), null);
+  assert.equal(sheetWindow(null), null);
 });
