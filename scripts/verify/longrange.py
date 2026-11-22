@@ -604,7 +604,7 @@ def calibrate_lowo(con, rng) -> dict:
                    winters_better INTEGER, n INTEGER, events INTEGER, bss_raw DOUBLE, bss_cal DOUBLE, gain DOUBLE,
                    gain_lo DOUBLE, gain_hi DOUBLE, promote BOOLEAN)""")
     con.execute("""CREATE TABLE lowo_w (form VARCHAR, lead_day INTEGER, win INTEGER, threshold DOUBLE, winter VARCHAR,
-                   n INTEGER, events INTEGER, gain DOUBLE)""")
+                   n INTEGER, events INTEGER, gain DOUBLE, bss_raw DOUBLE, bss_cal DOUBLE)""")
     if not len(r["p"]):
         log("calibration LOWO: no GEFS rows")
         return {}
@@ -640,7 +640,10 @@ def calibrate_lowo(con, rng) -> dict:
                     w = fit_logistic(X[tr], o[tr])
                     q[te] = apply_logistic(w, X[te])
                 g = (((p[te] - o[te]) ** 2).sum() - ((q[te] - o[te]) ** 2).sum()) / max(((c[te] - o[te]) ** 2).sum(), 1e-12)
-                wrows.append((form, lead, win, t, held, int(te.sum()), int(o[te].sum()), float(g)))
+                den = max(((c[te] - o[te]) ** 2).sum(), 1e-12)
+                # per held-out winter, Brier skill over climatology: raw ensemble and calibrated (added 2026-11-22)
+                wrows.append((form, lead, win, t, held, int(te.sum()), int(o[te].sum()), float(g),
+                              float(1 - ((p[te] - o[te]) ** 2).sum() / den), float(1 - ((q[te] - o[te]) ** 2).sum() / den)))
                 used += 1
                 better += g > 0
             ok = ~np.isnan(q)
@@ -671,7 +674,7 @@ def calibrate_lowo(con, rng) -> dict:
     if rows:
         con.executemany(f"INSERT INTO lowo VALUES ({', '.join('?' * 14)})", rows)
     if wrows:
-        con.executemany(f"INSERT INTO lowo_w VALUES ({', '.join('?' * 8)})", wrows)
+        con.executemany(f"INSERT INTO lowo_w VALUES ({', '.join('?' * 10)})", wrows)
     log(f"calibration LOWO (GEFS, {len(winters)} winters: {', '.join(winters)}): "
         f"{len(rows)} cells judged, {sum(x[-1] for x in rows)} promoted")
     return {"version": "ens-calib-lowo-v1", "source": LOWO_SOURCE, "winters": winters, "judged": True,
@@ -744,6 +747,15 @@ def report(con) -> str:
                      FROM lowo WHERE threshold IN (10, 20, 25, 50))
                      ON lead IN ('d1', 'd3', 'd5', 'd7', 'd8', 'd10', 'd12', 'd14', 'd15') USING any_value(v)
                      GROUP BY row ORDER BY row""", "_not judged: fewer than 4 winters with GEFS and truth_"),
+          "\n## Long-range odds, winter by winter: Brier skill over climatology, calibrated (72 h ≥ 25 mm, shipped form per lead)\n",
+          "Each cell is one held-out winter, fit on the other winters. Positive = beat the climatology base rate that winter; ",
+          "the pooled number is what the app ships on. A lead that is positive in every winter is stable.\n",
+          md(con, """PIVOT (SELECT 'd' || w.lead_day AS lead, w.winter, printf('%+.2f', w.bss_cal) || ' (raw ' || printf('%+.2f', w.bss_raw) || ')' AS v
+                     FROM lowo_w w JOIN (SELECT * FROM lowo WHERE promote AND win = 72 AND threshold = 25
+                          QUALIFY row_number() OVER (PARTITION BY lead_day ORDER BY bss_cal DESC) = 1) l ON l.form = w.form AND l.lead_day = w.lead_day AND l.win = w.win AND l.threshold = w.threshold
+                     WHERE w.win = 72 AND w.threshold = 25)
+                     ON winter USING any_value(v) GROUP BY lead ORDER BY CAST(substr(lead, 2) AS INTEGER)""",
+             "_no promoted 72 h ≥ 25 mm leads_"),
           "\n## Calibration (ens-calib-v1): Brier skill gain over the raw ensemble, judged out of sample\n",
           "gain = BSS(calibrated) − BSS(raw). `~` = 90% range includes 0. Promoted = real gain in BOTH directions.\n",
           "Fit 2024-25 → judged 2025-26:\n",
