@@ -292,6 +292,21 @@ sources:
       - The verification build turns hours into days - a day's reading is the median of 23:00, 00:00 and 01:00 local around its midnight, so a day's gain is reading(next day) minus reading(day).
       - Snow pillows are noisy hour to hour (a few mm); daily gains below ~3 mm are within that noise.
 
+  eccc-daily:
+    name: Environment and Climate Change Canada daily climate observations
+    kind: observation (ground truth for Canadian resorts) and mapping
+    url: https://api.weather.gc.ca/collections/climate-stations and /climate-daily (OGC API Features)
+    cadence: in every archive run (twice daily); each run re-reads the last 30 days (manual stations report late; views keep the newest fetch). A one-time backfill (pieces eccc-daily-2025 and eccc-daily-2026, parser_version eccc-daily-history-1, workflow backfill.yml) adds 2024-11-01 → 2026-04-30.
+    since: 2026-11-22
+    raw: the station pages and each station's daily records as fetched, gzipped
+    variables: total_snow (cm, 24 h snowfall), total_precip (mm, rain plus melted snow), snow_depth (cm, on the ground), temp_max and temp_min (°C); period_label daily; valid_start/valid_end = the UTC span of the station's local standard-time day
+    licence: Open Government Licence – Canada
+    notes:
+      - Same mapping pattern as bc-asws - the 8 nearest stations plus the 3 highest within 35 km of each Canadian resort that have daily data in the window (kind mapping, variable candidate_distance).
+      - Null is missing (no row). A zero is a real zero; value_text holds ECCC's flag ("T" trace, "E" estimated, "M" missing).
+      - Manual stations read once a day at a fixed hour; the day is a local standard-time day, not a midnight-to-midnight clock. Automatic stations do not measure snowfall (total_snow is empty), only depth and precipitation.
+      - Values outside a per-variable range are dropped and counted; a unit shift (daily snow p99 above 120) fails the run.
+
   nws:
     name: US National Weather Service gridpoint forecast
     kind: forecast

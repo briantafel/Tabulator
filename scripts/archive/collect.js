@@ -22,6 +22,7 @@ import * as ens from "./ensembles.js";
 import * as omfc from "./om-forecast.js";
 import * as snotel from "./snotel.js";
 import * as bcasws from "./bc-asws.js";
+import * as eccc from "./eccc-daily.js";
 import * as slf from "./slf.js";
 import * as amedas from "./amedas.js";
 import * as cocorahs from "./cocorahs.js";
@@ -87,6 +88,10 @@ await run("snotel", (sink, rawDir) =>
 
 await run("bc-asws", (sink, rawDir) =>
   bcasws.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
+
+// Environment Canada daily climate stations: snowfall, precipitation, snow on the ground, temperature (2026-11-22).
+await run("eccc-daily", (sink, rawDir) =>
+  eccc.collect({ resorts, sink, rawDir, fetchedAt, runId, log }));
 
 // Swiss / Alpine ground truth (2026-11-11).
 await run("slf", (sink, rawDir) =>
