@@ -1,4 +1,4 @@
-name: Our forecast (live blend, twice a day)
+name: Our forecast (live blend, whenever a model has a new run)
 # 2026-11-16 (Brian). Fetches today's ECMWF / GFS / GEM from Open-Meteo's
 # forecast API (one request per app resort, all three models: ~56 calls,
 # paced 10 s apart, ~10 min), archives them exactly as fetched, and builds
@@ -7,11 +7,13 @@ name: Our forecast (live blend, twice a day)
 # Started by the Cloudflare scheduler at 07:07 UTC (after the 00z runs, an
 # hour before the Open-Meteo ensemble pass) and 21:07 UTC (after the 12z
 # runs) — twice a day like Snow-Forecast (Brian, 2026-11-18).
+# 2026-11-22 (Brian): about every 3 hours, timed to model updates. The scheduler wakes this every 3 h (01, 04, ... UTC) and
+# the `check` job asks Open-Meteo which run each model is on; the blend only builds when one of the three has a run the
+# last blend did not use (scripts/blend/model-runs.js). A manual dispatch always builds.
 
 on:
   schedule:
-    - cron: "17 7 * * *"
-    - cron: "17 21 * * *"
+    - cron: "17 1,4,7,10,13,16,19,22 * * *"   # fallback only; the Cloudflare scheduler is the real clock
   workflow_dispatch:
 
 permissions:
@@ -24,7 +26,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      new: ${{ steps.c.outputs.new }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - id: c
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          mkdir -p out
+          node scripts/blend/model-runs.js public/blend-forecast.json out/model-runs.json
+          [ "$FORCE" = "true" ] && echo "new=true" >> "$GITHUB_OUTPUT" && echo "manual run: building regardless" || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model-runs
+          path: out/model-runs.json
+
   blend:
+    needs: check
+    if: needs.check.outputs.new == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -60,6 +85,11 @@ jobs:
             exit 1
           fi
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: model-runs
+          path: out-runs
+
       - name: Collect (paced)
         id: collect
         continue-on-error: true
@@ -73,7 +103,9 @@ jobs:
       - name: Build our forecast
         id: projections
         continue-on-error: true
-        run: node scripts/blend/build.js out public
+        run: |
+          cp out-runs/model-runs.json out/model-runs.json
+          node scripts/blend/build.js out public
 
       # A new blend changes the numbers the Tabulator read-out was written
       # from, so rewrite it (public/editorial-ours.json).

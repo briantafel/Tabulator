@@ -40,8 +40,9 @@ export const SCHEDULE = [
   // the app opened on the 19th still starting at the 18th. Same two slots.
   { file: "forecast.yml", every: 24, offset: 6 },
   { file: "forecast.yml", every: 24, offset: 21 },
-  { file: "blend.yml", every: 24, offset: 7 },
-  { file: "blend.yml", every: 24, offset: 21 },
+  // 2026-11-22 (Brian): our forecast about every 3 h, timed to model updates. This only WAKES blend.yml; its `check` job
+  // builds when a model has a run the last blend did not use (GFS and GEM every 6-12 h, ECMWF 12 h), so most wakes end there.
+  { file: "blend.yml", every: 3, offset: 1 },
   { file: "verify.yml", every: 24, offset: 9 },
   { file: "temps.yml", every: 6, offset: 5 },
 ];

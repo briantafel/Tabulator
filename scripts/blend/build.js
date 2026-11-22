@@ -34,6 +34,7 @@ const { resorts } = JSON.parse(await readFile(`${root}src/data/resorts.json`, "u
 const app = resorts.filter((r) => !r.archiveOnly);
 const out = { generatedAt: new Date().toISOString(), fetchedAt, version: params.version ?? "blend-v1", slr: slr.version,
   bands: bands ? bands.version : null,
+  modelRuns: await readJson(`${outDir}/model-runs.json`, null),   // each model's run time when this was built (model-runs.js)
   models: Object.keys(params.weights[Object.keys(params.weights)[0]] ?? {}),
   note: "Our forecast: blend-v1 water (ECMWF, GFS, GEM; corrected, lead-weighted) × our snow-to-liquid ratio. cm.",
   resorts: {} };
