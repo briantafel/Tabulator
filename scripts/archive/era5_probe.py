@@ -72,9 +72,15 @@ def main() -> int:
         return 1
     say(f"  opened in {time.time() - t:.1f} s (no credentials used)")
 
-    resorts = [r for r in json.loads((ROOT / "src/data/resorts.json").read_text())["resorts"] if r.get("nws")]
-    sample = [r for r in resorts if r["id"] in ("alta", "palisades", "jackson-hole", "whistler", "stowe", "mammoth", "niseko")] or resorts[:6]
-    say(f"{len(resorts)} resorts with coordinates; reading {len(sample)} for the timing test: {[r['id'] for r in sample]}")
+    meta = json.loads((ROOT / "src/data/resorts.json").read_text())["resorts"]
+    # 37 resorts carry `nws` (US NWS points), 71 carry `latlon` (everyone else); the ensemble
+    # collectors use latlon first, then nws. Together they cover every resort.
+    point = lambda r: r.get("latlon") or r.get("nws")  # noqa: E731
+    resorts = [r for r in meta if point(r)]
+    if len(resorts) != len(meta):
+        fail(f"{len(meta) - len(resorts)} resorts have no coordinates: {[r['id'] for r in meta if not point(r)]}")
+    say(f"{len(resorts)} of {len(meta)} resorts have coordinates; reading ALL of them")
+    shown = [r for r in resorts if r["id"] in ("alta", "palisades", "jackson-hole", "whistler", "stowe", "mammoth", "niseko")] or resorts[:6]
 
     # Which groups hold what. The page names single / pressure / 500hPa, each spatial and temporal.
     temporal_ds = None
@@ -128,11 +134,11 @@ def main() -> int:
     latn, lonn = ("latitude" if "latitude" in ds.coords else "lat"), ("longitude" if "longitude" in ds.coords else "lon")
     lon_vals = ds[lonn].values
     lon_is_360 = float(lon_vals.max()) > 180
-    lat = xr.DataArray([r["nws"][0] for r in sample], dims="resort")
-    lon = xr.DataArray([(r["nws"][1] % 360) if lon_is_360 else r["nws"][1] for r in sample], dims="resort")
+    lat = xr.DataArray([point(r)[0] for r in resorts], dims="resort")
+    lon = xr.DataArray([(point(r)[1] % 360) if lon_is_360 else point(r)[1] for r in resorts], dims="resort")
     t0 = np.datetime64(args.start)
     t1 = t0 + np.timedelta64(args.days, "D")
-    say(f"\nreading {args.start} + {args.days} d, levels {LEVELS}, {len(sample)} resorts (nearest grid cell)")
+    say(f"\nreading {args.start} + {args.days} d, levels {LEVELS}, {len(resorts)} resorts (nearest grid cell)")
     out = {}
     for var in (u_name, v_name):
         t = time.time()
@@ -153,8 +159,21 @@ def main() -> int:
         say(f"  {p} hPa: speed mean {float(s.mean()):.1f} m/s, max {float(s.max()):.1f} m/s ({float(s.max()) * 3.6:.0f} km/h)")
         if not (0 <= float(s.min()) and float(s.max()) < 120):
             fail(f"{p} hPa wind speed outside 0–120 m/s")
-    first = sample[0]["id"]
-    i0 = 0
+    # How far is the grid cell from the resort point? (0.25° cells: up to ~0.18° is normal.)
+    cell_lat = u[latn].values if latn in u.coords else None
+    cell_lon = u[lonn].values if lonn in u.coords else None
+    if cell_lat is not None and cell_lon is not None:
+        dlat = np.abs(cell_lat - lat.values)
+        dlon = np.abs(((cell_lon - lon.values) + 180) % 360 - 180)
+        say(f"  nearest-cell offset: max {float(dlat.max()):.2f}° lat, {float(dlon.max()):.2f}° lon")
+        if float(dlat.max()) > 0.2 or float(dlon.max()) > 0.2:
+            fail("a resort point is more than 0.2° from its grid cell")
+    per_resort_nan = int(np.isnan(u.values).any(axis=(0, 1)).sum())
+    if per_resort_nan:
+        fail(f"{per_resort_nan} resorts have NaN wind in the window")
+    ids = [r["id"] for r in resorts]
+    first = shown[0]["id"]
+    i0 = ids.index(first)
     say(f"\nsample ({first}, first 8 hourly steps at 700 hPa): speed m/s / direction from °")
     sp7, dr7 = speed.sel({lev: 700}).isel(resort=i0), frm.sel({lev: 700}).isel(resort=i0)
     for k in range(min(8, sp7.sizes[tname])):
