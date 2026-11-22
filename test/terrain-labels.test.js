@@ -43,3 +43,12 @@ test("vector labels need the labels-free picture and label data", () => {
   assert.equal(hasVectorLabels({ img: "a.webp", labels: { marks: [base] } }), false);
   assert.equal(hasVectorLabels({ img_clean: "a-clean.webp", labels: { marks: [base] } }), true);
 });
+
+test("no snow: the elevation alone, no box and no amount; a snow-free base still reads 0", () => {
+  const none = layoutMark({ kind: "base", x: 0.5, y: 0.5, in: null, ft: 6317 }, false, SHEET);
+  assert.equal(none.tag.value, null);
+  assert.equal(none.tag.sub, "Base\u20026,317 ft");
+  assert.ok(none.tag.w < 60 && none.tag.w > 30);
+  const zero = layoutMark({ kind: "base", x: 0.5, y: 0.5, in: 0.01, ft: 6317 }, false, SHEET);
+  assert.equal(zero.tag.value, '0"');
+});

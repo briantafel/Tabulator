@@ -70,8 +70,9 @@ export function tagSub(word, ft, metric) {
 /** A tag: white box, the amount in bold, then its elevation line. `value` null (no snow in the forecast): elevation only. */
 export function layoutTag(value, sub, S) {
   const vw = value ? textWidth(value, S.tagVal) : 0, sw = textWidth(sub, S.tagSub) * 0.89;   // 0.89: textWidth over-reads narrow letters; calibrated to Figma's 52 px for "Mid  8,379 ft" at 8.5 px
-  const w = 2 * S.tagPadX + vw + (value ? S.tagGap : 0) + sw;
-  return { value, sub, vw, sw, w, h: S.tagVal * LH + 2 * S.tagPadY };
+  // no amount (no snow in the forecast): the elevation alone, as plain text with a halo, no box
+  const w = value ? 2 * S.tagPadX + vw + S.tagGap + sw : sw;
+  return { value, sub, vw, sw, w, h: value ? S.tagVal * LH + 2 * S.tagPadY : S.tagSub * LH };
 }
 
 /** Layout of one Base / Top marker in picture px (0..S.w, 0..S.h; both default to size): the ring, and its tag to the

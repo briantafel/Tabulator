@@ -52,11 +52,15 @@ export default function TerrainLabels({ labels, metric, S, counter = false, scre
 /* One tag (Figma 2026-11-22): white box, the amount bold, then its elevation line; origin = left edge, vertical centre. */
 function Tag({ tag, S, valueStyle }) {
   const { value, sub, vw, w, h } = tag;
+  if (!value) {   // no snow in the forecast: the elevation alone, plain text with a white halo
+    return <text x="0" y="0" dominantBaseline="central" fontSize={S.tagSub * 1.1} fontWeight="700" fill={INK}
+      stroke="#fff" strokeWidth={S.tagSub / 2.5} strokeLinejoin="round" paintOrder="stroke">{sub}</text>;
+  }
   return (
     <>
       <rect x="0" y={-h / 2} width={w} height={h} rx={S.radius} fill="#fff" />
-      {value && <text x={S.tagPadX} y="0" dominantBaseline="central" fontSize={S.tagVal} fontWeight="700" style={valueStyle}>{value}</text>}
-      <text x={S.tagPadX + (value ? vw + S.tagGap : 0)} y="0" dominantBaseline="central" fontSize={S.tagSub} fontWeight="600" fill={INK}>{sub}</text>
+      <text x={S.tagPadX} y="0" dominantBaseline="central" fontSize={S.tagVal} fontWeight="700" style={valueStyle}>{value}</text>
+      <text x={S.tagPadX + vw + S.tagGap} y="0" dominantBaseline="central" fontSize={S.tagSub} fontWeight="600" fill={INK}>{sub}</text>
     </>
   );
 }
