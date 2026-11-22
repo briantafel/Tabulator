@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { dailyFromHourly, blendDay, snowFrom, resortDays } from "../scripts/blend/lib.js";
 import { splitModels, forecastToRows } from "../scripts/archive/om-forecast.js";
 import { applyOurs, applySnowfall } from "../src/lib/ours.js";
+import { dropPast } from "../src/lib/forecast.js";
 import { parseFlags } from "../src/lib/flags.js";
 
 const hours = (n, start = "2026-11-17T01:00") =>
@@ -99,6 +100,18 @@ test("applySnowfall: our number replaces Snow-Forecast's, whole resorts only", (
   assert.equal(brighton, feed.resorts[2]);                        // partial coverage
   assert.equal(applySnowfall(feed, blend, now + 40 * 3600e3), feed); // stale → unchanged
   assert.equal(applySnowfall(feed, null, now), feed);
+});
+
+test("applySnowfall after dropPast: a file that still begins yesterday keeps every resort on ours", () => {
+  const now = new Date(2026, 10, 22, 9, 0);   // local 11-22
+  const feed = { dates: ["2026-11-21", "2026-11-22", "2026-11-23"], resorts: [
+    { id: "alta", days: [{ date: "2026-11-21", snow: 0 }, { date: "2026-11-22", snow: 2 }, { date: "2026-11-23", snow: 3 }] } ] };
+  const blend = { fetchedAt: now.toISOString(), resorts: { alta: { days: [{ date: "2026-11-22", snow: 10 }, { date: "2026-11-23", snow: 12 }] } } };
+  // The old order: yesterday has no blend day, so the whole resort stayed on Snow-Forecast.
+  assert.equal(applySnowfall(feed, blend, now.getTime()).resorts[0].snowfall, undefined);
+  const out = applySnowfall(dropPast(feed, now), blend, now.getTime());
+  assert.equal(out.resorts[0].snowfall, "tabulator");
+  assert.deepEqual(out.resorts[0].days.map((d) => d.snow), [10, 12]);
 });
 
 test("snowfall flag: known modes only, off by default", () => {

@@ -169,7 +169,11 @@ export default function Tabulator() {
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */
   const base = useMemo(() => {
     const b = tempsOn ? applyTemps(feedRaw, feedRaw.temps) : feedRaw;
-    return dropPast(snowOn ? applySnowfall(b, feedRaw.blend, Date.now(), { bands: bandsOn }) : b);
+    /* Past days go BEFORE applySnowfall: it keeps a resort on Snow-Forecast
+       unless ours covers every one of its days, and a file that still begins
+       yesterday has a day the blend never carries (2026-11-22: all 57 resorts
+       ranked on Snow-Forecast's snow). */
+    return dropPast(snowOn ? applySnowfall(dropPast(b), feedRaw.blend, Date.now(), { bands: bandsOn }) : b);
   }, [tempsOn, snowOn, bandsOn, feedRaw]);
   const feed = useMemo(() => {
     /* Past days go BEFORE the projections are appended: extendFeed budgets
@@ -179,7 +183,7 @@ export default function Tabulator() {
        Radar search). */
     const f = projections && feedRaw ? extendFeed(dropPast(feedRaw), Date.now(), { slr: slrOn }) : feedRaw;
     const g = tempsOn ? applyTemps(f, feedRaw.temps) : f;
-    return dropPast(snowOn ? applySnowfall(g, feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend));
+    return dropPast(snowOn ? applySnowfall(dropPast(g), feedRaw.blend, Date.now(), { bands: bandsOn }) : applyOurs(g, feedRaw?.blend));
   }, [projections, tempsOn, slrOn, snowOn, bandsOn, feedRaw]);
   const dates = feed?.dates ?? [];
   const sfDates = feed?.sfDates ?? dates;
