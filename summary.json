@@ -1,0 +1,11 @@
+{
+ "tag": "terrain-pilot-2026-11-22-r44992949722",
+ "release": "https://github.com/briantafel/Tabulator/releases/tag/terrain-pilot-2026-11-22-r44992949722",
+ "rows": [],
+ "failed": [
+  [
+   "jackson-hole",
+   "jackson-hole: no output (job cancelled or died before writing anything)"
+  ]
+ ]
+}
