@@ -1,0 +1,34 @@
+name: Probe ERA5 on AWS (no upload, no login)
+
+# Added 2026-11-22 (claude/state-2026-11-22-past-winters.md). Checks that
+# Earthmover's free ERA5 copy opens without credentials and holds 850 / 700 hPa
+# wind, and prints what it found. Prints only: nothing is archived, no secrets
+# are used. Manual only.
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First day to read (YYYY-MM-DD)"
+        type: string
+        default: "2024-12-01"
+      days:
+        description: "How many days"
+        type: string
+        default: "7"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install icechunk xarray "zarr>=3" numcodecs pcodec numpy
+      - name: Probe
+        run: python3 scripts/archive/era5_probe.py --start "${{ inputs.start }}" --days "${{ inputs.days }}"
