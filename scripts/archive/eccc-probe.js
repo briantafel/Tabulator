@@ -1,33 +1,23 @@
-/* One-off probe of Environment Canada's open API (api.weather.gc.ca): prints the real field names, then
- * for each Canadian resort the stations inside a 0.4° box and how much snow data each has for 2024-25.
- * Run from Actions only (the dev sandbox can't reach the host). Not part of the archive run. */
+/* One-off diagnostic (Actions only): for every station in a 0.5° box around each Canadian resort, its daily date
+ * range from the station layer and how many 2024-25 records actually hold snowfall, precipitation or depth. */
 import { readFileSync } from "node:fs";
-import { UA, coordsOf } from "./common.js";
-const B = "https://api.weather.gc.ca/collections";
-const get = async (u) => { const r = await fetch(u, { headers: { "User-Agent": UA } }); if (!r.ok) throw new Error(`${r.status} ${u}`); return r.json(); };
-const out = (s) => console.log(s);
+import { coordsOf } from "./common.js";
+import { fetchDaily, fetchStations } from "./eccc-daily.js";
 const resorts = JSON.parse(readFileSync("src/data/resorts.json", "utf8")).resorts.filter((r) => r.region === "Canada");
-
-const st = await get(`${B}/climate-stations/items?limit=1&f=json`);
-out("STATION SAMPLE " + JSON.stringify(st.features?.[0]?.properties));
-const dl = await get(`${B}/climate-daily/items?limit=1&f=json&CLIMATE_IDENTIFIER=1108447`);
-out("DAILY SAMPLE " + JSON.stringify(dl.features?.[0]?.properties));
-out("DAILY sample count " + dl.numberMatched);
-
+const km = ([a, b], [c, d]) => { const r = Math.PI / 180, x = Math.sin(((c - a) * r) / 2), y = Math.sin(((d - b) * r) / 2); return 12742 * Math.asin(Math.sqrt(x * x + Math.cos(a * r) * Math.cos(c * r) * y * y)); };
+const all = await fetchStations(resorts);
+const cache = new Map();
 for (const r of resorts) {
   const c = coordsOf(r); if (!c) continue;
-  const [lat, lon] = c, d = 0.4;
-  const j = await get(`${B}/climate-stations/items?f=json&limit=200&bbox=${lon - d},${lat - d},${lon + d},${lat + d}`);
-  const rows = [];
-  for (const f of j.features ?? []) {
-    const p = f.properties, id = p.CLIMATE_IDENTIFIER;
-    let n = 0, snow = 0, last = "";
-    try {
-      const q = await get(`${B}/climate-daily/items?f=json&limit=1&CLIMATE_IDENTIFIER=${id}&datetime=2024-11-01/2025-04-30&sortby=-LOCAL_DATE`);
-      n = q.numberMatched ?? 0; last = q.features?.[0]?.properties?.LOCAL_DATE ?? "";
-      if (n) { const s = await get(`${B}/climate-daily/items?f=json&limit=1&CLIMATE_IDENTIFIER=${id}&datetime=2024-11-01/2025-04-30&TOTAL_SNOW=0.1/&sortby=-LOCAL_DATE`).catch(() => null); snow = s?.numberMatched ?? -1; }
-    } catch (e) { last = "ERR " + e.message.slice(0, 40); }
-    rows.push(`${id} ${p.STATION_NAME} elev=${p.ELEVATION} days=${n} snowdays=${snow} last=${last}`);
+  const near = all.map((s) => ({ s, d: km(c, [s.lat, s.lon]) })).filter((x) => x.d <= 45).sort((a, b) => a.d - b.d);
+  console.log(`RESORT ${r.id} ${near.length} stations within 45 km`);
+  for (const { s, d } of near) {
+    if (!cache.has(s.id)) {
+      try { const { records } = await fetchDaily(s.id, "2024-11-01", "2025-04-30");
+        const nn = (f) => records.filter((x) => x[f] !== null && x[f] !== undefined).length;
+        cache.set(s.id, `rec=${records.length} snow=${nn("TOTAL_SNOW")} prec=${nn("TOTAL_PRECIPITATION")} depth=${nn("SNOW_ON_GROUND")}`);
+      } catch (e) { cache.set(s.id, "ERR " + e.message.slice(0, 50)); }
+    }
+    console.log(`   ${s.id} ${s.name} ${d.toFixed(1)}km elev=${s.elevation_m} dly=${s.first}..${s.last} ${cache.get(s.id)}`);
   }
-  out(`RESORT ${r.id} (${lat},${lon}) stations in box: ${rows.length}`); rows.forEach((x) => out("   " + x));
 }
