@@ -3,7 +3,10 @@ name: Probe wind history sources (one-off, read-only, no app change)
 # W2 of claude/wind-model-plan-2026-11-23.md. Checks which PUBLIC sources hold hourly wind for past winters near the
 # app's resorts (ECCC climate-hourly, Iowa Mesonet, NWS depth, NWAC, NCEI ISD, SNOTEL). Writes only to the run summary.
 # Started by hand. Own concurrency group; touches no archive file.
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
+    inputs:
+      script: { description: "probe script file in scripts/archive", default: wind-hist-probe.js }
 permissions: { contents: read }
 concurrency:
   group: wind-hist-probe
@@ -16,4 +19,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - run: node scripts/archive/wind-hist-probe.js
+      - run: node scripts/archive/${{ inputs.script || 'wind-hist-probe.js' }}
