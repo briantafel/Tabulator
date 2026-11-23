@@ -74,10 +74,10 @@ function makeRow(base, variable, value, unit, tStart, tEnd, period) {
   return { source: "wind-obs", kind: "observation", resort_id: null, tier: null, ...base, valid_start: new Date(tStart).toISOString(), valid_end: new Date(tEnd).toISOString(), period_label: period, variable, value, unit };
 }
 /** Pushes the speed, gust and direction rows of one reading. Calm has no direction; a missing value is no row. */
-function pushReading(rows, rej, base, t, { speedKmh, gustKmh, dir }, period = "obs", tStart = t) {
+function pushReading(rows, rej, base, t, { speedKmh, gustKmh, dir }, period = "obs", tStart = t, gustPeriod = period) {
   const ok = (v) => (v > MAX_KMH || v < 0 ? (rej.push(`${base.station_id} ${new Date(t).toISOString()} ${v}`), false) : true);
   if (speedKmh != null && ok(speedKmh)) rows.push(makeRow(base, "wind_speed_mean", r2(speedKmh), "km/h", tStart, t, period));
-  if (gustKmh != null && gustKmh > 0 && ok(gustKmh)) rows.push(makeRow(base, "wind_gust_max", r2(gustKmh), "km/h", tStart, t, period));
+  if (gustKmh != null && gustKmh > 0 && ok(gustKmh)) rows.push(makeRow(base, "wind_gust_max", r2(gustKmh), "km/h", gustPeriod === "1h" ? t - 3600e3 : tStart, t, gustPeriod));
   if (dir != null && dir >= 1 && dir <= 360 && speedKmh != null && speedKmh > 0) rows.push(makeRow(base, "wind_dir_mean", dir, "deg", tStart, t, period));
 }
 
@@ -130,7 +130,7 @@ export function parseHadsRaw(text) {
   return { records, cols: Object.fromEntries(Object.entries(col).map(([k, i]) => [k, i < 0 ? null : H[i]])) };
 }
 /** Raw HADS readings to rows. The gust is UG when the platform sends one, else UP (peak wind): a platform peak, not a 3-second gust. */
-export function hadsRows(records, station, { unit, fetchedAt, runId, fromMs = -Infinity, toMs = Infinity }) {
+export function hadsRows(records, station, { unit, fetchedAt, runId, fromMs = -Infinity, toMs = Infinity, peakPeriod = "obs" }) {
   const base = { station_id: `hads:${station.id}`, lat: station.lat ?? null, lon: station.lon ?? null, elevation_m: station.elev != null ? Math.round(station.elev) : null,
     fetched_at: fetchedAt, model: "iem-hads", value_text: station.name ?? null, run_id: runId, parser_version: PARSER_VERSION };
   const rows = [], rej = [];
@@ -138,7 +138,7 @@ export function hadsRows(records, station, { unit, fetchedAt, runId, fromMs = -I
     if (r.t < fromMs || r.t >= toMs) continue;
     if (r.speed == null && r.gust == null && r.peak == null) continue; // a transmission with no wind in it
     const gu = r.gust ?? r.peak;
-    pushReading(rows, rej, base, r.t, { speedKmh: r.speed == null ? null : speedToKmh(r.speed, unit), gustKmh: gu == null ? null : speedToKmh(gu, unit), dir: r.dir });
+    pushReading(rows, rej, base, r.t, { speedKmh: r.speed == null ? null : speedToKmh(r.speed, unit), gustKmh: gu == null ? null : speedToKmh(gu, unit), dir: r.dir }, "obs", r.t, r.gust == null ? peakPeriod : "obs");
   }
   return { rows, rejected: rej, records: records.length };
 }
@@ -347,7 +347,7 @@ const ADAPTERS = {
     async fetchChunk(st, win, ctx) {
       const text = await get(`https://mesonet.agron.iastate.edu/cgi-bin/request/hads.py?stations=${st.id}&sts=${win.from}T00:00Z&ets=${win.to}T00:00Z&what=txt&delim=comma`);
       const raw = parseHadsRaw(text);
-      const r = hadsRows(raw.records, st, { unit: ctx.hadsUnit, fetchedAt: ctx.fetchedAt, runId: ctx.runId(win), fromMs: Date.parse(`${win.from}T00:00:00Z`), toMs: Date.parse(`${win.to}T00:00:00Z`) });
+      const r = hadsRows(raw.records, st, { unit: ctx.hadsUnit, peakPeriod: raw.cols.peak?.[2] === "H" ? "1h" : "obs", fetchedAt: ctx.fetchedAt, runId: ctx.runId(win), fromMs: Date.parse(`${win.from}T00:00:00Z`), toMs: Date.parse(`${win.to}T00:00:00Z`) });
       if (!raw.empty && raw.records.length && !raw.cols.speed && !raw.cols.dir) ctx.noWind.add(st.id);
       if (ctx.hadsCols && !ctx.hadsCols.has(st.id) && raw.cols.speed !== undefined) { ctx.hadsCols.set(st.id, raw.cols); }
       return { ...r, raw: text, empty: raw.empty };

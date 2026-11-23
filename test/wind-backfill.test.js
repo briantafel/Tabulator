@@ -54,12 +54,14 @@ test("parseIemAsos: an implausible speed is rejected and counted, not written", 
 });
 
 test("parseHadsRaw and hadsRows: SHEF missing is dropped, UP peak becomes the gust, mph converts once the unit is known", () => {
-  const csv = ["station,valid,USIRGZ,UDIRGZ,UPIRGZ,TAIRGZ", "HLLC1,2025-01-10 00:00,5.0,200,12.0,31.0", "HLLC1,2025-01-10 00:15,,,, 30.0", "HLLC1,2025-01-10 01:00,-9999,-9999,-9999,29.0", "HLLC1,2025-01-10 02:00,0,0,3,28.0"].join("\n");
+  const csv = ["station,utc_valid,USIRGZZ,UDIRGZZ,UPHRGZZ,TAIRGZZ", "HLLC1,2025-01-10 00:00:00,5.0,200,12.0,31.0", "HLLC1,2025-01-10 00:15:00,,,, 30.0", "HLLC1,2025-01-10 01:00:00,-9999,-9999,-9999,29.0", "HLLC1,2025-01-10 02:00:00,0,0,3,28.0"].join("\n");
   const raw = parseHadsRaw(csv);
-  assert.deepEqual(raw.cols, { speed: "USIRGZ", dir: "UDIRGZ", gust: null, peak: "UPIRGZ" });
-  const { rows } = hadsRows(raw.records, { id: "HLLC1", lat: 39.1, lon: -120.4, elev: 1597, name: "HELL HOLE" }, { ...ctx, unit: "mph" });
+  assert.deepEqual(raw.cols, { speed: "USIRGZZ", dir: "UDIRGZZ", gust: null, peak: "UPHRGZZ" });
+  const { rows } = hadsRows(raw.records, { id: "HLLC1", lat: 39.1, lon: -120.4, elev: 1597, name: "HELL HOLE" }, { ...ctx, unit: "mph", peakPeriod: "1h" });
   assert.deepEqual(rows.map((r) => [r.variable, r.value, r.valid_end.slice(11, 16)]), [["wind_speed_mean", 8.05, "00:00"], ["wind_gust_max", 19.31, "00:00"], ["wind_dir_mean", 200, "00:00"], ["wind_speed_mean", 0, "02:00"], ["wind_gust_max", 4.83, "02:00"]]);
   assert.equal(rows[0].station_id, "hads:HLLC1");
+  assert.deepEqual(rows.filter((r) => r.variable === "wind_gust_max").map((r) => [r.period_label, r.valid_start.slice(11, 16)]), [["1h", "23:00"], ["1h", "01:00"]]);
+  assert.equal(rows[0].period_label, "obs");
   assert.throws(() => hadsRows(raw.records, { id: "X" }, { ...ctx, unit: "bogus" }), /unknown wind unit/);
   assert.equal(parseHadsRaw("Error, no results found for query!").empty, true);
 });
@@ -116,4 +118,15 @@ test("statsOf and summaryTable: gust share of speed hours", () => {
   assert.deepEqual([s.speed_hours, s.gust_hours, s.by_var.wind_gust_max], [2, 1, 1]);
   const t = summaryTable([{ source: "iem-asos", station_id: "iem:KTRK", month: "2025-01", elev: 1798, ...s }]);
   assert.match(t, /\| iem-asos \| iem:KTRK \| 1798 \| 2024-25 \| 1 \| 5 \| 2 \| 1 \| 2 \| 50\.0% \|/);
+});
+
+test("real sample rows from the 2026-11-23 dry runs (KTRK METAR, HLLC1 HADS)", () => {
+  const asos = parseIemAsos("station,valid,sknt,gust,drct\nTRK,2025-01-01 00:50,0.00,M,0.00\nTRK,2025-01-01 01:50,3.00,M,120.00\nTRK,2025-01-01 02:15,3.00,M,130.00", KTRK, ctx);
+  assert.deepEqual(asos.rows.map((r) => [r.variable, r.value]), [["wind_speed_mean", 0], ["wind_speed_mean", 5.56], ["wind_dir_mean", 120], ["wind_speed_mean", 5.56], ["wind_dir_mean", 130]]);
+  const hads = ["station,utc_valid,HPIRGZZ,LSIRGZZ,MMIRGZZ,MTIRGZZ,PCIRGZZ,PPDRZZZ,PPHRGZZ,PPQRZZZ,RWIRGZZ,TAIRGNZ,TAIRGXZ,TAIRGZZ,UDIRGZZ,UPHRGZZ,URHRGZZ,USIRGZZ,XRIRGZZ",
+    "HLLC1,2025-01-01 00:00:00,4498.14,81.67,,,,,,0.0,,,,,,,,,", "HLLC1,2025-01-01 00:09:00,,,10.0,40.0,19.26,,0.0,,107.0,41.0,47.0,41.0,261.0,10.0,251.0,7.0,42.0"].join("\n");
+  const raw = parseHadsRaw(hads);
+  assert.equal(raw.cols.speed, "USIRGZZ");
+  const { rows } = hadsRows(raw.records, { id: "HLLC1", elev: 1597 }, { ...ctx, unit: "mph", peakPeriod: "1h" });
+  assert.deepEqual(rows.map((r) => [r.variable, r.value, r.period_label]), [["wind_speed_mean", 11.27, "obs"], ["wind_gust_max", 16.09, "1h"], ["wind_dir_mean", 261, "obs"]]);
 });
