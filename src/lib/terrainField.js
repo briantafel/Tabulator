@@ -120,7 +120,11 @@ export function computeField(live, g, dates, totalCm) {
   const totalIn = totalCm / CM_PER_IN;
   let k = 0;
   if (totalIn > 0) {
-    if (ref < live.floor_in) return { hidden: `NBM has ${ref.toFixed(2)} in at the forecast point but the sheet has ${totalIn.toFixed(1)} in` };
+    if (ref < live.floor_in) {
+      /* No NBM pattern, but under 1 in (anchor.py LOW_IN): flat at the sheet's total, never a pattern stretched from noise. */
+      if (totalIn < (live.low_in ?? 0)) return { F: new Float64Array(gw * gh).fill(totalIn), k: null, ref, flat: true };
+      return { hidden: `NBM has ${ref.toFixed(2)} in at the forecast point but the sheet has ${totalIn.toFixed(1)} in` };
+    }
     k = totalIn / ref;
   }
   const a = bilinearUp(SA, cw, ch, gw, gh, cell, ccell), b = bilinearUp(SG, cw, ch, gw, gh, cell, ccell);

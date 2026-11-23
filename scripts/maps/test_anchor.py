@@ -38,6 +38,8 @@ def test():
     assert abs(k * 1.0 - 5.5 / 2.54) < 1e-9
     assert A.scale(0.0, 0.0) == 0.0
     assert raises(lambda: A.scale(0.05, 5.5))                                                # blend snow, NBM none: refuse
+    assert A.scale(0.07, 1.2) is None and A.scale(0.0, 2.4) is None                           # no pattern, under 1 in: flat at the total
+    assert raises(lambda: A.scale(0.07, 2.6))                                                # no pattern, 1.02 in: still refuse
     assert A.label(ds) == "Nov 22–26"
     assert A.label(["2026-11-29", "2026-12-03"]) == "Nov 29 – Dec 3"
     print("anchor: ok")

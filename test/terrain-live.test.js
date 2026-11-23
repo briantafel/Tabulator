@@ -39,6 +39,24 @@ test("a day the grids do not have, a missing total, or a total with no NBM patte
   assert.ok(!z.hidden && z.F.every((v) => v === 0), "a zero total is no snow, drawn as such");
 });
 
+test("no NBM pattern and under 1 in: flat at the sheet's total (\"Under 1 in\"); 1 in or more: hidden", () => {
+  const dry = { ...live, low_in: 1.0, ref: { ...live.ref, a: [-50, -50, -50] } };
+  const f = computeField(dry, grids, ["2026-11-22"], 1.2);          // 0.47 in
+  assert.ok(!f.hidden && f.flat && f.k === null);
+  assert.ok(f.F.every((v) => Math.abs(v - 1.2 / 2.54) < 1e-12), "every cell is the sheet's number");
+  assert.ok(computeField(dry, grids, ["2026-11-22"], 2.6).hidden, "1.02 in with no pattern is still refused");
+  assert.ok(computeField({ ...dry, low_in: undefined }, grids, ["2026-11-22"], 1.2).hidden, "older grids without low_in keep refusing");
+});
+
+test("a flat under-1-in map draws no bands, labels the sheet's number and says Under 1 in", () => {
+  const dry = { ...live, low_in: 1.0, ref: { ...live.ref, a: [-50, -50, -50] } };
+  const r = drawLive(dry, grids, { dates: ["2026-11-22"], totalCm: 1.2 });
+  assert.ok(!r.hidden && r.nosnow && r.low, "flat is drawn terrain-only and flagged low");
+  assert.equal(r.fill, ""); assert.equal(r.lines, "");
+  assert.equal(r.full.depth.length, 1); assert.equal(r.full.depth[0].in, 0.5, "the one label is the sheet's number, not 0");
+  assert.ok(r.mid_cm === null && r.full.marks.every((m) => m.in === null));
+});
+
 test("the map's amount IS the sheet's: at the forecast point and height the window sums to the total", () => {
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41]]) {
     const r = computeField(live, grids, dates, cm);

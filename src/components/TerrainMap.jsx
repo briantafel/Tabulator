@@ -66,10 +66,10 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
         </div>
         {zoom && full && ready && fullPic0 && <TerrainFullscreen src={`${B}${fullPic0.img}`} alt={alt} title={name || "Snow by terrain"} metric={metric}
             labels={d.full} pic={fullPic0.ref} focus={fullPic0.focus} vec={{ inline: fullInline, px: fullPic0.px }}
-            legend={{ range: d.range_in, label: m.label, day: d.label, nosnow: d.nosnow, anchored: true, midCm: d.mid_cm }} onClose={() => setFull(false)} />}
+            legend={{ range: d.range_in, label: m.label, day: d.label, nosnow: d.nosnow, low: d.low, anchored: true, midCm: d.mid_cm }} onClose={() => setFull(false)} />}
         {ready && (
           <div className="tm-cap tm-cap-live">
-            {d.nosnow ? <span>No snow in the forecast</span>
+            {d.nosnow ? <span>{d.low ? `Under ${snowWithUnit(2.54, metric)}` : "No snow in the forecast"}</span>
               : <span>Base <b>{snowWithUnit(d.base_in * 2.54, metric)}</b> · Mid <b className="tm-cap-mid">{snowWithUnit(d.mid_cm, metric)}</b> · Top <b>{snowWithUnit(d.top_in * 2.54, metric)}</b></span>}
             <span>{m.label}</span>
           </div>
@@ -117,10 +117,10 @@ export default function TerrainMap({ id, name = null, metric, zoom = false, vect
       </div>
       {zoom && full && <TerrainFullscreen src={fullSrc} alt={alt} title={name || "Snow by terrain"} metric={metric}
           labels={fullPic ? fullPic.labels : vec ? m.labels : null} pic={fullPic?.ref} focus={fullPic?.focus} vec={fullVec}
-          legend={vec && m.range_in ? { range: m.range_in, label: m.label, day, nosnow: !!m.nosnow, anchored: !!m.anchor } : null} onClose={() => setFull(false)} />}
+          legend={vec && m.range_in ? { range: m.range_in, label: m.label, day, nosnow: !!m.nosnow, low: !!m.low, anchored: !!m.anchor } : null} onClose={() => setFull(false)} />}
       <div className="tm-cap">
         <span>{m.label}</span>
-        {m.nosnow ? <span>No snow in the forecast</span>
+        {m.nosnow ? <span>{m.low ? `Under ${snowWithUnit(2.54, metric)}` : "No snow in the forecast"}</span>
           : <span>Base <b>{snowWithUnit(m.base_in * 2.54, metric)}</b> · Top <b>{snowWithUnit(m.top_in * 2.54, metric)}</b></span>}
       </div>
     </section>

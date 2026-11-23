@@ -46,6 +46,7 @@ def entry(rid, d):
         "img": f"terrain/{rid}-sheet-baked.webp", "run": j["snow"]["run"], "label": "NOAA NBM" if j.get("nosnow") else j["caption_source"],
         "base_in": None if j.get("nosnow") else j["base"][1], "top_in": None if j.get("nosnow") else j["top"][1],
         **({"nosnow": True} if j.get("nosnow") else {}),
+        **({"low": True} if j.get("low") else {}),
         "base_ft": round(j["base"][0] * 3.28084), "top_ft": round(j["top"][0] * 3.28084),
         **({"anchor": {k: j["anchor"][k] for k in ("dates", "label", "total_cm", "blend_fetched")}} if j.get("anchor") else {}),
         "img_clean": f"terrain/{rid}-sheet.webp", "range_in": j["inside_range_in"], "labels": a["sheet"]["labels"],

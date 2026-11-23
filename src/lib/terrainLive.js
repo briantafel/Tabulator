@@ -4,7 +4,7 @@
    label per level on its longest stretch inside the outline, Base / Top at the lowest and highest lift terminals,
    "no snow" under an inch. Output is SVG markup in the full-screen picture's pixels plus label data in the shape
    TerrainLabels reads. */
-import { computeField, levelsFor, sampleAt, windowLabel } from "./terrainField.js";
+import { CM_PER_IN, computeField, levelsFor, sampleAt, windowLabel } from "./terrainField.js";
 import { contourRings, splitAtFrame, workspace } from "./terrainContours.js";
 import { FULL, SHEET, layoutMark, layoutMid, layoutDepth } from "./terrainLabels.js";
 
@@ -67,6 +67,7 @@ export function drawLive(live, grids, win) {
   }
   if (!(hi >= lo)) return { hidden: "no snow data inside the outline" };
   const nosnow = hi < 1.0;
+  const low = !!fld.flat;                                     // under 1 in, no NBM pattern: flat at the sheet's total
   const { levels, floor } = levelsFor(lo, hi);
   const lv = nosnow ? [] : levels.filter((l) => l < mx);
   const fl = nosnow ? [] : [floor, ...levels].filter((l) => l < mx);
@@ -105,7 +106,7 @@ export function drawLive(live, grids, win) {
     const d = polys.map((p) => pathOf(p, cell, false)).join(" ");
     return d ? `<path d="${d}" fill="none" stroke="#0d3fb0" stroke-opacity="0.75" stroke-width="${live.stroke}" stroke-linejoin="round" clip-path="url(#area)"/>` : "";
   }).join("");
-  if (nosnow) depth.push({ x: live.deep[0], y: live.deep[1], in: 0 });
+  if (nosnow) depth.push({ x: live.deep[0], y: live.deep[1], in: low ? r1(win.totalCm / CM_PER_IN) : 0 });
 
   const marks = live.marks.map((m) => ({ ...m, in: nosnow ? null : r1(sampleAt(F, live, m.x, m.y)) }));
   const SF = { ...FULL, w: (FULL.size * W) / H, h: FULL.size };
@@ -203,7 +204,7 @@ export function drawLive(live, grids, win) {
   const [sx, sy, ss] = live.sheet;
   const base = marks.find((m) => m.kind === "base"), top = marks.find((m) => m.kind === "top");
   return {
-    fill, lines, nosnow, k: fld.k,
+    fill, lines, nosnow, low, k: fld.k,
     mid_cm: nosnow ? null : win.totalCm,                    // the sheet's own number, for the caption and legend
     range_in: [r1(lo), r1(hi)],
     base_in: base?.in ?? null, top_in: top?.in ?? null,

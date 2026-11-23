@@ -389,6 +389,19 @@ def anchor_apply(anc, sample, snow, snow_info, fbox):
     ref = float(sample(np.array([la]), np.array([lo]), np.array([anc["z_m"]]))[0])
     k = A.scale(ref, anc["total_cm"])
     want = anc["total_cm"] / A.CM_PER_IN
+    if k is None:   # no NBM pattern and under 1 in: flat at the sheet's total, said so on the map ("Under 1 in")
+        log(f"  anchor: NBM has {ref:.2f} in at the blend point, no pattern to scale; sheet total {want:.2f} in < {A.LOW_IN:g} in -> flat map at the total")
+        snow_info["run_nbm"] = snow_info["run"]
+        snow_info["slr"] = "the blend's (amount); too little snow for a pattern, so the map is flat"
+        snow_info["flat"] = True
+        anc["flat_in"] = want
+        anc["record"] = {"dates": anc["dates"], "label": A.label(anc["dates"]), "total_cm": anc["total_cm"],
+                         "total_in": round(want, 2), "point": list(anc["pt"]), "elevation_m": anc["z_m"],
+                         "nbm_at_point_in": round(ref, 3), "scale": None, "flat": True, "blend_fetched": anc["blend_fetched"],
+                         "forecast_generated": anc["forecast_generated"],
+                         "nbm_window_utc": [anc["start"].isoformat(), anc["end"].isoformat()],
+                         "method": "flat at the blend total: NBM has no pattern here and the total is under 1 in; anchor.py"}
+        return np.full_like(snow, want)
     got = ref * k
     if abs(got - want) > 0.01:
         raise SystemExit(f"anchor: map at the blend point is {got:.3f} in, sheet total {want:.3f} in; refusing")
@@ -770,14 +783,15 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
     live = {"v": LG.VERSION, "grid": f"{rid}-grid.png", "days": f"{rid}-days.png", "w": Wc, "h": px,
             "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **qm,
             "dates": parts["dates"], "tz": anc["tz"], "ref": ref, "sigma": round(sigma, 6), "stroke": round(1.6 * s, 4),
-            "floor_in": anc["A"].NBM_FLOOR_IN,
+            "floor_in": anc["A"].NBM_FLOOR_IN, "low_in": anc["A"].LOW_IN,
             "marks": [{"kind": w.lower(), "x": round(x - left, 2), "y": round(y, 2), "ft": round(float(zz) * FT)}
                       for w, (zz, x, y, sv) in marks],
             "sheet": [box[0] - left, box[1], box[2] - box[0]], "deep": [float(deep_x - left), float(deep_y)]}
     # --- check: the app's arithmetic on the packed (quantised) grids vs this run's field, for the anchored window
     H2, m2, A2, G2 = LG.unpack(grid_png, days_png, live, len(parts["dates"]))
     k = anc["record"]["scale"]
-    twin = LG.field(H2, A2, G2, range(len(parts["dates"])), sigma, k)
+    twin = (np.full(H2.shape, anc["flat_in"]) if k is None
+            else LG.field(H2, A2, G2, range(len(parts["dates"])), sigma, k))
     pyf = map_coordinates(snow, [np.broadcast_to((fy / 2 - 0.5)[:, None], (gh, gw)),
                                  np.broadcast_to(((left + fx) / 2 - 0.5)[None, :], (gh, gw))], order=1, mode="nearest")
     d = np.abs(twin - pyf)[m2]
@@ -1077,7 +1091,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     if nosnow:   # one 0" label in the middle of the skiable terrain (the point deepest inside the outline), Brian 2026-11-20
         dt = distance_transform_edt(mask)
         cy_, cx_ = np.unravel_index(int(np.argmax(dt)), dt.shape)
-        pts_lab = [(0.0, (float(cx_), float(cy_)))]
+        pts_lab = [(round(anc["flat_in"], 1) if anc and anc.get("flat_in") else 0.0, (float(cx_), float(cy_)))]
     for lv_, (x, y) in pts_lab:
         if True:
             depth_pts.append((float(lv_), float(x), float(y)))
@@ -1188,7 +1202,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
                    "mesh_vertex_spacing_m": round(region_m / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2)},
         "blender": bl,
         "svg_scale_vs_1800px_maps": round(s, 3),
-        "nosnow": nosnow,
+        "nosnow": nosnow, "low": bool(snow_info.get("flat")),
         "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
         "levels_in": [float(x) for x in levels],
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,

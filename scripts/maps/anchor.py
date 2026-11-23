@@ -26,6 +26,7 @@ from zoneinfo import ZoneInfo
 CM_PER_IN = 2.54
 NBM_FLOOR_IN = 0.1      # NBM below this at the blend point while the blend has snow: no pattern to scale -> refuse
 SCALE_WARN = (0.25, 4.0)
+LOW_IN = 1.0            # a sheet total under this with no NBM pattern to scale: draw the map flat at the total (Brian 2026-11-23)
 
 
 class AnchorError(SystemExit):
@@ -81,11 +82,14 @@ def nbm_leads(cycle: datetime, start: datetime, end: datetime) -> list[int]:
     return out
 
 
-def scale(nbm_ref_in: float, total_cm: float) -> float:
-    """Multiplier for the NBM pattern so its value at the anchor point equals the blend total."""
+def scale(nbm_ref_in: float, total_cm: float) -> float | None:
+    """Multiplier for the NBM pattern so its value at the anchor point equals the blend total. None = no pattern and a
+    total under LOW_IN: the map is drawn flat at the total instead (still equal to the sheet, never an invented pattern)."""
     total_in = total_cm / CM_PER_IN
     if total_in <= 0:
         return 0.0                      # the blend has no snow: the map shows none (its nosnow path)
+    if nbm_ref_in < NBM_FLOOR_IN and total_in < LOW_IN:
+        return None                     # too little snow to have a pattern: the map is flat at the sheet's total ("Under 1 in")
     if nbm_ref_in < NBM_FLOOR_IN:
         raise AnchorError(f"anchor: NBM has {nbm_ref_in:.2f} in at the blend point but the blend has {total_in:.1f} in; "
                           "no snow pattern to scale, so no map rather than an invented one")
