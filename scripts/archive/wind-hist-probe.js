@@ -115,6 +115,11 @@ try {
     net[id] = rows.map((x) => ({ network: x.network, begin: x.archive_begin, end: x.archive_end, elev: x.elevation, online: x.online }));
     await sleep(120);
   }
+  for (const id of ids.filter((i) => /^K[A-Z]{3}$/.test(i))) {   // IEM keys ASOS by the 3-letter FAA id
+    const j = json(await get(`https://mesonet.agron.iastate.edu/api/1/station/${id.slice(1)}.json`, { accept: "application/json" }));
+    for (const x of j?.data ?? []) net[id].push({ network: x.network, begin: x.archive_begin, end: x.archive_end, elev: x.elevation, online: x.online, via3: true });
+    await sleep(120);
+  }
   const found = Object.entries(net).filter(([, v]) => v.length);
   say(`\n${found.length} of ${ids.length} app wind stations exist in IEM's station table. Networks seen: ${[...new Set(found.flatMap(([, v]) => v.map((x) => x.network)))].join(", ") || "NONE"}`);
   say("\n| id | name | IEM network | archive begin | archive end |\n|---|---|---|---|---|");
@@ -147,15 +152,22 @@ try {
   // non-ASOS: RAWS / DCP
   const other = found.filter(([id]) => !asos.includes(id)).map(([id]) => id);
   say(`\nNon-ASOS stations in IEM (${other.length}): ${other.join(", ") || "none"}. Trying IEM's RAWS/other request services on the app's named stations:\n`);
-  for (const id of ["SLIDE", "STORM", "HMDC1", "KNXN2", "DPPC1", "KCCU"].filter((i) => ids.includes(i))) {
-    for (const u of [
-      `https://mesonet.agron.iastate.edu/cgi-bin/request/raws.py?station=${id}&sts=2025-01-10T00:00Z&ets=2025-01-12T00:00Z&format=comma`,
-      `https://mesonet.agron.iastate.edu/cgi-bin/request/hads.py?stations=${id}&sts=2025-01-10T00:00Z&ets=2025-01-12T00:00Z&what=txt&delim=comma`,
-    ]) {
-      const r = await get(u);
-      say(`- ${u.split("/").pop().split("?")[0]} ${id}: HTTP ${r.status}, ${r.text.length} bytes, ${head(r.text, 200)}`);
-      await sleep(400);
+  const dcp = found.filter(([, v]) => v.some((x) => /_DCP$/.test(x.network))).map(([id]) => id);
+  say(`\nHADS archive (IEM hads.py) for ${dcp.length} DCP stations, one Jan week per winter. Cells: rows | non-empty speed (US*) / dir (UD*) / gust (UG*) / peak (UP*) | median gap min:\n`);
+  say("| station | " + WINTERS.map((w) => w[0]).join(" | ") + " |\n|---|---|---|---|");
+  for (const id of dcp) {
+    const cells = [];
+    for (const [, a, b] of WINTERS) {
+      const r = await get(`https://mesonet.agron.iastate.edu/cgi-bin/request/hads.py?stations=${id}&sts=${a}T00:00Z&ets=${b}T00:00Z&what=txt&delim=comma`);
+      if (r.status !== 200 || /^Error/.test(r.text)) { cells.push(`${r.status} ${head(r.text, 40)}`); continue; }
+      const L = r.text.trim().split("\n"); const H = L.shift().split(","); const rows = L.map((l) => l.split(","));
+      const cnt = (pre) => { const ix = H.map((h, i) => (h.startsWith(pre) ? i : -1)).filter((i) => i >= 0); return rows.filter((c) => ix.some((i) => c[i] !== "" && c[i] !== undefined)).length; };
+      const t = rows.map((c) => Date.parse(c[1].replace(" ", "T") + "Z"));
+      const gaps = t.slice(1).map((x, i) => (x - t[i]) / 60000).filter((g) => g > 0);
+      cells.push(`${rows.length} | ${cnt("US")} / ${cnt("UD")} / ${cnt("UG")} / ${cnt("UP")} | ${median(gaps) ?? "-"}`);
+      await sleep(500);
     }
+    say(`| ${id} | ${cells.join(" | ")} |`);
   }
   lic("IEM: free public access, no key; their pages ask for polite request rates and credit to IEM and the originating networks. Underlying data are NWS/FAA ASOS and RAWS/HADS (US government, public domain).");
 } catch (e) { fail(`IEM section: ${e.message}`); }
@@ -203,6 +215,24 @@ try {
     say(`- JS ${u.split("/").pop().slice(0, 40)}: HTTP ${r.status}, endpoints: ${eps.join(" ; ") || "none"}`);
   }
   if (!seen) say("- no JS bundle URLs found on the portal page (data likely loaded from an inline config; check the first page's text hits above)");
+  // a station page: look for the data endpoint and any CSV/download control
+  const sp = await get("https://nwac.us/weather/stations/mt-baker-ski-area?range=graphs");
+  say(`\nStation page: HTTP ${sp.status}, ${sp.text.length} bytes`);
+  const apis = [...new Set([...sp.text.matchAll(/["'(](\/api\/[A-Za-z0-9_\-/.?=&%]+)/g)].map((m) => m[1]))].slice(0, 30);
+  say("API paths in page: " + (apis.join(" ; ") || "none"));
+  const dl = sp.text.replace(/<script[\s\S]*?<\/script>/g, " ").match(/.{0,80}(csv|download|export).{0,80}/gi);
+  say("download hints in visible HTML: " + (dl ? head(dl.slice(0, 5).join(" || "), 600) : "none"));
+  const chunks = [...new Set([...sp.text.matchAll(/\/_next\/static\/chunks\/[A-Za-z0-9_\-/.]+\.js/g)].map((m) => m[0]))];
+  say(`${chunks.length} JS chunks; scanning up to 25 for /api/ and csv:`);
+  const found2 = new Set();
+  for (const c of chunks.slice(0, 25)) {
+    const r = await get("https://nwac.us" + c, { tries: 1 });
+    for (const m of r.text.matchAll(/["'`](\/api\/[A-Za-z0-9_\-/.${}]+|https:\/\/[a-z0-9.\-]*(?:synoptic|mesowest|nwac)[^"'`\s]*)["'`]/gi)) found2.add(m[1]);
+    if (/csv/i.test(r.text)) found2.add("(chunk mentions csv: " + c.split("/").pop() + ")");
+  }
+  say([...found2].slice(0, 40).join("\n"));
+  const tt = (await get("https://nwac.us/terms-of-use/")).text.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, " ");
+  say("Terms text mentioning data/weather/scrap: " + head((tt.match(/.{0,200}(scrap|automated|weather data|weather station|API).{0,250}/gi) ?? ["no match"]).slice(0, 3).join(" || "), 1200));
   // plausible API guesses, status only
   for (const u of ["https://api.nwac.us/", "https://nwac.us/api/v5/", "https://nwac.us/data-portal/csv/", "https://api.nwac.us/api/v6/stations/"]) {
     const r = await get(u, { tries: 1 }); say(`- guess ${u}: HTTP ${r.status} ${r.err} ${head(r.text, 120)}`);
@@ -216,11 +246,12 @@ try {
   const r = await get("https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv", { timeout: 120000 });
   if (r.status !== 200) throw new Error(`isd-history HTTP ${r.status}`);
   const wanted = ["KTRK", "KTVL", "KCPW", "KCCU", "KSLC", "KSUN", "KASE", "KJAC", "KBLU", "KEKS", "KHCR", "KGUC"];
-  const rows = r.text.split("\n").map((l) => l.replace(/"/g, "").split(","));   // USAF,WBAN,NAME,CTRY,ST,ICAO,LAT,LON,ELEV,BEGIN,END
+  const rows = r.text.split("\n").map((l) => l.replace(/^"|"$/g, "").split('","'));   // USAF,WBAN,NAME,CTRY,ST,ICAO,LAT,LON,ELEV,BEGIN,END
   say(`NCEI ISD history list: ${rows.length} stations.`);
   say("\n| ICAO | USAF-WBAN | name | end | Jan-2025 week rows | wind obs | gust (OC1) |\n|---|---|---|---|---:|---:|---:|");
   for (const w of wanted) {
     const s = rows.find((c) => c[5] === w && c[10] >= "20260101");
+    if (!s && w === "KTRK") say(`(ISD rows for ${w}: ${head(JSON.stringify(rows.filter((c) => c[5] === w)), 300)})`);
     if (!s) { say(`| ${w} | not in ISD or ended before 2026 | | | | | |`); continue; }
     const id = s[0] + s[1];
     const d = await get(`https://www.ncei.noaa.gov/access/services/data/v1?dataset=global-hourly&stations=${id}&startDate=2025-01-10T00:00:00Z&endDate=2025-01-17T00:00:00Z&dataTypes=WND,OC1&format=csv&units=metric`);
@@ -246,7 +277,7 @@ try {
     const l = j.map((s) => ({ s, d: km(c, [s.latitude, s.longitude]) })).filter((x) => x.d <= 40).sort((a, b) => a.d - b.d);
     if (l.length) near.push({ rs, l });
   }
-  say(`${near.length} US app resorts have at least one SNOTEL wind station within 40 km: ` + near.map((n) => `${n.rs.id}(${n.l.slice(0, 2).map((x) => `${x.s.stationTriplet} ${x.d.toFixed(0)}km ${Math.round(x.s.elevation * 0.3048)}m`).join("; ")})`).join(", "));
+  say(`${near.length} US app resorts have at least one SNOTEL wind station within 40 km:\n` + near.map((n) => `${n.rs.id}(${n.l.slice(0, 2).map((x) => `${x.s.stationTriplet} ${x.d.toFixed(0)}km ${Math.round(x.s.elevation * 0.3048)}m`).join("; ")})`).join("\n"));
   const test = [...new Set(near.slice(0, 5).map((n) => n.l[0].s.stationTriplet))];
   for (const t of test) {
     for (const [a, b] of [["2025-01-10", "2025-01-12"], ["2024-01-10", "2024-01-12"]]) {
@@ -265,6 +296,12 @@ try {
   for (const u of ["https://www.for.gov.bc.ca/ftp/HPR/external/!publish/BCWS_DATA_MART/", "https://www.for.gov.bc.ca/ftp/HPR/external/!publish/BCWS_DATA_MART/2025/"]) {
     const r = await get(u);
     say(`\nBCWS data mart ${u.replace(/.*MART/, "MART")}: HTTP ${r.status}, ${head(r.text.replace(/<[^>]+>/g, " "), 260)}`);
+  }
+  for (const y of ["2023", "2024", "2025"]) {
+    const r = await get(`https://www.for.gov.bc.ca/ftp/HPR/external/!publish/BCWS_DATA_MART/${y}/${y}-01-10.csv`);
+    const L = r.text.split("\n");
+    say(`BCWS ${y}-01-10.csv: HTTP ${r.status}, ${L.length} lines. Header: ${head(L[0], 400)}`);
+    if (y === "2025") say("  resort-area rows: " + head(L.filter((l) => /WHITE|SUN PEAKS|PANORAMA|SILVER|WHISTLER|FERNIE|REVELSTOKE|KICKING|CYPRESS|SEYMOUR|GROUSE/i.test(l)).slice(0, 6).join(" || "), 700));
   }
   lic("BC Wildfire Service weather stations on DataBC: Open Government Licence - British Columbia.");
 } catch (e) { fail(`BCWS section: ${e.message}`); }
