@@ -8,7 +8,7 @@ on:
     inputs:
       time_cycles:
         description: "Cycles (YYYYMMDDHH, comma-separated) to time the real collector on"
-        default: "2024111512,2025012000,2025021012,2026031500"
+        default: "2025012006,2026031518,2026112306,2026112218,2025021012"
 
 permissions:
   contents: read
@@ -32,4 +32,4 @@ jobs:
       - name: Probe
         env:
           CYCLES: ${{ inputs.time_cycles }}
-        run: python3 scripts/archive/nbm_history_probe.py out --recent --time-cycles "$CYCLES"
+        run: python3 scripts/archive/nbm_history_probe.py out --recent --all-days --time-cycles "$CYCLES"

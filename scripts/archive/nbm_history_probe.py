@@ -18,6 +18,7 @@ from __future__ import annotations
 import re
 import sys
 import time
+import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -42,11 +43,57 @@ def parse_listing(xml: str) -> dict:
 
 
 def list_cycle(day: date, hour: int) -> dict:
+    """Follows continuation tokens: a cycle's core/ folder holds more than 1000 keys (regional files, .idx), and the
+    first probe run stopped at the first page, which cut the last lead of every 00z/12z cycle short."""
     prefix = f"blend.{day:%Y%m%d}/{hour:02d}/core/"
-    xml = nbm.http(f"{nbm.BUCKET_URL}/?list-type=2&prefix={prefix}&max-keys=1000").decode()
-    out = parse_listing(xml)
+    out, token = {"leads": {}, "idx": {}, "truncated": False}, None
+    for _ in range(20):
+        q = f"?list-type=2&prefix={prefix}&max-keys=1000" + (f"&continuation-token={urllib.parse.quote(token)}" if token else "")
+        xml = nbm.http(f"{nbm.BUCKET_URL}/{q}").decode()
+        page = parse_listing(xml)
+        out["leads"].update(page["leads"])
+        out["idx"].update(page["idx"])
+        nxt = re.search(r"<NextContinuationToken>([^<]+)</NextContinuationToken>", xml)
+        if not nxt:
+            break
+        token = nxt.group(1)
+    else:
+        out["truncated"] = True   # 20 pages and still more: say so rather than report a short cycle as complete
     out["day"], out["hour"] = day, hour
     return out
+
+
+def cycle_exists(day: date, hour: int) -> bool:
+    prefix = f"blend.{day:%Y%m%d}/{hour:02d}/core/"
+    xml = nbm.http(f"{nbm.BUCKET_URL}/?list-type=2&prefix={prefix}&max-keys=5").decode()
+    return "<Key>" in xml
+
+
+def all_days_scan(start: date, end: date) -> str:
+    """Does every day's 00/06/12/18z cycle exist? One max-keys=5 listing each (~2,200 requests)."""
+    days = [start + timedelta(days=i) for i in range((end - start).days + 1)]
+    jobs = [(d, h) for d in days for h in CYCLES]
+
+    def run(job):
+        try:
+            return job, cycle_exists(*job)
+        except Exception as e:  # noqa: BLE001
+            return job, f"error {str(e)[:40]}"
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        res = list(pool.map(run, jobs))
+    by: dict[tuple[str, int], list[int]] = {}
+    bad = []
+    for (d, h), ok in res:
+        by.setdefault((f"{d:%Y-%m}", h), []).append(1 if ok is True else 0)
+        if ok is not True:
+            bad.append(f"{d} {h:02d}z ({ok if ok is not False else 'missing'})")
+    months = sorted({k[0] for k in by})
+    lines = [f"Every day {start} .. {end}: cycles present / days in month", "", "| month | 00z | 06z | 12z | 18z |", "|---|---|---|---|---|"]
+    for m in months:
+        lines.append(f"| {m} | " + " | ".join(f"{sum(by[(m, h)])}/{len(by[(m, h)])}" for h in CYCLES) + " |")
+    lines += ["", f"{len(bad)} missing of {len(jobs)} cycles." + (" First 40: " + ", ".join(bad[:40]) if bad else "")]
+    return "\n".join(lines)
 
 
 def summarize(entry: dict) -> dict:
@@ -166,6 +213,8 @@ def main(argv: list[str]) -> int:
         sizes = [summarize(e)["grib_mb"] for e in have]
         md += [f"Whole core files per cycle: median {sorted(sizes)[len(sizes) // 2]:.0f} MB (the collector reads only byte ranges, see the timing table).", ""]
     md += ["<details><summary>Every sampled cycle</summary>", "", table, "", "</details>", ""]
+    if "--all-days" in argv:
+        md += ["## Existence of every cycle, day by day", "", all_days_scan(start, end), ""]
     if "--recent" in argv:
         today = datetime.now(timezone.utc).date()
         rt, _ = listing_table([today - timedelta(days=1), today])

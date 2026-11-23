@@ -29,6 +29,19 @@ def main():
     assert p.sample_days(date(2025, 2, 2), date(2025, 2, 20), [30, 8]) == [date(2025, 2, 8)]   # no Feb 30
     cov = p.coverage_by_month([{"day": date(2025, 1, 1), "hour": 0, "leads": {6: 1}}, {"day": date(2025, 1, 8), "hour": 0, "leads": {}}])
     assert "| 2025-01 | 1/2 | - | - | - |" in cov, cov
+    # a cycle's core/ folder is longer than one 1000-key page: the listing must follow the continuation token
+    pages = iter([
+        '<R><Contents><Key>blend.20250115/12/core/blend.t12z.core.f006.co.grib2</Key><Size>10</Size></Contents>'
+        '<NextContinuationToken>T1</NextContinuationToken></R>',
+        '<R><Contents><Key>blend.20250115/12/core/blend.t12z.core.f264.co.grib2</Key><Size>20</Size></Contents></R>'])
+    urls, orig = [], p.nbm.http
+    p.nbm.http = lambda url, **k: (urls.append(url), next(pages).encode())[1]
+    try:
+        e2 = p.list_cycle(date(2025, 1, 15), 12)
+    finally:
+        p.nbm.http = orig
+    assert e2["leads"] == {6: 10, 264: 20} and not e2["truncated"], e2
+    assert len(urls) == 2 and "continuation-token=T1" in urls[1], urls
     print("nbm history probe: all checks passed")
 
 
