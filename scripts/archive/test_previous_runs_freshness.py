@@ -28,7 +28,7 @@ def write(dirpath, name, rows):
 def live(resort, model, last_day, first_day=date(2026, 11, 15), run=None):
     out, d = [], first_day
     while d <= last_day:
-        out.append((resort, model, d, run or f"bf-om-live-{resort}-{model}-2026-11-15", "previous_day1", "precipitation"))
+        out.append((resort, model, d, run or f"bf-om-live-{resort}-{model}-2026-11-15", "previous_day1", "precip"))
         d += timedelta(days=1)
     return out
 

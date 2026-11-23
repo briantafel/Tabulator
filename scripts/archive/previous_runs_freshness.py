@@ -44,13 +44,13 @@ def check(con, today, max_lag=0, models=MODELS):
     q = f"""
       SELECT resort_id, model, CAST(max(valid_start) AS DATE) AS last_day, max(fetched_at) AS fetched
       FROM raw
-      WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precipitation' AND period_label = 'previous_day1'
+      WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precip' AND period_label = 'previous_day1'
       GROUP BY resort_id, model"""
     last = {(r[0], r[1]): (r[2], r[3]) for r in con.execute(q).fetchall()}
     per_day = {(r[0], r[1]): r[2] for r in con.execute(f"""
       SELECT CAST(valid_start AS DATE) AS d, model, count(DISTINCT resort_id)
       FROM raw
-      WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precipitation' AND period_label = 'previous_day1'
+      WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precip' AND period_label = 'previous_day1'
       GROUP BY ALL""").fetchall()}
     problems = []
     resorts = sorted({k[0] for k in last})
