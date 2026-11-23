@@ -227,7 +227,7 @@ try {
   const found2 = new Set();
   for (const c of chunks.slice(0, 25)) {
     const r = await get("https://nwac.us" + c, { tries: 1 });
-    for (const m of r.text.matchAll(/["'`](\/api\/[A-Za-z0-9_\-/.${}]+|https:\/\/[a-z0-9.\-]*(?:synoptic|mesowest|nwac)[^"'`\s]*)["'`]/gi)) found2.add(m[1]);
+    for (const m of r.text.matchAll(/["'`](\/api\/[A-Za-z0-9_\-/.${}]+|https:\/\/[a-z0-9.-]*(?:synoptic|mesowest|nwac)[^"'`\s]*)["'`]/gi)) found2.add(m[1]);
     if (/csv/i.test(r.text)) found2.add("(chunk mentions csv: " + c.split("/").pop() + ")");
   }
   say([...found2].slice(0, 40).join("\n"));
