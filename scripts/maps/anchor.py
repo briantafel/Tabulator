@@ -16,8 +16,9 @@ takes its AMOUNT from the blend:
      s_d(H) = snow_d x ratio(T_d(H)) / ratio(t_d)  (water_d x ratio / 10 if it rains at mid),  T_d(H) = t_d - 0.0065 C/m x (H - mid),
      the same ratio rule the sheet uses (scripts/blend/lib.js snowFrom: rain above 2 C, the SLR line, the warm cap
      where promoted), the same lapse rate the scoring uses (slr.py). At mid it IS the sheet's number.
-     The map = S(H) x rho, S = the window's sum of s_d, rho = NBM's field / NBM's own profile at the blend point for
-     that height (clamped 0..RHO_MAX; 1 where NBM has no snow at that height). NBM supplies only WHERE across the
+     The map = S(H) x rho, S = the window's sum of s_d, rho = (NBM's field + c) / (NBM's own line at the blend point
+     for that height + c), c = 0.5 in, clamped 0..1.5 (Cypress, first run: an unsoftened ratio over a 1.8 in NBM line
+     drew 151 in; and the old hard switch at the floor jumped between cells). NBM supplies only WHERE across the
      resort snow is heavier or lighter at a given height; how much falls at each height, rain line included, is ours.
      Why (Brian, 2026-11-23, Whistler 0 in at the base / 122 in at the top): one multiplier set at mid-mountain
      stretched the whole slope by the blend-vs-NBM disagreement, which was about rain vs snow near the freezing level,
@@ -38,7 +39,8 @@ LOW_IN = 1.0            # a sheet total under this with no NBM pattern to scale:
 
 LAPSE_C_PER_M = 0.0065  # slr.py LAPSE_C_PER_M: the scoring's station-height rule
 RAIN_ABOVE_C = 2.0      # scripts/blend/lib.js RAIN_ABOVE_C
-RHO_MAX = 3.0           # NBM's local pattern may at most triple (or zero) the blend's amount at a height
+RHO_MAX = 1.5           # NBM's local pattern may raise the blend's amount at a height by at most half (or take it to 0)
+RHO_C_IN = 0.5          # softening: rho = (N + c) / (n + c), so a near-zero NBM line at the blend point can't blow it up
 FT_PER_M = 3.28084
 
 

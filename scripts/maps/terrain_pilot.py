@@ -400,7 +400,7 @@ def anchor_apply(anc, sample, snow, snow_info, fbox, dem_m):
         raise SystemExit(f"anchor: height profile at the blend's height is {at_mid:.3f} in, sheet total {want:.3f} in; refusing")
     # NBM's own profile at the blend's point, for each cell's height (unblurred, like the app's ref line)
     n = sample(np.full(dem_m.shape, la), np.full(dem_m.shape, lo), dem_m)
-    rho = np.where(n >= A.NBM_FLOOR_IN, np.clip(snow / np.maximum(n, 1e-9), 0.0, A.RHO_MAX), 1.0)
+    rho = np.clip((snow + A.RHO_C_IN) / (n + A.RHO_C_IN), 0.0, A.RHO_MAX)
     S = A.interp_profile(hs_kft, S_in, dem_m * A.FT_PER_M / 1000.0)
     F = S * rho
     ref = float(sample(np.array([la]), np.array([lo]), np.array([anc["z_m"]]))[0])
@@ -417,7 +417,7 @@ def anchor_apply(anc, sample, snow, snow_info, fbox, dem_m):
                      "blend_fetched": anc["blend_fetched"], "forecast_generated": anc["forecast_generated"],
                      "nbm_window_utc": [anc["start"].isoformat(), anc["end"].isoformat()],
                      "method": "blend snow at every height (water x ratio at that height's lapse-rate temperature) "
-                               f"x NBM pattern / NBM's own profile, clamped 0-{A.RHO_MAX:g}; anchor.py"}
+                               f"x (NBM + {A.RHO_C_IN:g}) / (NBM's own line + {A.RHO_C_IN:g}), clamped 0-{A.RHO_MAX:g}; anchor.py"}
     return F
 
 
@@ -784,7 +784,7 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
     live = {"v": LG.VERSION, "grid": f"{rid}-grid.png", "days": f"{rid}-days.png", "w": Wc, "h": px,
             "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **qm,
             "dates": parts["dates"], "tz": anc["tz"], "ref": ref, "sigma": round(sigma, 6), "stroke": round(1.6 * s, 4),
-            "floor_in": anc["A"].NBM_FLOOR_IN, "low_in": anc["A"].LOW_IN, "rho_max": anc["A"].RHO_MAX,
+            "floor_in": anc["A"].NBM_FLOOR_IN, "low_in": anc["A"].LOW_IN, "rho_max": anc["A"].RHO_MAX, "rho_c": anc["A"].RHO_C_IN,
             "prof": anc["profile"],
             "marks": [{"kind": w.lower(), "x": round(x - left, 2), "y": round(y, 2), "ft": round(float(zz) * FT)}
                       for w, (zz, x, y, sv) in marks],
@@ -792,7 +792,7 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
     # --- check: the app's arithmetic on the packed (quantised) grids vs this run's field, for the anchored window
     H2, m2, A2, G2 = LG.unpack(grid_png, days_png, live, len(parts["dates"]))
     twin = LG.field_prof(H2, A2, G2, range(len(parts["dates"])), sigma, ref, anc["profile"], parts["dates"],
-                         anc["A"].NBM_FLOOR_IN, anc["A"].RHO_MAX)
+                         anc["A"].RHO_C_IN, anc["A"].RHO_MAX)
     pyf = map_coordinates(snow, [np.broadcast_to((fy / 2 - 0.5)[:, None], (gh, gw)),
                                  np.broadcast_to(((left + fx) / 2 - 0.5)[None, :], (gh, gw))], order=1, mode="nearest")
     d = np.abs(twin - pyf)[m2]

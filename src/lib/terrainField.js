@@ -120,8 +120,8 @@ export function profileAt(prof, dates, Hkft) {
    multiplier is mild, until the next refresh replaces it. */
 export const OLD_K_RANGE = [0.67, 1.5];
 
-/** Height-profile field (anchor.py): F = S(H) * clamp(N / n(H), 0, rho_max); rho = 1 where NBM's own line n(H)
- *  is under floor_in. Twin of scripts/maps/live_grid.py field_prof(). */
+/** Height-profile field (anchor.py): F = S(H) * clamp((N + c) / (n(H) + c), 0, rho_max), n(H) = NBM's own line at
+ *  the blend point. Twin of scripts/maps/live_grid.py field_prof(). */
 function profileField(live, g, idx, dates, totalCm) {
   const { gw, gh, cw, ch, cell, ccell, prof } = live;
   if (dates.some((d) => !Array.isArray(prof.cm?.[d]))) return { hidden: "the map's height profile lacks a sheet day" };
@@ -137,10 +137,10 @@ function profileField(live, g, idx, dates, totalCm) {
   const F = new Float64Array(gw * gh);
   for (let p = 0; p < gw * gh; p++) F[p] = Math.max(0, a[p] + b[p] * g.H[p]);
   gaussianBlur(F, gw, gh, live.sigma);
-  const floor = live.floor_in ?? 0.1, rmax = live.rho_max ?? 3;
+  const c = live.rho_c ?? 0.5, rmax = live.rho_max ?? 1.5;
   for (let p = 0; p < gw * gh; p++) {
     const H = g.H[p], n = Math.max(0, ra + rg * H);
-    const rho = n >= floor ? Math.min(rmax, Math.max(0, F[p] / Math.max(n, 1e-9))) : 1;
+    const rho = Math.min(rmax, Math.max(0, (F[p] + c) / (n + c)));
     F[p] = profileAt(prof, dates, H) * rho;
   }
   return { F, k: null, ref: Math.max(0, ra + rg * live.ref.z_kft), profile: true };

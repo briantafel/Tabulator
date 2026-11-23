@@ -16,11 +16,11 @@ const prof = JSON.parse(readFileSync(FX + "prof.json", "utf8"));
 const expP = JSON.parse(readFileSync(FX + "expected-prof.json", "utf8"));
 /* A height-profile map (2026-11-23) whose window sums to `cm` at the blend's height: each day cm / n at 8.0 kft,
    rising 40% per 1000 ft, never below 0 (what the Python fixture uses, scaled). */
-const P = (dates, cm) => ({ ...live, rho_max: 3, prof: { z_kft: prof.z_kft,
+const P = (dates, cm) => ({ ...live, rho_max: 1.5, rho_c: 0.5, prof: { z_kft: prof.z_kft,
   cm: Object.fromEntries(live.dates.map((d) => [d, prof.z_kft.map((z) => Math.max(0, (dates.includes(d) ? cm / dates.length : 0) * (1 + 0.4 * (z - 8))))])) } });
 
 test("height profile: the app's field equals the Python twin (live_grid.field_prof) on the same bytes", () => {
-  const r = computeField({ ...live, rho_max: 3, prof }, grids, expP.dates, expP.totalCm);
+  const r = computeField({ ...live, rho_max: 1.5, rho_c: 0.5, prof }, grids, expP.dates, expP.totalCm);
   assert.ok(!r.hidden && r.profile, r.hidden);
   let worst = 0;
   for (let i = 0; i < expP.F.length; i++) worst = Math.max(worst, Math.abs(r.F[i] - expP.F[i]));
@@ -28,7 +28,7 @@ test("height profile: the app's field equals the Python twin (live_grid.field_pr
 });
 
 test("height profile: hidden when the sheet is not the number the map was drawn for, or a day has no profile", () => {
-  const L = { ...live, rho_max: 3, prof };
+  const L = { ...live, rho_max: 1.5, rho_c: 0.5, prof };
   assert.ok(computeField(L, grids, expP.dates, expP.totalCm + 1).hidden);
   assert.ok(computeField({ ...L, prof: { ...prof, cm: { "2026-11-23": prof.cm["2026-11-23"] } } }, grids, expP.dates, 20).hidden);
 });

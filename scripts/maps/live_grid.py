@@ -130,10 +130,10 @@ def field(H, A, G, idx, sigma, k):
     return gaussian_filter(f, sigma, mode="reflect", truncate=4.0) * k
 
 
-def field_prof(H, A, G, idx, sigma, ref, prof, dates, floor_in, rho_max):
+def field_prof(H, A, G, idx, sigma, ref, prof, dates, rho_c, rho_max):
     """Height-profile anchoring (anchor.py, 2026-11-23), numpy twin of terrainField.js computeField:
-    F = S(H) x clamp(N / n(H), 0, rho_max), N = blurred NBM field, n(H) = NBM's own line at the blend point,
-    rho = 1 where n(H) < floor_in; S = the window's sum of the blend's per-height snow (in)."""
+    F = S(H) x clamp((N + c) / (n(H) + c), 0, rho_max), N = blurred NBM field, n(H) = NBM's own line at the blend
+    point; S = the window's sum of the blend's per-height snow (in)."""
     from scipy.ndimage import gaussian_filter
     gh, gw = H.shape
     idx = list(idx)
@@ -143,7 +143,7 @@ def field_prof(H, A, G, idx, sigma, ref, prof, dates, floor_in, rho_max):
     ra = sum(ref["a"][i] for i in idx)
     rg = sum(ref["g"][i] for i in idx)
     n = np.maximum(0.0, ra + rg * H)
-    rho = np.where(n >= floor_in, np.clip(N / np.maximum(n, 1e-9), 0.0, rho_max), 1.0)
+    rho = np.clip((N + rho_c) / (n + rho_c), 0.0, rho_max)
     S_in = np.sum([prof["cm"][dates[i]] for i in idx], axis=0) / 2.54
     return np.interp(H, prof["z_kft"], S_in) * rho
 

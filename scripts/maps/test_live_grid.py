@@ -59,12 +59,14 @@ PROF_Z = [round(6.0 + 0.1 * i, 1) for i in range(31)]          # 6.0 .. 9.0 kft,
 PROF = {"z_kft": PROF_Z, "cm": {d: [round(max(0.0, c * (1 + 0.4 * (z - 8.0))), 3) for z in PROF_Z]
                                 for d, c in zip(dates, (5.0, 12.0, 8.0))}}
 REF = {"z_kft": 8.0, "a": [-3.0, -1.5, 0.0], "g": [0.8, 1.1, 1.4]}
-fp = LG.field_prof(H2, A2, G2, [1, 2], 0.8, REF, PROF, dates, 0.1, 3.0)
+fp = LG.field_prof(H2, A2, G2, [1, 2], 0.8, REF, PROF, dates, 0.5, 1.5)
 assert (fp >= 0).all()
 S = np.interp(H2, PROF_Z, np.sum([PROF["cm"][d] for d in dates[1:]], axis=0) / 2.54)
-assert (fp <= 3.0 * S + 1e-9).all()
-flat = LG.field_prof(H2, A2, G2, [1, 2], 0.8, {**REF, "a": [-50, -50, -50]}, PROF, dates, 0.1, 3.0)
-assert np.allclose(flat, S), "no NBM line at a height: the blend's own amount, no pattern"
+assert (fp <= 1.5 * S + 1e-9).all()
+same = LG.field_prof(np.full_like(H2, 8.0), [REF["a"][i] + 0 * A2[i] for i in range(3)], [REF["g"][i] + 0 * G2[i] for i in range(3)],
+                     [1, 2], 0.8, REF, PROF, dates, 0.5, 1.5)
+assert np.allclose(same, S[0, 0] * 0 + np.interp(8.0, PROF_Z, np.sum([PROF["cm"][d] for d in dates[1:]], axis=0) / 2.54)), \
+    "NBM equal to its own line everywhere: exactly the blend's amount (the sheet total at the blend's height)"
 
 # 4. missing values refuse loudly (missing is not zero)
 try:
@@ -91,7 +93,7 @@ if "--fixture" in sys.argv:
     (out / "live.json").write_text(json.dumps(meta, indent=1))
     (out / "expected.json").write_text(json.dumps({"dates": [dates[i] for i in idx], "totalCm": total, "k": k,
                                                   "F": [round(float(x), 9) for x in twin.ravel()]}))
-    tp = LG.field_prof(H2, A2, G2, idx, meta["sigma"], meta["ref"], PROF, dates, meta["floor_in"], 3.0)
+    tp = LG.field_prof(H2, A2, G2, idx, meta["sigma"], meta["ref"], PROF, dates, 0.5, 1.5)
     (out / "prof.json").write_text(json.dumps(PROF))
     (out / "expected-prof.json").write_text(json.dumps({"dates": [dates[i] for i in idx], "totalCm": 20.0,
                                                        "F": [round(float(x), 9) for x in tp.ravel()]}))
