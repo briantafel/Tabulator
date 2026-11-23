@@ -1,0 +1,19 @@
+name: Probe wind stations (one-off, read-only, no app change)
+
+# W0 of claude/wind-model-plan-2026-11-23.md. Lists the public stations that report wind near the app's resorts
+# (ECCC SWOB-ML for Canada, NWS observation stations for the US) and checks how far back ECCC keeps data.
+# Writes only to the run summary. Started by hand.
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+concurrency:
+  group: wind-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/archive/wind-probe.js
