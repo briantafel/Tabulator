@@ -760,15 +760,15 @@
   },
   "2026-11-22": {
    "palisades": 3,
-   "heavenly": 0,
-   "kirkwood": 1,
-   "sugar-bowl": 3,
+   "heavenly": 1,
+   "kirkwood": 2,
+   "sugar-bowl": 2,
    "northstar": 2,
-   "mt-rose": 1,
-   "sierra-at-tahoe": 1,
-   "homewood": 2,
-   "mammoth": 0,
-   "mt-baker": 1,
+   "mt-rose": 0,
+   "sierra-at-tahoe": 2,
+   "homewood": 3,
+   "mammoth": 1,
+   "mt-baker": 2,
    "crystal": 2,
    "stevens-pass": 0,
    "mt-bachelor": 0,
@@ -798,16 +798,16 @@
    "kicking-horse": 1,
    "fernie": 2,
    "red-mountain": 1,
-   "whitewater": 2,
+   "whitewater": 1,
    "panorama": 0,
    "kimberley": 0,
    "big-white": 0,
    "silverstar": 0,
    "sun-peaks": 0,
-   "sunshine": 0,
+   "sunshine": 1,
    "norquay": 0,
    "marmot": 0,
-   "cypress": 0,
+   "cypress": 1,
    "whiteface": 0,
    "stowe": 0,
    "killington": 0,
@@ -4508,22 +4508,22 @@
   "2026-11-22": {
    "palisades": {
     "am": 1,
-    "pm": 2,
-    "night": 0
+    "pm": 1,
+    "night": 1
    },
    "heavenly": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "kirkwood": {
     "am": 0,
-    "pm": 1,
-    "night": 0
+    "pm": 0,
+    "night": 2
    },
    "sugar-bowl": {
     "am": 1,
-    "pm": 2,
+    "pm": 1,
     "night": 0
    },
    "northstar": {
@@ -4533,28 +4533,28 @@
    },
    "mt-rose": {
     "am": 0,
-    "pm": 1,
+    "pm": 0,
     "night": 0
    },
    "sierra-at-tahoe": {
     "am": 0,
     "pm": 1,
-    "night": 0
+    "night": 1
    },
    "homewood": {
     "am": 1,
     "pm": 1,
-    "night": 0
+    "night": 1
    },
    "mammoth": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "mt-baker": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 2
    },
    "crystal": {
     "am": 1,
@@ -4704,7 +4704,7 @@
    "whitewater": {
     "am": 0,
     "pm": 1,
-    "night": 1
+    "night": 0
    },
    "panorama": {
     "am": 0,
@@ -4734,7 +4734,7 @@
    "sunshine": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "norquay": {
     "am": 0,
@@ -4749,7 +4749,7 @@
    "cypress": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "whiteface": {
     "am": 0,
@@ -4793,5 +4793,5 @@
    }
   }
  },
- "updatedAt": "2026-11-22T21:07:49.081Z"
+ "updatedAt": "2026-11-23T01:39:51.451Z"
 }

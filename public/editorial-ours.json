@@ -1,105 +1,105 @@
 {
- "generatedAt": "2026-11-22T21:17:43.817Z",
- "forecastGeneratedAt": "2026-11-22T21:07:49.081Z",
+ "generatedAt": "2026-11-23T01:46:46.907Z",
+ "forecastGeneratedAt": "2026-11-23T01:39:51.451Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-22T21:17:40.937Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-22T21:17:43.817Z",
+ "writtenAt": "2026-11-23T01:46:46.907Z",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-22",
+  "from": "2026-11-23",
   "to": "2026-11-27",
-  "days": 6,
+  "days": 5,
   "toLabel": "Friday Nov 27"
  },
- "overview": "A run of Pacific systems keeps the Coast Mountains and Cascades busy through midweek, with the strongest push arriving Wednesday night into Thursday. The Northeast and northern Rockies look colder and drier early, then pick up snow showers and a rainstorm around Thanksgiving.",
+ "overview": "A run of Pacific systems keeps the Coast Mountains and Cascades in rain and snow through midweek. A cold front brings snow to the Rockies and Northeast before a widespread rain and snow event hits the East and Rockies over Thanksgiving and Friday.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "A series of Pacific systems keeps snow falling on the Coast Mountains through midweek, with snow levels climbing as the air warms. Whistler's biggest day is Tuesday, when it is due 26\" of snow, and its total for the window is 79\". Expect rain mixing in from Wednesday, and Cypress Mountain's totals run lower because it sits farther south.",
-   "basis": "1a92nwc"
+   "text": "Snow stays on the higher ground while rain falls lower down. Whistler's best day is Tuesday, when 26\" is possible. Warmer rain and wet snow follow Wednesday and Thursday, so expect heavy, wet conditions and little fresh powder at the base.",
+   "basis": "7s9ddc"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A low offshore keeps showers going over Western Washington, with heavier mountain snow in the Olympics and Cascades early in the week. A stronger front arrives Tuesday into Wednesday and brings the most snow, with Mt. Baker's biggest day on Thursday, when 22\" is due. Snow levels stay low enough for mountain snow, but expect rain at lower elevations.",
-   "basis": "1ixgrjh"
+   "text": "Strong southeast winds from the Pacific pair with systems that bring rain and mountain snow. Mt. Baker's total is 61\", with its best day on Thursday, when 22\" is possible. Crystal and Stevens Pass see lighter totals, and snow levels rise at times, so conditions change quickly.",
+   "basis": "hnw6vg"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "A sharp cold front brings wind and a cold, dry spell Monday into Wednesday, so snow is unlikely before Thanksgiving. A rainstorm then tracks up the East Coast from late Thanksgiving through Friday, with a wintry mix possible on the front edge. Whiteface and Blue Mountain both look to see their biggest day Friday, while Killington sees freezing rain before turning to snow.",
+   "text": "A sharp cold front brings blustery, dry weather Monday into Wednesday, with highs only in the 30s on Tuesday. Then a rainstorm arrives Thanksgiving night and Friday, with some wintry mix on the front side. Whiteface's best day is Friday, when 17\" is possible. Killington sees freezing rain at times.",
    "basis": "1n6ir7r"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A passing trough brings light snow showers to western Wyoming Monday, with little accumulation. Tuesday and Wednesday are drier before a more active pattern starts on Thanksgiving. Jackson Hole's biggest day is Friday, and Sun Valley's totals stay small. Forecasters describe mountain snow with no impactful weather expected.",
-   "basis": "quiuru"
+   "text": "Light snow showers linger in western Wyoming on Monday, then drier, breezy weather takes over Tuesday and Wednesday. Stronger winds and more active weather arrive Thanksgiving and Friday. Jackson Hole's best day is Friday, when 14\" is possible. The NWS in Riverton says snow shower chances continue into the weekend.",
+   "basis": "jtf8i6"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Snow and rain move in around Thursday as a weak system crosses the region. Whitewater's biggest day falls on Thursday, and its total for the window is 15\". Revelstoke sees mostly flurries early in the week before snow and rain on Wednesday and Thursday.",
-   "basis": "1nf10yd"
+   "text": "Light snow and rain show up through midweek, with the most snow arriving Thursday. Whitewater's best day is Thursday, when 9\" is possible. Revelstoke sees a similar pattern, with mixed snow and rain Thursday night.",
+   "basis": "1fcizal"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A quick system brings light snow to the higher terrain Monday afternoon into Tuesday morning, with the best chance over the San Juans and the Gore and Mosquito ranges. Forecasters expect no major travel impacts over Thanksgiving. Steamboat's biggest day is Friday, when 12\" is due, and Breckenridge sees snow showers Friday.",
+   "text": "A fast system brings a mix of rain and snow Monday, with the heaviest mountain snow in the San Juans. Midweek stays dry before another weak system arrives Thanksgiving. Steamboat's best day is Friday, when 12\" is possible. Breckenridge sees snow showers Monday and again on Friday.",
    "basis": "1u62qv2"
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Mostly flurries and showers early in the week give way to a rainy stretch from Wednesday into Friday. Big White's biggest day is Thursday, and its total for the window is 10\". Sun Peaks and SilverStar see only light amounts.",
-   "basis": "14fsolp"
+   "text": "Showers and periods of rain dominate the week, with little that falls as snow. Big White's best day is Thursday, when 3\" is possible. Conditions stay mostly wet, so mountain snowpack gains are slow.",
+   "basis": "19p4efz"
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A fast trough brings only light snow showers to the higher terrain Monday, with little accumulation. Tuesday through Wednesday stays quiet and dry, and holiday travel looks mostly clear. Powder Mountain's biggest day is Friday, when 9\" is due, but forecasters have low confidence in the weekend pattern.",
+   "text": "A weak trough brings only a small chance of snow Monday, with little accumulation. Tuesday through Wednesday stay quiet. Snow chances return Thanksgiving and Friday, mainly in northern Utah. Powder Mountain's best day is Friday, when 9\" is possible. Brighton sees limited totals.",
    "basis": "1uaiz6y"
   }
  ],
  "ahead": {
-  "text": "The Weather Prediction Center expects the Thanksgiving East Coast storm to track closer to the coast, bringing heavy rain, strong winds and high surf. Its discussion also says the next Pacific system reaches the West Coast around the weekend of Nov 28-29, with uncertainty over how deep it is.",
+  "text": "The Weather Prediction Center says a coastal storm could bring heavy rain and high wind to the East Coast over Thanksgiving. The Climate Prediction Center expects an active pattern through Monday, Nov 30.",
   "sources": [
    {
     "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-22T18:23:00+00:00",
+    "issuedAt": "2026-11-23T00:02:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
    },
    {
     "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-22T19:55:00+00:00",
+    "issuedAt": "2026-11-22T23:39:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
    },
    {
     "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-22T21:01:00+00:00",
+    "issuedAt": "2026-11-23T00:36:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
    },
    {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-22T19:40:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
+    "name": "NWS TFX Area Forecast Discussion",
+    "issuedAt": "2026-11-22T23:55:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
    },
    {
     "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-22T17:59:00+00:00",
+    "issuedAt": "2026-11-22T23:56:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
    },
    {
     "name": "NWS BOU Area Forecast Discussion",
-    "issuedAt": "2026-11-22T20:25:00+00:00",
+    "issuedAt": "2026-11-22T23:56:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=BOU&issuedby=BOU&product=AFD"
    },
    {
     "name": "NWS SLC Area Forecast Discussion",
-    "issuedAt": "2026-11-22T18:42:00+00:00",
+    "issuedAt": "2026-11-23T01:35:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SLC&issuedby=SLC&product=AFD"
    },
    {
@@ -121,44 +121,44 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-22T21:14:14.513Z"
+   "issuedAt": "2026-11-23T01:46:35.402Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T18:23:00+00:00"
+   "issuedAt": "2026-11-23T00:02:00+00:00"
   },
   {
    "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-22T19:55:00+00:00"
+   "issuedAt": "2026-11-22T23:39:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T21:01:00+00:00"
+   "issuedAt": "2026-11-23T00:36:00+00:00"
   },
   {
-   "name": "NWS PIH Area Forecast Discussion",
-   "issuedAt": "2026-11-22T19:40:00+00:00"
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-22T23:55:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-22T17:59:00+00:00"
+   "issuedAt": "2026-11-22T23:56:00+00:00"
   },
   {
    "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-22T20:25:00+00:00"
+   "issuedAt": "2026-11-22T23:56:00+00:00"
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-22T18:42:00+00:00"
+   "issuedAt": "2026-11-23T01:35:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T21:17:43.817Z"
+   "issuedAt": "2026-11-23T01:46:46.907Z"
   }
  ],
  "api": {
-  "day": "2026-11-22",
-  "calls": 10
+  "day": "2026-11-23",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

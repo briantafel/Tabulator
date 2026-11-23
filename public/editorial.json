@@ -1,83 +1,73 @@
 {
- "generatedAt": "2026-11-22T21:14:14.817Z",
- "forecastGeneratedAt": "2026-11-22T21:07:49.081Z",
+ "generatedAt": "2026-11-23T01:46:35.609Z",
+ "forecastGeneratedAt": "2026-11-23T01:39:51.451Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-22T21:14:14.817Z",
+ "writtenAt": "2026-11-23T01:46:35.609Z",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-22",
+  "from": "2026-11-23",
   "to": "2026-11-27",
-  "days": 6,
+  "days": 5,
   "toLabel": "Friday Nov 27"
  },
- "overview": "A string of Pacific systems keeps the Coast Mountains and Cascades wet through midweek, with the strongest front Wednesday. The Rockies get weaker, drier spells between cold, cloudy, snowy periods, with more active weather around Thanksgiving.",
+ "overview": "A stubborn low off the coast brings rain and mountain snow to the Pacific Northwest, then a string of wet frontal systems takes over the week. Wet weather favors the Coast Mountains and Cascades, while the northern Rockies stay drier until a stronger system arrives around Thanksgiving.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "A wave of steadier precipitation arrives Monday, then a stronger front Tuesday into Wednesday. Snow levels run high, so Whistler's snow falls above a rain line. Whistler's best day is Wednesday, with 14 inches, though rain is forecast to mix in as the front arrives. Cypress Mountain gets mostly rain and showers, with 6 inches Monday.",
-   "basis": "nvsuy8"
+   "text": "Rain is the main story here, with snow mostly confined to higher ground. Warm air keeps the snow level high, so the mountains see rain until a cooler spell by midweek. Whistler's best snow falls Tuesday and Wednesday, when wet snow and rain mix at the top. Expect heavy, wet snow rather than powder at mid-mountain elevations.",
+   "basis": "hdj3af"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A low offshore keeps showers going, then a stronger front moves in Tuesday into Wednesday. Snow levels sit around 3,000 to 3,500 feet, so the snow favors the higher slopes. Mt. Baker's biggest day is Wednesday, with 8 inches, and rain mixes in. The NWS is calling for more at Crystal Mountain, 12 to 28 inches from Sunday through Friday night.",
-   "basis": "17348hs"
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Mostly cloudy and cold with flurries through Tuesday, then a mix of sun and cloud. Snow returns Wednesday night and Thursday, with a mix of snow and rain. Revelstoke's best day is Thursday, with 4 inches, while Whitewater's is Thursday with 5 inches.",
-   "basis": "1fhdc"
+   "text": "A series of Pacific systems pushes through with widespread precipitation and gusty southeast winds. Snow levels rise Monday and Tuesday, so the higher passes such as Stevens get the snow while lower slopes get rain. The Cascade snowpack picks up most heavily Wednesday, when cold air returns behind the front, and Mt. Baker and Crystal Mountain see the best of it. Wind chill and gusts near 40 mph make the upper mountain cold and rough.",
+   "basis": "1160tx2"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Cold and cloudy most of the week, with a chance of light snow showers Monday. Tuesday and Wednesday look drier before the next system arrives for Thanksgiving. Jackson Hole's best day is Friday, with 4 inches, and snow showers are likely through Thursday night.",
-   "basis": "4j1jy8"
+   "text": "Monday brings only a passing chance of light snow showers in western Wyoming. Tuesday and Wednesday turn drier as a ridge builds, with breezy conditions across Montana. The pattern turns more active from Thanksgiving onward, with snow showers at Jackson Hole and Grand Targhee and stronger winds aloft through Friday. Big Sky sees only light amounts.",
+   "basis": "20zbhh"
   },
   {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Dry and cool Sunday and Tuesday through Wednesday, with a quick system bringing rain and snow to the higher terrain Monday. Telluride's best day is Monday, with 3 inches. Steamboat's best day is Friday, with 6 inches from snow showers, and the forecasters say Thanksgiving week may stay active but details are still uncertain.",
-   "basis": "armcua"
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Light flurries and mixed precipitation are the main weather here this week. Snow levels stay low, so Thursday brings a mix of snow and rain. Friday and Friday night turn to steady rain, which will limit the snowfall at Revelstoke and Whitewater. Temperatures stay near freezing, so expect wet snow at best.",
+   "basis": "120598d"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-22T21:07:49.081Z"
+   "issuedAt": "2026-11-23T01:39:51.451Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-22T21:14:14.513Z"
+   "issuedAt": "2026-11-23T01:46:35.402Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T18:23:00+00:00"
+   "issuedAt": "2026-11-23T00:02:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-22T21:01:00+00:00"
+   "issuedAt": "2026-11-23T00:36:00+00:00"
   },
   {
-   "name": "NWS PIH Area Forecast Discussion",
-   "issuedAt": "2026-11-22T19:40:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-22T17:59:00+00:00"
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-22T23:55:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-22T21:14:14.817Z"
+   "issuedAt": "2026-11-23T01:46:35.609Z"
   }
  ],
  "api": {
-  "day": "2026-11-22",
-  "calls": 8
+  "day": "2026-11-23",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
