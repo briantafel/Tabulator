@@ -440,10 +440,10 @@ async function ecccStations(kind) {
  *  and find which unit makes them agree. Aborts the source when it matches no known unit. */
 async function checkHadsUnit(stations, notes) {
   const end = Date.now() - 3600e3, start = end - 72 * 3600e3;
-  const iso = (t) => new Date(t).toISOString().slice(0, 16) + "Z";
+  const iso = (t) => new Date(t).toISOString().slice(0, 16) + "Z", isoS = (t) => new Date(t).toISOString().slice(0, 19) + "Z";
   const ratios = [], per = [];
   for (const st of stations.filter((s) => ["HLLC1", "TADC1", "KNXN2", "RWBC1", "HVSC1", "STUC1", "OWNC1", "KCFW1"].includes(s.id)).slice(0, 5)) {
-    const nws = await getJson(`https://api.weather.gov/stations/${st.id}/observations?start=${iso(start)}&end=${iso(end)}&limit=200`, { accept: "application/geo+json", okEmpty404: true, tries: 2 });
+    const nws = await getJson(`https://api.weather.gov/stations/${st.id}/observations?start=${isoS(start)}&end=${isoS(end)}&limit=200`, { accept: "application/geo+json", okEmpty404: true, tries: 2 });
     const h = parseHadsRaw(await get(`https://mesonet.agron.iastate.edu/cgi-bin/request/hads.py?stations=${st.id}&sts=${iso(start)}&ets=${iso(end)}&what=txt&delim=comma`)).records.filter((r) => r.speed != null && r.speed >= 1);
     let n = 0;
     for (const f of nws?.features ?? []) {
@@ -535,7 +535,7 @@ async function main() {
   if (only.length) stations = stations.filter((s) => only.includes(s.id) || only.includes(s.station_id));
   prep.notes.forEach((n) => log(`  note: ${n}`));
   if (!stations.length) throw new Error("no stations to fetch");
-  log(`${stations.length} stations: ${stations.map((s) => `${s.id}(${s.elev ?? "?"}m)`).join(" ")}`);
+  log(`${stations.length} stations: ${stations.map((s) => `${s.id}(${s.elev ?? "?"}m ${s.lat ?? "?"},${s.lon ?? "?"})`).join(" ")}`);
   ctx.doneSet = dry ? new Set() : doneKeys(`wind-${source}-`);
   if (!only.length || dry) await mappingChunk(ad, stations, ctx);
 
