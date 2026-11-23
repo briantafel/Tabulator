@@ -88,6 +88,21 @@ def main():
         except SystemExit as e:
             assert "no open-meteo-previous-runs parquet" in str(e)
 
+    # 6b. a resort the backfill should cover but that has no live rows at all is reported per model, not skipped
+    files = {f"alta-{m}": live("alta", m, y) for m in pf.MODELS}
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, rows in files.items():
+            write(tmp, name, rows)
+        con, _ = pf.load(tmp)
+        _, _, problems = pf.check(con, TODAY, expected={"alta", "new-resort"})
+    assert [x for x in problems if x.startswith("new-resort")] == [f"new-resort / {m}: no live rows" for m in pf.MODELS], problems
+    assert not [x for x in problems if x.startswith("alta")]
+    with tempfile.TemporaryDirectory() as tmp:
+        rj = Path(tmp) / "r.json"
+        rj.write_text('{"resorts":[{"id":"a","nws":[40,-111]},{"id":"b","latlon":[45,-110]},{"id":"c","latlon":[45,-110],"archiveOnly":true},'
+                      '{"id":"d","latlon":[-33,-70]},{"id":"e"}]}')
+        assert pf.expected_resorts(rj) == {"a", "b"}   # not archive-only, has coordinates, northern hemisphere
+
     # 7. main() exits 1 on a problem and 0 when clean; the report names the damage
     with tempfile.TemporaryDirectory() as tmp:
         for r in ("alta",):

@@ -60,6 +60,7 @@ import * as om from "./previous-runs.js";
 import * as cocorahs from "./cocorahs.js";
 import * as snodas from "./snodas.js";
 import { groupOf, makeBreakers } from "./breakers.js";
+import { freshestFirst, liveShortfall, runPool } from "./live-pieces.js";
 
 const root = new URL("../..", import.meta.url).pathname;
 const work = process.argv[2];
@@ -89,7 +90,12 @@ const OM_SPACING_MS = 5000;   // each request already takes ~50 s end to end
 const LIVE_SEASON_START = "2026-11-01";
 const OM_LIVE_BUDGET = Number(process.env.OM_LIVE_BUDGET ?? 900);
 const OM_LIVE_SPACING_MS = 2000; // a one-week request is small
-const TIME_LIMIT_MS = 95 * 60e3;
+/* 2026-11-23: four live pieces at a time. A third of the runner's Open-Meteo requests were hitting connect timeouts
+   (~100 s each with the old retry waits), so one at a time 342 pieces did not fit 95 minutes and the GEM ones, last in
+   the queue, were never fetched (live-pieces.js has the whole story). Spacing is per worker: ~2 requests a second in
+   all, ~190 calls a minute against a limit of 600. */
+const OM_LIVE_CONCURRENCY = Number(process.env.OM_LIVE_CONCURRENCY ?? 4);
+const TIME_LIMIT_MS = Number(process.env.BACKFILL_TIME_LIMIT_MIN ?? 95) * 60e3; // env: tests only
 const SNOTEL = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1";
 const started = Date.now();
 const log = (s) => console.error(s);
@@ -405,7 +411,9 @@ async function runPiece(p) {
     // Open-Meteo, so it cost nothing against the budget; the GFS pieces on
     // 2026-10-30 failed exactly this way (UND_ERR_CONNECT_TIMEOUT) between
     // ECMWF pieces that succeeded. Waits 30 s, then 60 s.
-    res = await fetchText(`${om.URL_BASE}?${q}`, { retries: 2, delayMs: 15000 });
+    // History requests are big (~50 s) so they keep the long waits. A live piece is one week of 16 series: it answers in
+    // about a second, so a dead attempt is cut at 25 s and retried after 2, 4, 6, 8 s (it cost ~100 s per piece before).
+    res = await fetchText(`${om.URL_BASE}?${q}`, p.live ? { retries: 4, delayMs: 2000, timeoutMs: Number(process.env.OM_LIVE_TIMEOUT_MS ?? 25000) } : { retries: 2, delayMs: 15000 });
     if (!om.unknownModel(res.status, res.text)) break;
     log(`  · ${p.key}: Open-Meteo does not know the model name "${id}"`);
   }
@@ -431,19 +439,24 @@ let spent = 0, liveSpent = 0, liveOk = 0, omStop = null, ok = 0, rowsOut = 0;
 const breakers = makeBreakers();
 const failed = [];
 const skipped = new Map(); // group → pieces not tried this run
-for (const p of pending) {
-  if (Date.now() - started > TIME_LIMIT_MS) { log("time limit for this run reached — the rest continues next run"); break; }
+let timeUp = false;
+async function handle(p) {
+  if (timeUp || Date.now() - started > TIME_LIMIT_MS) {
+    if (!timeUp) log("time limit for this run reached — the rest continues next run");
+    timeUp = true;
+    return;
+  }
   const g = groupOf(p);
-  if (breakers.isOpen(g)) { skipped.set(g, (skipped.get(g) ?? 0) + 1); continue; }
+  if (breakers.isOpen(g)) { skipped.set(g, (skipped.get(g) ?? 0) + 1); return; }
   if (p.kind === "om" && p.live) {
-    if (omStop) continue;
-    if (liveSpent + p.weight > OM_LIVE_BUDGET) { skipped.set("om-live (budget)", (skipped.get("om-live (budget)") ?? 0) + 1); continue; }
+    if (omStop) return;
+    if (liveSpent + p.weight > OM_LIVE_BUDGET) { skipped.set("om-live (budget)", (skipped.get("om-live (budget)") ?? 0) + 1); return; }
     liveSpent += p.weight;
   } else if (p.kind === "om") {
-    if (omStop) continue;
-    if (OM_DAILY_BUDGET === 0) { omStop = "paused (OM_DAILY_BUDGET is 0; see claude/lean-data-plan.md)"; continue; }
-    if (p.resort?.archiveOnly && !elevations[p.resort.id]) { log(`  · ${p.key}: waiting for a Snow-Forecast elevation`); continue; }
-    if (spent + p.weight > OM_DAILY_BUDGET) { omStop = `today's budget of ${OM_DAILY_BUDGET} calls is spent`; continue; }
+    if (omStop) return;
+    if (OM_DAILY_BUDGET === 0) { omStop = "paused (OM_DAILY_BUDGET is 0; see claude/lean-data-plan.md)"; return; }
+    if (p.resort?.archiveOnly && !elevations[p.resort.id]) { log(`  · ${p.key}: waiting for a Snow-Forecast elevation`); return; }
+    if (spent + p.weight > OM_DAILY_BUDGET) { omStop = `today's budget of ${OM_DAILY_BUDGET} calls is spent`; return; }
     spent += p.weight;
   }
   try {
@@ -454,7 +467,7 @@ for (const p of pending) {
     log(`  ✓ ${p.key}: ${n} rows`);
   } catch (e) {
     const rateLimited = e.rateLimited || /HTTP 429/.test(e.message);
-    if (p.kind === "om" && rateLimited) { omStop = "Open-Meteo answered with a rate limit"; log(`  · ${p.key}: rate limited — Open-Meteo paused until the next run`); continue; }
+    if (p.kind === "om" && rateLimited) { omStop = "Open-Meteo answered with a rate limit"; log(`  · ${p.key}: rate limited — Open-Meteo paused until the next run`); return; }
     failed.push(`${p.key}: ${e.message}`);
     log(`  ✗ ${p.key} — ${e.message}`);
     if (e.unknownModel) {
@@ -466,13 +479,17 @@ for (const p of pending) {
   }
   if (p.kind === "om") await sleep(p.live ? OM_LIVE_SPACING_MS : OM_SPACING_MS);
 }
+// This season's Previous Runs first, four at a time, newest window first; then everything else one by one, as before.
+const isLiveOm = (p) => p.kind === "om" && p.live;
+await runPool(freshestFirst(pending.filter(isLiveOm), om.MODELS), OM_LIVE_CONCURRENCY, handle);
+for (const p of pending.filter((x) => !isLiveOm(x))) await handle(p);
 
 // One more go at pieces that failed on a network fault or a server error,
 // after a pause. Backfill 2026-11-20 went red over 4 Open-Meteo connect
 // timeouts and one R2 500 out of 171 pieces — blips, not broken sources.
 // Anything that fails again still fails the run, and every recovery is
 // listed in the report, so nothing is hidden.
-const transient = (m) => /UND_ERR|ECONNRESET|ETIMEDOUT|EAI_AGAIN|fetch failed|HTTP 5\d\d|INTERNAL_ERROR|internal server error/i.test(m);
+const transient = (m) => /UND_ERR|ECONNRESET|ETIMEDOUT|EAI_AGAIN|fetch failed|aborted due to timeout|TimeoutError|HTTP 5\d\d|INTERNAL_ERROR|internal server error/i.test(m);
 const recovered = [];
 const retryable = failed.filter((f) => transient(f)).slice(0, 10); // a handful of blips, not an outage
 if (retryable.length && Date.now() - started < TIME_LIMIT_MS - 5 * 60_000) {
@@ -496,6 +513,11 @@ if (retryable.length && Date.now() - started < TIME_LIMIT_MS - 5 * 60_000) {
   }
 }
 
+// Loud (2026-11-23): a run that stopped on its time limit, the budget, a rate limit or a breaker with live pieces still
+// undone used to end GREEN, and the archive's live Previous Runs drifted two days behind unseen. Any live piece queued
+// for this run and not fetched is a failure, whatever the reason.
+const liveQueued = pending.filter(isLiveOm).length;
+const liveShort = liveShortfall(liveQueued, liveOk);
 const history = pieces.filter((p) => !p.live);
 const nowDone = history.filter((p) => done.has(doneKeyOf(p))).length + (ok - liveOk);
 const liveDue = livePieces.filter((p) => !done.has(doneKeyOf(p))).length;
@@ -511,6 +533,12 @@ if (off.length) {
   for (const [g, why] of off) lines.push(`  - ${g}: ${why}; ${skipped.get(g) ?? 0} piece(s) not tried`);
 }
 if (recovered.length) lines.push("", `${recovered.length} piece(s) failed once and succeeded on a second try: ${recovered.join(", ")}`);
+if (liveShort > 0) {
+  const why = [timeUp && "the time limit was reached", omStop && `Open-Meteo stopped: ${omStop}`, skipped.get("om-live (budget)") && "the live call budget ran out",
+    off.length && "a source was switched off", failed.some((f) => f.startsWith("om-live")) && "pieces failed (listed below)"].filter(Boolean).join("; ") || "unknown";
+  lines.push("", `LIVE PREVIOUS RUNS BEHIND: ${liveShort} of ${liveQueued} week pieces were NOT fetched this run (${why}). ` +
+    `The archive's live rows for those resorts and models stop before yesterday; scripts/archive/previous_runs_freshness.py says which.`);
+}
 if (failed.length) {
   lines.push("", `${failed.length} piece(s) failed and will be retried next run:`);
   failed.forEach((f) => lines.push(`  - ${f}`));
@@ -524,4 +552,4 @@ mkdirSync(work, { recursive: true });
 writeFileSync(join(work, "report.md"), report);
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Backfill\n\n${report}`);
 
-if (failed.length) process.exit(1);
+if (failed.length || liveShort > 0) process.exit(1);

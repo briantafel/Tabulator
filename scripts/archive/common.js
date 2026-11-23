@@ -31,13 +31,15 @@ export const COLUMNS = [
  *  A 4xx other than 429 is returned at once, unretried, with its body — the
  *  body is usually the source saying exactly what it rejected. A 429 (rate
  *  limit) waits at least a minute before trying again. */
-export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {}, retry429 = true } = {}) {
+export async function fetchText(url, { retries = 2, delayMs = 2000, headers = {}, retry429 = true, timeoutMs = 0 } = {}) {
   let lastErr, wait = 0;
   for (let attempt = 0; attempt <= retries; attempt++) {
     if (attempt) await sleep(Math.max(wait, delayMs * (attempt + 1)));
     wait = 0;
     try {
-      const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "en", ...headers } });
+      // timeoutMs (2026-11-23): optional cap on ONE attempt, connect through body. Without it a stalled connection waits
+      // for undici's own timeouts and the attempt costs ~10 s or more; the live Previous Runs pieces ask for 25 s.
+      const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "en", ...headers }, ...(timeoutMs ? { signal: AbortSignal.timeout(timeoutMs) } : {}) });
       const text = await res.text();
       if (res.status >= 400 && res.status < 500 && res.status !== 429) return { status: res.status, text };
       if (res.status === 429) {

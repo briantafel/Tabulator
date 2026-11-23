@@ -69,6 +69,32 @@ jobs:
           REFILL_RESORTS: ${{ inputs.resorts }}
         run: node scripts/archive/backfill-runner.js work
 
+      # Loud (2026-11-23, plan-near-term-models step 0): after the nightly pass every app resort x model must hold this
+      # season's Previous Runs up to yesterday. The runner itself now fails when it leaves live pieces undone; this
+      # reads the archive, so a gap from ANY cause (a skipped night, a model that never arrives, a new resort with no
+      # rows) turns the run red and opens the issue below. Skipped for hand-started runs that name a piece or resorts.
+      - name: Is this season's Previous Runs archive current?
+        if: always() && inputs.only == '' && inputs.resorts == ''
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          for m in $(date -u +%Y-%m) $(date -u -d "-1 month" +%Y-%m); do
+            aws s3 sync "s3://$R2_BUCKET/archive/source=open-meteo-previous-runs/month=$m/" "archive/source=open-meteo-previous-runs/month=$m/" \
+              --endpoint-url "$ENDPOINT" --only-show-errors
+          done
+          python3 scripts/archive/test_previous_runs_freshness.py
+          mkdir -p work
+          python3 scripts/archive/previous_runs_freshness.py archive --resorts-json src/data/resorts.json | tee work/freshness.md
+          # (the script exits 1 on any problem; tee would hide that without pipefail, which the default bash -e shell lacks)
+          exit "${PIPESTATUS[0]}"
+
       - name: Open an issue on failure
         if: failure()
         uses: actions/github-script@v7
@@ -82,9 +108,10 @@ jobs:
               context.runId,
             ].join("/");
             const fs = require("fs");
-            const report = fs.existsSync("work/report.md")
+            let report = fs.existsSync("work/report.md")
               ? fs.readFileSync("work/report.md", "utf8")
               : "(no report — the run stopped before the backfill finished; see the step log)";
+            if (fs.existsSync("work/freshness.md")) report += "\n" + fs.readFileSync("work/freshness.md", "utf8").slice(0, 6000);
             const body = [
               "Run: " + runUrl,
               "",

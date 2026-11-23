@@ -37,7 +37,19 @@ def load(archive_dir):
     return con, len(files)
 
 
-def check(con, today, max_lag=0, models=MODELS):
+def expected_resorts(path):
+    """The resorts the nightly backfill makes live pieces for (backfill-runner.js livePieces): in the app (not archiveOnly),
+    with coordinates (nws, else latlon) in the northern hemisphere."""
+    import json
+    out = set()
+    for r in json.loads(Path(path).read_text())["resorts"]:
+        c = r.get("nws") or r.get("latlon")
+        if c and not r.get("archiveOnly") and c[0] > 0:
+            out.add(r["id"])
+    return out
+
+
+def check(con, today, max_lag=0, models=MODELS, expected=None):
     """Returns (last_day {(resort, model): date}, per_day {(day, model): n_resorts}, problems [str]).
     Lead 1 precipitation only: the series the blend and the scoring read."""
     expect = today - timedelta(days=1)
@@ -53,8 +65,8 @@ def check(con, today, max_lag=0, models=MODELS):
       WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precip' AND period_label = 'previous_day1'
       GROUP BY ALL""").fetchall()}
     problems = []
-    resorts = sorted({k[0] for k in last})
-    if not resorts:
+    resorts = sorted({k[0] for k in last} | set(expected or ()))
+    if not last:
         problems.append("no live rows at all (run_id bf-om-live-*)")
     for r in resorts:
         for m in models:
@@ -96,10 +108,11 @@ def main(argv=None):
     ap.add_argument("archive")
     ap.add_argument("--today", default=None, help="UTC date to judge against (default: today)")
     ap.add_argument("--max-lag", type=int, default=0, help="days behind yesterday that still pass (default 0)")
+    ap.add_argument("--resorts-json", default=None, help="src/data/resorts.json: every resort the backfill makes live pieces for must have rows")
     a = ap.parse_args(argv)
     today = date.fromisoformat(a.today) if a.today else date.today()
     con, n = load(a.archive)
-    last, per_day, problems = check(con, today, a.max_lag)
+    last, per_day, problems = check(con, today, a.max_lag, expected=expected_resorts(a.resorts_json) if a.resorts_json else None)
     text = report(last, per_day, problems, today, n)
     print(text)
     if os.environ.get("GITHUB_STEP_SUMMARY"):

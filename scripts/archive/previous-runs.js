@@ -10,7 +10,7 @@
 import { toBlocks } from "./ensembles.js";
 
 export const PARSER_VERSION = "om-prev-2"; // 2: + hourly `temp` rows (the lift-hours low, 2026-11-15)
-export const URL_BASE = "https://previous-runs-api.open-meteo.com/v1/forecast";
+export const URL_BASE = process.env.OM_PREVIOUS_RUNS_URL ?? "https://previous-runs-api.open-meteo.com/v1/forecast"; // env: tests only
 /* GEM — Environment Canada's model — added 2026-10-31 for every resort.
    Open-Meteo's docs page names it "GEM Seamless" but shows only
    `cmc_gem_seamless` in an example URL, and the sandbox cannot reach the
