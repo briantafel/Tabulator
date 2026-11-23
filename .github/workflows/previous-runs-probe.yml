@@ -80,3 +80,22 @@ jobs:
           if (process.env.GITHUB_STEP_SUMMARY) (await import("node:fs")).appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Network probe\n\n${line}\n`);
           EOF
           node /tmp/probe.mjs
+      - name: Open-Meteo run metadata (what does meta.json say about each model?)
+        run: |
+          # step 1b: which fields tell us when a model run was INGESTED, not only when it was initialised?
+          for id in ncep_hrrr_conus ncep_gfs025 ncep_gfs013 ecmwf_ifs025 cmc_gem_gdps cmc_gem_rdps cmc_gem_hrdps_continental ncep_nbm_conus; do
+            echo "=== $id"
+            curl -sS -m 20 "https://api.open-meteo.com/data/$id/static/meta.json" | python3 -c "
+          import sys, json, datetime
+          try:
+              j = json.load(sys.stdin)
+          except Exception as e:
+              print('  not JSON:', e); sys.exit()
+          for k, v in sorted(j.items()):
+              if k == 'crs_wkt': continue
+              t = ''
+              if isinstance(v, (int, float)) and 1.5e9 < v < 2.5e9: t = '  = ' + datetime.datetime.fromtimestamp(v, datetime.timezone.utc).strftime('%Y-%m-%d %H:%MZ')
+              print(f'  {k}: {v}{t}')
+          "
+          done
+          date -u +"now: %Y-%m-%d %H:%MZ"
