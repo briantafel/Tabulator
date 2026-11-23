@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -125,6 +126,10 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     has_pv = "parser_version" in [c[0] for c in con.execute("DESCRIBE raw").fetchall()]
     nbm_filter = ("AND NOT (source = 'nbm' AND coalesce(parser_version, '') IN ('nbm-1', 'nbm-2'))"
                   if has_pv else "")
+    # NBM 06z/18z are archived from 2026-11-23 (plan-near-term-models step 3). Until we have scored them as their own cycles,
+    # scoring keeps only 00z/12z so existing NBM scores do not move. NBM_ALL_CYCLES=1 scores every cycle.
+    if os.environ.get("NBM_ALL_CYCLES") != "1":
+        nbm_filter += " AND NOT (source = 'nbm' AND issued_at IS NOT NULL AND hour(issued_at) IN (6, 18))"
     con.execute(f"""
     CREATE TABLE f0 AS
     SELECT source, kind, resort_id, coalesce(tier, 'mid') AS tier, coalesce(station_id, '') AS station_id,

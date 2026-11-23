@@ -23,5 +23,6 @@
   "terrain.map": "on",
   "terrain.zoom": "on",
   "terrain.vectors": "on",
-  "terrain.live": "on"
+  "terrain.live": "on",
+  "terrain.freshCycle": "off"
 }

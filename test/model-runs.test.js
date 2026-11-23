@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compare } from "../scripts/blend/model-runs.js";
+import { compare, stale, META_MODELS } from "../scripts/blend/model-runs.js";
 
 const A = { ecmwf_ifs025: "2026-11-22T00:00:00.000Z", gfs: "2026-11-22T06:00:00.000Z", gem: "2026-11-22T00:00:00.000Z", hrrr: "2026-11-22T09:00:00.000Z" };
 
@@ -21,4 +21,13 @@ test("an unreadable model counts as new, loudly (never a silent skip)", () => {
   const r = compare(A, { ...A, gem: null });
   assert.deepEqual(r.changed, ["gem"]);
   assert.match(r.reasons[0], /could not read/);
+});
+test("stale: a model whose newest run is over 3 days old is named", () => {
+  const now = Date.parse("2026-11-23T12:00:00Z");
+  const r = stale({ ...A, gem: "2026-05-26T12:00:00.000Z", gfs: "2026-11-23T06:00:00.000Z", hrrr: null }, now);
+  assert.ok(r.some((x) => x.startsWith("gem:")));
+  assert.ok(!r.some((x) => x.startsWith("gfs:") || x.startsWith("hrrr:")));
+});
+test("gem watches the live GDPS domain, not the frozen one", () => {
+  assert.equal(META_MODELS.gem, "cmc_gem_gdps_15km");
 });

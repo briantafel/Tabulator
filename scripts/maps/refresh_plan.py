@@ -22,9 +22,8 @@ def floor12(t):
 
 
 def newest_nbm(now, hours=120):
-    """Same rule as sketch.latest_nbm_snow: the newest 00z/12z cycle whose 6 h snow is posted out to `hours`."""
-    for back in range(0, 4):
-        cycle = floor12(now - timedelta(hours=3 + 12 * back))
+    """Same rule as sketch.latest_nbm_snow: the newest cycle (00z/12z; all four with flags.json terrain.freshCycle) whose 6 h snow is posted out to `hours`."""
+    for cycle in nbm.candidate_cycles(now, nbm.six_hourly_map_enabled()):
         leads = nbm.list_leads(cycle)
         if all(l in leads for l in range(6, hours + 1, 6)):
             return cycle

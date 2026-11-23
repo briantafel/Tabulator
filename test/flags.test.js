@@ -155,7 +155,7 @@ test("table integrity: parents exist, come first, no cycles, names unique, no re
   const storage = Object.fromEntries(FLAGS.filter((f) => f.storage).map((f) => [f.key, f.storage]));
   assert.deepEqual(storage, { [P]: "projections", "forecast.snowfall": "snowfall", "forecast.temps": "temps", weatherSource: "wxSource", "season.shapingUp": "season" });
   assert.deepEqual(FLAGS.filter((f) => f.retiring).map((f) => f.key), ["weatherSource"]);
-  assert.equal(FLAGS.length, 12);
+  assert.equal(FLAGS.length, 13);
 });
 
 test("a circular or missing parent is never on", () => {
@@ -216,7 +216,7 @@ test("today's flags.json resolves exactly as the old inline App.jsx logic did", 
       [P]: proj, "forecast.snowfall": snow, "forecast.bands": snow, "forecast.temps": ov.t !== false,
       weatherSource: false, "season.shapingUp": ov.n !== false,
       "radar.peakResort": true, "terrain.map": true, "terrain.zoom": true, "terrain.vectors": true, "terrain.live": true,
-      "forecast.longRange": true,
+      "forecast.longRange": true, "terrain.freshCycle": false,   // off in today's file, and read by scripts/maps only
     };
   };
   for (const p of [null, true, false]) for (const s of [null, true, false]) for (const t of [null, true, false]) for (const n of [null, true, false]) {

@@ -61,9 +61,28 @@ BUCKET_URL = "https://noaa-nbm-grib2-pds.s3.amazonaws.com"
 UA = "tabulator-archive/1.0 (+https://github.com/briantafel/tabulator)"
 PARSER_VERSION = "nbm-3"  # 2: snow level, SLR. 3: odd grid rows read in the right order (nbm-1/2 wrong for ~half the resorts)
 SOURCE = "nbm"
-# 00z/12z: their 6-hour accumulations end on 00/06/12/18 UTC like every other
-# source. The log reports each cycle's last lead (extended range check).
-CYCLES = (0, 12)
+# All four cycles (2026-11-23, plan-near-term-models step 3): 06z and 18z reach f264 like 00z/12z (probe 11-23), and their
+# 6-hour accumulations also end on 00/06/12/18 UTC. A row's cycle is its issued_at (and run_id), so scoring can split by cycle;
+# parser version rules are unchanged. The log reports each cycle's last lead (extended range check).
+CYCLES = (0, 6, 12, 18)
+
+
+def candidate_cycles(now: datetime, six_hourly: bool = False, lag_h: int = 3, span_h: int = 48) -> list[datetime]:
+    """Newest first: cycles at least `lag_h` old, within `span_h`. 00z/12z only unless six_hourly (terrain map switch)."""
+    step = 6 if six_hourly else 12
+    t = (now - timedelta(hours=lag_h)).replace(minute=0, second=0, microsecond=0)
+    t = t.replace(hour=t.hour - t.hour % step)
+    return [t - timedelta(hours=step * i) for i in range(span_h // step)]
+
+
+def six_hourly_map_enabled(flags_path: str | None = None) -> bool:
+    """public/flags.json `terrain.freshCycle` == "on": the terrain map may use 06z/18z NBM cycles. Missing or broken = off."""
+    import json as _json
+    path = flags_path or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "public", "flags.json")
+    try:
+        return _json.load(open(path)).get("terrain.freshCycle") == "on"
+    except Exception:
+        return False
 MAX_KM = 3.0
 BLOCK_H = 6
 TIME_LIMIT_S = 50 * 60

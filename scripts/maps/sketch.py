@@ -217,9 +217,7 @@ def newest_nbm_cycle(hours=120):
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "archive"))
     import nbm
     now = datetime.now(timezone.utc)
-    for back in range(0, 4):
-        c = (now - timedelta(hours=3 + 12 * back)).replace(minute=0, second=0, microsecond=0)
-        cycle = c.replace(hour=0 if c.hour < 12 else 12)
+    for cycle in nbm.candidate_cycles(now, nbm.six_hourly_map_enabled()):
         leads = nbm.list_leads(cycle)
         if all(l in leads for l in range(6, hours + 1, 6)):
             return cycle
@@ -234,9 +232,7 @@ def latest_nbm_snow(hours=120, leads_for=None):
     import nbm
     import eccodes
     now = datetime.now(timezone.utc)
-    for back in range(0, 4):
-        c = (now - timedelta(hours=3 + 12 * back)).replace(minute=0, second=0, microsecond=0)
-        cycle = c.replace(hour=0 if c.hour < 12 else 12)
+    for cycle in nbm.candidate_cycles(now, nbm.six_hourly_map_enabled()):
         leads = nbm.list_leads(cycle)
         need = leads_for(cycle) if leads_for else list(range(6, hours + 1, 6))
         if not all(l in leads for l in need):

@@ -87,6 +87,8 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
  *   terrain.zoom (2026-11-19) the expand button and fullscreen pan/zoom map.
  *   terrain.vectors (2026-11-20) labels drawn by the app as vectors over a labels-free picture.
  *   terrain.live (2026-11-22) the map drawn by the app from per-day grids for the sheet's days.
+ *   terrain.freshCycle (2026-11-23) the terrain map (and its refresh plan, in Actions) may use NOAA NBM's 06z/18z cycles, not
+ *     only 00z/12z, so a map is at most ~9 h behind a run instead of ~15 h. Read by scripts/maps, not by the app.
  *   forecast.longRange (2026-11-22) odds, not inches, for the days past the sheet's last day
  *     (components/LongRange.jsx, public/longrange.json). No parent yet: the plan gives it forecast.projections
  *     in step 6, together with the day-11 floor. Adding the parent here would hide today's odds on every phone
@@ -105,6 +107,7 @@ export const FLAGS = Object.freeze([
   F("terrain.vectors", "file", "terrainVectors", { parent: "terrain.map" }),
   F("terrain.live", "file", "terrainLive", { parent: "terrain.vectors" }),
   F("forecast.longRange", "file", "longRange"),
+  F("terrain.freshCycle", "file", null, { parent: "terrain.map" }),
 ]);
 
 /* Names that have been switches and must never be reused, so an old phone or an old flags.json can't switch a

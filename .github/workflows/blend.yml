@@ -9,11 +9,18 @@ name: Our forecast (live blend, whenever a model has a new run)
 # runs) — twice a day like Snow-Forecast (Brian, 2026-11-18).
 # 2026-11-22 (Brian): about every 3 hours, timed to model updates. The scheduler wakes this every 3 h (01, 04, ... UTC) and
 # the `check` job asks Open-Meteo which run each model is on; the blend only builds when one of the three has a run the
-# last blend did not use (scripts/blend/model-runs.js). A manual dispatch always builds.
+# last blend did not use (scripts/blend/model-runs.js). 2026-11-23: the gate used to be bypassed by EVERY workflow_dispatch,
+# and the Cloudflare scheduler dispatches, so it never gated anything. Now only `force=true` builds regardless:
+#   gh api -X POST repos/briantafel/tabulator/actions/workflows/blend.yml/dispatches -f ref=main -f 'inputs[force]=true'
 
 on:
   # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Build even when no model has a new run"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
@@ -36,11 +43,11 @@ jobs:
           node-version: "22"
       - id: c
         env:
-          FORCE: ${{ github.event_name == 'workflow_dispatch' }}
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force == 'true' }}
         run: |
           mkdir -p out
           node scripts/blend/model-runs.js public/blend-forecast.json out/model-runs.json
-          [ "$FORCE" = "true" ] && echo "new=true" >> "$GITHUB_OUTPUT" && echo "manual run: building regardless" || true
+          [ "$FORCE" = "true" ] && echo "new=true" >> "$GITHUB_OUTPUT" && echo "force=true: building regardless" || true
       - uses: actions/upload-artifact@v4
         with:
           name: model-runs

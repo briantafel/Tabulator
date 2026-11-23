@@ -38,3 +38,26 @@ def test_snow_level_and_slr_are_matched_by_pattern_deterministic_instants_only()
     assert nbm.pick_like(idx, nbm.SLR_RE, "24 hour fcst") == (3000, 3999)  # not the average
     assert nbm.pick_like(idx, nbm.SNOW_LEVEL_RE, "18 hour fcst") is None
     assert "SNOWLVL:0 m above mean sea level" in nbm.related_lines(idx)
+
+# ---- cycles (2026-11-23): all four collected; the terrain map's choice is 00z/12z unless the switch is on
+import json as _j, tempfile as _t
+from datetime import datetime as _dt, timezone as _tz
+_D = lambda s: _dt.fromisoformat(s).replace(tzinfo=_tz.utc)  # noqa: E731
+assert nbm.CYCLES == (0, 6, 12, 18)
+_now = _D("2026-11-23T08:30:00")   # 05:30 after the lag -> 00z (12h step) or 00z (6h step); 06z is only 2.5 h old
+assert nbm.candidate_cycles(_now)[0] == _D("2026-11-23T00:00:00")
+assert nbm.candidate_cycles(_now, True)[0] == _D("2026-11-23T00:00:00")
+_now = _D("2026-11-23T09:10:00")   # 06z is 3 h old: usable with the switch, never without it
+assert nbm.candidate_cycles(_now)[0] == _D("2026-11-23T00:00:00")
+assert nbm.candidate_cycles(_now, True)[0] == _D("2026-11-23T06:00:00")
+assert len(nbm.candidate_cycles(_now)) == 4 and len(nbm.candidate_cycles(_now, True)) == 8
+assert all(c.hour in (0, 12) for c in nbm.candidate_cycles(_now))
+assert nbm.candidate_cycles(_now, True)[1] - nbm.candidate_cycles(_now, True)[2] == nbm.timedelta(hours=6)
+with _t.TemporaryDirectory() as _d:
+    _p = _d + "/flags.json"
+    assert nbm.six_hourly_map_enabled(_p) is False, "missing file = off"
+    open(_p, "w").write("{broken"); assert nbm.six_hourly_map_enabled(_p) is False, "broken file = off"
+    open(_p, "w").write(_j.dumps({"terrain.freshCycle": "preview"})); assert nbm.six_hourly_map_enabled(_p) is False
+    open(_p, "w").write(_j.dumps({"terrain.freshCycle": "on"})); assert nbm.six_hourly_map_enabled(_p) is True
+assert nbm.six_hourly_map_enabled() is False, "the committed flags.json ships with it off"
+print("cycle selection ok")
