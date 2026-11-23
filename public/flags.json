@@ -12,5 +12,16 @@
   "terrainZoom": "on",
   "terrainVectors": "on",
   "terrainLive": "on",
-  "longRange": "on"
+  "longRange": "on",
+  "forecast.projections": "preview",
+  "forecast.snowfall": "on",
+  "forecast.bands": "on",
+  "forecast.temps": "on",
+  "forecast.longRange": "on",
+  "radar.peakResort": "on",
+  "season.shapingUp": "on",
+  "terrain.map": "on",
+  "terrain.zoom": "on",
+  "terrain.vectors": "on",
+  "terrain.live": "on"
 }
