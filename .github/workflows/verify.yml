@@ -56,6 +56,7 @@ jobs:
           python3 scripts/model/test_bands.py
           python3 scripts/model/test_temps.py
           python3 scripts/model/test_ensmean.py
+          python3 scripts/model/test_canada_water.py
 
       - name: Download the archive
         run: |
@@ -75,6 +76,15 @@ jobs:
       # Corrected, lead-weighted model blend: fit 2024-25, judge 2025-26. Sealed report only.
       - name: Fit and judge blend v1
         run: python3 scripts/model/blend.py out/pairs.parquet out
+
+      # Canada water check (2026-11-23): public models vs ECCC daily precipitation, a separate truth
+      # (out/eccc_pairs.parquet, never mixed into pairs). Refits the Canada factors on ECCC (train) and
+      # judges them against the LIVE v1 factors on the test winter. Report only — changes nothing.
+      # Public models + public truth only, so the report is published unsealed below.
+      - name: Canada water check (ECCC truth)
+        id: canada
+        continue-on-error: true
+        run: python3 scripts/model/canada_water.py out/eccc_pairs.parquet public/blend.json out
 
       # Likely / possible bands for our blend from our own past misses (2026-11-18).
       # Fit 2024-25, judge coverage on 2025-26. Public models + public truth only.
@@ -140,7 +150,7 @@ jobs:
         if: always()
         run: |
           mkdir -p public-report
-          for f in blend_report.md bands_report.md temps_report.md longrange_report.md ensmean_report.md; do
+          for f in blend_report.md canada_water_report.md bands_report.md temps_report.md longrange_report.md ensmean_report.md; do
             [ -f "out/$f" ] || { echo "::warning::out/$f missing"; continue; }
             if grep -qi "snow-forecast\|(paid)" "out/$f"; then
               echo "::error::out/$f mentions a paid source; not publishing it"; exit 1
@@ -166,9 +176,9 @@ jobs:
           retention-days: 7
 
       - name: Fail loudly if long-range scoring failed
-        if: always() && (steps.longrange.outcome == 'failure' || steps.ensmean.outcome == 'failure')
+        if: always() && (steps.longrange.outcome == 'failure' || steps.ensmean.outcome == 'failure' || steps.canada.outcome == 'failure')
         run: |
-          echo "::error::Long-range or ensemble-mean verification failed — see the step logs. The rest of the report was saved."
+          echo "::error::Long-range, ensemble-mean or Canada water verification failed — see the step logs. The rest of the report was saved."
           exit 1
 
       - name: Open an issue on failure

@@ -177,6 +177,31 @@ def main():
                             elevation_m=1900, station_id="Revelstoke", fetched_at=fetched, valid_start=vs,
                             valid_end=vs + timedelta(hours=n), period_label=lab, variable="snow", value=0.0))
 
+    # ECCC daily (eccc.py): a SEPARATE truth for Canadian resorts. Revelstoke mid tier is 1900 m.
+    # Mt Copeland (1840 m, 5 km) is strict and fully covered; its record for Jan 4 holds Jan 3's storm
+    # (a station that closes its day late), so the data must pick shift +1. A history-1 mapping row
+    # (wrong position) must be ignored; a high station with 3 of 10 days fails coverage; the airport
+    # (445 m) is not strict. Flags: A (Jan 8) and E (Jan 9) and L (Jan 6) dropped, T (Jan 10) kept as 0.
+    for sid, name, elev, km, pv in (("1176745", "REVELSTOKE MT COPELAND", 1840, 5.0, "eccc-daily-history-2"),
+                                    ("1176751", "REVELSTOKE AIRPORT", 445, 4.0, "eccc-daily-2"),
+                                    ("1176760", "REVELSTOKE HIGH", 2000, 10.0, "eccc-daily-2"),
+                                    ("BADMAP", "WRONG PLACE", 1900, 1.0, "eccc-daily-history-1")):
+        rows.append(row(source="eccc-daily", kind="mapping", resort_id="revelstoke", station_id=sid, elevation_m=elev,
+                        fetched_at=fetched, variable="candidate_distance", value=km, value_text=name, parser_version=pv))
+    ec = {4: (20.0, None), 6: (0.0, "L"), 8: (30.0, "A"), 9: (5.0, "E"), 10: (0.0, "T")}
+    for d in range(1, 11):
+        t0 = local(d, 0, PST)
+        v, flag = ec.get(d, (0.0, None))
+        for sid, val, fl, pv in (("1176745", v, flag, "eccc-daily-2" if d > 5 else "eccc-daily-history-2"),
+                                 ("1176751", 0.0, None, "eccc-daily-2"), ("BADMAP", 99.0, None, "eccc-daily-history-1")):
+            rows.append(row(source="eccc-daily", kind="observation", station_id=sid, fetched_at=fetched, valid_start=t0,
+                            valid_end=t0 + timedelta(days=1), period_label="daily", variable="total_precip", value=val,
+                            value_text=fl, unit="mm", parser_version=pv))
+        if d <= 3:
+            rows.append(row(source="eccc-daily", kind="observation", station_id="1176760", fetched_at=fetched,
+                            valid_start=t0, valid_end=t0 + timedelta(days=1), period_label="daily",
+                            variable="total_precip", value=0.0, unit="mm", parser_version="eccc-daily-2"))
+
     # Window truth (windows.py). CoCoRaHS: a valley observer (1500 m vs Alta's 2900 m mid
     # tier) reading at 07:00 MST, 24 h windows. 10 mm in the window ending Jan 4 07:00 MST.
     rows.append(row(source="cocorahs", kind="mapping", resort_id="alta", station_id="UT-SL-1", elevation_m=1500,
@@ -295,6 +320,26 @@ def main():
         assert any(l.startswith("alta,nohrsc-max5x5,") for l in tp.splitlines()), tp
         assert (tmp / "out" / "truth_windows.md").exists() and (tmp / "out" / "matched_scores.csv").exists()
 
+        # ---- ECCC: own table; station_pairs and pairs untouched
+        assert "1176745" not in pairs and "BADMAP" not in pairs, pairs
+        assert one("SELECT count(*) FROM p WHERE truth_source NOT IN ('snotel', 'bc-asws')")[0] == 0
+        e = lambda sql: q.execute(sql.replace("{E}", f"read_parquet('{tmp / 'out' / 'eccc_pairs.parquet'}')")).fetchall()
+        got = e("SELECT local_date, obs, obs_flag FROM {E} WHERE resort_id = 'revelstoke' "
+                "AND source_label = 'open-meteo-previous-runs:ecmwf_ifs025' AND lead_day = 0 ORDER BY local_date")
+        got = {str(d): (o, fl) for d, o, fl in got}
+        assert got["2025-01-03"] == (20.0, None) and got["2025-01-02"] == (0.0, None), got
+        assert got["2025-01-07"] == (None, None) and got["2025-01-08"] == (None, None), got  # A, E: NULL, not zero
+        assert got["2025-01-05"] == (None, None), got  # L dropped
+        assert got["2025-01-09"] == (0.0, "T"), got  # trace kept as zero
+        assert e("SELECT DISTINCT station_id, split FROM {E} WHERE resort_id = 'revelstoke'") == [("1176745", "train")]
+        assert stats["eccc_shift"] == 1 and stats["eccc_resorts"] == 1, stats
+        assert e("SELECT count(*) FROM {E} WHERE source NOT IN ('open-meteo-previous-runs', 'nbm', 'noaa-hrrr', 'msc-hrdps')")[0][0] == 0
+        sp = (tmp / "out" / "eccc_station_pairs.csv").read_text()
+        assert "BADMAP" not in sp, sp
+        hi = next(l for l in sp.splitlines() if ",1176760," in l)
+        assert ",true,0.3,false,false" in hi, hi  # strict, 3 of 10 days → not eligible
+        lg = (tmp / "out" / "log.txt").read_text()
+        assert "dropped by flag (A/F/E/L/M): 3 — A 1, E 1, L 1" in lg and "→ shift +1" in lg, lg
         log = (tmp / "out" / "log.txt").read_text()
         assert "snow-forecast" not in log, "paid source named in the public log"
         assert "report" and "PRIVATE" in (tmp / "out" / "report.md").read_text()

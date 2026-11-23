@@ -8,6 +8,9 @@ Writes to <outDir>:
   pairs.parquet          one row per forecast × resort × tier × resort-local day × space
   scores.parquet/.csv    hit rates, errors and volume ratios by source, lead day, region
   station_pairs.csv      which SNOTEL / BC ASWS station stands in for each resort and tier
+  eccc_pairs.parquet     Canadian resorts' public forecasts vs ECCC daily precipitation — a SEPARATE
+                         truth, never mixed into pairs / station_pairs (eccc.py; scored by
+                         scripts/model/canada_water.py)
   report.md              the readable summary (contains paid-source scores: PRIVATE)
   log.txt                public-safe counts only (printed to the Action log)
 
@@ -39,6 +42,7 @@ import duckdb
 
 sys.path.insert(0, str(Path(__file__).parent))
 from windows import window_truth  # noqa: E402
+from eccc import eccc_truth  # noqa: E402
 
 PAID = ("snow-forecast", "snow-forecast-hindcast")
 FORECAST_SOURCES = ("open-meteo-previous-runs", "open-meteo-ensemble", "snow-forecast",
@@ -438,6 +442,10 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     UPDATE pairs SET split = CASE WHEN winter = 2024 THEN 'train' WHEN winter = 2025 THEN 'test' WHEN winter < 2024 THEN 'hist' ELSE 'live' END""")
     con.execute(f"COPY pairs TO '{out / 'pairs.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
 
+    # ECCC daily precipitation (2026-11-23): its own truth path and its own eccc_pairs.parquet,
+    # never mixed into station_pairs / pairs, so the SNOTEL / BC ASWS scores do not move (eccc.py).
+    estats = eccc_truth(con, out, lambda m: log(public_log, m), STRICT_KM, STRICT_DELEV_M)
+
     # CoCoRaHS / SNODAS / AMeDAS / SLF: scored on their own 24 h windows (windows.py).
     wstats = window_truth(con, out, lambda m: log(public_log, m), THRESHOLDS, paid_list, THIN_EVENTS)
 
@@ -482,6 +490,7 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
 
     # ---------------------------------------------------------------- checks + logs
     stats = dict(wstats)
+    stats.update({k: v for k, v in estats.items() if k != 'eccc_dropped_by_flag'})
     for name, q in {
         "forecast_days": "SELECT count(*) FROM fc",
         "pairs_with_truth": "SELECT count(*) FROM pairs WHERE obs IS NOT NULL",
