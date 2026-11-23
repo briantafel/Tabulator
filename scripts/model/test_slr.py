@@ -105,3 +105,41 @@ _tt = _np.array([-10.0, 0.0, 1.0, 3.0]); _ww = _np.full(4, 20.0); _mm = _np.arra
 _now, _new = ours_snow(_ww, _tt, _pp, _mm), ours_snow(_ww, _tt, _pp, _mm, _warm)
 assert (_new <= _now + 1e-9).all() and _new[0] == _now[0] and _new[3] == 0 and abs(_new[2] - 20 * 3.5 / 10) < 1e-9, (_now, _new)
 print("warm: checks passed")
+
+# Sub-daily split: ramp + cap arithmetic, and hourly_check end to end on a tiny synthetic table with ERA5 rows.
+import os as _os, tempfile as _tf, duckdb as _dd
+from slr import hourly_ratio, hourly_check
+_h = {"t0": -1.0, "t1": 1.0, "cap": 7.0}
+_r = hourly_ratio(_np.array([-5.0, -1.5, 0.0, 1.0]), _pp, _np.array(["Rockies"] * 4), _h)
+assert abs(_r[0] - (11.5 + 1.8)) < 1e-9 and abs(_r[1] - 7.0) < 1e-9 and abs(_r[2] - 3.5) < 1e-9 and _r[3] == 0, _r
+_cwd = _os.getcwd()
+with _tf.TemporaryDirectory() as _d:
+    _os.chdir(_d)
+    try:
+        _c = _dd.connect()
+        _rng = _np.random.default_rng(1)
+        _rows = []
+        for _i in range(900):
+            ws = _np.datetime64("2024-12-01T12") + _np.timedelta64(int(_i % 300) * 24, "h")
+            split = "train" if _i < 450 else "test"
+            if split == "test":
+                ws = ws + _np.timedelta64(365 * 24, "h")
+            t = float(_rng.uniform(-6, 3)); w = float(_rng.uniform(3, 40))
+            frac = _np.clip((1.0 - t) / 2.0, 0, 1)
+            _rows.append((f"r{_i % 3}", "st", str(ws.astype("datetime64[s]")).replace("T", " "), str((ws + _np.timedelta64(24, "h")).astype("datetime64[s]")).replace("T", " "), split, 1 + _i % 7,
+                          str((ws + _np.timedelta64(24, "h")).astype("datetime64[D]")), w, t, w * frac * 1.0, "Rockies"))
+        _c.execute("CREATE TABLE d(resort_id VARCHAR, station_id VARCHAR, ws TIMESTAMP, we TIMESTAMP, split VARCHAR, lead_day INT,"
+                   " end_date DATE, fc_water DOUBLE, t_st DOUBLE, snow_cm DOUBLE, macro VARCHAR)")
+        _c.executemany("INSERT INTO d VALUES (?,?,?,?,?,?,?,?,?,?,?)", _rows)
+        _os.makedirs("archive/source=era5/month=2024-12", exist_ok=True)
+        _c.execute("""COPY (SELECT r.resort_id, te AS valid_end, v.variable,
+                        CASE WHEN v.variable = 'temp_2m' THEN sin(epoch(te) / 9000.0) ELSE 1.0 END AS value
+                      FROM (SELECT DISTINCT resort_id FROM d) r,
+                           range(TIMESTAMP '2024-11-01', TIMESTAMP '2026-05-01', INTERVAL 3 HOUR) AS g(te),
+                           (VALUES ('temp_2m'), ('precip')) v(variable))
+                      TO 'archive/source=era5/month=2024-12/x.parquet' (FORMAT PARQUET)""")
+        _res, _rep = hourly_check(_c, {**_pp, "warm": {}})
+        assert set(_res["promote"]) == {"1-3", "4-7"} and "Sub-daily" in _rep and "Windows with an ERA5 shape: " in _rep, _rep[:400]
+    finally:
+        _os.chdir(_cwd)
+print("hourly: checks passed")

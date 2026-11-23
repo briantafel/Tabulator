@@ -10,7 +10,7 @@ from pathlib import Path
 import duckdb
 
 arch = Path(sys.argv[1])
-files = sorted(str(p) for p in arch.rglob("*.parquet"))
+files = sorted(str(p) for p in arch.rglob("*.parquet") if "/source=era5/" not in str(p))  # ERA5: reanalysis, not truth
 if not files:
     raise SystemExit(f"no parquet files under {arch}")
 con = duckdb.connect()

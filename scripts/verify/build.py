@@ -88,6 +88,13 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
         log(public_log, f"SKIPPED {len(skip)} dynamical-ens history files (months before {DYN_HISTORY_BEFORE}): "
                         "member aggregation needed before they fit (see claude/state-2026-11-12-digest.md)")
 
+    # ERA5 (2026-11-22) is a reanalysis for storm typing, neither forecast nor truth; it is read
+    # directly by scripts/model/slr.py, never paired here (49 M rows would only cost memory).
+    n_era5 = sum("/source=era5/" in f for f in files)
+    files = [f for f in files if "/source=era5/" not in f]
+    if n_era5:
+        log(public_log, f"left out {n_era5} era5 files (reanalysis; read by slr.py, not paired)")
+
     con = duckdb.connect()
     con.execute("SET TimeZone = 'UTC'")
     file_list = "[" + ", ".join("'" + f.replace("'", "''") + "'" for f in files) + "]"

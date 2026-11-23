@@ -497,6 +497,129 @@ def warm_check(con, p: dict) -> tuple[dict, str]:
     return warm, report
 
 
+# Sub-daily rain/snow split (2026-11-23, Brian: "do it"). The daily rule judges phase on the day's
+# precipitation-weighted mean temperature, so a day whose wet hours straddle 0 °C counts as all snow or
+# all rain. Here each window's water is spread over its 3-hour blocks and each block gets its own phase:
+#   ratio(T) = min(line(T), CAP) × f(T),  f = 1 at T ≤ T0, 0 at T ≥ T1, linear between,  CAP applies at T > −2 °C.
+# For past winters the within-day SHAPE comes from ERA5 at the resort (share of the day's precipitation per
+# block, and each block's temperature minus the precipitation-weighted mean); the LEVEL stays the forecast's
+# station temperature t_st. Caveat: ERA5's timing is analysed, not forecast, so this scores the split with
+# better timing than the app will have; the live app uses each model's own hourly shape.
+# T0, T1, CAP chosen on 2024-25 (leads 1–3) by CSI ≥ 10 cm + CSI ≥ 15 cm − 0.5·|ln(warm-window volume ratio)|;
+# judged on 2025-26 per lead group against what ships today (daily warm cap at 1–3, plain line at 4–7).
+HOURLY_T0 = (-1.5, -1.0, -0.5, 0.0, 0.5)
+HOURLY_T1 = (1.0, 1.5, 2.0, 2.5, 3.0)
+HOURLY_CAP = (float("inf"), 9.0, 7.0, 5.0)
+ERA5_GLOB = "archive/source=era5/**/*.parquet"
+
+
+def hourly_ratio(t, p: dict, macro, h: dict):
+    t = np.asarray(t, dtype=float)
+    base = slr_of(t, p, macro)
+    base = np.where(t > -2, np.minimum(base, h["cap"]), base)
+    f = np.clip((h["t1"] - t) / (h["t1"] - h["t0"]), 0.0, 1.0)
+    return base * f
+
+
+def hourly_check(con, p: dict) -> tuple[dict, str]:
+    import glob
+    if not glob.glob(ERA5_GLOB, recursive=True):
+        return {"promote": {g: False for g in PHASE_GROUPS}}, "\n## Sub-daily rain/snow split\n\nNO ERA5 IN archive/ — not scored.\n"
+    con.execute(f"""CREATE OR REPLACE TABLE e5 AS
+      SELECT resort_id, valid_end AS te,
+             max(CASE WHEN variable = 'temp_2m' THEN value END) AS t,
+             max(CASE WHEN variable = 'precip' THEN value END) AS pr
+      FROM read_parquet('{ERA5_GLOB}', hive_partitioning = true)
+      WHERE variable IN ('temp_2m', 'precip') AND month >= '2024-10'
+      GROUP BY ALL""")
+    # Every (window, block): share of the window's ERA5 precipitation and temperature anomaly.
+    con.execute("""CREATE OR REPLACE TABLE wb AS
+      WITH w AS (SELECT DISTINCT resort_id, ws, we FROM d),
+      j AS (SELECT w.resort_id, w.ws, w.we, e.t, e.pr FROM w JOIN e5 e ON e.resort_id = w.resort_id
+            AND e.te > w.ws AND e.te <= w.we),
+      g AS (SELECT resort_id, ws, we, count(*) AS n, sum(pr) AS ps,
+                   CASE WHEN sum(pr) > 0.1 THEN sum(pr * t) / sum(pr) ELSE avg(t) END AS tbar FROM j GROUP BY ALL)
+      SELECT j.resort_id, j.ws, j.we, CASE WHEN g.ps > 0.1 THEN j.pr / g.ps ELSE 1.0 / g.n END AS share, j.t - g.tbar AS anom
+      FROM j JOIN g USING (resort_id, ws, we)""")
+    cover = con.execute("""SELECT count(DISTINCT (resort_id, ws, we)) FROM wb""").fetchone()[0]
+    con.execute("CREATE OR REPLACE TABLE dr AS SELECT row_number() OVER () - 1 AS rid, * FROM d WHERE split IN ('train', 'test')")
+    blk = con.execute("""SELECT r.rid, b.share, b.anom FROM dr r JOIN wb b USING (resort_id, ws, we)""").fetchnumpy()
+    rows = con.execute("SELECT rid, split, lead_day, end_date, fc_water, t_st, snow_cm, macro FROM dr ORDER BY rid").fetchnumpy()
+    has = np.zeros(len(rows["rid"]), bool); has[blk["rid"]] = True
+    n_rows = len(rows["rid"])
+    warm = p.get("warm") or {}
+
+    def snow_h(h, sel):
+        ratio = hourly_ratio(rows["t_st"][blk["rid"]] + blk["anom"], p, rows["macro"][blk["rid"]], h)
+        eff = np.bincount(blk["rid"], weights=blk["share"] * ratio, minlength=n_rows)
+        return (rows["fc_water"] * eff / 10)[sel]
+
+    def snow_daily(sel, capped):
+        return ours_snow(rows["fc_water"][sel], rows["t_st"][sel], p, rows["macro"][sel], warm if capped else None)
+
+    def csi(f, o):
+        h = ((f) & o).sum(); m = ((~f) & o).sum(); fa = (f & ~o).sum()
+        return h / max(h + m + fa, 1)
+
+    def vol(f, sel, m):
+        return float(f[m].sum() / max(rows["snow_cm"][sel][m].sum(), 1e-9))
+
+    tr = has & (rows["split"] == "train") & (rows["lead_day"] >= 1) & (rows["lead_day"] <= 3)
+    obs_tr, warm_tr = rows["snow_cm"][tr], rows["t_st"][tr] > -1
+    best, grid = None, []
+    for t0 in HOURLY_T0:
+        for t1 in HOURLY_T1:
+            if t1 <= t0:
+                continue
+            for cap in HOURLY_CAP:
+                h = {"t0": t0, "t1": t1, "cap": cap}
+                f = snow_h(h, tr)
+                v = max(vol(f, tr, warm_tr), 1e-6)
+                score = csi(f >= 10, obs_tr >= 10) + csi(f >= 15, obs_tr >= 15) - 0.5 * abs(np.log(v))
+                grid.append((score, t0, t1, cap, v))
+                if best is None or score > best[0]:
+                    best = (score, h)
+    h = best[1]
+    rng = np.random.default_rng(SEED + 23)
+    out_rows, promote = [], {}
+    for g, leads in PHASE_GROUPS.items():
+        sel = has & (rows["split"] == "test") & np.isin(rows["lead_day"], list(leads))
+        if sel.sum() < 200:
+            promote[g] = False; out_rows.append(f"| {g} | too few windows ({int(sel.sum())}) | | | |"); continue
+        capped_now = bool(warm.get("promote", {}).get(g))
+        now, new, obs = snow_daily(sel, capped_now), snow_h(h, sel), rows["snow_cm"][sel]
+        ud, inv = np.unique(rows["end_date"][sel], return_inverse=True)
+        idx = rng.integers(0, len(ud), size=(N_BOOT, len(ud)))
+        worse = False
+        for thr in WARM_THRESHOLDS_CM:
+            o = obs >= thr
+            c0, b0, bc0 = csi_boot(now >= thr, o, inv, len(ud), idx)
+            c1, b1, bc1 = csi_boot(new >= thr, o, inv, len(ud), idx)
+            lo, hi = float(np.percentile(bc1 - bc0, 5)), float(np.percentile(bc1 - bc0, 95))
+            worse |= hi < 0
+            out_rows.append(f"| {g} | ≥ {thr:g} cm | {int(o.sum())} | {c0:.3f} → {c1:.3f} | {b0:.2f} → {b1:.2f} | {lo:+.3f} to {hi:+.3f} |")
+        wm = rows["t_st"][sel] > -1
+        v0, v1 = vol(now, sel, wm), vol(new, sel, wm)
+        a0, a1 = vol(now, sel, np.ones_like(wm)), vol(new, sel, np.ones_like(wm))
+        out_rows.append(f"| {g} | volume ÷ observed, warm windows (n={int(wm.sum())}) | | {v0:.2f} → {v1:.2f} | | |")
+        out_rows.append(f"| {g} | volume ÷ observed, all windows | | {a0:.2f} → {a1:.2f} | | |")
+        promote[g] = (not worse) and abs(np.log(max(v1, 1e-6))) <= abs(np.log(max(v0, 1e-6))) + 0.05
+        out_rows[-2] += f" today = {'daily warm cap' if capped_now else 'plain line'}"
+    top = sorted(grid, reverse=True)[:5]
+    res = {"t0": h["t0"], "t1": h["t1"], "cap": None if not np.isfinite(h["cap"]) else h["cap"], "promote": promote,
+           "fitted_on": "2024-25 board windows, leads 1-3; within-day shape from ERA5 3-hourly at the resort"}
+    report = "\n".join([
+        "\n## Sub-daily rain/snow split (3-hour blocks; shape from ERA5, level from the forecast)\n",
+        f"Windows with an ERA5 shape: {cover}. Chosen on 2024-25: all snow at ≤ {h['t0']} °C, all rain at ≥ {h['t1']} °C, "
+        f"linear between; ratio capped at {h['cap']} above −2 °C. Compared with what ships today per lead group. "
+        "ERA5 timing is analysed, not forecast, so this is an optimistic test of the split.\n",
+        "Top 5 on training (score, T0, T1, cap, warm volume): " + "; ".join(f"{s:.3f}, {a}, {b}, {c}, {v:.2f}" for s, a, b, c, v in top) + "\n",
+        "| leads | threshold | events | CSI today → split | freq bias today → split | gain range |",
+        "|---|---|---|---|---|---|", *out_rows,
+        f"\nHOURLY PROMOTE per lead group: {json.dumps(promote)}\n"])
+    return res, report
+
+
 def md_table(rows: list[dict], cols: list[tuple[str, str]]) -> str:
     f = lambda v: f"{v:.2f}" if isinstance(v, (float, np.floating)) else str(v)
     lines = ["| " + " | ".join(h for h, _ in cols) + " |", "|" + "---|" * len(cols)]
@@ -517,6 +640,7 @@ def main(pairs: Path, out: Path) -> None:
     params["promote"] = promote
     params["phase"], phase_report = phase_check(con, params)
     params["warm"], warm_report = warm_check(con, params)
+    params["hourly"], hourly_report = hourly_check(con, params)
     (out / "slr.json").write_text(json.dumps(params, indent=2) + "\n")
     calm = {k: v for k, v in params["by_height_class"].items()}
     parts = [
@@ -556,7 +680,7 @@ def main(pairs: Path, out: Path) -> None:
                       ("range", "range")]) if vs else "_no shared windows yet_\n",
         "\nHindcast is lead 0 (model spin-up handicaps ours). Live Snow-Forecast rows are this season only: thin.\n",
     ]
-    (out / "slr_report.md").write_text("\n".join(parts) + phase_report + warm_report)
+    (out / "slr_report.md").write_text("\n".join(parts) + phase_report + warm_report + hourly_report)
     prom = [k for k, v in params["regions"].items() if v.get("promoted")]
     print(f"SLR v3 fitted on {params['n_days']} training station-days; own line for {prom or 'no region'}; "
           "report written", file=sys.stderr)

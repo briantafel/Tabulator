@@ -63,7 +63,7 @@ jobs:
               print(f"SLR: {p.get('version')} has no per-lead judgement — not shipped")
           elif all(prom.values()):
               keep = {k: p[k] for k in ("version", "form", "a", "b", "clamp", "temperature", "fitted_on", "n_days",
-                                        "median_observed_slr", "promote", "regions", "region_of", "phase", "warm") if k in p}
+                                        "median_observed_slr", "promote", "regions", "region_of", "phase", "warm", "hourly") if k in p}
               json.dump(keep, open("public/slr.json", "w"), indent=2); open("public/slr.json", "a").write("\n")
               own = {r: f"{e['a']} + {e['b']}·T" for r, e in (p.get("regions") or {}).items() if e.get("promoted")}
               print(f"SLR: shipped {p['version']}: pooled SLR = {p['a']} + {p['b']}·T (promoted at every lead); "

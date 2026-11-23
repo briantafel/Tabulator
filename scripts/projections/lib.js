@@ -43,8 +43,8 @@ export function slrLineFor(p, resortId) {
   const reg = p.region_of?.[resortId];
   const e = reg ? p.regions?.[reg] : null;
   return e?.promoted && Number.isFinite(e.a) && Number.isFinite(e.b)
-    ? { a: e.a, b: e.b, clamp: p.clamp, region: reg, warm: p.warm ?? null }
-    : { a: p.a, b: p.b, clamp: p.clamp, region: null, warm: p.warm ?? null };
+    ? { a: e.a, b: e.b, clamp: p.clamp, region: reg, warm: p.warm ?? null, hourly: p.hourly ?? null }
+    : { a: p.a, b: p.b, clamp: p.clamp, region: null, warm: p.warm ?? null, hourly: p.hourly ?? null };
 }
 
 /* Warm-day cap (slr.py warm_check, 2026-11-22): observed snow per water in the warm bins, linear between bin
@@ -57,6 +57,14 @@ export function warmRatio(tC, warm) {
   let i = 0;
   while (tC >= xs[i + 1]) i++;
   return ys[i] + ((ys[i + 1] - ys[i]) * (tC - xs[i])) / (xs[i + 1] - xs[i]);
+}
+/* Sub-daily split (slr.py hourly_check, 2026-11-23): ratio(T) = min(line, cap above −2 °C) × f(T),
+   f = 1 at T ≤ t0, 0 at T ≥ t1, linear between. MUST match slr.py hourly_ratio(). cap null = no cap. */
+export function hourlyRatio(tC, line, h) {
+  let base = slrOf(tC, line);
+  if (tC > -2 && h.cap != null) base = Math.min(base, h.cap);
+  const f = Math.min(1, Math.max(0, (h.t1 - tC) / (h.t1 - h.t0)));
+  return base * f;
 }
 export const warmGroup = (lead) => (lead <= 3 ? "1-3" : "4-7");
 export function slrOf(tC, p) {

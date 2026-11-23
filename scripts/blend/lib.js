@@ -13,9 +13,12 @@
  *      2 m temperature; warmer than 2 °C → rain, no snow. Where slr.json's
  *      warm cap is promoted for the lead group, the ratio is min(SLR, R(T)),
  *      R = observed snow per water on warm days (2026-11-22: rain counted as snow).
+ *      Where slr.json's sub-daily split is promoted instead (2026-11-23), each
+ *      hour gets its own phase: snow = water × Σ share_h · ratio(T + anom_h) ÷ 10,
+ *      share/anom = the models' own within-day precipitation shape.
  * Leads outside the fitted 1–7 use the nearest fitted lead's weights.
  */
-import { slrLineFor, slrOf, warmGroup, warmRatio } from "../projections/lib.js";
+import { hourlyRatio, slrLineFor, slrOf, warmGroup, warmRatio } from "../projections/lib.js";
 
 export const RAIN_ABOVE_C = 2;
 
@@ -30,17 +33,20 @@ export function dailyFromHourly(time, series, tz) {
   time.forEach((ts, i) => {
     const start = Date.parse(`${ts}Z`) - 3600e3;
     const d = localDate(start, tz);
-    if (!days.has(d)) days.set(d, { hours: 0, water: 0, pt: 0, tSum: 0, ok: true });
+    if (!days.has(d)) days.set(d, { hours: 0, water: 0, pt: 0, tSum: 0, ok: true, hp: [] });
     const a = days.get(d);
     const p = series.precipitation?.[i], t = series.temperature_2m?.[i];
     if (typeof p !== "number" || typeof t !== "number" || !Number.isFinite(p) || !Number.isFinite(t)) { a.ok = false; return; }
-    a.hours++; a.water += p; a.pt += p * t; a.tSum += t;
+    a.hours++; a.water += p; a.pt += p * t; a.tSum += t; a.hp.push([p, t]);
   });
   const out = new Map();
   for (const [d, a] of days) {
     // DST days have 23 or 25 hours; anything else is a partial day at the edges.
     if (!a.ok || a.hours < 23) continue;
-    out.set(d, { water: a.water, t: a.water > 0 ? a.pt / a.water : a.tSum / a.hours });
+    const t = a.water > 0 ? a.pt / a.water : a.tSum / a.hours;
+    // Within-day shape: each hour's share of the day's water and its temperature minus the day's mean.
+    const shape = a.hp.map(([p, th]) => [a.water > 0 ? p / a.water : 1 / a.hp.length, th - t]);
+    out.set(d, { water: a.water, t, shape });
   }
   return out;
 }
@@ -56,20 +62,30 @@ export function blendDay(perModel, { lead, region, params }) {
   const key = nearestLead(params.weights, lead);
   if (key == null) return null;
   let wSum = 0, wWater = 0, tSum = 0, n = 0;
+  const shapes = [];
   for (const [model, v] of Object.entries(perModel)) {
     const w = params.weights[key]?.[model];
     if (!(w > 0) || v?.water == null) continue;
     const f = params.factors?.[`${model}|${key}|${region}`] ?? params.pooled_factors?.[`${model}|${key}`] ?? 1;
     wSum += w; wWater += w * v.water * f; tSum += v.t; n++;
+    if (v.shape) shapes.push(v.shape);
   }
   if (!n) return null;
   // Trace floor (blend.py, promoted per lead): a blended day under F mm is called dry.
   const floor = params.trace_floor_promote?.[key] ? params.trace_floor_mm?.[key] ?? 0 : 0;
   const water = wWater / wSum;
-  return { water: water < floor ? 0 : water, t: tSum / n, models: n };
+  // Shape: the models' within-day shapes averaged with equal weight (as t is), or null if any is missing.
+  const shape = shapes.length === n ? shapes.flatMap((sh) => sh.map(([s, a]) => [s / n, a])) : null;
+  return { water: water < floor ? 0 : water, t: tSum / n, models: n, shape };
 }
 
-export function snowFrom(water, t, slrLine, lead = null) {
+export function snowFrom(water, t, slrLine, lead = null, shape = null) {
+  const h = slrLine?.hourly;
+  if (lead != null && shape && h?.promote?.[warmGroup(lead)]) {
+    let eff = 0;
+    for (const [s, a] of shape) eff += s * hourlyRatio(t + a, slrLine, h);
+    return (water * eff) / 10;
+  }
   if (t > RAIN_ABOVE_C) return 0;
   let ratio = slrOf(t, slrLine);
   if (lead != null && slrLine?.warm?.promote?.[warmGroup(lead)]) ratio = Math.min(ratio, warmRatio(t, slrLine.warm));
@@ -94,8 +110,8 @@ export function resortDays({ time, byModel, tz, region, issueDate, params, slr, 
     /* Band (cm) through the SAME ratio and temperature as the number, so the
        chart's band and line always agree. */
     const bw = bands ? bandFor(bands, lead, b.water) : null;
-    const band = bw && line ? Object.fromEntries(Object.entries(bw).map(([k, v]) => [k, r1(snowFrom(v, b.t, line, lead))])) : null;
-    out.push({ date, lead, water: r1(b.water), snow: line ? r1(snowFrom(b.water, b.t, line, lead)) : null,
+    const band = bw && line ? Object.fromEntries(Object.entries(bw).map(([k, v]) => [k, r1(snowFrom(v, b.t, line, lead, b.shape))])) : null;
+    out.push({ date, lead, water: r1(b.water), snow: line ? r1(snowFrom(b.water, b.t, line, lead, b.shape)) : null,
       t: r1(b.t), models: b.models, ...(band ? { band } : {}) });
   }
   return out;
