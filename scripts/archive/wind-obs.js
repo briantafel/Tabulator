@@ -14,7 +14,7 @@
 import { readFile } from "node:fs/promises";
 import { UA, sleep, saveRaw, coordsOf } from "./common.js";
 
-export const PARSER_VERSION = "wind-obs-1";
+export const PARSER_VERSION = "wind-obs-2";
 const SWOB = "https://api.weather.gc.ca/collections/swob-realtime/items";
 const NWS = "https://api.weather.gov";
 const RADIUS_KM = 40;
@@ -69,6 +69,21 @@ export function swobRows(f, { fetchedAt, runId }) {
   return rows;
 }
 
+/** METAR remark "PK WND dddff(f)/hhmm" or "/mm": the strongest gust since the last report, in knots, with its time.
+ *  Returns { dir, kt, time } or null. The time is UTC; hhmm names the day of the report or the day before, mm only
+ *  names the hour of the report or the hour before. Never invents a time: a peak later than the report is rolled back. */
+export function parsePkWnd(raw, obsIso) {
+  const m = /\bPK WND (\d{3})(\d{2,3})\/(\d{2})?(\d{2})\b/.exec(String(raw ?? ""));
+  if (!m) return null;
+  const obs = new Date(obsIso);
+  if (Number.isNaN(obs.getTime())) return null;
+  const dir = Number(m[1]), kt = Number(m[2]), hh = m[3] === undefined ? null : Number(m[3]), mm = Number(m[4]);
+  if (dir > 360 || mm > 59 || (hh !== null && hh > 23) || kt < 1 || kt > 250) throw new Error(`implausible PK WND "${m[0]}"`);
+  let t = new Date(Date.UTC(obs.getUTCFullYear(), obs.getUTCMonth(), obs.getUTCDate(), hh ?? obs.getUTCHours(), mm));
+  if (t.getTime() > obs.getTime() + 60e3) t = new Date(t.getTime() - (hh === null ? 3600e3 : 86400e3));
+  return { dir, kt, time: t.toISOString() };
+}
+
 /** One NWS observation feature → rows. The period is not stated by NWS, so period_label is "obs". */
 export function nwsRows(f, station, { fetchedAt, runId }) {
   const p = f.properties ?? {};
@@ -87,6 +102,15 @@ export function nwsRows(f, station, { fetchedAt, runId }) {
       run_id: runId, parser_version: PARSER_VERSION,
     });
   }
+  // Peak wind from the METAR remark (airport stations): a different definition from windGust, so its own variable.
+  const pk = parsePkWnd(p.rawMessage, end.toISOString());
+  if (pk) rows.push({
+    source: "wind-obs", kind: "observation", resort_id: null, tier: null, station_id: `nws:${station.id}`, lat: station.lat ?? null, lon: station.lon ?? null,
+    elevation_m: station.elev != null ? Math.round(station.elev) : null,
+    fetched_at: fetchedAt, valid_start: pk.time, valid_end: pk.time, period_label: "pk-wnd",
+    variable: "wind_peak_gust", value: Number(toKmh(pk.kt, "kt").toFixed(2)), unit: "km/h", model: "nws", value_text: station.name ?? null,
+    run_id: runId, parser_version: PARSER_VERSION,
+  });
   return rows;
 }
 

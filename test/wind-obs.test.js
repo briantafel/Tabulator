@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { toKmh, swobRows, nwsRows, km } from "../scripts/archive/wind-obs.js";
+import { toKmh, swobRows, nwsRows, km, parsePkWnd } from "../scripts/archive/wind-obs.js";
 
 const ctx = { fetchedAt: "2026-11-23T14:07:00.000Z", runId: "r" };
 const swob = (p, g = [-118.17, 50.99, 445]) => ({ id: "x", geometry: { coordinates: g }, properties: { "msc_id-value": "1176749", "stn_nam-value": "REVELSTOKE AIRPORT AUTO", "date_tm-value": "2026-11-23T14:00:00.000Z", ...p } });
@@ -41,4 +41,23 @@ test("nwsRows: speed, gust (blank gust writes no row) and direction", () => {
 
 test("km: Slide Mountain station is about 1.5 km from the Mt Rose point", () => {
   assert.ok(km([39.314, -119.886], [39.30, -119.89]) < 3);
+});
+
+test("parsePkWnd: hhmm and mm-only peaks, rolled back when they would be after the report; no remark, no row", () => {
+  assert.deepEqual(parsePkWnd("KCPW 231453Z 25015G30KT RMK AO2 PK WND 28045/1456 SLP", "2026-11-23T15:00:00Z"), { dir: 280, kt: 45, time: "2026-11-23T14:56:00.000Z" });
+  assert.equal(parsePkWnd("RMK PK WND 28045/56", "2026-11-23T15:53:00Z").time, "2026-11-23T14:56:00.000Z"); // 15:56 would be after the report: previous hour
+  assert.equal(parsePkWnd("RMK PK WND 28045/2350", "2026-11-23T00:53:00Z").time, "2026-11-22T23:50:00.000Z"); // previous day
+  assert.equal(parsePkWnd("KJAC 231453Z 25015KT RMK AO2", "2026-11-23T15:00:00Z"), null);
+  assert.equal(parsePkWnd("", "2026-11-23T15:00:00Z"), null);
+  assert.equal(parsePkWnd(undefined, "2026-11-23T15:00:00Z"), null);
+  assert.throws(() => parsePkWnd("RMK PK WND 99945/1456", "2026-11-23T15:00:00Z"), /implausible/);
+});
+
+test("nwsRows: PK WND remark becomes its own wind_peak_gust row (km/h), never merged with windGust", () => {
+  const f = { properties: { timestamp: "2026-11-23T15:00:00+00:00", rawMessage: "KCPW 231500Z 25015KT RMK PK WND 28045/1456", windSpeed: { value: 28, unitCode: "wmoUnit:km_h-1" }, windGust: { value: null, unitCode: "wmoUnit:km_h-1" }, windDirection: { value: null, unitCode: "wmoUnit:degree_(angle)" } } };
+  const rows = nwsRows(f, { id: "KCPW", name: "Wolf Creek Pass", elev: 3584 }, ctx);
+  const pk = rows.find((r) => r.variable === "wind_peak_gust");
+  assert.equal(pk.value, 83.34);
+  assert.equal(pk.valid_end, "2026-11-23T14:56:00.000Z");
+  assert.equal(rows.some((r) => r.variable === "wind_gust_max"), false);
 });
