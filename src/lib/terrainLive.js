@@ -67,7 +67,7 @@ export function drawLive(live, grids, win) {
   }
   if (!(hi >= lo)) return { hidden: "no snow data inside the outline" };
   const nosnow = hi < 1.0;
-  const low = !!fld.flat;                                     // under 1 in, no NBM pattern: flat at the sheet's total
+  const low = nosnow && win.totalCm > 0;                      // the sheet has snow, just under 1 in: say "Under 1 in", never "No snow" or a 0"
   const { levels, floor } = levelsFor(lo, hi);
   const lv = nosnow ? [] : levels.filter((l) => l < mx);
   const fl = nosnow ? [] : [floor, ...levels].filter((l) => l < mx);
@@ -106,7 +106,7 @@ export function drawLive(live, grids, win) {
     const d = polys.map((p) => pathOf(p, cell, false)).join(" ");
     return d ? `<path d="${d}" fill="none" stroke="#0d3fb0" stroke-opacity="0.75" stroke-width="${live.stroke}" stroke-linejoin="round" clip-path="url(#area)"/>` : "";
   }).join("");
-  if (nosnow) depth.push({ x: live.deep[0], y: live.deep[1], in: low ? r1(win.totalCm / CM_PER_IN) : 0 });
+  if (nosnow && (!low || fld.flat)) depth.push({ x: live.deep[0], y: live.deep[1], in: low ? r1(win.totalCm / CM_PER_IN) : 0 });   // flat: the sheet's number; a pattern under 1 in: no number to contradict the sheet
 
   const marks = live.marks.map((m) => ({ ...m, in: nosnow ? null : r1(sampleAt(F, live, m.x, m.y)) }));
   const SF = { ...FULL, w: (FULL.size * W) / H, h: FULL.size };

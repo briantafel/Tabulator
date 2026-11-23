@@ -1091,7 +1091,11 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     if nosnow:   # one 0" label in the middle of the skiable terrain (the point deepest inside the outline), Brian 2026-11-20
         dt = distance_transform_edt(mask)
         cy_, cx_ = np.unravel_index(int(np.argmax(dt)), dt.shape)
-        pts_lab = [(round(anc["flat_in"], 1) if anc and anc.get("flat_in") else 0.0, (float(cx_), float(cy_)))]
+        low_ = bool(anc and anc["total_cm"] > 0)   # the sheet has snow, just under 1 in: never a 0" label
+        if not low_ or anc.get("flat_in"):
+            pts_lab = [(round(anc["flat_in"], 1) if low_ else 0.0, (float(cx_), float(cy_)))]
+        else:
+            pts_lab = []
     for lv_, (x, y) in pts_lab:
         if True:
             depth_pts.append((float(lv_), float(x), float(y)))
@@ -1202,7 +1206,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
                    "mesh_vertex_spacing_m": round(region_m / (meta["mesh_base"] * 2 ** meta["render_levels"]), 2)},
         "blender": bl,
         "svg_scale_vs_1800px_maps": round(s, 3),
-        "nosnow": nosnow, "low": bool(snow_info.get("flat")),
+        "nosnow": nosnow, "low": bool(nosnow and anc and anc["total_cm"] > 0),
         "inside_range_in": [round(float(inside.min()), 1), round(float(inside.max()), 1)],
         "levels_in": [float(x) for x in levels],
         "base": [round(marks[0][1][0], 1), round(marks[0][1][3], 1)] if marks else None,

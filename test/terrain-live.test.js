@@ -57,6 +57,14 @@ test("a flat under-1-in map draws no bands, labels the sheet's number and says U
   assert.ok(r.mid_cm === null && r.full.marks.every((m) => m.in === null));
 });
 
+test("a sub-1-in map WITH an NBM pattern also says Under 1 in and prints no 0\" over the sheet's snow", () => {
+  const r = drawLive(live, grids, { dates: ["2026-11-22"], totalCm: 0.8 });   // 0.3 in
+  assert.ok(!r.hidden && r.nosnow && r.low);
+  assert.equal(r.full.depth.length, 0);
+  const z = drawLive(live, grids, { dates: ["2026-11-22"], totalCm: 0 });
+  assert.ok(z.nosnow && !z.low && z.full.depth[0].in === 0, "a zero total is still No snow with its 0");
+});
+
 test("the map's amount IS the sheet's: at the forecast point and height the window sums to the total", () => {
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41]]) {
     const r = computeField(live, grids, dates, cm);
