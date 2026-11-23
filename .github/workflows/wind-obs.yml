@@ -1,0 +1,64 @@
+name: Collect wind observations (hourly)
+
+# W1 of claude/wind-model-plan-2026-11-23.md. ECCC SWOB-ML (Canada, origin keeps only ~28 days, so every missed
+# hour is permanent) and NWS stations (US) into the archive as source=wind-obs. Scheduled by workers/scheduler
+# (hourly, :07). Each run takes the last 6 h, so one skipped run is covered by the next.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: wind-obs
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install duckdb==2.0.0
+      - name: Unit tests
+        run: node --test test/wind-obs.test.js
+      - name: Collect
+        id: collect
+        continue-on-error: true
+        run: node scripts/archive/wind-obs-run.js out
+      - name: Package and upload to R2
+        if: steps.collect.outcome != 'skipped'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          test -f out/manifest.json || { echo "::error::wind-obs-run wrote no manifest"; exit 1; }
+          RUN_ID=$(jq -r .runId out/manifest.json); DATE=${RUN_ID:0:10}; MONTH=${RUN_ID:0:7}
+          mkdir -p up/runs "up/raw/source=wind-obs/date=$DATE"
+          python3 scripts/archive/to_parquet.py out/rows up/archive "$RUN_ID" "$MONTH"
+          tar -cf "up/raw/source=wind-obs/date=$DATE/$RUN_ID.tar" -C out/raw/wind-obs .
+          cp out/manifest.json "up/runs/$RUN_ID.json"
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp up "s3://$R2_BUCKET/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3 ls "s3://$R2_BUCKET/runs/$RUN_ID.json" --endpoint-url "$ENDPOINT"
+          jq -r '.sources["wind-obs"] | "wind-obs: ok=\(.ok) rows=\(.rows) eccc_stations=\(.eccc_stations) nws_stations=\(.nws_stations)"' out/manifest.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Fail the run if the collector fell short
+        if: steps.collect.outcome == 'failure'
+        run: echo "::error::wind-obs fell short — what was collected was still uploaded. ECCC keeps ~28 days, so fix it within days."; exit 1
+      - name: Open an issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\n\nWind observation collection failed. ECCC keeps only about 28 days, so repeated failures lose data for good; the next hourly run re-takes the last 6 h.`;
+            const { data: existing } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "wind-obs-failure" });
+            if (existing.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing[0].number, body });
+            else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title: "Wind observation collection failed", body, labels: ["wind-obs-failure"] });

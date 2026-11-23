@@ -1,0 +1,757 @@
+{
+ "note": "US wind stations (NWS api.weather.gov ids) within 40 km of each app resort, from the 2026-11-23 probe (scripts/archive/wind-probe.js). Vetting for exposure/height is W0.5; remove stations here to stop collecting them.",
+ "nws": {
+  "palisades": [
+   {
+    "id": "HLLC1",
+    "name": "HELL HOLE",
+    "km": 19.7,
+    "elev": 1597
+   }
+  ],
+  "heavenly": [
+   {
+    "id": "LIB08",
+    "name": "111Line-Columbine Trail",
+    "km": 4.9,
+    "elev": 1980
+   },
+   {
+    "id": "KTVL",
+    "name": "South Lake Tahoe, Lake Tahoe Airport",
+    "km": 6.8,
+    "elev": 1907
+   },
+   {
+    "id": "NV019",
+    "name": "Genoa",
+    "km": 11.2,
+    "elev": 1476
+   },
+   {
+    "id": "RWBC1",
+    "name": "BARON",
+    "km": 11.6,
+    "elev": 1931
+   },
+   {
+    "id": "NV021",
+    "name": "SW Gardnerville (HWY 88)",
+    "km": 12.6,
+    "elev": 1439
+   },
+   {
+    "id": "LIB02",
+    "name": "TAH7300-DL Bliss",
+    "km": 16.2,
+    "elev": 2081
+   },
+   {
+    "id": "HVSC1",
+    "name": "WRC AT HOPE VALLEY NEAR WOODFORDS 4W",
+    "km": 16.7,
+    "elev": 2104
+   },
+   {
+    "id": "LIB03",
+    "name": "MUL1296-Woodfords",
+    "km": 18.3,
+    "elev": 1685
+   }
+  ],
+  "kirkwood": [
+   {
+    "id": "OWNC1",
+    "name": "OWENS CAMP",
+    "km": 15.8,
+    "elev": 1597
+   },
+   {
+    "id": "STUC1",
+    "name": "COTTAGE",
+    "km": 39.3,
+    "elev": 1848
+   }
+  ],
+  "sugar-bowl": [
+   {
+    "id": "HLLC1",
+    "name": "HELL HOLE",
+    "km": 25.9,
+    "elev": 1597
+   },
+   {
+    "id": "KBLU",
+    "name": "Emigrant Gap, Blue Canyon Nyack Airport",
+    "km": 30.5,
+    "elev": 1610
+   },
+   {
+    "id": "FSHC1",
+    "name": "SEEDORCHARD",
+    "km": 39.7,
+    "elev": 1327
+   }
+  ],
+  "northstar": [
+   {
+    "id": "KTRK",
+    "name": "Truckee-Tahoe",
+    "km": 5.7,
+    "elev": 1798
+   },
+   {
+    "id": "LIB32",
+    "name": "TAH-5201 Lake Forest",
+    "km": 8.7,
+    "elev": 1928
+   },
+   {
+    "id": "D9019",
+    "name": "DW9019 Olympic Valley",
+    "km": 11.5,
+    "elev": 1980
+   },
+   {
+    "id": "KNXN2",
+    "name": "KNOX 2",
+    "km": 14.2,
+    "elev": 2307
+   },
+   {
+    "id": "TADC1",
+    "name": "TAHOE DONNER",
+    "km": 14.9,
+    "elev": 2255
+   },
+   {
+    "id": "NV001",
+    "name": "Incline Village (Lakeshore Blvd)",
+    "km": 15.9,
+    "elev": 1898
+   },
+   {
+    "id": "NV018",
+    "name": "Incline Village (Fairview Blvd)",
+    "km": 16.3,
+    "elev": 2116
+   },
+   {
+    "id": "NV017",
+    "name": "Incline Village (Mill Creek)",
+    "km": 18,
+    "elev": 1998
+   }
+  ],
+  "mt-rose": [
+   {
+    "id": "SLIDE",
+    "name": "SLIDE MOUNTAIN",
+    "km": 1.5,
+    "elev": 2941
+   },
+   {
+    "id": "NV006",
+    "name": "Franktown Creek",
+    "km": 6.5,
+    "elev": 1541
+   },
+   {
+    "id": "NV018",
+    "name": "Incline Village (Fairview Blvd)",
+    "km": 7.8,
+    "elev": 2116
+   },
+   {
+    "id": "GALN2",
+    "name": "GALENA",
+    "km": 8.2,
+    "elev": 1710
+   },
+   {
+    "id": "KNXN2",
+    "name": "KNOX 2",
+    "km": 8.3,
+    "elev": 2307
+   },
+   {
+    "id": "NV017",
+    "name": "Incline Village (Mill Creek)",
+    "km": 9.5,
+    "elev": 1998
+   },
+   {
+    "id": "NV001",
+    "name": "Incline Village (Lakeshore Blvd)",
+    "km": 10.2,
+    "elev": 1898
+   },
+   {
+    "id": "NV005",
+    "name": "New Washoe City",
+    "km": 11,
+    "elev": 1594
+   }
+  ],
+  "sierra-at-tahoe": [
+   {
+    "id": "OWNC1",
+    "name": "OWENS CAMP",
+    "km": 15.1,
+    "elev": 1597
+   }
+  ],
+  "homewood": [
+   {
+    "id": "HMDC1",
+    "name": "HOMEWOOD",
+    "km": 0.5,
+    "elev": 2170
+   },
+   {
+    "id": "D9413",
+    "name": "DW9413 Homewood",
+    "km": 2.1,
+    "elev": 1943
+   },
+   {
+    "id": "LIB32",
+    "name": "TAH-5201 Lake Forest",
+    "km": 13.1,
+    "elev": 1928
+   },
+   {
+    "id": "LIB02",
+    "name": "TAH7300-DL Bliss",
+    "km": 13.1,
+    "elev": 2081
+   },
+   {
+    "id": "D9019",
+    "name": "DW9019 Olympic Valley",
+    "km": 14.6,
+    "elev": 1980
+   },
+   {
+    "id": "KTVL",
+    "name": "South Lake Tahoe, Lake Tahoe Airport",
+    "km": 25.2,
+    "elev": 1907
+   },
+   {
+    "id": "NV001",
+    "name": "Incline Village (Lakeshore Blvd)",
+    "km": 26.3,
+    "elev": 1898
+   },
+   {
+    "id": "KTRK",
+    "name": "Truckee-Tahoe",
+    "km": 26.5,
+    "elev": 1798
+   }
+  ],
+  "mammoth": [
+   {
+    "id": "DPPC1",
+    "name": "DEVILS POST PILE RAWS NEAR MAMMOTH LAKES 6WSW DPO",
+    "km": 4.8,
+    "elev": 2446
+   },
+   {
+    "id": "TUMC1",
+    "name": "TUOLUMNE MEADOWS TUM",
+    "km": 37.9,
+    "elev": 2638
+   },
+   {
+    "id": "KSPC1",
+    "name": "KAISER POINT NEAR LAKESHORE 4ENE  (KSP)",
+    "km": 38.2,
+    "elev": 2783
+   }
+  ],
+  "mt-baker": [
+   {
+    "id": "MRTW1",
+    "name": "MARTEN RIDGE",
+    "km": 10.6,
+    "elev": 1073
+   },
+   {
+    "id": "MNOW1",
+    "name": "MF NOOKSACK",
+    "km": 19.2,
+    "elev": 1515
+   },
+   {
+    "id": "KCFW1",
+    "name": "KIDNEY CREEK",
+    "km": 21,
+    "elev": 1062
+   },
+   {
+    "id": "ELSW1",
+    "name": "ELBOW LAKE",
+    "km": 25.3,
+    "elev": 927
+   }
+  ],
+  "crystal": [
+   {
+    "id": "TWHIT",
+    "name": "White Pass",
+    "km": 33.6,
+    "elev": 1371
+   },
+   {
+    "id": "BUSW1",
+    "name": "BURNT MOUNTAIN",
+    "km": 36.4,
+    "elev": 1271
+   }
+  ],
+  "stevens-pass": [
+   {
+    "id": "SKKW1",
+    "name": "JOHNSON RIDGE",
+    "km": 16.2,
+    "elev": 618
+   }
+  ],
+  "mt-bachelor": [
+   {
+    "id": "K6K5",
+    "name": "SISTERS",
+    "km": 37.3,
+    "elev": 966
+   }
+  ],
+  "telluride": [
+   {
+    "id": "KTEX",
+    "name": "Telluride, Telluride Regional Airport",
+    "km": 7.5,
+    "elev": 2767
+   }
+  ],
+  "crested-butte": [
+   {
+    "id": "CO100",
+    "name": "082W04010RWS1RHS at Cemetry Ln Aspen",
+    "km": 35.5,
+    "elev": 2419
+   },
+   {
+    "id": "KASE",
+    "name": "Aspen-Pitkin County Airport",
+    "km": 38.5,
+    "elev": 2339
+   },
+   {
+    "id": "KGUC",
+    "name": "Gunnison, Gunnison-Crested Butte Regional Airport",
+    "km": 39.7,
+    "elev": 2340
+   }
+  ],
+  "aspen-highlands": [
+   {
+    "id": "CO100",
+    "name": "082W04010RWS1RHS at Cemetry Ln Aspen",
+    "km": 4.1,
+    "elev": 2419
+   },
+   {
+    "id": "KASE",
+    "name": "Aspen-Pitkin County Airport",
+    "km": 7.3,
+    "elev": 2339
+   },
+   {
+    "id": "CO101",
+    "name": "082E02370RWS1SEC at 2 Rivers Rd Basalt",
+    "km": 25.8,
+    "elev": 2034
+   }
+  ],
+  "steamboat": [
+   {
+    "id": "STORM",
+    "name": "Storm Peak Laboratory",
+    "km": 2.6,
+    "elev": 3210
+   },
+   {
+    "id": "CO102",
+    "name": "040W13445RWS1RHS at Mt Werner Rd",
+    "km": 4,
+    "elev": 2067
+   },
+   {
+    "id": "KSBS",
+    "name": "Steamboat Springs",
+    "km": 10.3,
+    "elev": 2100
+   },
+   {
+    "id": "CSU81",
+    "name": "Clark",
+    "km": 30.8,
+    "elev": 2201
+   },
+   {
+    "id": "KHDN",
+    "name": "Hayden, Yampa Valley Airport",
+    "km": 37.5,
+    "elev": 2012
+   }
+  ],
+  "vail": [
+   {
+    "id": "G3823",
+    "name": "GW3823 VAIL",
+    "km": 4,
+    "elev": 2484
+   },
+   {
+    "id": "CO092",
+    "name": "070E17110RWS1RP1 at Dowd Junction",
+    "km": 6.8,
+    "elev": 2370
+   },
+   {
+    "id": "CAVLP",
+    "name": "VAIL PASS CDOT YARD",
+    "km": 11.3,
+    "elev": 3124
+   },
+   {
+    "id": "CO095",
+    "name": "070W15580RWS1RHS - 0.9 mi W of CO-131",
+    "km": 28.6,
+    "elev": 2130
+   }
+  ],
+  "breckenridge": [
+   {
+    "id": "KCCU",
+    "name": "Copper Mountain - Red Cliff Pass",
+    "km": 6.2,
+    "elev": 3666
+   },
+   {
+    "id": "KLXV",
+    "name": "Leadville, Lake County Airport",
+    "km": 34.1,
+    "elev": 3026
+   }
+  ],
+  "arapahoe-basin": [
+   {
+    "id": "KCCU",
+    "name": "Copper Mountain - Red Cliff Pass",
+    "km": 29.3,
+    "elev": 3666
+   }
+  ],
+  "snowbird": [
+   {
+    "id": "UT224",
+    "name": "SR-224 at Meadows Drive",
+    "km": 15.4,
+    "elev": 2041
+   },
+   {
+    "id": "KHCR",
+    "name": "Heber Valley Airport",
+    "km": 22.2,
+    "elev": 1706
+   },
+   {
+    "id": "KSVR",
+    "name": "South Valley Regional Airport",
+    "km": 28.5,
+    "elev": 1401
+   },
+   {
+    "id": "KSLC",
+    "name": "Salt Lake City, Salt Lake City International Airport",
+    "km": 33.4,
+    "elev": 1288
+   }
+  ],
+  "alta": [
+   {
+    "id": "UT224",
+    "name": "SR-224 at Meadows Drive",
+    "km": 14.1,
+    "elev": 2041
+   },
+   {
+    "id": "KHCR",
+    "name": "Heber Valley Airport",
+    "km": 20.2,
+    "elev": 1706
+   },
+   {
+    "id": "KSVR",
+    "name": "South Valley Regional Airport",
+    "km": 30.7,
+    "elev": 1401
+   },
+   {
+    "id": "KSLC",
+    "name": "Salt Lake City, Salt Lake City International Airport",
+    "km": 35.3,
+    "elev": 1288
+   }
+  ],
+  "brighton": [
+   {
+    "id": "UT224",
+    "name": "SR-224 at Meadows Drive",
+    "km": 10.8,
+    "elev": 2041
+   },
+   {
+    "id": "KHCR",
+    "name": "Heber Valley Airport",
+    "km": 18.1,
+    "elev": 1706
+   },
+   {
+    "id": "KSVR",
+    "name": "South Valley Regional Airport",
+    "km": 34.3,
+    "elev": 1401
+   },
+   {
+    "id": "KSLC",
+    "name": "Salt Lake City, Salt Lake City International Airport",
+    "km": 37.7,
+    "elev": 1288
+   }
+  ],
+  "solitude": [
+   {
+    "id": "UT224",
+    "name": "SR-224 at Meadows Drive",
+    "km": 9.6,
+    "elev": 2041
+   },
+   {
+    "id": "KHCR",
+    "name": "Heber Valley Airport",
+    "km": 20.5,
+    "elev": 1706
+   },
+   {
+    "id": "KSVR",
+    "name": "South Valley Regional Airport",
+    "km": 33.1,
+    "elev": 1401
+   },
+   {
+    "id": "KSLC",
+    "name": "Salt Lake City, Salt Lake City International Airport",
+    "km": 35.6,
+    "elev": 1288
+   }
+  ],
+  "park-city": [
+   {
+    "id": "UT224",
+    "name": "SR-224 at Meadows Drive",
+    "km": 4.2,
+    "elev": 2041
+   },
+   {
+    "id": "KHCR",
+    "name": "Heber Valley Airport",
+    "km": 19.6,
+    "elev": 1706
+   },
+   {
+    "id": "KSVR",
+    "name": "South Valley Regional Airport",
+    "km": 39.1,
+    "elev": 1401
+   },
+   {
+    "id": "KSLC",
+    "name": "Salt Lake City, Salt Lake City International Airport",
+    "km": 39.7,
+    "elev": 1288
+   }
+  ],
+  "snowbasin": [
+   {
+    "id": "KOGD",
+    "name": "Ogden-Hinckley Airport",
+    "km": 12.3,
+    "elev": 1353
+   }
+  ],
+  "powder-mountain": [
+   {
+    "id": "KOGD",
+    "name": "Ogden-Hinckley Airport",
+    "km": 28.5,
+    "elev": 1353
+   },
+   {
+    "id": "KBMC",
+    "name": "Brigham City Regional Airport",
+    "km": 30.5,
+    "elev": 1289
+   }
+  ],
+  "jackson-hole": [
+   {
+    "id": "KJAC",
+    "name": "Jackson, Jackson Hole Airport",
+    "km": 9.4,
+    "elev": 1966
+   },
+   {
+    "id": "D0414",
+    "name": "DW0414 Moran",
+    "km": 39.1,
+    "elev": 2057
+   }
+  ],
+  "grand-targhee": [
+   {
+    "id": "KJAC",
+    "name": "Jackson, Jackson Hole Airport",
+    "km": 26.4,
+    "elev": 1966
+   },
+   {
+    "id": "D0414",
+    "name": "DW0414 Moran",
+    "km": 35.7,
+    "elev": 2057
+   }
+  ],
+  "sun-valley": [
+   {
+    "id": "KSUN",
+    "name": "Hailey, Friedman Memorial Airport",
+    "km": 19.6,
+    "elev": 1621
+   }
+  ],
+  "big-sky": [
+   {
+    "id": "YCBAS",
+    "name": "Yellowstone Club - Base Area",
+    "km": 4.8,
+    "elev": 2195
+   },
+   {
+    "id": "YLWM8",
+    "name": "YELLOW MULE",
+    "km": 13.7,
+    "elev": 2804
+   },
+   {
+    "id": "KEKS",
+    "name": "Ennis - Big Sky Airport",
+    "km": 17.9,
+    "elev": 1641
+   },
+   {
+    "id": "MTKAR",
+    "name": "Karst US-191 MP 55.3",
+    "km": 20.6,
+    "elev": 1737
+   },
+   {
+    "id": "SGOM8",
+    "name": "SHENANGO",
+    "km": 24,
+    "elev": 1643
+   },
+   {
+    "id": "ENNM8",
+    "name": "ENNIS",
+    "km": 26.2,
+    "elev": 1541
+   },
+   {
+    "id": "MTNOR",
+    "name": "Norris Hill US-287 MP 60",
+    "km": 32.4,
+    "elev": 1737
+   },
+   {
+    "id": "SHFM8",
+    "name": "SHOWER FALLS",
+    "km": 38.5,
+    "elev": 2469
+   }
+  ],
+  "taos": [
+   {
+    "id": "KAXX",
+    "name": "Angel Fire Airport",
+    "km": 22.7,
+    "elev": 2539
+   }
+  ],
+  "wolf-creek": [
+   {
+    "id": "KCPW",
+    "name": "Pagosa Springs, Wolf Creek Pass",
+    "km": 2.6,
+    "elev": 3584
+   }
+  ],
+  "whiteface": [
+   {
+    "id": "KSLK",
+    "name": "Saranac Lake, Adirondack Regional Airport",
+    "km": 25.9,
+    "elev": 507
+   }
+  ],
+  "stowe": [
+   {
+    "id": "KMVL",
+    "name": "Morrisville-Stowe State Airport",
+    "km": 14.2,
+    "elev": 216
+   },
+   {
+    "id": "KBTV",
+    "name": "Burlington, Burlington International Airport",
+    "km": 29.1,
+    "elev": 101
+   }
+  ],
+  "killington": [
+   {
+    "id": "KRUT",
+    "name": "Rutland-Southern Vermont Regional Airport",
+    "km": 14.6,
+    "elev": 240
+   },
+   {
+    "id": "KVSF",
+    "name": "Springfield, Hartness State Springfield Airport",
+    "km": 38.1,
+    "elev": 175
+   }
+  ],
+  "jay-peak": [
+   {
+    "id": "KEFK",
+    "name": "Northeast Kingdom International Airport",
+    "km": 22.5,
+    "elev": 285
+   }
+  ]
+ }
+}

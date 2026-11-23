@@ -17,6 +17,8 @@
 export const SCHEDULE = [
   { file: "watchdog.yml", every: 1, offset: 0 },
   { file: "dynamical-history.yml", every: 1, offset: 0 },
+  // 2026-11-23: wind observations (ECCC keeps ~28 days; every missed hour is permanent). Each run re-takes the last 6 h.
+  { file: "wind-obs.yml", every: 1, offset: 0 },
   { file: "regional-eps.yml", every: 3, offset: 1 },   // 01, 04, … UTC: after DWD/MeteoSwiss publish
   { file: "dynamical-ens.yml", every: 3, offset: 2 },
   { file: "nbm.yml", every: 3, offset: 2 },

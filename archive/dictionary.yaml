@@ -240,6 +240,18 @@ sources:
       - AWDB reports English units in station-local standard time; rows are converted to metric and UTC.
       - No Canadian coverage; BC and the border Rockies use bc-asws below.
 
+  wind-obs:
+    name: Wind observations, ECCC SWOB-ML (Canada) and NWS stations (US)
+    kind: observation (ground truth for the wind veto model) and mapping
+    url: https://api.weather.gc.ca/collections/swob-realtime and https://api.weather.gov/stations
+    cadence: hourly (wind-obs.yml, Worker-scheduled); each run takes the last 6 h, so runs overlap on purpose (views keep the newest fetch per station, time and variable)
+    since: 2026-11-23
+    raw: every response, gzipped JSON
+    notes:
+      - "Variables wind_speed_mean, wind_gust_max (km/h) and wind_dir_mean (deg, FROM). station_id is eccc:<msc_id> or nws:<id>; model is eccc-swob or nws; elevation_m is the STATION's, and most stations sit in valleys far below the lifts."
+      - "ECCC: 10-minute mean and 10-minute maximum (the gust), period_label 10min, valid_end is the observation time. NWS: period_label obs, the averaging period is not stated by NWS. Null or quality-flagged values write no row; missing is never 0."
+      - "Mapping rows (candidate_distance, km) say which stations are within 40 km of which resort. ECCC stations are found each run; the US list is src/data/wind-stations.json (from scripts/archive/wind-probe.js). Which stations count for which tier is decided in W0.5, not here."
+      - "ECCC origin keeps about 28 days: a missed day cannot be refilled."
   slf:
     name: SLF Measurement API (WSL Institute for Snow and Avalanche Research), Switzerland
     kind: observation (ground truth for Swiss and nearby Alpine resorts) and mapping
