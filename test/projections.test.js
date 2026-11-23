@@ -128,8 +128,8 @@ test("fitted SLR rescales each hour by SLR(T) ÷ 7; without one, no snowSlr", ()
 test("slr-v3: a promoted region line for its resorts, pooled for the rest", () => {
   const p = { a: 11.6, b: -0.37, clamp: [5, 25], region_of: { kirkwood: "Sierra & Cascades", alta: "Rockies" },
     regions: { "Sierra & Cascades": { a: 9.1, b: -0.2, promoted: true }, Rockies: { a: 12, b: -0.5, promoted: false } } };
-  assert.deepEqual(slrLineFor(p, "kirkwood"), { a: 9.1, b: -0.2, clamp: [5, 25], region: "Sierra & Cascades" });
-  assert.deepEqual(slrLineFor(p, "alta"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null });
-  assert.deepEqual(slrLineFor(p, "nowhere"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null });
+  assert.deepEqual(slrLineFor(p, "kirkwood"), { a: 9.1, b: -0.2, clamp: [5, 25], region: "Sierra & Cascades", warm: null });
+  assert.deepEqual(slrLineFor(p, "alta"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null, warm: null });
+  assert.deepEqual(slrLineFor(p, "nowhere"), { a: 11.6, b: -0.37, clamp: [5, 25], region: null, warm: null });
   assert.equal(slrLineFor(null, "alta"), null);
 });
