@@ -42,7 +42,7 @@ def check(con, today, max_lag=0, models=MODELS):
     Lead 1 precipitation only: the series the blend and the scoring read."""
     expect = today - timedelta(days=1)
     q = f"""
-      SELECT resort_id, model, CAST(max(valid_start) AS DATE) AS last_day, max(fetched_at) AS fetched
+      SELECT resort_id, model, CAST(max(valid_start) AS DATE) AS last_day, CAST(max(fetched_at) AS VARCHAR) AS fetched
       FROM raw
       WHERE run_id LIKE '{LIVE_RUN_PREFIX}%' AND variable = 'precip' AND period_label = 'previous_day1'
       GROUP BY resort_id, model"""
