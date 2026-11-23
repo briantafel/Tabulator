@@ -109,6 +109,21 @@ sources:
       - Same row shape as dwd-icon-eps. MeteoSwiss does not publish SNOW_CON, so snow_we is grid-scale snow only.
       - "Licence: MeteoSwiss Open Government Data. Cite: Source: MeteoSwiss."
       - "Profile pass (parser regional-eps-profile-1, from 2026-11-11): freezing_level (HZEROCL) and snow_limit (SNOWLMT), m above sea level, INSTANT rows at 00/06/12/18 UTC, when the STAC offers them. Fill values (≤ −900, and 9999 = no 0 °C level / no snow limit) are dropped, not stored. The STAC offers T, QV, P, U, V, W on model levels only (no RELHUM, no FI, no pressure levels; checked 2026-11-11), so a full Swiss profile would need model-level files plus HHL."
+  era5:
+    name: ERA5 reanalysis at resort points (Earthmover's copy on AWS; anonymous, CC BY 4.0; ECMWF / Copernicus C3S)
+    kind: reanalysis
+    url: https://registry.opendata.aws/earthmover-era5/
+    models:
+      era5: ERA5 hourly 0.25°, read 3-hourly
+    cadence: one-time history, workflow era5-history.yml (manual); done markers under era5/done/<yyyy-mm>.json
+    since: 2026-11-22 (covers winters 2020-21 … 2025-26 by default; ERA5 runs to 2026-06-30)
+    raw: not kept (re-readable from the public store)
+    notes:
+      - Purpose — label past storms by flow (crest-level wind direction) so model bias can be scored by storm type. A reanalysis, so at forecast time the flow label must come from a forecast; a small known mismatch.
+      - Nearest 0.25° cell; tier "grid"; elevation_m = the cell's ERA5 surface height, so temp_2m / dewpoint_2m are at that height, not the resort's.
+      - "Instants every 3 h (00, 03 … 21 UTC): wind_u/v_700, temp_700, rh_700, omega_700, wind_u/v_850, temp_850, wind_u/v_500, height_500 (m), temp_2m, dewpoint_2m, pwat (total column water vapour, mm), cape, mslp (hPa)."
+      - "3-hour sums ending at each instant (period_label 3h): precip, snowfall (mm water; ERA5 hourly accumulations, tiny negative round-off clipped to 0)."
+      - Wind direction FROM = atan2(−u, −v) in degrees; speed = hypot(u, v). parser_version era5-history-1.
   dynamical-ens:
     name: Global ensembles from dynamical.org (Icechunk/Zarr on AWS; free, no quota)
     kind: forecast

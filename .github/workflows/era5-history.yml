@@ -1,0 +1,57 @@
+name: ERA5 history at resort points (past winters; flow for storm typing)
+
+# Added 2026-11-22 (Brian: "Let's get that data and any historical data").
+# Reads Earthmover's free ERA5 copy on AWS (anonymous, CC BY 4.0) and archives
+# crest-level flow, temperatures, moisture and precipitation at every resort,
+# 3-hourly, for the winters asked. Done markers (era5/done/<yyyy-mm>.json) make
+# reruns skip months already archived. Manual only; when the summary says
+# ERA5 HISTORY COMPLETE there is nothing left to do.
+on:
+  workflow_dispatch:
+    inputs:
+      winters:
+        description: "First-last winter start years (2020-2025 = 2020-21 … 2025-26)"
+        type: string
+        default: "2020-2025"
+      only_month:
+        description: "One month only (YYYY-MM), for a test"
+        type: string
+        default: ""
+      dry_run:
+        description: "Build rows but upload nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: era5-history
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install icechunk xarray "zarr>=3" numcodecs pcodec numpy duckdb==2.0.0
+      - name: Load ERA5 months
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          args="--winters ${{ inputs.winters }}"
+          [ -n "${{ inputs.only_month }}" ] && args="$args --only-month ${{ inputs.only_month }}"
+          [ "${{ inputs.dry_run }}" = "true" ] && args="$args --dry-run"
+          python3 scripts/archive/era5_history.py work $args 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          exit ${PIPESTATUS[0]}
