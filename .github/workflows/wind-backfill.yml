@@ -1,0 +1,62 @@
+name: Wind history backfill (one-time, resumable)
+
+# W2 of claude/wind-model-plan-2026-11-23.md. Loads public HISTORICAL wind observations (IEM ASOS and HADS, ECCC climate hourly
+# and daily, SNOTEL) into the archive as source=wind-obs so the wind veto model can be scored this season. Started by hand,
+# one source per run; each finished station-month is marked done in the bucket (backfill/done/wind-*), so a rerun only does
+# what is missing. See scripts/archive/wind-backfill.js. Own concurrency group; touches nothing outside source=wind-obs and
+# its markers, and not the live wind-obs workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "iem-asos, iem-hads, eccc-hourly, eccc-daily, snotel, or report (prints the table from the done markers)"
+        type: string
+        default: iem-asos
+      start:
+        description: "first day (YYYY-MM-DD)"
+        type: string
+        default: "2023-10-01"
+      end:
+        description: "last day (YYYY-MM-DD)"
+        type: string
+        default: "2026-11-22"
+      dry_run:
+        description: "fetch and parse only: nothing uploaded, no markers"
+        type: boolean
+        default: true
+      station:
+        description: "optional: only these station ids, comma separated (for a small dry run)"
+        type: string
+        default: ""
+permissions: { contents: read }
+concurrency:
+  group: wind-backfill
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install duckdb==2.0.0
+      - name: Unit tests
+        run: node --test test/wind-backfill.test.js
+      - name: Backfill
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          WB_SOURCE: ${{ inputs.source }}
+          WB_START: ${{ inputs.start }}
+          WB_END: ${{ inputs.end }}
+          WB_DRY: ${{ inputs.dry_run }}
+          WB_STATION: ${{ inputs.station }}
+        run: node scripts/archive/wind-backfill.js work
