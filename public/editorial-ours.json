@@ -1,75 +1,58 @@
 {
- "generatedAt": "2026-11-23T19:22:25.526Z",
- "forecastGeneratedAt": "2026-11-23T06:07:47.272Z",
+ "generatedAt": "2026-11-23T21:14:16.440Z",
+ "forecastGeneratedAt": "2026-11-23T21:07:43.685Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-23T19:22:22.267Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-23T06:14:36.859Z",
+ "writtenAt": "2026-11-23T21:14:16.440Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-23",
-  "to": "2026-11-27",
-  "days": 5,
-  "toLabel": "Friday Nov 27"
+  "to": "2026-11-28",
+  "days": 6,
+  "toLabel": "Saturday Nov 28"
  },
- "overview": "A string of Pacific systems keeps the Coast Mountains and Cascades wet this week, with snow limited to higher elevations. The northern Rockies stay mostly dry until a stronger system and gusty westerly winds arrive Thursday into Friday.",
+ "overview": "A series of Pacific systems keeps the Cascades and Coast Mountains wet through midweek, with snow levels rising and rain mixing in. Colder air sweeps the Northeast and Rockies this week, and a strong Thanksgiving storm brings mostly rain to the East, with ice possible in Vermont.",
  "regions": [
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Rain is the main story here, with snow confined to the high ground. Whistler's 32 inches is the total for the week, and most of it falls Tuesday and Wednesday. Expect mixed precipitation, and rain by Thursday that will turn the upper snowpack heavy and wet.",
-   "basis": "hdj3af"
-  },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of Pacific fronts brings widespread rain, gusty southeast winds and snow at the higher passes. Mt. Baker leads with 19 inches for the week, Wednesday's 8 inches its biggest day. The National Weather Service is calling for more, 13 to 28 inches at Crystal Mountain from Monday through Thursday night.",
-   "basis": "1160tx2"
+   "text": "A series of systems moves across western Washington this week, with rain arriving Tuesday and snow levels climbing to about 5,000 feet. Mt. Baker is the top resort, with 59 inches forecast for the week, including a 20-inch day Thursday. Winter Weather Advisory is in effect Monday night through Tuesday night. Expect rain at lower elevations.",
+   "basis": "1r6twgq"
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Rain dominates the Coast Mountains through midweek as warm, moist air moves in. Whistler leads with 59 inches for the week, though much of it falls as wet snow or rain. Tuesday brings the biggest snow day, with 24 inches forecast. Cypress Mountain sees mostly rain above freezing.",
+   "basis": "1tq6t4l"
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "A sharp cold front brings gusty winds and much colder air Tuesday, followed by dry weather Wednesday. A widespread rain event arrives late Thanksgiving through Friday, with some sleet or freezing rain at the onset. Killington leads at 20 inches, with 12 inches Friday, though freezing rain is likely there Thursday night and Friday.",
+   "basis": "5v4upm"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Monday brings a passing trough and a chance of light snow across western Wyoming. Tuesday and Wednesday turn drier and milder under a ridge, with breezy winds. Jackson Hole's 9 inches come mostly Thursday and Friday as a stronger system arrives, and the National Weather Service expects more at Grand Targhee, 4 to 12 inches.",
-   "basis": "1xmz077"
+   "text": "Snow showers taper off in western Wyoming by evening, with dry, milder weather Tuesday and Wednesday. A system moves in Thursday evening, bringing travel impacts Friday into the weekend. Grand Targhee leads at 23 inches, including 12 inches Saturday. In Montana, strong winds and blowing snow are expected along the Rocky Mountain Front.",
+   "basis": "b9fult"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Rain and flurries dominate, with snow mixing in only on Thursday when temperatures sit around freezing. Whitewater and Revelstoke each show 7 inches for the week, with Thursday the best day at both. Expect wet conditions and changing snow levels through the weekend.",
-   "basis": "120598d"
+   "text": "Mostly rain and flurries are forecast for the Kootenays this week, with a few brief breaks. Whitewater leads with 19 inches, including a 9-inch day Thursday. Snow will be wet and heavy at lower elevations, with rain showers likely Thursday night.",
+   "basis": "1dcwam5"
+  },
+  {
+   "key": "the Okanagan",
+   "title": "Okanagan",
+   "text": "Showers and periods of rain are likely in the Okanagan through midweek, with a break Friday. Big White leads at 17 inches, with a 7-inch day Thursday. Snow levels rise to about 800 metres Tuesday.",
+   "basis": "58bcm6"
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center expects a wet pattern to persist through the holiday weekend for the West Coast, with the next system reaching it around Saturday Nov 28 and possibly a deeper trough by Sunday Nov 29.",
-  "sources": [
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-23T17:06:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-23T17:54:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS TFX Area Forecast Discussion",
-    "issuedAt": "2026-11-23T18:19:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-23T08:25:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-22T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
@@ -77,15 +60,19 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-23T06:14:30.207Z"
+   "issuedAt": "2026-11-23T21:14:06.096Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
    "issuedAt": "2026-11-23T17:06:00+00:00"
   },
   {
+   "name": "NWS BTV Area Forecast Discussion",
+   "issuedAt": "2026-11-23T19:03:00+00:00"
+  },
+  {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T17:54:00+00:00"
+   "issuedAt": "2026-11-23T20:25:00+00:00"
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
@@ -93,12 +80,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-23T19:22:25.526Z"
+   "issuedAt": "2026-11-23T21:14:16.440Z"
   }
  ],
  "api": {
   "day": "2026-11-23",
-  "calls": 7
+  "calls": 9
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
