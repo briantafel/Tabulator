@@ -83,7 +83,7 @@ jobs:
       - name: Open-Meteo run metadata (what does meta.json say about each model?)
         run: |
           # step 1b: which fields tell us when a model run was INGESTED, not only when it was initialised?
-          for id in ncep_hrrr_conus ncep_gfs025 ncep_gfs013 ecmwf_ifs025 cmc_gem_gdps cmc_gem_rdps cmc_gem_hrdps_continental ncep_nbm_conus; do
+          for id in ncep_hrrr_conus ncep_gfs025 ecmwf_ifs025 cmc_gem_gdps_15km cmc_gem_gdps_15km_upper_level cmc_gem_rdps_10km cmc_gem_hrdps cmc_gem_hrdps_west cmc_gem_geps ncep_nbm_conus; do
             echo "=== $id"
             curl -sS -m 20 "https://api.open-meteo.com/data/$id/static/meta.json" | python3 -c "
           import sys, json, datetime
