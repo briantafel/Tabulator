@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write  # commits public/season.json (only)
+  issues: write    # alert issue on failure
   actions: write   # to redeploy the site after that commit
 
 concurrency:
@@ -59,3 +60,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
+
+      - name: Open an issue on failure
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')   # the Worker starts this via workflow_dispatch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\n\npublic/season.json (Shaping up for trips past the forecast) was not refreshed; the app keeps the last good file. The next daily run retries.`;
+            const { data: existing } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "season-failure" });
+            if (existing.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing[0].number, body });
+            else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title: "Season-to-date build failed", body, labels: ["season-failure"] });
