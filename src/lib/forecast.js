@@ -161,8 +161,10 @@ export async function loadForecast() {
   const temps = flags["forecast.temps"] === "off" || preset ? null : await getJson("temps.json", null);
 
   /* Our own forecast (scripts/blend → lib/ours.js): drawn as a light mark on
-     Snow-Forecast's days. "off" in flags.json is the site-wide stop. */
-  const blend = flags.blend === "off" || preset ? null : await getJson("blend-forecast.json", null);
+     Snow-Forecast's days. Always fetched (the blend switch was retired in step 4
+     of the switches plan, 2026-11-23); forecast.snowfall decides whether it drives
+     the numbers. */
+  const blend = preset ? null : await getJson("blend-forecast.json", null);
 
   /* Season to date (scripts/season → lib/season.js), same rule. */
   const season = flags["season.shapingUp"] === "off" || preset ? null : await getJson("season.json", null);

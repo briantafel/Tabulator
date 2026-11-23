@@ -116,15 +116,17 @@ test("legacy keys: old name honoured, new name wins, retired and unknown ignored
   assert.deepEqual(flagProblems({ oldThing: "on" }, { table, retired }), []);
 });
 
-test("slr is retired (step 3): in RETIRED, not in the table, its flags.json key is ignored and not a problem", () => {
-  assert.ok(RETIRED.includes("slr"));
-  assert.ok(!FLAGS.some((f) => f.key === "slr" || f.legacy === "slr"));
-  for (const v of ["on", "off", "preview"]) {
-    assert.equal("slr" in parseFlags({ slr: v }), false);
-    assert.equal("slr" in resolve({ slr: v }), false);
-    assert.deepEqual(flagProblems({ slr: v }), []);
+test("slr (step 3) and blend (step 4) are retired: in RETIRED, not in the table, their flags.json keys are ignored and not a problem", () => {
+  for (const name of ["slr", "blend"]) {
+    assert.ok(RETIRED.includes(name), name);
+    assert.ok(!FLAGS.some((f) => f.key === name || f.legacy === name), name);
+    for (const v of ["on", "off", "preview"]) {
+      assert.equal(name in parseFlags({ [name]: v }), false);
+      assert.equal(name in resolve({ [name]: v }), false);
+      assert.deepEqual(flagProblems({ [name]: v }), []);
+    }
+    assert.deepEqual(parseFlags({ [name]: "off" }), FLAG_DEFAULTS, `a leftover ${name}: off changes nothing else`);
   }
-  assert.deepEqual(parseFlags({ slr: "off" }), FLAG_DEFAULTS, "a leftover slr: off changes nothing else");
 });
 
 test("table integrity: parents exist, come first, no cycles, names unique, no retired name reused", () => {
@@ -152,8 +154,8 @@ test("table integrity: parents exist, come first, no cycles, names unique, no re
   // Rows keep the storage keys App.jsx has always used (no localStorage migration).
   const storage = Object.fromEntries(FLAGS.filter((f) => f.storage).map((f) => [f.key, f.storage]));
   assert.deepEqual(storage, { [P]: "projections", "forecast.snowfall": "snowfall", "forecast.temps": "temps", weatherSource: "wxSource", "season.shapingUp": "season" });
-  assert.deepEqual(FLAGS.filter((f) => f.retiring).map((f) => f.key), ["blend", "weatherSource"]);
-  assert.equal(FLAGS.length, 13);
+  assert.deepEqual(FLAGS.filter((f) => f.retiring).map((f) => f.key), ["weatherSource"]);
+  assert.equal(FLAGS.length, 12);
 });
 
 test("a circular or missing parent is never on", () => {
@@ -206,13 +208,13 @@ test("today's flags.json resolves exactly as the old inline App.jsx logic did", 
        longRange shown = "on" !== "off" → true (then && feed.longrange, unchanged)
        slrOn = projections && "on" !== "off" → projections    (then && projections.slr, unchanged; since step 3 the
                "on" !== "off" term is gone, and "on" is what today's file says, so the value is the same)
-       blend file fetched = "on" !== "off" → true */
+       blend file fetched = "on" !== "off" → true; since step 4 it is always fetched (same outcome) */
   const expectFor = (ov) => {
     const proj = ov.p === true;
     const snow = ov.s !== false;
     return {
       [P]: proj, "forecast.snowfall": snow, "forecast.bands": snow, "forecast.temps": ov.t !== false,
-      blend: true, weatherSource: false, "season.shapingUp": ov.n !== false,
+      weatherSource: false, "season.shapingUp": ov.n !== false,
       "radar.peakResort": true, "terrain.map": true, "terrain.zoom": true, "terrain.vectors": true, "terrain.live": true,
       "forecast.longRange": true,
     };

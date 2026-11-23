@@ -64,7 +64,7 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
  *   parent    the switch this one needs. A child counts as on only when its parent resolves on. Declared here,
  *             never implied by the name.
  *   storage   the per-device override's localStorage key (unchanged: no migration, store.js VERSION untouched).
- *   retiring  true for blend and weatherSource, which keep their current names and rules until steps 4/7.
+ *   retiring  true for weatherSource, which keeps its current name and rule until step 7.
  *
  * Data gates (feed.temps, feed.blend + blendFresh, feed.season, longrange freshness and promoted leads) are not
  * here: they stay where the data is used. This table says only what the switches allow.
@@ -77,7 +77,6 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
  *     spread. Only ever read inside our snowfall, so its parent is forecast.snowfall.
  *   forecast.temps (2026-11-11) our temperature model (lib/temps.js). Still a Settings row in step 1; the plan
  *     makes it file-only in step 5.
- *   blend: whether blend-forecast.json is fetched at all. Retiring (step 4): snowfall becomes the stop.
  *   weatherSource (2026-11-11) shows the Settings → Weather row (government vs Snow-Forecast sky). Its resolved
  *     value means "the row is offered"; the phone's choice (wxSource) is a source name, not a boolean, and is
  *     applied in App.jsx. Retiring (step 7).
@@ -98,7 +97,6 @@ export const FLAGS = Object.freeze([
   F("forecast.snowfall", "row", "snowfall", { storage: "snowfall" }),
   F("forecast.bands", "file", "bands", { parent: "forecast.snowfall" }),
   F("forecast.temps", "row", "temps", { storage: "temps" }),
-  F("blend", "legacy", null, { retiring: true }),
   F("weatherSource", "legacy", null, { storage: "wxSource", retiring: true }),
   F("season.shapingUp", "row", "season", { storage: "season" }),
   F("radar.peakResort", "file", "peakResort"),
@@ -110,10 +108,10 @@ export const FLAGS = Object.freeze([
 ]);
 
 /* Names that have been switches and must never be reused, so an old phone or an old flags.json can't switch a
-   new feature on by accident. slr joined in step 3 (2026-11-23); blend and weatherSource join when they are
-   retired in code (steps 4, 7), and the legacy names join it in step 8. A retired name is not in FLAGS, so
+   new feature on by accident. slr joined in step 3 and blend in step 4 (2026-11-23); weatherSource joins when
+   it is retired in code (step 7), and the legacy names join it in step 8. A retired name is not in FLAGS, so
    nothing reads it. */
-export const RETIRED = Object.freeze(["slr"]);
+export const RETIRED = Object.freeze(["slr", "blend"]);
 
 /* Whether flagProblems reports a retired key that is still in flags.json. FALSE until step 8: Brian deletes the old
    keys from flags.json by hand after the code has stopped reading them (at least 24 h), and until then the file
