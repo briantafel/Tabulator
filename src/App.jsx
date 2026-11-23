@@ -18,7 +18,7 @@ import { score } from "./lib/scoring.js";
    unaliased import silently resolved to that instead — the storage
    read never ran and Reload forecast was one typo from breaking. */
 import { load as loadSaved, save as saveLocal } from "./lib/store.js";
-import { effectiveFlag, nextOverride, canChoose } from "./lib/flags.js";
+import { FLAG_DEFAULTS, resolveFlags, nextOverride, canChoose } from "./lib/flags.js";
 import { oursReadoutMatches } from "./lib/readout.js";
 import { extendFeed, MAX_DAYS } from "./lib/projections.js";
 import { applyTemps } from "./lib/temps.js";
@@ -117,42 +117,53 @@ export default function Tabulator() {
 
   useEffect(() => { load(); }, [load]);
 
-  const projMode = feedRaw?.flags?.projections ?? "off";
-  const projections = effectiveFlag(projMode, projOverride);
+  /* Every switch, resolved in one place (lib/flags.js resolveFlags): the site-wide mode from flags.json, this
+     phone's Settings choice for the switches that have a row, and each switch's parent. Data gates stay here,
+     next to the data. */
+  const modes = feedRaw?.flags ?? FLAG_DEFAULTS;
+  const flags = resolveFlags(modes, {
+    "forecast.projections": projOverride,
+    "forecast.temps": tempsOverride,
+    "season.shapingUp": seasonOverride,
+    "forecast.snowfall": snowOverride,
+  });
+  const projMode = modes["forecast.projections"];
+  const projections = flags["forecast.projections"];
   const chooseProjections = (on) => setProjOverride(nextOverride(on, projMode));
   /* With projections on, days 7–10 are appended to every resort (flagged, and
      never scored — see lib/scoring.js). Off: the feed exactly as loaded. */
   /* Settings → Weather is hidden unless flags.json shows it; hidden, every
      phone uses the government sky, whatever it chose before. */
-  const wxMode = feedRaw?.flags?.weatherSource ?? "off";
-  const wxEffective = canChoose(wxMode) ? wxSource : "nws";
-  const tempsMode = feedRaw?.flags?.temps ?? "off";
-  const tempsOn = effectiveFlag(tempsMode, tempsOverride) && !!feedRaw?.temps;
+  const wxMode = modes.weatherSource;
+  const wxEffective = flags.weatherSource ? wxSource : "nws";
+  const tempsMode = modes["forecast.temps"];
+  const tempsOn = flags["forecast.temps"] && !!feedRaw?.temps;
   const chooseTemps = (on) => setTempsOverride(nextOverride(on, tempsMode));
-  const seasonMode = feedRaw?.flags?.season ?? "off";
-  const seasonOn = effectiveFlag(seasonMode, seasonOverride) && !!feedRaw?.season;
+  const seasonMode = modes["season.shapingUp"];
+  const seasonOn = flags["season.shapingUp"] && !!feedRaw?.season;
   const chooseSeason = (on) => setSeasonOverride(nextOverride(on, seasonMode));
   /* Snowfall: our number or Snow-Forecast's on the six forecast days
      (lib/ours.js applySnowfall). Needs the blend file loaded. */
-  const snowMode = feedRaw?.flags?.snowfall ?? "off";
+  const snowMode = modes["forecast.snowfall"];
   /* Calibrated bands (Brian, 2026-11-18: "Let's try it. Make sure we can
-     revert."): no Settings row; flags.json `bands: "off"` reverts everyone. */
-  const bandsOn = (feedRaw?.flags?.bands ?? "off") !== "off";
+     revert."): no Settings row; flags.json `forecast.bands: "off"` reverts everyone.
+     Only read inside our snowfall, which is its parent. */
+  const bandsOn = flags["forecast.bands"];
   /* Radar headline names the resort behind "up to N" (2026-11-19). No
-     Settings row; flags.json `peakResort: "off"` reverts everyone. */
-  const peakOn = (feedRaw?.flags?.peakResort ?? "off") !== "off";
+     Settings row; flags.json `radar.peakResort: "off"` reverts everyone. */
+  const peakOn = flags["radar.peakResort"];
   /* Snow by terrain on the resort sheet (Brian, 2026-11-19: "roll this out for Alta only").
-     No Settings row; flags.json `terrainMap: "off"` removes it for everyone. */
-  const terrainOn = (feedRaw?.flags?.terrainMap ?? "off") !== "off";
-  /* Full screen + pan/zoom on that map (2026-11-19). flags.json `terrainZoom: "off"` removes the button. */
-  const terrainZoomOn = terrainOn && (feedRaw?.flags?.terrainZoom ?? "off") !== "off";
-  /* Snow by terrain labels drawn as vectors (2026-11-20). flags.json `terrainVectors: "off"` restores the baked-in labels. */
-  const terrainVectorsOn = terrainOn && (feedRaw?.flags?.terrainVectors ?? "off") !== "off";
-  /* The map drawn by the app for the sheet's days (2026-11-22). flags.json `terrainLive: "off"` restores the pictures. */
-  const terrainLiveOn = terrainVectorsOn && (feedRaw?.flags?.terrainLive ?? "off") !== "off";
-  /* Long-range odds on the resort sheet (2026-11-22). flags.json `longRange: "off"` removes them for everyone. */
-  const longRangeData = (feedRaw?.flags?.longRange ?? "off") !== "off" ? feedRaw?.longrange ?? null : null;
-  const snowOn = effectiveFlag(snowMode, snowOverride) && !!feedRaw?.blend;
+     No Settings row; flags.json `terrain.map: "off"` removes it for everyone, and with it zoom, vectors and live. */
+  const terrainOn = flags["terrain.map"];
+  /* Full screen + pan/zoom on that map (2026-11-19). `terrain.zoom: "off"` removes the button. */
+  const terrainZoomOn = flags["terrain.zoom"];
+  /* Snow by terrain labels drawn as vectors (2026-11-20). `terrain.vectors: "off"` restores the baked-in labels. */
+  const terrainVectorsOn = flags["terrain.vectors"];
+  /* The map drawn by the app for the sheet's days (2026-11-22). Needs vectors. `terrain.live: "off"` restores the pictures. */
+  const terrainLiveOn = flags["terrain.live"];
+  /* Long-range odds on the resort sheet (2026-11-22). `forecast.longRange: "off"` removes them for everyone. */
+  const longRangeData = flags["forecast.longRange"] ? feedRaw?.longrange ?? null : null;
+  const snowOn = flags["forecast.snowfall"] && !!feedRaw?.blend;
   const snowStale = snowOn && !blendFresh(feedRaw.blend);
   /* Flipping Snowfall reloads the page (Brian, 2026-11-18), so everything on
      screen, the written read-out included, comes from one set of numbers. */
@@ -166,8 +177,9 @@ export default function Tabulator() {
      2026-11-15: "We decided not to put things behind a switch. Instead it's
      just active."). Used whenever the projections file was built with a ratio;
      otherwise Open-Meteo's 7:1. flags.json `slr: "off"` remains an emergency
-     stop for the whole site; it has no per-phone setting. */
-  const slrOn = projections && (feedRaw?.flags?.slr ?? "on") !== "off" && !!feedRaw?.projections?.slr;
+     stop for the whole site; it has no per-phone setting. Its parent is
+     projections (lib/flags.js). Retiring in step 3 of the switches plan. */
+  const slrOn = flags.slr && !!feedRaw?.projections?.slr;
   /* Our temperatures go in AFTER the projected days are appended, so days
      1–10 all carry the same temperature. Off: untouched. */
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */

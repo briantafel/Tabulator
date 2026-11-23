@@ -1,0 +1,51 @@
+name: Flags check
+
+# Added 2026-11-23 (switches plan, step 1). Checks public/flags.json against the switch table in src/lib/flags.js:
+# unknown or retired keys, bad values, "preview" on a file-only switch, a child on with its parent off, an old and a
+# new name that disagree. Red run + an open issue labelled "flags" when anything is wrong.
+#
+# Deliberately its own workflow, never part of `npm test` or pages.yml: a flags.json edit made in an emergency
+# (say, an "off" that leaves a child on under it) must still deploy. This run only tells you about it, loudly.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - public/flags.json
+      - src/lib/flags.js
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: flags-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # No npm ci: the check needs only Node and two files in this repo.
+      - name: Check public/flags.json
+        run: |
+          set -o pipefail
+          node scripts/check-flags.js 2>&1 | tee /tmp/flags-check.txt
+      - name: Open or update a "flags" issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const out = fs.existsSync("/tmp/flags-check.txt") ? fs.readFileSync("/tmp/flags-check.txt", "utf8") : "(no output: the check did not run)";
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Run: ${runUrl}\nCommit: ${context.sha}\n\n\`\`\`\n${out}\n\`\`\`\n\nThe site still deploys; the app reads these switches as the check says. Fix public/flags.json (or the table in src/lib/flags.js) and the next push re-checks.`;
+            const { data: existing } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: "open", labels: "flags" });
+            if (existing.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing[0].number, body });
+            else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title: "flags.json check failed", body, labels: ["flags"] });

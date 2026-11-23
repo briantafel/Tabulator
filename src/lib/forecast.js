@@ -148,25 +148,28 @@ export async function loadForecast() {
   const editorialOurs = preset ? null : await getJson("editorial-ours.json", null);
 
   /* Site-wide switches (see lib/flags.js). Optional like the rest: no file,
-     a 404 or bad JSON all mean "everything off", i.e. the app as it was. */
+     a 404 or bad JSON all mean "everything off", i.e. the app as it was.
+     Keyed by the new names; the old names in flags.json are still read. A data
+     file is fetched when its switch is not "off" for everyone. */
   const flags = parseFlags(preset ? null : await getJson("flags.json", null));
 
   /* Days 7–10 (scripts/projections). Only fetched when the switch could be
      on for someone, and only ever used through lib/projections.js. */
-  const projections = flags.projections === "off" || preset ? null : await getJson("projections.json", null);
+  const projections = flags["forecast.projections"] === "off" || preset ? null : await getJson("projections.json", null);
 
   /* Our temperature model (scripts/temps → lib/temps.js), same rule. */
-  const temps = flags.temps === "off" || preset ? null : await getJson("temps.json", null);
+  const temps = flags["forecast.temps"] === "off" || preset ? null : await getJson("temps.json", null);
 
   /* Our own forecast (scripts/blend → lib/ours.js): drawn as a light mark on
      Snow-Forecast's days. "off" in flags.json is the site-wide stop. */
   const blend = flags.blend === "off" || preset ? null : await getJson("blend-forecast.json", null);
 
   /* Season to date (scripts/season → lib/season.js), same rule. */
-  const season = flags.season === "off" || preset ? null : await getJson("season.json", null);
+  const season = flags["season.shapingUp"] === "off" || preset ? null : await getJson("season.json", null);
 
-  /* Long-range odds (scripts/longrange), same rule; lib/longrange.js says when they are not shown. */
-  const longrange = flags.longRange === "off" || preset ? null : await getJson("longrange.json", null);
+  /* Long-range odds (scripts/longrange), same rule, and not when projections are "off" for everyone (the plan
+     makes projections its parent in step 6); lib/longrange.js says when they are not shown. */
+  const longrange = flags["forecast.longRange"] === "off" || flags["forecast.projections"] === "off" || preset ? null : await getJson("longrange.json", null);
 
   if (!forecast?.resorts?.length) throw new Error("forecast.json has no resorts");
 

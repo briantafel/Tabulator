@@ -37,7 +37,7 @@ test("a day past the 14th is not shown", () => {
 });
 
 test("the switch: off unless the file says otherwise", () => {
-  assert.equal(parseFlags(null).longRange, "off");
-  assert.equal(parseFlags({ longRange: "on" }).longRange, "on");
-  assert.equal(parseFlags({ longRange: "yes" }).longRange, "off");
+  assert.equal(parseFlags(null)["forecast.longRange"], "off");
+  assert.equal(parseFlags({ longRange: "on" })["forecast.longRange"], "on");
+  assert.equal(parseFlags({ longRange: "yes" })["forecast.longRange"], "off");
 });

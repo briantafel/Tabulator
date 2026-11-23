@@ -115,9 +115,9 @@ test("applySnowfall after dropPast: a file that still begins yesterday keeps eve
 });
 
 test("snowfall flag: known modes only, off by default", () => {
-  assert.equal(parseFlags({}).snowfall, "off");
-  assert.equal(parseFlags({ snowfall: "on" }).snowfall, "on");
-  assert.equal(parseFlags({ snowfall: "yes" }).snowfall, "off");
+  assert.equal(parseFlags({})["forecast.snowfall"], "off");
+  assert.equal(parseFlags({ snowfall: "on" })["forecast.snowfall"], "on");
+  assert.equal(parseFlags({ snowfall: "yes" })["forecast.snowfall"], "off");
 });
 
 test("trace floor: a blended day under the promoted floor is dry; unpromoted leads untouched", () => {
