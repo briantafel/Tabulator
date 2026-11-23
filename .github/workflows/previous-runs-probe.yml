@@ -1,0 +1,82 @@
+name: Previous Runs probe (is the live archive current? can a runner reach Open-Meteo?)
+
+# Added 2026-11-23 (plan-near-term-models, step 0). READ-ONLY: nothing is archived, scored or started.
+#  - freshness: syncs this season's open-meteo-previous-runs parquet from R2 and prints, per model and day, how many
+#    resorts hold lead-1 rain; fails (red) when any resort x model is behind yesterday. Same script backfill.yml now
+#    runs after every nightly pass.
+#  - net: DNS and per-address connect times to Open-Meteo's two API hosts from a GitHub runner, then 30 real
+#    requests, to tell "some of their addresses time out" from "the whole host is slow". The backfill's pieces hit
+#    UND_ERR_CONNECT_TIMEOUT on 25-45% of requests on 11-18, 11-20, 11-22, 11-23 and on none on 11-19, 11-21.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: previous-runs-probe
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0
+      - name: Tests
+        run: python3 scripts/archive/test_previous_runs_freshness.py
+      - name: Sync this season's rows
+        run: |
+          ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/source=open-meteo-previous-runs/month=2026-11/" "archive/source=open-meteo-previous-runs/month=2026-11/" \
+            --endpoint-url "$ENDPOINT" --only-show-errors
+          echo "files: $(find archive -name '*.parquet' | wc -l)"
+      - name: Freshness
+        run: python3 scripts/archive/previous_runs_freshness.py archive
+
+  net:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: DNS and per-address connect
+        run: |
+          for h in previous-runs-api.open-meteo.com api.open-meteo.com; do
+            echo "=== $h"
+            getent ahosts "$h" | awk '{print $1}' | sort -u | tee /tmp/ips.txt
+            while read -r ip; do
+              r=$(curl -sS -o /dev/null -m 12 --resolve "$h:443:$ip" -w "connect=%{time_connect}s total=%{time_total}s http=%{http_code}" "https://$h/v1/forecast?latitude=40&longitude=-111&hourly=precipitation&forecast_days=1" 2>&1 | tail -1)
+              echo "  $ip  $r"
+            done < <(grep -v ':' /tmp/ips.txt; grep ':' /tmp/ips.txt | head -2)
+          done
+      - name: 30 requests from Node (what the backfill uses)
+        run: |
+          cat > /tmp/probe.mjs <<'EOF'
+          const url = "https://previous-runs-api.open-meteo.com/v1/forecast?latitude=40.58&longitude=-111.65&models=ecmwf_ifs025&hourly=precipitation,precipitation_previous_day1&start_date=2026-11-20&end_date=2026-11-21&timezone=GMT";
+          const out = [];
+          for (let i = 0; i < 30; i++) {
+            const t = Date.now();
+            let r;
+            try { const res = await fetch(url, { signal: AbortSignal.timeout(40000) }); await res.text(); r = `HTTP ${res.status}`; }
+            catch (e) { r = `${e.name}: ${e.cause?.code ?? e.message}`; }
+            out.push([i, ((Date.now() - t) / 1000).toFixed(1), r]);
+            console.log(i, ((Date.now() - t) / 1000).toFixed(1) + " s", r);
+            await new Promise((x) => setTimeout(x, 1500));
+          }
+          const bad = out.filter((o) => !o[2].startsWith("HTTP 200")).length, slow = out.filter((o) => Number(o[1]) > 8).length;
+          const line = `Node fetch to previous-runs-api: ${out.length} requests, ${bad} failed, ${slow} slower than 8 s`;
+          console.log(line);
+          if (process.env.GITHUB_STEP_SUMMARY) (await import("node:fs")).appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Network probe\n\n${line}\n`);
+          EOF
+          node /tmp/probe.mjs

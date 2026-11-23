@@ -1,0 +1,35 @@
+name: NBM history probe (read-only: what does noaa-nbm-grib2-pds keep, and what would a backfill cost?)
+
+# Added 2026-11-23 (plan-near-term-models, step 2). Lists the bucket for sample dates Nov 2024 -> Apr 2026 (cycles
+# 00/06/12/18z), then runs the real collector in memory on a few old cycles to time it and count bytes. Archives,
+# uploads and marks nothing: the backfill itself is Brian's call after he has read this report.
+on:
+  workflow_dispatch:
+    inputs:
+      time_cycles:
+        description: "Cycles (YYYYMMDDHH, comma-separated) to time the real collector on"
+        default: "2024111512,2025012000,2025021012,2026031500"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nbm-history-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install eccodes eccodeslib numpy duckdb==2.0.0
+      - name: Tests
+        run: python3 scripts/archive/test_nbm_history_probe.py
+      - name: Probe
+        env:
+          CYCLES: ${{ inputs.time_cycles }}
+        run: python3 scripts/archive/nbm_history_probe.py out --recent --time-cycles "$CYCLES"
