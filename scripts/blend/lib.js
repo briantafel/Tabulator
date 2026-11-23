@@ -10,10 +10,12 @@
  *   3. weighted by the model's lead weight, re-normalised over the models
  *      present (missing is dropped, never zero);
  *   4. snow = water × SLR(T) ÷ 10, T = the models' mean precipitation-weighted
- *      2 m temperature; warmer than 2 °C → rain, no snow.
+ *      2 m temperature; warmer than 2 °C → rain, no snow. Where slr.json's
+ *      warm cap is promoted for the lead group, the ratio is min(SLR, R(T)),
+ *      R = observed snow per water on warm days (2026-11-22: rain counted as snow).
  * Leads outside the fitted 1–7 use the nearest fitted lead's weights.
  */
-import { slrLineFor, slrOf } from "../projections/lib.js";
+import { slrLineFor, slrOf, warmGroup, warmRatio } from "../projections/lib.js";
 
 export const RAIN_ABOVE_C = 2;
 
@@ -67,9 +69,11 @@ export function blendDay(perModel, { lead, region, params }) {
   return { water: water < floor ? 0 : water, t: tSum / n, models: n };
 }
 
-export function snowFrom(water, t, slrLine) {
+export function snowFrom(water, t, slrLine, lead = null) {
   if (t > RAIN_ABOVE_C) return 0;
-  return (water * slrOf(t, slrLine)) / 10;
+  let ratio = slrOf(t, slrLine);
+  if (lead != null && slrLine?.warm?.promote?.[warmGroup(lead)]) ratio = Math.min(ratio, warmRatio(t, slrLine.warm));
+  return (water * ratio) / 10;
 }
 
 /** One resort: { model: hourly series } + time → [{ date, lead, water, snow, t, models }]. */
@@ -90,8 +94,8 @@ export function resortDays({ time, byModel, tz, region, issueDate, params, slr, 
     /* Band (cm) through the SAME ratio and temperature as the number, so the
        chart's band and line always agree. */
     const bw = bands ? bandFor(bands, lead, b.water) : null;
-    const band = bw && line ? Object.fromEntries(Object.entries(bw).map(([k, v]) => [k, r1(snowFrom(v, b.t, line))])) : null;
-    out.push({ date, lead, water: r1(b.water), snow: line ? r1(snowFrom(b.water, b.t, line)) : null,
+    const band = bw && line ? Object.fromEntries(Object.entries(bw).map(([k, v]) => [k, r1(snowFrom(v, b.t, line, lead))])) : null;
+    out.push({ date, lead, water: r1(b.water), snow: line ? r1(snowFrom(b.water, b.t, line, lead)) : null,
       t: r1(b.t), models: b.models, ...(band ? { band } : {}) });
   }
   return out;

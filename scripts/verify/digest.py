@@ -242,6 +242,16 @@ def snowfall(con, out: Path) -> str:
         FROM read_parquet('{pp}') WHERE source = 'open-meteo-previous-runs' AND space = 'liquid' AND tier = 'mid'
           AND fc_temp_c IS NOT NULL GROUP BY ALL""")
         lo_, hi_ = sl["clamp"]
+        # Warm-day cap (slr.py warm_check), only at the lead groups it was promoted for — as the app applies it.
+        wm = sl.get("warm") or {}
+        xs, ys, wp = wm.get("t") or [], wm.get("r") or [], wm.get("promote") or {}
+        if len(xs) >= 2 and any(wp.values()):
+            segs = " ".join(f"WHEN t.t < {xs[i + 1]} THEN {ys[i]} + ({ys[i + 1] - ys[i]}) * (t.t - ({xs[i]})) / {xs[i + 1] - xs[i]}"
+                            for i in range(len(xs) - 1))
+            grp = " OR ".join(c for g, c in (("1-3", "o.lead <= 3"), ("4-7", "o.lead > 3")) if wp.get(g)) or "false"
+            warm_sql = f"CASE WHEN NOT ({grp}) OR t.t < {xs[0]} THEN 1e9 {segs} ELSE {ys[-1]} END"
+        else:
+            warm_sql = "1e9"
         # slr-v3: a resort's region line where promoted, else pooled (same as the app).
         con.execute("CREATE TABLE sline(resort_id VARCHAR, a DOUBLE, b DOUBLE)")
         lines = [(rid, e["a"], e["b"]) for rid, reg in (sl.get("region_of") or {}).items()
@@ -251,8 +261,8 @@ def snowfall(con, out: Path) -> str:
         con.execute(f"""
         INSERT INTO sd
         SELECT 'ours (blend × SLR)', false, 'snow', o.split, o.resort_id, o.region, o.macro, o.local_date, o.lead,
-               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(greatest(coalesce(l.a, {sl['a']}) + coalesce(l.b, {sl['b']}) * t.t,
-                                                                  {lo_}), {hi_}) / 10 END,
+               CASE WHEN t.t > 2 THEN 0 ELSE o.fc * least(least(greatest(coalesce(l.a, {sl['a']}) + coalesce(l.b, {sl['b']}) * t.t,
+                                                                  {lo_}), {hi_}), {warm_sql}) / 10 END,
                s.obs
         FROM sd o JOIN stemp t USING (resort_id, local_date, lead, split)
         LEFT JOIN sline l ON l.resort_id = o.resort_id
@@ -549,6 +559,16 @@ def resort_reports(con, out: Path) -> str:
     if {"bw", "bf", "bpool", "stemp", "bfloor"} <= have:
         sl = json.loads((out / "slr.json").read_text())
         lo_, hi_ = sl["clamp"]
+        # Warm-day cap (slr.py warm_check), only at the lead groups it was promoted for — as the app applies it.
+        wm = sl.get("warm") or {}
+        xs, ys, wp = wm.get("t") or [], wm.get("r") or [], wm.get("promote") or {}
+        if len(xs) >= 2 and any(wp.values()):
+            segs = " ".join(f"WHEN t.t < {xs[i + 1]} THEN {ys[i]} + ({ys[i + 1] - ys[i]}) * (t.t - ({xs[i]})) / {xs[i + 1] - xs[i]}"
+                            for i in range(len(xs) - 1))
+            grp = " OR ".join(c for g, c in (("1-3", "o.lead <= 3"), ("4-7", "o.lead > 3")) if wp.get(g)) or "false"
+            warm_sql = f"CASE WHEN NOT ({grp}) OR t.t < {xs[0]} THEN 1e9 {segs} ELSE {ys[-1]} END"
+        else:
+            warm_sql = "1e9"
         line = "LEFT JOIN sline l ON l.resort_id = o.resort_id" if "sline" in have else \
                "LEFT JOIN (SELECT NULL::VARCHAR AS resort_id, NULL::DOUBLE AS a, NULL::DOUBLE AS b) l ON false"
         con.execute(f"""

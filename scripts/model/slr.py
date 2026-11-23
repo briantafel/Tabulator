@@ -403,6 +403,100 @@ def phase_check(con, p: dict) -> tuple[dict, str]:
     return choice, report
 
 
+# Warm days (2026-11-22, Brian: Whistler 79" vs NBM 28" / Snow-Forecast 32"). Today's rule turns ALL of a day's
+# water into snow at the cold-day line (~11:1) whenever the day's mean temperature is ≤ 2 °C. The line was fitted
+# on days ≤ 0 °C only, so between 0 and 2 °C it is an untested extrapolation, and a day averaging +1 °C is usually
+# part rain. Fix (plain arithmetic): an observed snow-per-water curve for the warm bins, R(T) = Σ new snow ÷ Σ water
+# over ALL training board windows in the 1 °C bin (rain-only windows count as zero snow), and the ratio used is
+# min(line, R) — it can only lower today's number. Fitted 2024-25, judged 2025-26 per lead group against today's rule.
+WARM_EDGES = [-3, -2, -1, 0, 1, 2, 3]          # bins [−3,−2) … [2,3); R is placed at the bin centres
+WARM_MIN_WINDOWS = 30
+WARM_THRESHOLDS_CM = (2.5, 10.0, 15.0, 30.0)
+
+
+def warm_ratio(t, warm: dict):
+    """R(T) by linear interpolation between bin centres; colder than the first centre = no cap (inf);
+    warmer than the last = the last value (today's rule makes it 0 above 2 °C anyway)."""
+    t = np.asarray(t, dtype=float)
+    xs, ys = np.array(warm["t"], float), np.array(warm["r"], float)
+    r = np.interp(t, xs, ys)
+    return np.where(t < xs[0], np.inf, r)
+
+
+def ours_snow(water, t, p: dict, macro, warm: dict | None = None):
+    """cm. Today's rule (all snow at ≤ 2 °C, line ratio), optionally capped by the warm curve."""
+    ratio = slr_of(t, p, macro)
+    if warm:
+        ratio = np.minimum(ratio, warm_ratio(t, warm))
+    return water * ratio / 10 * (t <= MAX_T_C + 2)
+
+
+def warm_check(con, p: dict) -> tuple[dict, str]:
+    rng = np.random.default_rng(SEED + 22)
+    # One row per training board window (models' temperatures averaged), leads 1–3, measurable water.
+    tr = con.execute(f"""
+      SELECT avg(t_st) AS t, any_value(snow_cm) AS snow, any_value(water_mm) AS water
+      FROM d WHERE split = 'train' AND lead_day BETWEEN 1 AND 3 AND water_mm >= {MIN_WATER_MM}
+      GROUP BY truth_source, station_id, resort_id, ws, we""").fetchnumpy()
+    xs, rs, rows = [], [], []
+    for lo, hi in zip(WARM_EDGES[:-1], WARM_EDGES[1:]):
+        m = (tr["t"] >= lo) & (tr["t"] < hi)
+        n = int(m.sum())
+        r = float(10 * tr["snow"][m].sum() / max(tr["water"][m].sum(), 1e-9)) if n else float("nan")
+        line_mid = float(slr_of(np.array([(lo + hi) / 2]), p)[0])
+        rows.append(f"| {lo} to {hi} | {n} | {r:.1f} | {line_mid:.1f} | "
+                    f"{float((tr['snow'][m] <= 0).mean()) if n else float('nan'):.0%} |")
+        if n >= WARM_MIN_WINDOWS:
+            xs.append((lo + hi) / 2); rs.append(round(r, 2))
+    warm = {"t": xs, "r": rs, "fitted_on": f"2024-25 board windows, leads 1-3, water >= {MIN_WATER_MM} mm, "
+                                           f"bins with >= {WARM_MIN_WINDOWS} windows", "promote": {}}
+    out_rows = []
+    if len(xs) < 3:
+        warm["promote"] = {g: False for g in PHASE_GROUPS}
+        return warm, "\n## Warm days\n\nToo few training windows in the warm bins; not fitted.\n"
+    for g, leads in PHASE_GROUPS.items():
+        ls = ", ".join(map(str, leads))
+        r = con.execute(f"""SELECT end_date, fc_water, t_st, snow_cm, macro FROM d
+                            WHERE split = 'test' AND lead_day IN ({ls})""").fetchnumpy()
+        if len(r["snow_cm"]) < 200:
+            warm["promote"][g] = False
+            out_rows.append(f"| {g} | — | too few windows ({len(r['snow_cm'])}) | | | |"); continue
+        ud, inv = np.unique(r["end_date"], return_inverse=True)
+        idx = rng.integers(0, len(ud), size=(N_BOOT, len(ud)))
+        now = ours_snow(r["fc_water"], r["t_st"], p, r["macro"])
+        new = ours_snow(r["fc_water"], r["t_st"], p, r["macro"], warm)
+        obs = r["snow_cm"]
+        worse = False
+        for thr in WARM_THRESHOLDS_CM:
+            o = obs >= thr
+            c0, b0, bc0 = csi_boot(now >= thr, o, inv, len(ud), idx)
+            c1, b1, bc1 = csi_boot(new >= thr, o, inv, len(ud), idx)
+            dd = bc1 - bc0
+            lo, hi = float(np.percentile(dd, 5)), float(np.percentile(dd, 95))
+            if hi < 0:
+                worse = True
+            out_rows.append(f"| {g} | ≥ {thr:g} cm | {int(o.sum())} | {c0:.3f} → {c1:.3f} | {b0:.2f} → {b1:.2f} | "
+                            f"{lo:+.3f} to {hi:+.3f} |")
+        wm = r["t_st"] > -1
+        vol = lambda f, m: float(f[m].sum() / max(obs[m].sum(), 1e-9))
+        v0, v1, va0, va1 = vol(now, wm), vol(new, wm), vol(now, np.ones_like(wm)), vol(new, np.ones_like(wm))
+        out_rows.append(f"| {g} | snow volume ÷ observed, warm windows (> −1 °C, n={int(wm.sum())}) | | {v0:.2f} → {v1:.2f} | | |")
+        out_rows.append(f"| {g} | snow volume ÷ observed, all windows | | {va0:.2f} → {va1:.2f} | | |")
+        warm["promote"][g] = (not worse) and abs(v1 - 1) < abs(v0 - 1)
+        warm.setdefault("volume_warm", {})[g] = [round(v0, 2), round(v1, 2)]
+    report = "\n".join([
+        "\n## Warm days: cap the ratio with observed snow per water (fitted 2024-25, judged 2025-26)\n",
+        "R = Σ new snow × 10 ÷ Σ water over every training board window in the bin (rain-only windows count as 0). "
+        "Ratio used = min(today's line, R). Ships per lead group only if no threshold's 90% gain range is entirely "
+        "below 0 AND the warm-window snow volume moves closer to observed.\n",
+        "| forecast T at station (°C) | windows | R (snow:water) | today's line | windows with no snow |",
+        "|---|---|---|---|---|", *rows,
+        "\n| leads | threshold | events | CSI today → capped | freq bias today → capped | gain range |",
+        "|---|---|---|---|---|---|", *out_rows,
+        f"\nWARM PROMOTE per lead group: {json.dumps(warm['promote'])}\n"])
+    return warm, report
+
+
 def md_table(rows: list[dict], cols: list[tuple[str, str]]) -> str:
     f = lambda v: f"{v:.2f}" if isinstance(v, (float, np.floating)) else str(v)
     lines = ["| " + " | ".join(h for h, _ in cols) + " |", "|" + "---|" * len(cols)]
@@ -422,6 +516,7 @@ def main(pairs: Path, out: Path) -> None:
     res, promote, vs, region_rows = evaluate(con, params)
     params["promote"] = promote
     params["phase"], phase_report = phase_check(con, params)
+    params["warm"], warm_report = warm_check(con, params)
     (out / "slr.json").write_text(json.dumps(params, indent=2) + "\n")
     calm = {k: v for k, v in params["by_height_class"].items()}
     parts = [
@@ -461,7 +556,7 @@ def main(pairs: Path, out: Path) -> None:
                       ("range", "range")]) if vs else "_no shared windows yet_\n",
         "\nHindcast is lead 0 (model spin-up handicaps ours). Live Snow-Forecast rows are this season only: thin.\n",
     ]
-    (out / "slr_report.md").write_text("\n".join(parts) + phase_report)
+    (out / "slr_report.md").write_text("\n".join(parts) + phase_report + warm_report)
     prom = [k for k, v in params["regions"].items() if v.get("promoted")]
     print(f"SLR v3 fitted on {params['n_days']} training station-days; own line for {prom or 'no region'}; "
           "report written", file=sys.stderr)

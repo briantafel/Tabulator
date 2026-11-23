@@ -80,6 +80,7 @@ with tempfile.TemporaryDirectory() as tmp:
     assert "Over-forecast by station height" in rep and "| ALL |" in rep.split("Over-forecast")[1], rep
     assert p["phase"] == {"1-3": "temp", "4-7": "temp"}, p["phase"]  # no model snowfall here
     assert "Phase: rain or snow" in rep
+    assert "warm" in p and set(p["warm"]["promote"]) == {"1-3", "4-7"} and "Warm days" in rep, p.get("warm")
     assert "Ours vs a flat 7:1" in rep and "snow-forecast-hindcast" in rep and "OWN LINE promoted" in rep, rep
 print("slr: all checks passed")
 
@@ -93,3 +94,14 @@ assert list(phase_frac("temp", _w, _ms, _t)) == [0, 1, 1, 1]
 assert list(_np.round(phase_frac("model", _w, _ms, _t), 2)) == [1.0, 0.5, 1.0, 0.0]   # NaN → temp rule; dry → 0
 assert list(_np.round(phase_frac("hybrid", _w, _ms, _t), 2)) == [1.0, 1.0, 1.0, 1.0]  # cold slope overrides model rain
 print("phase: checks passed")
+
+
+# Warm cap: never raises today's ratio; interpolates between bin centres; no cap colder than the first centre.
+from slr import warm_ratio, ours_snow
+_warm = {"t": [-1.5, -0.5, 0.5, 1.5], "r": [11.0, 9.0, 5.0, 2.0]}
+assert list(_np.round(warm_ratio(_np.array([-5.0, 0.0, 1.5, 4.0]), _warm), 2)) == [_np.inf, 7.0, 2.0, 2.0]
+_pp = {"a": 11.5, "b": -0.36, "clamp": [5.0, 25.0], "regions": {}}
+_tt = _np.array([-10.0, 0.0, 1.0, 3.0]); _ww = _np.full(4, 20.0); _mm = _np.array(["Rockies"] * 4)
+_now, _new = ours_snow(_ww, _tt, _pp, _mm), ours_snow(_ww, _tt, _pp, _mm, _warm)
+assert (_new <= _now + 1e-9).all() and _new[0] == _now[0] and _new[3] == 0 and abs(_new[2] - 20 * 3.5 / 10) < 1e-9, (_now, _new)
+print("warm: checks passed")

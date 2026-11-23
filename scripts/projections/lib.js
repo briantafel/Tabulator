@@ -43,9 +43,22 @@ export function slrLineFor(p, resortId) {
   const reg = p.region_of?.[resortId];
   const e = reg ? p.regions?.[reg] : null;
   return e?.promoted && Number.isFinite(e.a) && Number.isFinite(e.b)
-    ? { a: e.a, b: e.b, clamp: p.clamp, region: reg }
-    : { a: p.a, b: p.b, clamp: p.clamp, region: null };
+    ? { a: e.a, b: e.b, clamp: p.clamp, region: reg, warm: p.warm ?? null }
+    : { a: p.a, b: p.b, clamp: p.clamp, region: null, warm: p.warm ?? null };
 }
+
+/* Warm-day cap (slr.py warm_check, 2026-11-22): observed snow per water in the warm bins, linear between bin
+   centres; no cap colder than the first centre. Used only for lead groups slr.json says it was judged better at.
+   MUST match slr.py warm_ratio(). */
+export function warmRatio(tC, warm) {
+  const xs = warm?.t, ys = warm?.r;
+  if (!Array.isArray(xs) || xs.length < 2 || tC < xs[0]) return Infinity;
+  if (tC >= xs[xs.length - 1]) return ys[ys.length - 1];
+  let i = 0;
+  while (tC >= xs[i + 1]) i++;
+  return ys[i] + ((ys[i + 1] - ys[i]) * (tC - xs[i])) / (xs[i + 1] - xs[i]);
+}
+export const warmGroup = (lead) => (lead <= 3 ? "1-3" : "4-7");
 export function slrOf(tC, p) {
   const [lo, hi] = p.clamp ?? [5, 25];
   return Math.min(hi, Math.max(lo, p.a + p.b * tC));
