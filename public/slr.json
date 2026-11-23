@@ -200,5 +200,15 @@
         0.89
       ]
     }
+  },
+  "hourly": {
+    "t0": 0.0,
+    "t1": 1.0,
+    "cap": null,
+    "promote": {
+      "1-3": false,
+      "4-7": false
+    },
+    "fitted_on": "2024-25 board windows, leads 1-3; within-day shape from ERA5 3-hourly at the resort"
   }
 }
