@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-23T01:46:35.609Z",
- "forecastGeneratedAt": "2026-11-23T01:39:51.451Z",
+ "generatedAt": "2026-11-23T06:14:30.393Z",
+ "forecastGeneratedAt": "2026-11-23T06:07:47.272Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-23T01:46:35.609Z",
+ "writtenAt": "2026-11-23T06:14:30.393Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-23",
@@ -11,63 +11,92 @@
   "days": 5,
   "toLabel": "Friday Nov 27"
  },
- "overview": "A stubborn low off the coast brings rain and mountain snow to the Pacific Northwest, then a string of wet frontal systems takes over the week. Wet weather favors the Coast Mountains and Cascades, while the northern Rockies stay drier until a stronger system arrives around Thanksgiving.",
+ "overview": "Wet systems keep rolling in off the Pacific all week. The Coast Mountains get the most snow early in the week, and the Cascades see several rounds of mixed rain and snow with the strongest push Wednesday. The Northern Rockies stay quieter until a stronger westerly flow arrives Thursday into Friday.",
  "regions": [
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Rain is the main story here, with snow mostly confined to higher ground. Warm air keeps the snow level high, so the mountains see rain until a cooler spell by midweek. Whistler's best snow falls Tuesday and Wednesday, when wet snow and rain mix at the top. Expect heavy, wet snow rather than powder at mid-mountain elevations.",
+   "text": "Snow is mixed with rain here, and warm air keeps the snow level high. Whistler's best snow comes Tuesday through Wednesday, with about 11\" on Wednesday alone and 32\" over the window. Rain dominates from Wednesday on, so expect heavy, wet snow at the top and rain lower down.",
    "basis": "hdj3af"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of Pacific systems pushes through with widespread precipitation and gusty southeast winds. Snow levels rise Monday and Tuesday, so the higher passes such as Stevens get the snow while lower slopes get rain. The Cascade snowpack picks up most heavily Wednesday, when cold air returns behind the front, and Mt. Baker and Crystal Mountain see the best of it. Wind chill and gusts near 40 mph make the upper mountain cold and rough.",
+   "text": "A series of Pacific fronts brings repeated rain and mountain snow, with gusty southeast winds near the coast Monday and Tuesday. Mt. Baker and Crystal lead the snow totals, with Mt. Baker's best day on Wednesday at about 8\". The Weather Prediction Center and NWS both see a wet pattern holding through the holiday weekend.",
    "basis": "1160tx2"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Monday brings only a passing chance of light snow showers in western Wyoming. Tuesday and Wednesday turn drier as a ridge builds, with breezy conditions across Montana. The pattern turns more active from Thanksgiving onward, with snow showers at Jackson Hole and Grand Targhee and stronger winds aloft through Friday. Big Sky sees only light amounts.",
-   "basis": "20zbhh"
+   "text": "A passing trough brings only light snow showers to western Wyoming on Monday, then drier weather Tuesday and Wednesday. A more active pattern starts Thursday, with Jackson Hole's best day on Friday at about 6\". Strong westerly winds on the Thursday-into-Friday window could gust 50 to 70 mph on eastern slopes, so check lift status.",
+   "basis": "1xmz077"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Light flurries and mixed precipitation are the main weather here this week. Snow levels stay low, so Thursday brings a mix of snow and rain. Friday and Friday night turn to steady rain, which will limit the snowfall at Revelstoke and Whitewater. Temperatures stay near freezing, so expect wet snow at best.",
+   "text": "Snow here is light and mixed with rain, with the most snow falling Thursday when it briefly turns to snow. Whitewater and Revelstoke both see their best day Thursday at about 4\". Expect rain showers by Friday as the warmer air settles in.",
    "basis": "120598d"
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says another round of widespread rain and breezy winds is likely Wednesday night into Thursday, with heavy rain over the Olympics. The Climate Prediction Center expects an active, progressive pattern from Saturday Nov 28 through Tuesday Dec 2.",
+  "sources": [
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-23T04:09:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "NWS RIW Area Forecast Discussion",
+    "issuedAt": "2026-11-23T04:50:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
+   },
+   {
+    "name": "NWS TFX Area Forecast Discussion",
+    "issuedAt": "2026-11-23T05:34:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-22T20:00:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-22T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-23T01:39:51.451Z"
+   "issuedAt": "2026-11-23T06:07:47.272Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-23T01:46:35.402Z"
+   "issuedAt": "2026-11-23T06:14:30.207Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T00:02:00+00:00"
+   "issuedAt": "2026-11-23T04:09:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T00:36:00+00:00"
+   "issuedAt": "2026-11-23T04:50:00+00:00"
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-22T23:55:00+00:00"
+   "issuedAt": "2026-11-23T05:34:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-23T01:46:35.609Z"
+   "issuedAt": "2026-11-23T06:14:30.393Z"
   }
  ],
  "api": {
   "day": "2026-11-23",
-  "calls": 2
+  "calls": 3
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
