@@ -10,7 +10,10 @@ main = "index.js"
 compatibility_date = "2026-11-01"
 
 [triggers]
-crons = ["7 * * * *"]   # hourly; index.js decides which workflows are due
+crons = [
+  "7 * * * *",       # hourly; index.js decides which workflows are due
+  "45 6,21 * * *",   # archive.yml, 30 min after the app's scrape (2026-11-23)
+]
 
 [vars]
 REPO = "briantafel/Tabulator"

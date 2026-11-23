@@ -16,6 +16,7 @@ on:
 permissions:
   contents: write  # commits public/longrange.json (only)
   issues: write
+  actions: write   # to redeploy the site after that commit
 
 concurrency:
   group: longrange
@@ -40,6 +41,7 @@ jobs:
         id: build
         run: python3 scripts/longrange/build.py public 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; exit "${PIPESTATUS[0]}"
       - name: Commit
+        id: commit
         if: always() && steps.build.outcome == 'success'
         run: |
           git config user.name  "tabulator-bot"
@@ -48,7 +50,19 @@ jobs:
           git add public/longrange.json
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "longrange: $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 10; done
+          # A push that never lands fails the run: failures must be loud (was a silent 3-try loop).
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -q origin main && git push; then pushed=true; echo "pushed=true" >> "$GITHUB_OUTPUT"; break; fi
+            git rebase --abort 2>/dev/null || true
+            sleep 10
+          done
+          if [ "$pushed" != true ]; then echo "::error::longrange.json was built but never pushed"; exit 1; fi
+      - name: Redeploy the site
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
       - name: Open an issue on failure
         if: failure() && github.event_name == 'schedule'
         uses: actions/github-script@v7
