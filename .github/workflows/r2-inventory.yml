@@ -1,0 +1,50 @@
+name: R2 inventory (read-only count of the archive by folder)
+
+# Added 2026-11-23 (ops plan, Phase 3 groundwork). Lists tabulator-archive and writes a table to the run summary:
+# file count and total size per top-level folder and per second-level folder. Read-only: it changes nothing and
+# starts nothing. Run it by hand whenever you want to know how big the archive has got.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: r2-inventory
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - name: List the bucket
+        run: |
+          set -euo pipefail
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 ls "s3://$R2_BUCKET/" --recursive --endpoint-url "$ENDPOINT" > listing.txt
+          [ -s listing.txt ] || { echo "::error::the listing is empty: wrong bucket or credentials, not an empty archive"; exit 1; }
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import collections
+          top, two, n, tot = collections.Counter(), collections.Counter(), 0, 0
+          topb, twob = collections.Counter(), collections.Counter()
+          for line in open("listing.txt"):
+              p = line.split(None, 3)
+              if len(p) < 4: continue
+              size, key = int(p[2]), p[3].rstrip("\n")
+              parts = key.split("/")
+              t = parts[0]; s = "/".join(parts[:2]) if len(parts) > 2 else t
+              top[t] += 1; topb[t] += size; two[s] += 1; twob[s] += size; n += 1; tot += size
+          def mb(b): return f"{b/1e6:,.1f} MB"
+          print(f"## tabulator-archive: {n:,} files, {mb(tot)}\n")
+          print("| folder | files | size |\n|---|---:|---:|")
+          for k, v in sorted(top.items(), key=lambda x: -topb[x[0]]): print(f"| {k}/ | {v:,} | {mb(topb[k])} |")
+          print("\n### Largest second-level folders\n\n| folder | files | size |\n|---|---:|---:|")
+          for k in sorted(two, key=lambda x: -twob[x])[:40]: print(f"| {k}/ | {two[k]:,} | {mb(twob[k])} |")
+          PY
+          cat "$GITHUB_STEP_SUMMARY" | head -60
