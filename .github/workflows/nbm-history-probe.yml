@@ -1,4 +1,4 @@
-name: NBM history probe (read-only: what does noaa-nbm-grib2-pds keep, and what would a backfill cost?)
+name: NBM history probe (read-only, what the bucket keeps and what a backfill would cost)
 
 # Added 2026-11-23 (plan-near-term-models, step 2). Lists the bucket for sample dates Nov 2024 -> Apr 2026 (cycles
 # 00/06/12/18z), then runs the real collector in memory on a few old cycles to time it and count bytes. Archives,
