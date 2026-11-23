@@ -11,8 +11,11 @@ name: Archive watchdog
 # late or missing, and says so in its summary.
 #
 # This watchdog is itself a scheduled run, so it can also start late; hourly
-# gives it many chances. If that proves unreliable, move the trigger to a
-# Cloudflare Worker cron (needs a token Brian adds there).
+# gives it many chances. Since 2026-11-23 the Cloudflare Worker also starts it
+# every hour at :07 (reliable); this GitHub cron stays on purpose, as a second,
+# independent starter. A double start is harmless (own concurrency group, and it
+# only starts an archive run when none began in 13 h).
+
 on:
   schedule:
     - cron: "17 * * * *"

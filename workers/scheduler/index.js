@@ -1,7 +1,10 @@
 /* Tabulator scheduler (Cloudflare Worker cron). Every hour it starts the
-   GitHub workflows that are due, via workflow_dispatch. The GitHub cron lines
-   stay as a backup; every workflow has a concurrency group and done markers,
-   so a duplicate start costs a minute and re-archives nothing.
+   GitHub workflows that are due, via workflow_dispatch. This is the clock
+   for almost every job: the GitHub cron lines were removed 2026-11-23. The
+   exceptions that keep a GitHub cron are the watchdog (an independent backstop,
+   so one clock failing cannot silence it), the monthly/yearly jobs and
+   backfill. Every workflow has a concurrency group and done markers, so a
+   duplicate start costs a minute and re-archives nothing.
 
    Secret: GITHUB_TOKEN, a fine-grained token for briantafel/Tabulator with
    "Actions: Read and write" only. Entered by Brian in Cloudflare, never in chat.
