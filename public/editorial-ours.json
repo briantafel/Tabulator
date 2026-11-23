@@ -1,91 +1,72 @@
 {
- "generatedAt": "2026-11-23T21:14:16.440Z",
+ "generatedAt": "2026-11-23T22:07:45.847Z",
  "forecastGeneratedAt": "2026-11-23T21:07:43.685Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-23T19:22:22.267Z",
+ "blendGeneratedAt": "2026-11-23T22:07:43.498Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-23T21:14:16.440Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-23",
   "to": "2026-11-28",
   "days": 6,
   "toLabel": "Saturday Nov 28"
  },
- "overview": "A series of Pacific systems keeps the Cascades and Coast Mountains wet through midweek, with snow levels rising and rain mixing in. Colder air sweeps the Northeast and Rockies this week, and a strong Thanksgiving storm brings mostly rain to the East, with ice possible in Vermont.",
+ "overview": null,
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of systems moves across western Washington this week, with rain arriving Tuesday and snow levels climbing to about 5,000 feet. Mt. Baker is the top resort, with 59 inches forecast for the week, including a 20-inch day Thursday. Winter Weather Advisory is in effect Monday night through Tuesday night. Expect rain at lower elevations.",
-   "basis": "1r6twgq"
+   "text": "Mt. Baker is forecast for about 63\". Crystal Mountain and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Baker Thursday night. Winter Weather Advisory at Mt. Baker from Monday night to Tuesday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Rain dominates the Coast Mountains through midweek as warm, moist air moves in. Whistler leads with 59 inches for the week, though much of it falls as wet snow or rain. Tuesday brings the biggest snow day, with 24 inches forecast. Cypress Mountain sees mostly rain above freezing.",
-   "basis": "1tq6t4l"
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "A sharp cold front brings gusty winds and much colder air Tuesday, followed by dry weather Wednesday. A widespread rain event arrives late Thanksgiving through Friday, with some sleet or freezing rain at the onset. Killington leads at 20 inches, with 12 inches Friday, though freezing rain is likely there Thursday night and Friday.",
-   "basis": "5v4upm"
+   "text": "Whistler is forecast for about 63\". Cypress Mountain follows. Environment Canada has rain mixed in at Whistler Tuesday."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Snow showers taper off in western Wyoming by evening, with dry, milder weather Tuesday and Wednesday. A system moves in Thursday evening, bringing travel impacts Friday into the weekend. Grand Targhee leads at 23 inches, including 12 inches Saturday. In Montana, strong winds and blowing snow are expected along the Rocky Mountain Front.",
-   "basis": "b9fult"
+   "text": "Grand Targhee is forecast for about 25\", 14\" of it Friday. Jackson Hole and Big Sky follow."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Blue Mountain is forecast for about 21\", 13\" of it Friday. Jay Peak and Stowe follow. Environment Canada has rain mixed in at Blue Mountain Friday and Friday night. Snow Squall Warning at Blue Mountain from Tuesday."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Mostly rain and flurries are forecast for the Kootenays this week, with a few brief breaks. Whitewater leads with 19 inches, including a 9-inch day Thursday. Snow will be wet and heavy at lower elevations, with rain showers likely Thursday night.",
-   "basis": "1dcwam5"
+   "text": "Whitewater is forecast for about 19\", 10\" of it Thursday. RED Mountain and Revelstoke follow."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers and periods of rain are likely in the Okanagan through midweek, with a break Friday. Big White leads at 17 inches, with a 7-inch day Thursday. Snow levels rise to about 800 metres Tuesday.",
-   "basis": "58bcm6"
+   "text": "Big White is forecast for about 18\". SilverStar and Sun Peaks follow."
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Steamboat is forecast for about 7\", 4\" of it Saturday. Telluride and Aspen Highlands follow."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-23T19:22:22.267Z"
+   "issuedAt": "2026-11-23T22:07:43.498Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-23T21:14:06.096Z"
   },
   {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T17:06:00+00:00"
-  },
-  {
-   "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-23T19:03:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T20:25:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-23T18:19:00+00:00"
-  },
-  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-23T21:14:16.440Z"
+   "issuedAt": "2026-11-23T22:07:45.847Z"
   }
  ],
  "api": {
   "day": "2026-11-23",
-  "calls": 9
+  "calls": 10
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
