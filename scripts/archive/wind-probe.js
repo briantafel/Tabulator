@@ -60,7 +60,7 @@ try {
       const id = p["msc_id-value"] ?? p["stn_nam-value"] ?? p.id ?? f.id;
       if (!g || id == null) continue;
       const s = stations.get(id) ?? { id, name: p["stn_nam-value"] ?? p.name ?? "", lat: g[1], lon: g[0], elev: p["stn_elev-value"] ?? g[2] ?? null, wind: new Set(), near: new Set(), n: 0 };
-      for (const [k, v] of Object.entries(p)) if (/(wnd|gst).*-value$/.test(k) && v !== null && v !== "" && v !== undefined) s.wind.add(k.replace(/-value$/, ""));
+      for (const [k, v] of Object.entries(p)) if (/^(avg|max)_(pk_)?wnd.*(_pst\d+(mts|hr)|_10m)$/.test(k) && v !== null && v !== "" && v !== undefined) s.wind.add(k);
       s.near.add(r.id); s.n++;
       stations.set(id, s);
     }
