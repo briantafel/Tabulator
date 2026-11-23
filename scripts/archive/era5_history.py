@@ -60,7 +60,7 @@ K = lambda x: x - 273.15  # noqa: E731
 INSTANT = {
     "wind_u_700": ("pressure", "u", 700, "m/s", None, -120, 120),
     "wind_v_700": ("pressure", "v", 700, "m/s", None, -120, 120),
-    "temp_700": ("pressure", "t", 700, "C", K, -50, 20),
+    "temp_700": ("pressure", "t", 700, "C", K, -50, 30),  # Andes resorts are in high summer Nov–Apr (Jan 2017: 20.4 °C, real)
     "rh_700": ("pressure", "r", 700, "%", None, -10, 150),  # ERA5 r is over ice below −23 °C (can pass 100) and has small negative round-off
     "omega_700": ("pressure", "w", 700, "Pa/s", None, -20, 20),
     "wind_u_850": ("pressure", "u", 850, "m/s", None, -120, 120),
