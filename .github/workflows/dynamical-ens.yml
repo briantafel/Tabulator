@@ -75,7 +75,7 @@ jobs:
           [ -n "$ONLY" ] && args+=(--only "$ONLY")
           python3 scripts/archive/dynamical_ens.py "${args[@]}"
       - name: Open an issue on failure
-        if: failure() && github.event_name == 'schedule'
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')   # the Worker starts these via workflow_dispatch
         uses: actions/github-script@v7
         with:
           script: |
