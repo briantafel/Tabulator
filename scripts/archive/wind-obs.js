@@ -167,7 +167,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
   const list = JSON.parse(await readFile(`${root}src/data/wind-stations.json`, "utf8")).nws;
   const stations = new Map(), resortsOf = new Map();
   for (const [resort, ss] of Object.entries(list)) for (const s of ss) { stations.set(s.id, s); (resortsOf.get(s.id) ?? resortsOf.set(s.id, []).get(s.id)).push([resort, s.km]); }
-  let nwsOk = 0, nwsTried = 0, nwsEmpty = 0;
+  let nwsOk = 0, nwsTried = 0, nwsEmpty = 0, nwsRaw = 0, nwsPk = 0, nwsFeats = 0;
   for (const [id, s] of stations) {
     nwsTried++;
     try {
@@ -176,6 +176,10 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
       const feats = json.features ?? [];
       if (!feats.length) nwsEmpty++;
       for (const f of feats) {
+        nwsFeats++;
+        const raw = String(f.properties?.rawMessage ?? "");
+        if (raw.trim()) nwsRaw++;
+        if (/\bPK WND\b/.test(raw)) nwsPk++;
         const g = f.geometry?.coordinates;
         const st = { ...s, lat: g?.[1] ?? null, lon: g?.[0] ?? null };
         for (const row of nwsRows(f, st, { fetchedAt, runId })) { sink.write(row); rows++; }
@@ -188,6 +192,8 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
   }
   const ecCount = [...ecStations].filter((x) => x.startsWith("eccc:")).length;
   log(`wind-obs: eccc ${ecOk}/${ecQueries} resort queries, ${ecCount} stations; nws ${nwsOk}/${nwsTried} stations (${nwsEmpty} with nothing in ${WINDOW_H} h); ${rows} rows`);
+  // Loud about the peak-wind remark: if NWS stops sending rawMessage, wind_peak_gust silently stops. Say how many carried it.
+  log(`wind-obs: nws raw METAR text on ${nwsRaw}/${nwsFeats} observations, ${nwsPk} with a PK WND remark`);
   // Loud: no ECCC wind at all, or too many failed queries, is a fault (the ~28-day origin window makes gaps unrecoverable).
   const ok = ecQueries > 0 && ecOk / ecQueries >= 0.8 && ecCount > 0 && nwsTried > 0 && nwsOk / nwsTried >= 0.8 && rows > 0;
   return { ok, rows, eccc_stations: ecCount, nws_stations: nwsOk, failures };
