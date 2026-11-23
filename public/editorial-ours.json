@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-23T10:17:33.746Z",
+ "generatedAt": "2026-11-23T12:31:38.273Z",
  "forecastGeneratedAt": "2026-11-23T06:07:47.272Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-23T10:17:30.723Z",
+ "blendGeneratedAt": "2026-11-23T12:31:35.086Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-23T06:14:36.859Z",
@@ -45,17 +45,17 @@
   "sources": [
    {
     "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-23T04:09:00+00:00",
+    "issuedAt": "2026-11-23T11:01:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
    },
    {
     "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-23T08:02:00+00:00",
+    "issuedAt": "2026-11-23T11:05:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
    },
    {
     "name": "NWS TFX Area Forecast Discussion",
-    "issuedAt": "2026-11-23T09:58:00+00:00",
+    "issuedAt": "2026-11-23T11:41:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
    },
    {
@@ -73,7 +73,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-23T10:17:30.723Z"
+   "issuedAt": "2026-11-23T12:31:35.086Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -81,19 +81,19 @@
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T04:09:00+00:00"
+   "issuedAt": "2026-11-23T11:01:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T08:02:00+00:00"
+   "issuedAt": "2026-11-23T11:05:00+00:00"
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-23T09:58:00+00:00"
+   "issuedAt": "2026-11-23T11:41:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-23T10:17:33.746Z"
+   "issuedAt": "2026-11-23T12:31:38.273Z"
   }
  ],
  "api": {
