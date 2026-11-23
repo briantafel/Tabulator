@@ -14,6 +14,11 @@ HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 import terrain_pilot as tp  # noqa: E402
 
+# NBM 'empty' is judged on the box, not the resort (Panorama 2026-11-23: dry at the resort in NBM, snowy crest nearby)
+assert not tp.nbm_looks_empty(2.5, 4.3)   # real forecast, rain shadow
+assert tp.nbm_looks_empty(0.0, 4.3)       # fill: nothing anywhere while IFS has snow
+assert not tp.nbm_looks_empty(0.0, 1.0)   # IFS light: no basis to call NBM empty
+
 work = Path(sys.argv[1] if len(sys.argv) > 1 else tempfile.mkdtemp(prefix="pilot-test-"))
 work.mkdir(parents=True, exist_ok=True)
 RID = "alta"
@@ -109,3 +114,4 @@ if os.environ.get("TEST_APP"):
             assert 0 <= m["x"] <= 1 and 0 <= m["y"] <= 1, m
     print("app layout OK", a["full"]["px"], a["full"]["ref"], f)
 print("OK", work)
+

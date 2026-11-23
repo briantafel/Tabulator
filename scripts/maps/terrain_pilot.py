@@ -407,6 +407,16 @@ def anchor_apply(anc, sample, snow, snow_info, fbox):
     return snow * k
 
 
+def nbm_looks_empty(nbm_box_max_in, ifs_in):
+    """Is NBM carrying fill rather than a forecast here (near the edge of its Canadian coverage)?
+
+    Judged on NBM's MAX over the whole box, not its value at the resort: a rain-shadow resort can be genuinely drier
+    in NBM's 2.5 km field than in IFS's 28 km one, which smears the snowy crest next door over it (Panorama
+    2026-11-23: NBM 0.6 in at the resort, IFS 4.3 in, Kicking Horse and Kimberley either side fine). Fill is empty
+    everywhere; a real forecast with snow nearby is not."""
+    return ifs_in >= 3.0 and nbm_box_max_in < 0.2 * ifs_in
+
+
 def build_snow(rid, crop, lat_c, lon_c, work, anc=None):
     """Returns (sample(LA, LO, dem_m) -> inches on that grid, info, parts). NBM where it covers the resort, else IFS.
     Anchored (anc): the field is the sum of per-day NBM parts (live_grid.py), and `parts` holds them for the app."""
@@ -437,10 +447,12 @@ def build_snow(rid, crop, lat_c, lon_c, work, anc=None):
                     _, ila, ilo, itot, _, _ = ifs_cells(work, wide)
                     near = (abs(ila - lat_c) < 0.2) & (abs(ilo - lon_c) < 0.3)
                     ifs_in = float(itot[near].mean() * 39.3701)
-                    cross = {"nbm_in": round(float(ctr.mean()), 1), "ifs_in_12to1": round(ifs_in, 1)}
+                    box_max = float(np.nanmax(tin))
+                    cross = {"nbm_in": round(float(ctr.mean()), 1), "nbm_box_max_in": round(box_max, 1),
+                             "ifs_in_12to1": round(ifs_in, 1)}
                     log(f"NBM vs IFS cross-check at the resort: {cross}")
-                    if ifs_in >= 3.0 and ctr.mean() < 0.2 * ifs_in:
-                        reason = f"NBM looks empty here ({ctr.mean():.1f} in vs IFS {ifs_in:.1f} in)"
+                    if nbm_looks_empty(box_max, ifs_in):
+                        reason = f"NBM looks empty here (box max {box_max:.1f} in vs IFS {ifs_in:.1f} in at the resort)"
                 except SystemExit as e:
                     cross = {"error": str(e.code)}
             info["cross_check"] = cross
