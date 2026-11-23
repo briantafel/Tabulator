@@ -108,7 +108,7 @@ test("a carried-forward entry older than STALE_HOURS is dropped per resort (2026
   assert.equal(extendFeed(x, NOW).resorts.find((r) => r.id === "alta").days.length, 10);
 });
 
-test("slr switch: our ratio's snow and members, all days or none per resort", () => {
+test("our ratio when every day has it: its snow and members, all days or none per resort", () => {
   const withSlr = () => {
     const f = feed();
     const a = f.projections.resorts.alta;
@@ -122,7 +122,7 @@ test("slr switch: our ratio's snow and members, all days or none per resort", ()
   assert.equal(on.days[6].snowRatio, "tabulator");
   assert.deepEqual(on.days[6].range, { p10: 2, p25: 5, p75: 18, p90: 27 });
   assert.deepEqual(on.projMembers.models, { m: [[11, 11, 11, 11, 11, 11]] });
-  const off = extendFeed(withSlr(), NOW).resorts.find((r) => r.id === "alta");
+  const off = extendFeed(withSlr(), NOW).resorts  /* the option off: App.jsx passes it only when projections.json carries the ratio */.find((r) => r.id === "alta");
   assert.equal(off.days[6].snow, 6);
   assert.equal(off.days[6].snowRatio, "7:1");
   // One day without snowSlr (an old carried-forward entry): the whole resort stays on 7:1.

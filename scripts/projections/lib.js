@@ -35,7 +35,7 @@ const MIN_WIND_KMH = 5;                   // below this a ratio is noise
    (public/slr.json, scripts/model/slr.py v2: judged better than 7:1 at leads
    1–7 on CoCoRaHS new-snow boards) each hour is rescaled by SLR(T) ÷ 7, at that
    hour's 2 m temperature at the Snow-Forecast mid elevation. Open-Meteo's own
-   rain/snow split is kept. Brian, 2026-11-15: days 7–10, behind the `slr` switch. */
+   rain/snow split is kept. Brian, 2026-11-15: days 7–10 (the switch was retired 2026-11-23; the ratio stays). */
 export const OM_SLR = 7;
 /* slr-v3: a region's own line where the judge winter promoted it, else the pooled line. */
 export function slrLineFor(p, resortId) {

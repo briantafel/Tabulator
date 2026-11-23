@@ -64,7 +64,7 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
  *   parent    the switch this one needs. A child counts as on only when its parent resolves on. Declared here,
  *             never implied by the name.
  *   storage   the per-device override's localStorage key (unchanged: no migration, store.js VERSION untouched).
- *   retiring  true for slr, blend and weatherSource, which keep their current names and rules until steps 3/4/7.
+ *   retiring  true for blend and weatherSource, which keep their current names and rules until steps 4/7.
  *
  * Data gates (feed.temps, feed.blend + blendFresh, feed.season, longrange freshness and promoted leads) are not
  * here: they stay where the data is used. This table says only what the switches allow.
@@ -77,8 +77,6 @@ export const MODES = Object.freeze(["off", "preview", "on"]);
  *     spread. Only ever read inside our snowfall, so its parent is forecast.snowfall.
  *   forecast.temps (2026-11-11) our temperature model (lib/temps.js). Still a Settings row in step 1; the plan
  *     makes it file-only in step 5.
- *   slr (2026-11-15) days 7–10 snow rescaled by our fitted snow-to-liquid ratio instead of a flat 7:1. Needs
- *     projections. Retiring (step 3): the ratio stays, the switch goes.
  *   blend: whether blend-forecast.json is fetched at all. Retiring (step 4): snowfall becomes the stop.
  *   weatherSource (2026-11-11) shows the Settings → Weather row (government vs Snow-Forecast sky). Its resolved
  *     value means "the row is offered"; the phone's choice (wxSource) is a source name, not a boolean, and is
@@ -100,7 +98,6 @@ export const FLAGS = Object.freeze([
   F("forecast.snowfall", "row", "snowfall", { storage: "snowfall" }),
   F("forecast.bands", "file", "bands", { parent: "forecast.snowfall" }),
   F("forecast.temps", "row", "temps", { storage: "temps" }),
-  F("slr", "legacy", null, { parent: "forecast.projections", retiring: true }),
   F("blend", "legacy", null, { retiring: true }),
   F("weatherSource", "legacy", null, { storage: "wxSource", retiring: true }),
   F("season.shapingUp", "row", "season", { storage: "season" }),
@@ -113,9 +110,16 @@ export const FLAGS = Object.freeze([
 ]);
 
 /* Names that have been switches and must never be reused, so an old phone or an old flags.json can't switch a
-   new feature on by accident. Empty in step 1: slr, blend and weatherSource join it when they are retired in code
-   (steps 3, 4, 7), and the legacy names join it in step 8. flagProblems reports any of them left in flags.json. */
-export const RETIRED = Object.freeze([]);
+   new feature on by accident. slr joined in step 3 (2026-11-23); blend and weatherSource join when they are
+   retired in code (steps 4, 7), and the legacy names join it in step 8. A retired name is not in FLAGS, so
+   nothing reads it. */
+export const RETIRED = Object.freeze(["slr"]);
+
+/* Whether flagProblems reports a retired key that is still in flags.json. FALSE until step 8: Brian deletes the old
+   keys from flags.json by hand after the code has stopped reading them (at least 24 h), and until then the file
+   still holds them and the Flags check workflow must stay green. STEP 8: set this to true (then the check goes red
+   on any retired key left in the file), or delete the constant and the guard in flagProblems. */
+export const REPORT_RETIRED_KEYS = false;
 
 export const FLAG_DEFAULTS = Object.freeze(Object.fromEntries(FLAGS.map((f) => [f.key, "off"])));
 
@@ -158,7 +162,7 @@ export function resolveFlags(modes, overrides = {}, table = FLAGS) {
 
 /** What is wrong with a flags.json, as sentences; [] when nothing is. Run on the real file by
  *  scripts/check-flags.js in its own workflow (never in npm test, so an emergency "off" can always deploy). */
-export function flagProblems(raw, { table = FLAGS, retired = RETIRED } = {}) {
+export function flagProblems(raw, { table = FLAGS, retired = RETIRED, reportRetired = REPORT_RETIRED_KEYS } = {}) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return ["flags.json is not a JSON object"];
   const out = [];
   const known = new Map();
@@ -167,7 +171,9 @@ export function flagProblems(raw, { table = FLAGS, retired = RETIRED } = {}) {
     if (f.legacy) known.set(f.legacy, f);
   }
   for (const [k, v] of Object.entries(raw)) {
-    if (retired.includes(k)) out.push(`"${k}" is retired; delete it`);
+    if (retired.includes(k)) {
+      if (reportRetired) out.push(`"${k}" is retired; delete it`);
+    }
     else if (!known.has(k)) out.push(`"${k}" is not a known switch (ignored)`);
     else if (asMode(v) === null) out.push(`"${k}": ${JSON.stringify(v)} is not off, preview or on (read as off)`);
   }

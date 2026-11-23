@@ -64,8 +64,8 @@ export function extendFeed(feed, now = Date.now(), { slr = false } = {}) {
          replaced later (lib/ours.js applySnowfall, 2026-11-18). */
       return range ? { ...d, range, spread: s } : d;
     });
-    /* Our snow-to-liquid ratio (the `slr` switch): only when this resort's
-       entry has it for every projected day AND its members, so one resort
+    /* Our snow-to-liquid ratio (the `slr` option; App.jsx sets it when projections.json carries the
+       ratio): only when this resort's entry has it for every projected day AND its members, so one resort
        never mixes 7:1 and our ratio across its days or its trip total. */
     const useSlr = slr && (p.days ?? []).every((pd) => !pd.snow || pd.snowSlr) && !!p.membersSlr;
     for (const pd of p.days ?? []) {

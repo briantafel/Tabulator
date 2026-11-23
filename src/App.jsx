@@ -176,10 +176,10 @@ export default function Tabulator() {
   /* Days 7–10 snow from our fitted ratio — ACTIVE, no Settings choice (Brian,
      2026-11-15: "We decided not to put things behind a switch. Instead it's
      just active."). Used whenever the projections file was built with a ratio;
-     otherwise Open-Meteo's 7:1. flags.json `slr: "off"` remains an emergency
-     stop for the whole site; it has no per-phone setting. Its parent is
-     projections (lib/flags.js). Retiring in step 3 of the switches plan. */
-  const slrOn = flags.slr && !!feedRaw?.projections?.slr;
+     otherwise Open-Meteo's 7:1. There is no switch of its own (retired in
+     step 3 of the switches plan, 2026-11-23): it follows projections, and the
+     stop is leaving the ratio out of projections.json. */
+  const slrOn = projections && !!feedRaw?.projections?.slr;
   /* Our temperatures go in AFTER the projected days are appended, so days
      1–10 all carry the same temperature. Off: untouched. */
   /* Snow-Forecast's six days with our temperatures: what the radar ranks on. */

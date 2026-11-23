@@ -46,7 +46,7 @@ log(slr ? `SLR: ${slr.version} (pooled ${slr.a} + ${slr.b}·T; own line: ${
 const generatedAt = new Date().toISOString();
 const projections = { generatedAt, sfGeneratedAt: forecast.generatedAt, days: PROJECTION_DAYS,
   units: { snow: "cm", temp: "C", wind: "km/h" }, models: MODELS,
-  // snowSlr / membersSlr: Open-Meteo snow rescaled by this ratio (the app's `slr` switch).
+  // snowSlr / membersSlr: Open-Meteo snow rescaled by this ratio (the app's days 7–10 ratio).
   slr: slr ? { version: slr.version, a: slr.a, b: slr.b, clamp: slr.clamp,
     regions: Object.fromEntries(Object.entries(slr.regions ?? {}).filter(([, e]) => e.promoted)
       .map(([r, e]) => [r, { a: e.a, b: e.b }])) } : null, resorts: {} };
