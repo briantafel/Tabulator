@@ -102,6 +102,50 @@ export function gaussianBlur(f, w, h, sigma) {
   return f;
 }
 
+/** The window's blend snow (in) at heights H (kft): sum of the days' per-height cm, linear between nodes,
+ *  clamped at the ends (numpy.interp). Twin of live_grid.field_prof's S. */
+export function profileAt(prof, dates, Hkft) {
+  const zs = prof.z_kft, S = new Float64Array(zs.length);
+  for (const d of dates) { const c = prof.cm[d]; for (let i = 0; i < zs.length; i++) S[i] += c[i] / CM_PER_IN; }
+  if (Hkft <= zs[0]) return S[0];
+  if (Hkft >= zs[zs.length - 1]) return S[zs.length - 1];
+  let lo = 0, hi = zs.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (zs[m] <= Hkft) lo = m; else hi = m; }
+  return S[lo] + ((S[hi] - S[lo]) * (Hkft - zs[lo])) / (zs[hi] - zs[lo]);
+}
+
+/* Before 2026-11-23 a map was ONE multiplier (sheet total / NBM at mid) times NBM: Whistler went 0 in at the base to
+   122 in at the top because a rain/snow disagreement at mid-mountain was stretched up the whole slope. Maps published
+   since carry `prof` (the blend's own snow at every height) and use it; an old map without it is shown only if its
+   multiplier is mild, until the next refresh replaces it. */
+export const OLD_K_RANGE = [0.67, 1.5];
+
+/** Height-profile field (anchor.py): F = S(H) * clamp(N / n(H), 0, rho_max); rho = 1 where NBM's own line n(H)
+ *  is under floor_in. Twin of scripts/maps/live_grid.py field_prof(). */
+function profileField(live, g, idx, dates, totalCm) {
+  const { gw, gh, cw, ch, cell, ccell, prof } = live;
+  if (dates.some((d) => !Array.isArray(prof.cm?.[d]))) return { hidden: "the map's height profile lacks a sheet day" };
+  const atMid = profileAt(prof, dates, live.ref.z_kft) * CM_PER_IN;
+  if (Math.abs(atMid - totalCm) > 0.05) return { hidden: `the map was drawn for ${atMid.toFixed(1)} cm, the sheet shows ${totalCm.toFixed(1)} cm` };
+  const SA = new Float64Array(cw * ch), SG = new Float64Array(cw * ch);
+  let ra = 0, rg = 0;
+  for (const i of idx) {
+    for (let p = 0; p < cw * ch; p++) { SA[p] += g.A[i][p]; SG[p] += g.G[i][p]; }
+    ra += live.ref.a[i]; rg += live.ref.g[i];
+  }
+  const a = bilinearUp(SA, cw, ch, gw, gh, cell, ccell), b = bilinearUp(SG, cw, ch, gw, gh, cell, ccell);
+  const F = new Float64Array(gw * gh);
+  for (let p = 0; p < gw * gh; p++) F[p] = Math.max(0, a[p] + b[p] * g.H[p]);
+  gaussianBlur(F, gw, gh, live.sigma);
+  const floor = live.floor_in ?? 0.1, rmax = live.rho_max ?? 3;
+  for (let p = 0; p < gw * gh; p++) {
+    const H = g.H[p], n = Math.max(0, ra + rg * H);
+    const rho = n >= floor ? Math.min(rmax, Math.max(0, F[p] / Math.max(n, 1e-9))) : 1;
+    F[p] = profileAt(prof, dates, H) * rho;
+  }
+  return { F, k: null, ref: Math.max(0, ra + rg * live.ref.z_kft), profile: true };
+}
+
 /** The field for the sheet's days. Returns { F, k, ref } or { hidden: reason } — never a guess:
  *  a day the grids do not have, or a sheet total with no NBM pattern under it, hides the map. */
 export function computeField(live, g, dates, totalCm) {
@@ -109,6 +153,7 @@ export function computeField(live, g, dates, totalCm) {
   if (!dates.length) return { hidden: "no forecast days" };
   if (idx.some((i) => i < 0)) return { hidden: `the map has no snow pattern for ${dates.filter((_, n) => idx[n] < 0).join(", ")}` };
   if (!Number.isFinite(totalCm) || totalCm < 0) return { hidden: "the sheet total is missing" };
+  if (live.prof) return profileField(live, g, idx, dates, totalCm);
   const { gw, gh, cw, ch, cell, ccell } = live;
   const SA = new Float64Array(cw * ch), SG = new Float64Array(cw * ch);
   let ra = 0, rg = 0;
@@ -126,6 +171,7 @@ export function computeField(live, g, dates, totalCm) {
       return { hidden: `NBM has ${ref.toFixed(2)} in at the forecast point but the sheet has ${totalIn.toFixed(1)} in` };
     }
     k = totalIn / ref;
+    if (k < OLD_K_RANGE[0] || k > OLD_K_RANGE[1]) return { hidden: `old single-multiplier map (x${k.toFixed(2)}); waiting for the height-profile refresh` };
   }
   const a = bilinearUp(SA, cw, ch, gw, gh, cell, ccell), b = bilinearUp(SG, cw, ch, gw, gh, cell, ccell);
   const F = new Float64Array(gw * gh);

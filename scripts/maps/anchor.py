@@ -12,9 +12,16 @@ takes its AMOUNT from the blend:
      pattern comes from NBM, the amount does not).
   2. Total  = sum of blend-forecast.json snow (cm) over those dates. All or nothing: a date missing from the blend means
      no anchored map (never a partial sum shown as the total).
-  3. Scale  = blend total / NBM-downscaled snow at the blend's own point (resorts.json nws/latlon) and elevation
-     (forecast.json mid, which is the elevation the blend's models are fetched at). One multiplier for the whole map,
-     so the order (base < top) and the shape are NBM's, and the map's value at that point and height IS the sheet total.
+  3. Height profile (2026-11-23, replaces the single multiplier). The blend's own snow at EVERY height, day by day:
+     s_d(H) = snow_d x ratio(T_d(H)) / ratio(t_d)  (water_d x ratio / 10 if it rains at mid),  T_d(H) = t_d - 0.0065 C/m x (H - mid),
+     the same ratio rule the sheet uses (scripts/blend/lib.js snowFrom: rain above 2 C, the SLR line, the warm cap
+     where promoted), the same lapse rate the scoring uses (slr.py). At mid it IS the sheet's number.
+     The map = S(H) x rho, S = the window's sum of s_d, rho = NBM's field / NBM's own profile at the blend point for
+     that height (clamped 0..RHO_MAX; 1 where NBM has no snow at that height). NBM supplies only WHERE across the
+     resort snow is heavier or lighter at a given height; how much falls at each height, rain line included, is ours.
+     Why (Brian, 2026-11-23, Whistler 0 in at the base / 122 in at the top): one multiplier set at mid-mountain
+     stretched the whole slope by the blend-vs-NBM disagreement, which was about rain vs snow near the freezing level,
+     not about the summit; the summit went to 122 in while the blend's own summit number was ~86 in.
 
 Plain arithmetic, auditable from the numbers recorded in the map's json. Everything here fails loudly; no anchored map
 beats a wrong one."""
@@ -27,6 +34,12 @@ CM_PER_IN = 2.54
 NBM_FLOOR_IN = 0.1      # NBM below this at the blend point while the blend has snow: no pattern to scale -> refuse
 SCALE_WARN = (0.25, 4.0)
 LOW_IN = 1.0            # a sheet total under this with no NBM pattern to scale: draw the map flat at the total (Brian 2026-11-23)
+
+
+LAPSE_C_PER_M = 0.0065  # slr.py LAPSE_C_PER_M: the scoring's station-height rule
+RAIN_ABOVE_C = 2.0      # scripts/blend/lib.js RAIN_ABOVE_C
+RHO_MAX = 3.0           # NBM's local pattern may at most triple (or zero) the blend's amount at a height
+FT_PER_M = 3.28084
 
 
 class AnchorError(SystemExit):
@@ -101,3 +114,72 @@ def label(dates: list[str]) -> str:
     if a == b:
         return f"{a:%b} {a.day}"
     return f"{a:%b} {a.day}–{b.day}" if a.month == b.month else f"{a:%b} {a.day} – {b:%b} {b.day}"
+
+
+# ---------------------------------------------------------------- the blend's height profile (twin of blend/lib.js)
+def line_for(slr: dict, rid: str) -> dict:
+    """projections/lib.js slrLineFor: the region's own line if promoted, else the pooled one."""
+    reg = (slr.get("region_of") or {}).get(rid)
+    e = (slr.get("regions") or {}).get(reg) if reg else None
+    if e and e.get("promoted") and isinstance(e.get("a"), (int, float)) and isinstance(e.get("b"), (int, float)):
+        return {"a": e["a"], "b": e["b"], "clamp": slr.get("clamp") or [5, 25], "warm": slr.get("warm")}
+    if not isinstance(slr.get("a"), (int, float)):
+        raise AnchorError("anchor: slr.json has no SLR line; cannot build the height profile")
+    return {"a": slr["a"], "b": slr["b"], "clamp": slr.get("clamp") or [5, 25], "warm": slr.get("warm")}
+
+
+def warm_ratio(t: float, warm: dict) -> float:
+    xs, ys = (warm or {}).get("t") or [], (warm or {}).get("r") or []
+    if len(xs) < 2 or t < xs[0]:
+        return float("inf")
+    if t >= xs[-1]:
+        return float(ys[-1])
+    i = 0
+    while t >= xs[i + 1]:
+        i += 1
+    return ys[i] + (ys[i + 1] - ys[i]) * (t - xs[i]) / (xs[i + 1] - xs[i])
+
+
+def ratio(t: float, line: dict, lead: int) -> float:
+    """snowFrom's ratio (daily rule): 0 above 2 C; the clamped line; the warm cap where promoted for the lead group."""
+    if t > RAIN_ABOVE_C:
+        return 0.0
+    lo, hi = line["clamp"]
+    r = min(hi, max(lo, line["a"] + line["b"] * t))
+    w = line.get("warm") or {}
+    if (w.get("promote") or {}).get("1-3" if lead <= 3 else "4-7"):
+        r = min(r, warm_ratio(t, w))
+    return r
+
+
+def height_profile(blend: dict, rid: str, dates: list[str], slr: dict, mid_m: float, heights_m) -> dict:
+    """{date: [snow cm at each height]} — at mid exactly the blend's (sheet's) number for the day."""
+    if any(((slr.get("hourly") or {}).get("promote") or {}).values()):
+        raise AnchorError("anchor: slr.json promotes the sub-daily split; height_profile still uses the daily rule — update it first")
+    days = {d["date"]: d for d in (blend.get("resorts", {}).get(rid) or {}).get("days", [])}
+    line = line_for(slr, rid)
+    out = {}
+    for ds in dates:
+        d = days.get(ds) or {}
+        snow, water, t, lead = d.get("snow"), d.get("water"), d.get("t"), d.get("lead")
+        if not all(isinstance(v, (int, float)) for v in (snow, water, t, lead)):
+            raise AnchorError(f"anchor: blend day {rid} {ds} lacks snow/water/t/lead; no height profile (missing is not zero)")
+        r0 = ratio(t, line, lead)
+        rs = [ratio(t - LAPSE_C_PER_M * (h - mid_m), line, lead) for h in heights_m]
+        # the sheet's number x (ratio here / ratio at mid): exact at mid, 0 where it rains. Rain at mid but snow higher
+        # up (the sheet shows 0 there): the blend's water x the ratio at that height.
+        out[ds] = [round(snow * r / r0, 3) if r0 > 0 else round(water * r / 10, 3) for r in rs]
+    return out
+
+
+def profile_heights(lo_m: float, hi_m: float, mid_m: float, n: int = 64) -> list[float]:
+    """n heights spanning the map's terrain (with margin), plus the blend's own height exactly."""
+    lo, hi = min(lo_m, mid_m) - 50.0, max(hi_m, mid_m) + 50.0
+    hs = sorted(set([round(lo + (hi - lo) * i / (n - 1), 1) for i in range(n)] + [round(mid_m, 1)]))
+    return hs
+
+
+def interp_profile(hs_kft, S_in, H_kft):
+    """S at heights H (kft), linear between nodes, clamped at the ends. numpy twin of terrainField.js profileAt."""
+    import numpy as np
+    return np.interp(H_kft, hs_kft, S_in)

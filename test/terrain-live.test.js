@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { readPng } from "../scripts/maps/png.mjs";
-import { readGrids, computeField, gaussianBlur, levelsFor, windowLabel, sampleAt } from "../src/lib/terrainField.js";
+import { readGrids, computeField, gaussianBlur, levelsFor, windowLabel, sampleAt, profileAt } from "../src/lib/terrainField.js";
 import { contourRings, splitAtFrame, ringArea } from "../src/lib/terrainContours.js";
 import { drawLive, sheetWindow } from "../src/lib/terrainLive.js";
 
@@ -12,6 +12,32 @@ const FX = new URL("./fixtures/terrain-live/", import.meta.url).pathname;
 const live = JSON.parse(readFileSync(FX + "live.json", "utf8"));
 const exp = JSON.parse(readFileSync(FX + "expected.json", "utf8"));
 const grids = readGrids(live, readPng(readFileSync(FX + "grid.png")), readPng(readFileSync(FX + "days.png")));
+const prof = JSON.parse(readFileSync(FX + "prof.json", "utf8"));
+const expP = JSON.parse(readFileSync(FX + "expected-prof.json", "utf8"));
+/* A height-profile map (2026-11-23) whose window sums to `cm` at the blend's height: each day cm / n at 8.0 kft,
+   rising 40% per 1000 ft, never below 0 (what the Python fixture uses, scaled). */
+const P = (dates, cm) => ({ ...live, rho_max: 3, prof: { z_kft: prof.z_kft,
+  cm: Object.fromEntries(live.dates.map((d) => [d, prof.z_kft.map((z) => Math.max(0, (dates.includes(d) ? cm / dates.length : 0) * (1 + 0.4 * (z - 8))))])) } });
+
+test("height profile: the app's field equals the Python twin (live_grid.field_prof) on the same bytes", () => {
+  const r = computeField({ ...live, rho_max: 3, prof }, grids, expP.dates, expP.totalCm);
+  assert.ok(!r.hidden && r.profile, r.hidden);
+  let worst = 0;
+  for (let i = 0; i < expP.F.length; i++) worst = Math.max(worst, Math.abs(r.F[i] - expP.F[i]));
+  assert.ok(worst < 1e-6, `max difference ${worst} in`);
+});
+
+test("height profile: hidden when the sheet is not the number the map was drawn for, or a day has no profile", () => {
+  const L = { ...live, rho_max: 3, prof };
+  assert.ok(computeField(L, grids, expP.dates, expP.totalCm + 1).hidden);
+  assert.ok(computeField({ ...L, prof: { ...prof, cm: { "2026-11-23": prof.cm["2026-11-23"] } } }, grids, expP.dates, 20).hidden);
+});
+
+test("old single-multiplier maps are shown only with a mild multiplier (Whistler 2026-11-23: x1.8 stretched the top to 122 in)", () => {
+  assert.ok(!computeField(live, grids, exp.dates, exp.totalCm).hidden, "k ~ 1: shown");
+  assert.match(computeField(live, grids, exp.dates, 20).hidden, /old single-multiplier/, "k 0.43: hidden");
+  assert.match(computeField(live, grids, exp.dates, 90).hidden, /old single-multiplier/, "k 1.9: hidden");
+});
 
 test("the app's field equals the Python twin (live_grid.field) on the same bytes", () => {
   const r = computeField(live, grids, exp.dates, exp.totalCm);
@@ -58,19 +84,18 @@ test("a flat under-1-in map draws no bands, labels the sheet's number and says U
 });
 
 test("a sub-1-in map WITH an NBM pattern also says Under 1 in and prints no 0\" over the sheet's snow", () => {
-  const r = drawLive(live, grids, { dates: ["2026-11-22"], totalCm: 0.8 });   // 0.3 in
+  const r = drawLive(P(["2026-11-22"], 0.8), grids, { dates: ["2026-11-22"], totalCm: 0.8 });   // 0.3 in
   assert.ok(!r.hidden && r.nosnow && r.low);
   assert.equal(r.full.depth.length, 0);
-  const z = drawLive(live, grids, { dates: ["2026-11-22"], totalCm: 0 });
+  const z = drawLive(P(["2026-11-22"], 0), grids, { dates: ["2026-11-22"], totalCm: 0 });
   assert.ok(z.nosnow && !z.low && z.full.depth[0].in === 0, "a zero total is still No snow with its 0");
 });
 
 test("the map's amount IS the sheet's: at the forecast point and height the window sums to the total", () => {
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41]]) {
-    const r = computeField(live, grids, dates, cm);
-    const idx = dates.map((d) => live.dates.indexOf(d));
-    const ref = Math.max(0, idx.reduce((s, i) => s + live.ref.a[i], 0) + idx.reduce((s, i) => s + live.ref.g[i], 0) * live.ref.z_kft);
-    assert.ok(Math.abs(ref * r.k * 2.54 - cm) < 1e-9);
+    const L = P(dates, cm), r = computeField(L, grids, dates, cm);
+    assert.ok(!r.hidden, r.hidden);
+    assert.ok(Math.abs(profileAt(L.prof, dates, live.ref.z_kft) * 2.54 - cm) < 1e-9, "the blend's own number at its height");
   }
 });
 
@@ -106,11 +131,12 @@ test("drawLive: bands, contours, labels inside the outline, Base / Top from the 
   const sheet = { snowfall: "tabulator", win: [{ date: "2026-11-23", snow: 12 }, { date: "2026-11-24", snow: 8 }] };
   const win = sheetWindow(sheet);
   assert.deepEqual(win, { dates: ["2026-11-23", "2026-11-24"], totalCm: 20 });
-  const r = drawLive(live, grids, win);
+  const LW = P(win.dates, win.totalCm);
+  const r = drawLive(LW, grids, win);
   assert.ok(!r.hidden, r.hidden);
   assert.match(r.fill, /<path d="M/);
   assert.equal(r.label, "Nov 23–24");
-  const F = computeField(live, grids, win.dates, win.totalCm).F;
+  const F = computeField(LW, grids, win.dates, win.totalCm).F;
   assert.equal(r.base_in, Math.round(sampleAt(F, live, 60, 150) * 10) / 10);
   assert.ok(r.range_in[0] <= r.range_in[1]);
   for (const d of r.full.depth) assert.ok(d.x >= 0 && d.x <= 1 && d.y >= 0 && d.y <= 1);
@@ -143,7 +169,7 @@ test("tags never touch or overlap: Base, Top, Mid and the depth labels, in both 
     [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }],
   ];
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [["2026-11-22"], 3.3], [live.dates, 41], [live.dates, 160]]) {
-    const r = drawLive(live, grids, { dates, totalCm: cm });
+    const r = drawLive(P(dates, cm), grids, { dates, totalCm: cm });
     for (const [f, S] of frames(r)) {
       const boxes = [];
       if (f.mid) { const m = layoutMid(f.mid, false, S); boxes.push({ cx: m.cx, cy: m.cy, w: m.w, h: m.h, n: "mid" }); }
@@ -163,7 +189,7 @@ test("tags never touch or overlap: Base, Top, Mid and the depth labels, in both 
 test("Mid is not above the Top tag when there was room to put it below (Brian 2026-11-22)", () => {
   let moved = 0;
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [live.dates, 41], [live.dates, 160]]) {
-    const r = drawLive(live, grids, { dates, totalCm: cm });
+    const r = drawLive(P(dates, cm), grids, { dates, totalCm: cm });
     for (const [f, S] of [[r.sheet, { ...SHEET, w: SHEET.size, h: SHEET.size }], [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }]]) {
       const top = f.marks.find((k) => k.kind === "top");
       if (!f.mid || !top || top.in == null) continue;
@@ -176,7 +202,7 @@ test("Mid is not above the Top tag when there was room to put it below (Brian 20
 
 test("moving Mid below Top never costs a contour label: every label that is missing touches Base, Top, Mid or another label", () => {
   for (const [dates, cm] of [[["2026-11-23", "2026-11-24"], 20], [live.dates, 41], [live.dates, 63]]) {
-    const r = drawLive(live, grids, { dates, totalCm: cm });
+    const r = drawLive(P(dates, cm), grids, { dates, totalCm: cm });
     for (const [f, S] of [[r.sheet, { ...SHEET, w: SHEET.size, h: SHEET.size }], [r.full, { ...FULL, w: (FULL.size * live.w) / live.h, h: FULL.size }]]) {
       assert.ok(f.depth.length >= 1, `labels remain (${cm} cm)`);
       if (f.mid) {

@@ -54,6 +54,18 @@ f12 = LG.field(H2, A2, G2, [0, 1], 0.8, 1.0)
 assert (f1 >= 0).all() and (f12 >= f1 - 1e-9).all()
 assert np.allclose(LG.field(H2, A2, G2, [0, 1], 0.8, 2.5), 2.5 * f12)
 
+# 3b. height-profile field: S(H) from the profile, rho from NBM vs its own line; rho = 1 where the line is ~0
+PROF_Z = [round(6.0 + 0.1 * i, 1) for i in range(31)]          # 6.0 .. 9.0 kft, includes 8.0 (the ref height)
+PROF = {"z_kft": PROF_Z, "cm": {d: [round(max(0.0, c * (1 + 0.4 * (z - 8.0))), 3) for z in PROF_Z]
+                                for d, c in zip(dates, (5.0, 12.0, 8.0))}}
+REF = {"z_kft": 8.0, "a": [-3.0, -1.5, 0.0], "g": [0.8, 1.1, 1.4]}
+fp = LG.field_prof(H2, A2, G2, [1, 2], 0.8, REF, PROF, dates, 0.1, 3.0)
+assert (fp >= 0).all()
+S = np.interp(H2, PROF_Z, np.sum([PROF["cm"][d] for d in dates[1:]], axis=0) / 2.54)
+assert (fp <= 3.0 * S + 1e-9).all()
+flat = LG.field_prof(H2, A2, G2, [1, 2], 0.8, {**REF, "a": [-50, -50, -50]}, PROF, dates, 0.1, 3.0)
+assert np.allclose(flat, S), "no NBM line at a height: the blend's own amount, no pattern"
+
 # 4. missing values refuse loudly (missing is not zero)
 try:
     LG.pack(H, mask, [A[0] * np.nan], [G[0]])
@@ -73,10 +85,15 @@ if "--fixture" in sys.argv:
     # the app's window for days 1-2 with a sheet total of 20 cm: k = (20 / 2.54) / max(0, sum a + sum g * z)
     idx = [1, 2]
     ref = max(0, sum(meta["ref"]["a"][i] for i in idx) + sum(meta["ref"]["g"][i] for i in idx) * meta["ref"]["z_kft"])
-    k = 20 / 2.54 / ref
+    total = 47.0                                  # k ~ 1: inside the old-map gate (0.67..1.5)
+    k = total / 2.54 / ref
     twin = LG.field(H2, A2, G2, idx, meta["sigma"], k)
     (out / "live.json").write_text(json.dumps(meta, indent=1))
-    (out / "expected.json").write_text(json.dumps({"dates": [dates[i] for i in idx], "totalCm": 20, "k": k,
+    (out / "expected.json").write_text(json.dumps({"dates": [dates[i] for i in idx], "totalCm": total, "k": k,
                                                   "F": [round(float(x), 9) for x in twin.ravel()]}))
+    tp = LG.field_prof(H2, A2, G2, idx, meta["sigma"], meta["ref"], PROF, dates, meta["floor_in"], 3.0)
+    (out / "prof.json").write_text(json.dumps(PROF))
+    (out / "expected-prof.json").write_text(json.dumps({"dates": [dates[i] for i in idx], "totalCm": 20.0,
+                                                       "F": [round(float(x), 9) for x in tp.ravel()]}))
     print(f"fixture written: grid {len(gp)} B, days {len(dp)} B, k {k:.4f}")
 print("live grid tests passed")

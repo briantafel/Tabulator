@@ -42,6 +42,27 @@ def test():
     assert raises(lambda: A.scale(0.07, 2.6))                                                # no pattern, 1.02 in: still refuse
     assert A.label(ds) == "Nov 22–26"
     assert A.label(["2026-11-29", "2026-12-03"]) == "Nov 29 – Dec 3"
+    # height profile (2026-11-23): the blend's own snow at each height; at mid exactly the sheet's number
+    slr = {"a": 11.5, "b": -0.36, "clamp": [5, 25], "region_of": {}, "regions": {},
+           "warm": {"t": [-0.5, 0.5, 1.5], "r": [11.0, 7.0, 4.0], "promote": {"1-3": True, "4-7": False}}}
+    bl = {"resorts": {"w": {"days": [{"date": "2026-11-24", "lead": 1, "water": 66.3, "t": 0.1, "snow": 58.3}]}}}
+    hs = [675.0, 1480.0, 2260.0]
+    pr = A.height_profile(bl, "w", ["2026-11-24"], slr, 1480.0, hs)["2026-11-24"]
+    assert pr[1] == 58.3, pr                                   # mid: the sheet's number, untouched
+    assert pr[0] == 0.0, pr                                    # +5.3 C at the base: rain
+    r_top = 11.5 - 0.36 * (0.1 - 0.0065 * 780)                 # -4.97 C, colder than the warm cap range
+    r_mid = min(11.5 - 0.036, 7.0 + (11.0 - 7.0) * (0.5 - 0.1))  # warm cap at +0.1 C = 8.6
+    assert abs(pr[2] - round(58.3 * r_top / r_mid, 3)) < 1e-9, pr
+    rain_mid = {"resorts": {"w": {"days": [{"date": "2026-11-24", "lead": 1, "water": 20.0, "t": 3.0, "snow": 0.0}]}}}
+    pm = A.height_profile(rain_mid, "w", ["2026-11-24"], slr, 1480.0, hs)["2026-11-24"]
+    assert pm[1] == 0.0 and pm[2] > 0, pm                       # rain at mid, snow at the summit
+    assert A.ratio(2.5, A.line_for(slr, "w"), 1) == 0.0 and A.ratio(0.0, A.line_for(slr, "w"), 5) == 11.5   # 4-7 uncapped
+    bad = {**slr, "hourly": {"promote": {"1-3": True}}}
+    assert raises(lambda: A.height_profile(bl, "w", ["2026-11-24"], bad, 1480.0, hs))      # daily rule only: refuse loudly
+    assert raises(lambda: A.height_profile({"resorts": {"w": {"days": [{"date": "2026-11-24", "snow": 1}]}}}, "w",
+                                           ["2026-11-24"], slr, 1480.0, hs))               # no water/t: refuse
+    hh = A.profile_heights(700, 2200, 1480.3)
+    assert 1480.3 in hh and hh[0] < 700 and hh[-1] > 2200 and hh == sorted(hh)
     print("anchor: ok")
 
 

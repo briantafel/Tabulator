@@ -375,49 +375,50 @@ def anchor_setup(rid, r):
     start, end = A.window_utc(dates, tz)
     log(f"anchor: {rid} sheet days {dates[0]}..{dates[-1]} ({len(dates)}), blend {total_cm} cm = {total_cm / A.CM_PER_IN:.2f} in "
         f"at {pt[0]},{pt[1]} {z_m:.0f} m (blend {bl.get('fetchedAt')})")
+    slr = json.loads((pub / "slr.json").read_text())
     return {"A": A, "tz": tz, "dates": dates, "total_cm": total_cm, "z_m": z_m, "pt": pt, "blend_fetched": bl.get("fetchedAt"),
+            "blend": bl, "slr": slr, "rid": rid,
             "forecast_generated": fc.get("generatedAt"),
             "leads_for": lambda cycle: A.nbm_leads(cycle, start, end), "start": start, "end": end}
 
 
-def anchor_apply(anc, sample, snow, snow_info, fbox):
-    """Scale the NBM pattern so its value at the blend's point and height is the sheet's total; check it is."""
+def anchor_apply(anc, sample, snow, snow_info, fbox, dem_m):
+    """The blend's own snow at every height x NBM's local pattern at that height (anchor.py, 2026-11-23).
+    At the blend's point and height the map is the sheet's total; elsewhere each height gets the blend's amount for
+    that height (its own rain line and snow ratio), and NBM only says where across the resort it is heavier/lighter."""
     A = anc["A"]
     la, lo = anc["pt"]
     if not (fbox[1] <= la <= fbox[3] and fbox[0] <= lo <= fbox[2]):
         log(f"  anchor point {la},{lo} is outside the frame (still inside the wide snow field; sampled there)")
-    ref = float(sample(np.array([la]), np.array([lo]), np.array([anc["z_m"]]))[0])
-    k = A.scale(ref, anc["total_cm"])
     want = anc["total_cm"] / A.CM_PER_IN
-    if k is None:   # no NBM pattern and under 1 in: flat at the sheet's total, said so on the map ("Under 1 in")
-        log(f"  anchor: NBM has {ref:.2f} in at the blend point, no pattern to scale; sheet total {want:.2f} in < {A.LOW_IN:g} in -> flat map at the total")
-        snow_info["run_nbm"] = snow_info["run"]
-        snow_info["slr"] = "the blend's (amount); too little snow for a pattern, so the map is flat"
-        snow_info["flat"] = True
-        anc["flat_in"] = want
-        anc["record"] = {"dates": anc["dates"], "label": A.label(anc["dates"]), "total_cm": anc["total_cm"],
-                         "total_in": round(want, 2), "point": list(anc["pt"]), "elevation_m": anc["z_m"],
-                         "nbm_at_point_in": round(ref, 3), "scale": None, "flat": True, "blend_fetched": anc["blend_fetched"],
-                         "forecast_generated": anc["forecast_generated"],
-                         "nbm_window_utc": [anc["start"].isoformat(), anc["end"].isoformat()],
-                         "method": "flat at the blend total: NBM has no pattern here and the total is under 1 in; anchor.py"}
-        return np.full_like(snow, want)
-    got = ref * k
-    if abs(got - want) > 0.01:
-        raise SystemExit(f"anchor: map at the blend point is {got:.3f} in, sheet total {want:.3f} in; refusing")
-    if k and not A.SCALE_WARN[0] <= k <= A.SCALE_WARN[1]:
-        log(f"  WARNING anchor: NBM and the blend disagree a lot here (scale x{k:.2f}); pattern is NBM's, amount the blend's")
-    log(f"  anchor: NBM {ref:.2f} in at the blend point -> x{k:.3f} -> {got:.2f} in = sheet total; "
-        f"map {snow.min() * k:.1f}-{snow.max() * k:.1f} in")
+    hs_m = A.profile_heights(float(dem_m.min()), float(dem_m.max()), anc["z_m"])
+    prof = A.height_profile(anc["blend"], anc["rid"], anc["dates"], anc["slr"], anc["z_m"], hs_m)
+    hs_kft = [h * A.FT_PER_M / 1000.0 for h in hs_m]
+    S_in = np.sum([prof[d] for d in anc["dates"]], axis=0) / A.CM_PER_IN
+    at_mid = float(np.interp(anc["z_m"] * A.FT_PER_M / 1000.0, hs_kft, S_in))
+    if abs(at_mid - want) > 0.01:
+        raise SystemExit(f"anchor: height profile at the blend's height is {at_mid:.3f} in, sheet total {want:.3f} in; refusing")
+    # NBM's own profile at the blend's point, for each cell's height (unblurred, like the app's ref line)
+    n = sample(np.full(dem_m.shape, la), np.full(dem_m.shape, lo), dem_m)
+    rho = np.where(n >= A.NBM_FLOOR_IN, np.clip(snow / np.maximum(n, 1e-9), 0.0, A.RHO_MAX), 1.0)
+    S = A.interp_profile(hs_kft, S_in, dem_m * A.FT_PER_M / 1000.0)
+    F = S * rho
+    ref = float(sample(np.array([la]), np.array([lo]), np.array([anc["z_m"]]))[0])
+    lo_i, hi_i = int(np.argmin(dem_m)), int(np.argmax(dem_m))
+    log(f"  anchor: blend profile {S_in.min():.1f}-{S_in.max():.1f} in over {hs_m[0]:.0f}-{hs_m[-1]:.0f} m "
+        f"({want:.2f} in at {anc['z_m']:.0f} m = sheet total; NBM there {ref:.2f} in); "
+        f"lowest cell {float(S.flat[lo_i]):.1f} in, highest {float(S.flat[hi_i]):.1f} in before pattern; map {F.min():.1f}-{F.max():.1f} in")
     snow_info["run_nbm"] = snow_info["run"]
-    snow_info["slr"] = "the blend's (amount); NBM's own ratio shaped the pattern"
+    snow_info["slr"] = "the blend's, at every height (its rain line and snow ratio); NBM only for the pattern across the resort"
+    anc["profile"] = {"z_kft": [round(h, 5) for h in hs_kft], "cm": prof}
     anc["record"] = {"dates": anc["dates"], "label": A.label(anc["dates"]), "total_cm": anc["total_cm"],
                      "total_in": round(want, 2), "point": list(anc["pt"]), "elevation_m": anc["z_m"],
-                     "nbm_at_point_in": round(ref, 3), "scale": round(k, 4), "blend_fetched": anc["blend_fetched"],
-                     "forecast_generated": anc["forecast_generated"],
+                     "nbm_at_point_in": round(ref, 3), "scale": None, "profile_in": [round(float(S_in.min()), 2), round(float(S_in.max()), 2)],
+                     "blend_fetched": anc["blend_fetched"], "forecast_generated": anc["forecast_generated"],
                      "nbm_window_utc": [anc["start"].isoformat(), anc["end"].isoformat()],
-                     "method": "NBM pattern x (blend total / NBM at the blend's point and mid elevation); anchor.py"}
-    return snow * k
+                     "method": "blend snow at every height (water x ratio at that height's lapse-rate temperature) "
+                               f"x NBM pattern / NBM's own profile, clamped 0-{A.RHO_MAX:g}; anchor.py"}
+    return F
 
 
 def nbm_looks_empty(nbm_box_max_in, ifs_in):
@@ -783,15 +784,15 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
     live = {"v": LG.VERSION, "grid": f"{rid}-grid.png", "days": f"{rid}-days.png", "w": Wc, "h": px,
             "cell": LG.CELL, "gw": gw, "gh": gh, "ccell": LG.CCELL, "cw": cw, "ch": ch, **qm,
             "dates": parts["dates"], "tz": anc["tz"], "ref": ref, "sigma": round(sigma, 6), "stroke": round(1.6 * s, 4),
-            "floor_in": anc["A"].NBM_FLOOR_IN, "low_in": anc["A"].LOW_IN,
+            "floor_in": anc["A"].NBM_FLOOR_IN, "low_in": anc["A"].LOW_IN, "rho_max": anc["A"].RHO_MAX,
+            "prof": anc["profile"],
             "marks": [{"kind": w.lower(), "x": round(x - left, 2), "y": round(y, 2), "ft": round(float(zz) * FT)}
                       for w, (zz, x, y, sv) in marks],
             "sheet": [box[0] - left, box[1], box[2] - box[0]], "deep": [float(deep_x - left), float(deep_y)]}
     # --- check: the app's arithmetic on the packed (quantised) grids vs this run's field, for the anchored window
     H2, m2, A2, G2 = LG.unpack(grid_png, days_png, live, len(parts["dates"]))
-    k = anc["record"]["scale"]
-    twin = (np.full(H2.shape, anc["flat_in"]) if k is None
-            else LG.field(H2, A2, G2, range(len(parts["dates"])), sigma, k))
+    twin = LG.field_prof(H2, A2, G2, range(len(parts["dates"])), sigma, ref, anc["profile"], parts["dates"],
+                         anc["A"].NBM_FLOOR_IN, anc["A"].RHO_MAX)
     pyf = map_coordinates(snow, [np.broadcast_to((fy / 2 - 0.5)[:, None], (gh, gw)),
                                  np.broadcast_to(((left + fx) / 2 - 0.5)[None, :], (gh, gw))], order=1, mode="nearest")
     d = np.abs(twin - pyf)[m2]
@@ -976,7 +977,7 @@ def run(out, rid, px=4096, work=None, app=False, hires=False):
     sig = max(1.0, 1.8 * m_old / (side_m / sn))             # old: gaussian 1.5 px then 1 px at ~m_old per px
     snow = gaussian_filter(snow, sig)
     if anc:
-        snow = anchor_apply(anc, sample, snow, snow_info, fbox)
+        snow = anchor_apply(anc, sample, snow, snow_info, fbox, dem_f)
     timing["snow_s"] = round(time.time() - t0)
     log(f"snow field {snow.min():.1f}-{snow.max():.1f} in on the frame ({snow_info['source']} {snow_info['run']})")
 
