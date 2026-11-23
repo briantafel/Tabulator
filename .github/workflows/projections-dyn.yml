@@ -10,8 +10,7 @@ name: Shadow projections (dynamical.org + our snow ratio)
 # 10:07 UTC: after ensembles-om.yml (08:13) so the two are built from the
 # same day and the run summary compares them.
 on:
-  schedule:
-    - cron: "7 10 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
 
 permissions:

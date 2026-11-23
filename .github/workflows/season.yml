@@ -7,8 +7,7 @@ name: Build season to date
 # The app only reads it behind the `season` switch. ~5 AWDB requests a run.
 
 on:
-  schedule:
-    - cron: "17 14 * * *"   # SNOTEL's daily values for yesterday are in by mid-morning Mountain
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   push:
     branches: [main]
     paths: ["scripts/season/**", ".github/workflows/season.yml"]

@@ -13,8 +13,7 @@ name: Open-Meteo ensembles (one paced pass a day)
 # US wakes up. Projections stay valid 36 h (src/lib/projections.js), so a
 # daily pass leaves room for one missed day.
 on:
-  schedule:
-    - cron: "13 8 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
 
 permissions:

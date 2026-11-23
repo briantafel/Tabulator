@@ -8,8 +8,7 @@ name: Upper-air profiles (HRRR, GEFS, ECMWF open data)
 # upper-air/done/). All three keep history on AWS, so a late or skipped run
 # loses nothing.
 on:
-  schedule:
-    - cron: "50 */3 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       dry_run:

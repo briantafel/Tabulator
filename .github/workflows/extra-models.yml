@@ -6,8 +6,7 @@ name: More models (HRRR precipitation, Canada HRDPS, NOAA AIGEFS)
 # points, same rows as NBM. HRDPS lives ~1 day on the MSC Datamart, so this
 # runs every hour (GitHub cron runs late; done markers make extra runs cheap).
 on:
-  schedule:
-    - cron: "20 * * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       dry_run:

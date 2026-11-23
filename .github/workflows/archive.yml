@@ -20,9 +20,7 @@ name: Archive forecasts
 # git) — no checkbox needed. The long historical backfill has its own
 # workflow, backfill.yml.
 on:
-  schedule:
-    - cron: "45 6 * * *"    # 06:45 UTC
-    - cron: "45 21 * * *"   # 21:45 UTC
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       backfill:

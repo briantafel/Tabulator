@@ -6,9 +6,7 @@ name: Fetch forecast
 # changed, and redeploys the site — a commit made by this workflow's own token
 # does NOT trigger pages.yml on its own, so the deploy is kicked explicitly.
 on:
-  schedule:
-    - cron: "15 6 * * *"    # 06:15 UTC
-    - cron: "15 21 * * *"   # 21:15 UTC — after WPC/CPC afternoon discussions (~3–4 PM ET)
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:         # so you can trigger it by hand from the Actions tab
 
 permissions:

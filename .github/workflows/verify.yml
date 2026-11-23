@@ -15,8 +15,7 @@ on:
   push:
     branches: [main]
     paths: ["scripts/verify/**", "scripts/model/**", ".github/workflows/verify.yml"]
-  schedule:
-    - cron: "40 9 * * *"   # daily, after the morning archive run
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
 
 permissions:
   contents: read

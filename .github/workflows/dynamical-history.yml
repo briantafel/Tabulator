@@ -8,8 +8,7 @@ name: Ensemble history from dynamical.org (one-time, self-paced)
 # last one stopped. When the summary says HISTORY COMPLETE, each run is a
 # ~1-minute no-op and this workflow can be disabled or deleted.
 on:
-  schedule:
-    - cron: "50 * * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
 
 permissions:

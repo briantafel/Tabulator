@@ -9,8 +9,7 @@ name: Ensembles from dynamical.org (ECMWF, GEFS, AIFS)
 # Manual modes: probe (print dataset facts), dry (build rows, upload nothing),
 # live (what the schedule runs), backfill (from/to dates; history).
 on:
-  schedule:
-    - cron: "25 */3 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       mode:

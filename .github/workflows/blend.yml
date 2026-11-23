@@ -12,8 +12,7 @@ name: Our forecast (live blend, whenever a model has a new run)
 # last blend did not use (scripts/blend/model-runs.js). A manual dispatch always builds.
 
 on:
-  schedule:
-    - cron: "17 1,4,7,10,13,16,19,22 * * *"   # fallback only; the Cloudflare scheduler is the real clock
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
 
 permissions:

@@ -7,8 +7,7 @@ name: NOHRSC snowfall analysis (snow truth)
 # marks a day done once it is 3 days old. Past winters: run by hand with
 # from/to (one winter per run fits the time limit; days already done are skipped).
 on:
-  schedule:
-    - cron: "40 15 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       probe:

@@ -8,8 +8,7 @@ name: Build temperatures
 # ~56 Open-Meteo requests a run.
 
 on:
-  schedule:
-    - cron: "20 5,11,17,23 * * *"   # after each main model cycle
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   push:
     branches: [main]
     paths: ["scripts/temps/**", "public/temp-model.json", ".github/workflows/temps.yml"]

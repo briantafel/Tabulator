@@ -1,4 +1,5 @@
 import { test } from "node:test";
+import { due } from "../workers/scheduler/index.js";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { parse } from "yaml";
@@ -79,18 +80,17 @@ test("the scrape workflow can be triggered by hand", () => {
   assert.ok("workflow_dispatch" in triggers,
     "without workflow_dispatch there is no Run workflow button, and the only " +
     "way to test a scrape is to wait for the cron");
-  /* The schedule is deliberately commented out while the app runs on the
-     sample fixture (Brian, 2026-08-25: scraping pages nobody reads wastes
-     bandwidth and risks getting the IP flagged). The cron lines must survive
-     in the file so re-enabling is uncommenting, not rewriting from memory. */
+  /* 2026-11-23: the scrape's clock is the Cloudflare Worker (workers/scheduler),
+     not a GitHub cron. What this test protects is unchanged: the twice-daily
+     scrape must not silently lose its schedule. (Before 11-23 that meant the
+     two cron lines had to survive in this file.) */
   const raw = readFileSync(DIR + "forecast.yml", "utf8");
-  const crons = raw.match(/^\s*#?\s*- cron: /gm) ?? [];
-  assert.equal(crons.length, 2, "the two cron lines must stay in the file");
-  if (!("schedule" in triggers)) {
-    assert.match(raw, /PAUSED/,
-      "a scrape with no schedule must say IN THE FILE that it is paused on " +
-      "purpose, or the next person reads it as a bug and 'fixes' it");
-  }
+  assert.ok(!("schedule" in triggers),
+    "forecast.yml must not also run on GitHub cron: the Worker starts it, and a second clock starts it twice");
+  assert.match(raw, /scheduled by workers\/scheduler/,
+    "say IN THE FILE where the schedule lives, or the next person reads a missing cron as a bug");
+  const hours = [...Array(24).keys()].filter((h) => due(h).includes("forecast.yml"));
+  assert.deepEqual(hours, [6, 21], "the Worker must start the scrape at 06:07 and 21:07 UTC");
 });
 
 /* 2026-11-10: resorts outside the US and Canada are archive-only. They must

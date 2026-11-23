@@ -9,8 +9,7 @@ name: Long-range odds (calibrated chance of a big storm)
 #
 # 10:27 UTC: after projections-dyn.yml (10:07), same day's GEFS 00z.
 on:
-  schedule:
-    - cron: "27 10 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
 
 permissions:

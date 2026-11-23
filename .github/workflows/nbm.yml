@@ -6,8 +6,7 @@ name: NOAA National Blend of Models (US baseline)
 # the last 3 days not yet archived (markers under nbm/done/). NOAA keeps
 # NBM on AWS long term, so late or skipped runs lose nothing.
 on:
-  schedule:
-    - cron: "35 */3 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       dry_run:

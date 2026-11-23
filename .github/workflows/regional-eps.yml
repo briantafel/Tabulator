@@ -10,8 +10,7 @@ name: Regional ensembles (DWD, MeteoSwiss)
 #
 # Needs the archive's four R2 secrets.
 on:
-  schedule:
-    - cron: "40 */3 * * *"
+  # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
   workflow_dispatch:
     inputs:
       dry_run:
