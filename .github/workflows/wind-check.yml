@@ -1,0 +1,44 @@
+name: Wind archive check (read-only summary of source=wind-obs)
+
+# Reads every Parquet file under source=wind-obs in the R2 archive and writes counts to the run summary: rows per
+# model and variable, date range, stations, peak-wind rows, and which key stations are present. Read-only; by hand.
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+concurrency: { group: wind-check, cancel-in-progress: false }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install duckdb==2.0.0
+      - name: Download and summarise
+        run: |
+          set -euo pipefail
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/source=wind-obs/" wind/ --endpoint-url "$ENDPOINT" --only-show-errors
+          n=$(find wind -name '*.parquet' | wc -l); echo "files: $n"
+          [ "$n" -gt 0 ] || { echo "::error::no wind-obs parquet files found (wrong path or credentials)"; exit 1; }
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import duckdb
+          c = duckdb.connect(); c.execute("SET TimeZone='UTC'")
+          c.execute("CREATE VIEW w AS SELECT * FROM read_parquet('wind/**/*.parquet', union_by_name=true)")
+          def show(title, sql):
+              print(f"\n### {title}\n"); r = c.execute(sql); cols = [d[0] for d in r.description]
+              print("| " + " | ".join(cols) + " |\n|" + "---|"*len(cols))
+              for row in r.fetchall(): print("| " + " | ".join(str(x) for x in row) + " |")
+          show("Rows by kind, model and variable", "SELECT kind, model, variable, count(*) rows, count(DISTINCT station_id) stations, min(valid_end)::date first, max(valid_end)::date last FROM w GROUP BY ALL ORDER BY 1,2,3")
+          show("Live run: peak-wind rows by station (parser wind-obs-2)", "SELECT station_id, count(*) rows, max(value) max_kmh FROM w WHERE variable='wind_peak_gust' GROUP BY 1 ORDER BY 2 DESC LIMIT 30")
+          show("Key stations present (rows, first, last)", "SELECT station_id, model, count(*) rows, min(valid_end)::date first, max(valid_end)::date last, count(*) FILTER (WHERE variable='wind_gust_max') gust_rows FROM w WHERE kind='observation' AND (station_id ILIKE '%SLIDE%' OR station_id ILIKE '%STORM%' OR station_id ILIKE '%KCPW%' OR station_id ILIKE '%CPW%' OR station_id ILIKE '%KCCU%' OR station_id ILIKE '%CCU%' OR station_id ILIKE '%HMDC1%' OR station_id ILIKE '%KNXN2%' OR station_id ILIKE '%TADC1%') GROUP BY ALL ORDER BY 1,2")
+          show("History rows by model and winter (Oct-Sep)", "SELECT model, CASE WHEN month(valid_end)>=10 THEN year(valid_end) ELSE year(valid_end)-1 END AS winter_start, count(*) rows, count(DISTINCT station_id) stations FROM w WHERE kind='observation' AND run_id LIKE 'wind-hist-%' GROUP BY ALL ORDER BY 1,2")
+          show("Sanity: implausible speeds or negative values", "SELECT variable, model, count(*) n FROM w WHERE kind='observation' AND unit='km/h' AND (value<0 OR value>350) GROUP BY ALL")
+          PY
