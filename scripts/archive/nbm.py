@@ -34,6 +34,19 @@ issued_at is the exact cycle time. A block without its 6 h APCP is not
 written: missing is not zero. Done markers in the bucket (nbm/done/) make
 each run collect only new cycles. NBM history on AWS goes back to 2020, so
 this can be backfilled later.
+
+BACKFILL (2026-11-24, plan-near-term-models step 3; workflow nbm-backfill.yml):
+    python3 scripts/archive/nbm.py <workDir> --range 20260101-20260131[,…] [--hours 0,12] [--dry-run]
+Same collector, same parser (nbm-3), same tier handling (mid, nearest grid point), same resort list. Differences:
+  - run_id is "bf-nbm-<cycle>-<github run>" (the dictionary's convention for backfills), so history is told apart from
+    live rows without a new column; issued_at is still the real cycle time, valid_start/valid_end the real period.
+  - A cycle NOAA does not have is a recorded GAP (marker with "missing"), never filled and never zeros.
+  - Values are bound-checked against PLAUSIBLE plus a unit check (snow cm vs liquid mm, wind, temperature means); a failure
+    is loud (exit 1, nothing from that cycle archived) and stops the chain.
+  - Old cycles without a snow level are archived and counted in the report (WARNING), not a chain-stopper.
+  - Per-cycle markers are the live ones (nbm/done/nbm-<yyyymmddhh>.json), so live and backfill never double-archive. When
+    every wanted cycle of a month is marked, nbm/done/bf-month-<yyyy-mm>.json records it (cycles, gaps, rows).
+  - Prints BACKFILL COMPLETE when nothing in the ranges is left.
 """
 from __future__ import annotations
 
@@ -92,6 +105,58 @@ PLAUSIBLE = {"precip": (0, 300), "snow": (0, 400), "temp_min": (-60, 45), "temp_
 SNOW_LEVEL_RE = re.compile(r"SNOWLVL|SNOLVL|snow level", re.I)
 SLR_RE = re.compile(r"^(SNOWLR|SLR|SNOWLIQR)$", re.I)
 DISCOVER_RE = re.compile(r"SNOW|LVL|SLR|RATIO|WBZ|0C|isotherm", re.I)
+
+
+BF_HOURS = (0, 12)
+# Unit/range guard for backfills (on top of PLAUSIBLE): whole-cycle means that only a unit or parser slip can push outside.
+BF_MEAN_BOUNDS = {"temp_max": (-35, 30), "temp_min": (-40, 25), "wind_speed_max": (2, 120), "precip": (0, 15)}
+BF_MAX_SNOW_PER_MM = 40.0  # cm of snow per mm of liquid in a block; 40 cm/mm would be a 400:1 ratio
+
+
+def range_cycles(spec: str, hours=BF_HOURS) -> list[datetime]:
+    """'20241101-20250430,20251101-20260430' → every wanted cycle in those days, newest first."""
+    out = set()
+    for part in spec.split(","):
+        a, b = (datetime.strptime(x, "%Y%m%d").replace(tzinfo=timezone.utc) for x in part.split("-"))
+        if b < a:
+            raise SystemExit(f"bad range {part}")
+        d = a
+        while d <= b:
+            out.update(d.replace(hour=h) for h in hours)
+            d += timedelta(days=1)
+    return sorted(out, reverse=True)
+
+
+def check_units_backfill(rows: list[dict]) -> None:
+    """Stricter than check_plausible: a whole cycle's means, and snow cm vs liquid mm per block. Raises, so nothing is archived."""
+    by: dict[str, list[float]] = {}
+    for r in rows:
+        by.setdefault(r["variable"], []).append(r["value"])
+    bad = []
+    for var, (lo, hi) in BF_MEAN_BOUNDS.items():
+        v = by.get(var)
+        if not v:
+            if var in ("precip", "temp_max"):
+                bad.append(f"{var}: no rows")
+            continue
+        m = sum(v) / len(v)
+        if not lo <= m <= hi:
+            bad.append(f"{var} cycle mean {m:.2f} outside {lo}..{hi} (unit slip?)")
+    liquid = {(r["resort_id"], r["valid_start"]): r["value"] for r in rows if r["variable"] == "precip"}
+    over = [(k, r["value"], liquid[k]) for r in rows if r["variable"] == "snow"
+            for k in [(r["resort_id"], r["valid_start"])] if k in liquid and liquid[k] > 0.5 and r["value"] / liquid[k] > BF_MAX_SNOW_PER_MM]
+    if over:
+        bad.append(f"{len(over)} blocks with snow/liquid > {BF_MAX_SNOW_PER_MM:.0f} cm per mm, e.g. {over[0]}")
+    if bad:
+        raise RuntimeError("unit check failed — not archived: " + "; ".join(bad))
+
+
+def month_marker_check(done: set[str], wanted: list[datetime]) -> dict[str, list[datetime]]:
+    """Months (yyyy-mm) whose wanted cycles are ALL marked done → the cycles."""
+    by: dict[str, list[datetime]] = {}
+    for c in wanted:
+        by.setdefault(f"{c:%Y-%m}", []).append(c)
+    return {m: cs for m, cs in by.items() if all(f"nbm-{c:%Y%m%d%H}" in done for c in cs)}
 
 
 def log(msg: str) -> None:
@@ -365,7 +430,11 @@ def main() -> int:
             raise RuntimeError(f"listing done markers failed (exit {r.returncode}): {r.stderr.strip()[-300:]}")
         done = {l.split()[-1][:-5] for l in r.stdout.splitlines() if l.strip().endswith(".json")}
     now = datetime.now(timezone.utc)
-    if "--cycle" in a:
+    backfill = "--range" in a
+    if backfill:
+        hrs = tuple(int(x) for x in a[a.index("--hours") + 1].split(",")) if "--hours" in a else BF_HOURS
+        cands = [c for c in range_cycles(a[a.index("--range") + 1], hrs) if now - c > timedelta(days=3)]
+    elif "--cycle" in a:
         c = a[a.index("--cycle") + 1]
         cands = [datetime.strptime(c, "%Y%m%d%H").replace(tzinfo=timezone.utc)]
     else:
@@ -374,7 +443,8 @@ def main() -> int:
         cands = [c for c in cands if timedelta(hours=3) < now - c < timedelta(days=3)]
     gh = os.environ.get("GITHUB_RUN_ID", "local")
     fetched_at = iso(now)
-    ok, waiting, failures = [], [], []
+    ok, waiting, failures, gaps, no_snowlvl = [], [], [], [], []
+    done_rows: dict[str, int] = {}
     for cycle in cands:
         key = f"nbm-{cycle:%Y%m%d%H}"
         if key in done:
@@ -384,7 +454,7 @@ def main() -> int:
             continue
         t = time.time()
         try:
-            run_id = f"{cycle:%Y-%m-%dT%H%M}Z-nbm-{gh}"
+            run_id = f"bf-nbm-{cycle:%Y%m%d%H}-{gh}" if backfill else f"{cycle:%Y-%m-%dT%H%M}Z-nbm-{gh}"
             soft = None
             try:
                 rows = collect_cycle(cycle, resorts, fetched_at, run_id)
@@ -393,6 +463,8 @@ def main() -> int:
             if not rows:
                 raise RuntimeError("no rows built")
             check_plausible(rows)
+            if backfill:
+                check_units_backfill(rows)
             d = work / run_id
             (d / "rows").mkdir(parents=True, exist_ok=True)
             with gzip.open(d / "rows" / f"{SOURCE}.ndjson.gz", "wt") as f:
@@ -410,16 +482,61 @@ def main() -> int:
                 if r.returncode:
                     raise RuntimeError(f"marker upload failed: {r.stderr[-300:]}")
             ok.append(f"{key}: {len(rows)} rows" + (" (dry run)" if dry else ""))
-            if soft:
+            if not dry:
+                done.add(key)
+                done_rows[key] = len(rows)
+            if soft and backfill:
+                no_snowlvl.append(key)
+                log(f"::warning::{key}: {soft}")
+            elif soft:
                 failures.append(f"{key}: {soft}")
             log(f"  ✓ {key}: {len(rows)} rows in {time.time() - t:.0f} s")
-        except FileNotFoundError:
-            waiting.append(f"{key}: not on the bucket yet")
+        except FileNotFoundError as e:
+            if backfill and not dry:
+                # A past cycle NOAA does not have will never appear: record the gap (a marker, no rows) so the backfill
+                # can finish. Missing is not zero: nothing is filled in.
+                m = work / f"{key}.missing.json"
+                m.parent.mkdir(parents=True, exist_ok=True)
+                m.write_text(json.dumps({"cycle": iso(cycle), "missing": str(e)}))
+                r = bucket("cp", str(m), f"s3://{os.environ['R2_BUCKET']}/nbm/done/{key}.json")
+                if r.returncode:
+                    raise RuntimeError(f"gap marker upload failed: {r.stderr[-300:]}")
+                gaps.append(key)
+                done.add(key)
+                ok.append(f"{key}: NOT ON AWS — recorded as a gap")
+                log(f"::warning::{key} not on the bucket: recorded as a gap")
+            else:
+                waiting.append(f"{key}: not on the bucket yet")
         except Exception as e:
             failures.append(f"{key}: {e}")
             log(f"  ✗ {key}: {e}")
+    months_done = []
+    if backfill and not dry:
+        # One marker per month once every wanted cycle of the whole month is marked (a cycle, or a recorded gap).
+        for mo in sorted({f"{c:%Y-%m}" for c in cands}):
+            y, m = int(mo[:4]), int(mo[5:])
+            last = (datetime(y + (m == 12), m % 12 + 1, 1, tzinfo=timezone.utc) - timedelta(days=1))
+            wanted = [c for c in range_cycles(f"{y}{m:02d}01-{last:%Y%m%d}", hrs) if now - c > timedelta(days=3)]
+            if month_marker_check(done, wanted):
+                mk = work / f"bf-month-{mo}.json"
+                mk.write_text(json.dumps({"month": mo, "cycles": len(wanted), "hours": list(hrs),
+                                          "gaps": sorted(g for g in gaps if g[4:10] == mo.replace("-", "")),
+                                          "parser_version": PARSER_VERSION, "run": gh}))
+                r = bucket("cp", str(mk), f"s3://{os.environ['R2_BUCKET']}/nbm/done/bf-month-{mo}.json")
+                if r.returncode:
+                    raise RuntimeError(f"month marker upload failed: {r.stderr[-300:]}")
+                months_done.append(mo)
     report = "\n".join(["NBM:"] + [f"  ✓ {o}" for o in ok] + [f"  … {w}" for w in waiting] + [f"  ✗ {f}" for f in failures]
                        + ([] if ok or waiting or failures else ["  nothing new"]))
+    if backfill:
+        report += (f"\n  backfill: {len(done_rows)} cycles archived ({sum(done_rows.values())} rows), {len(gaps)} gaps, "
+                   f"{len(no_snowlvl)} without snow level, months complete this run: {', '.join(months_done) or 'none'}")
+        if gaps:
+            report += "\n  GAPS (not on NOAA's bucket, left empty): " + ", ".join(gaps)
+        if no_snowlvl:
+            report += "\n  WARNING no snow level in: " + ", ".join(no_snowlvl)
+        if not dry and not failures and not waiting:
+            report += "\nBACKFILL COMPLETE — nothing left in the ranges"
     log("\n" + report)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:

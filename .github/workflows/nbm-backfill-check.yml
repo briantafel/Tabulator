@@ -1,0 +1,34 @@
+name: NBM backfill check (read-only)
+
+# Added 2026-11-24. Row counts for one backfilled month plus a coarse SNOTEL sanity check. Archives and scores nothing.
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "yyyy-mm"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3"
+      - name: Check
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          MONTH: ${{ inputs.month }}
+        run: python3 scripts/verify/nbm_backfill_check.py "$R2_BUCKET" "$R2_ACCOUNT_ID" "$MONTH" | tee check.txt
+      - name: Summary
+        run: { echo '### NBM backfill check'; echo '```'; cat check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

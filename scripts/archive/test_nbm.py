@@ -61,3 +61,33 @@ with _t.TemporaryDirectory() as _d:
     open(_p, "w").write(_j.dumps({"terrain.freshCycle": "on"})); assert nbm.six_hourly_map_enabled(_p) is True
 assert nbm.six_hourly_map_enabled() is False, "the committed flags.json ships with it off"
 print("cycle selection ok")
+
+
+def _rows(**kw):
+    base = {"precip": 2.0, "snow": 3.0, "temp_max": -4.0, "temp_min": -9.0, "wind_speed_max": 30.0}
+    base.update(kw)
+    return [{"resort_id": "alta", "valid_start": "2026-01-10T00:00:00Z", "variable": v, "value": x} for v, x in base.items()]
+
+
+def test_range_cycles_is_00z_12z_newest_first_and_inclusive():
+    c = nbm.range_cycles("20260101-20260102")
+    assert [f"{x:%d%H}" for x in c] == ["0212", "0200", "0112", "0100"]
+    assert [x.hour for x in nbm.range_cycles("20260101-20260101", (0, 6, 12, 18))] == [18, 12, 6, 0]
+
+
+def test_backfill_unit_check_passes_normal_winter_values():
+    nbm.check_units_backfill(_rows())
+
+
+def test_backfill_unit_check_catches_kelvin_and_ms_slips():
+    import pytest
+    for bad in ({"temp_max": 268.0}, {"wind_speed_max": 0.4}, {"precip": 90.0}, {"snow": 400.0}):
+        with pytest.raises(RuntimeError):
+            nbm.check_units_backfill(_rows(**bad))
+
+
+def test_month_marker_needs_every_cycle_marked():
+    wanted = nbm.range_cycles("20260101-20260102")
+    done = {f"nbm-{c:%Y%m%d%H}" for c in wanted}
+    assert nbm.month_marker_check(done, wanted) == {"2026-01": wanted}
+    assert nbm.month_marker_check(done - {"nbm-2026010112"}, wanted) == {}
