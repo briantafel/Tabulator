@@ -15,7 +15,7 @@ import pandas as pd
 HERE = Path(__file__).parent
 
 
-def make(nbm_noise: float, leak: bool = False, seed: int = 1) -> pd.DataFrame:
+def make(nbm_noise: float, leak: bool = False, seed: int = 1, bad_cycle: bool = False, noise_12z=None) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     rows = []
     for split, yr in (("train", 2024), ("test", 2025)):
@@ -36,12 +36,15 @@ def make(nbm_noise: float, leak: bool = False, seed: int = 1) -> pd.DataFrame:
                         lh = (pd.Timestamp(date) + pd.Timedelta(hours=7) - iss).total_seconds() / 3600
                         rows.append(dict(source="nbm", model="nbm", space="liquid", pair_quality="strict", tier="mid",
                                          region=reg, resort_id=f"r{r}", local_date=date, lead_day=lead, split=split,
-                                         fc_amount=max(0.0, truth + rng.normal(0, nbm_noise)), obs=truth, issue_ts=iss,
+                                         fc_amount=max(0.0, truth + rng.normal(0, noise_12z if (h == 12 and noise_12z is not None) else nbm_noise)), obs=truth, issue_ts=iss,
                                          lead_hours=lh, source_label="nbm:nbm"))
     df = pd.DataFrame(rows)
     if leak:
         i = df.index[(df.source == "nbm")][0]
         df.loc[i, "lead_hours"] = -3.0
+    if bad_cycle:
+        i = df.index[(df.source == "nbm")][0]
+        df.loc[i, "issue_ts"] = df.loc[i, "issue_ts"] + pd.Timedelta(hours=6)
     return df
 
 
@@ -71,4 +74,12 @@ assert j["rules"]["latest"]["b"]["verdicts"]["1-3"]["v1"] == "beats NBM"
 
 pr, j, rep = run(make(1.5, leak=True))
 assert pr.returncode != 0 and "LEAKAGE CHECK FAILED" in (pr.stderr + pr.stdout), pr.returncode
+pr, j, rep = run(make(1.5, bad_cycle=True))
+assert pr.returncode != 0 and "LEAKAGE CHECK FAILED" in (pr.stderr + pr.stdout), "06z cycle must abort"
+
+# latest (00z) good, earliest (12z) noise: the two rules must pick different cycles -> FRESHNESS-ONLY, not PASS
+pr, j, rep = run(make(1.5, noise_12z=12, seed=3))
+assert pr.returncode == 0, pr.stderr[-3000:]
+assert j["verdict"]["a_member"].startswith("FRESHNESS-ONLY"), j["verdict"]
+assert j["rules"]["latest"]["a"]["gate"]["pass"] and not j["rules"]["earliest"]["a"]["gate"]["pass"]
 print("blend_nbm tests passed")

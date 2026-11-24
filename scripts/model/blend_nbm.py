@@ -92,7 +92,7 @@ def leakage(con, pairs: Path) -> dict:
              count(*) FILTER (WHERE issue_ts IS NULL),
              min(lead_hours), count(DISTINCT strftime(issue_ts, '%Y%m%d%H'))
       FROM read_parquet('{pairs}')
-      WHERE source = 'nbm' AND {BASE} AND issue_ts >= TIMESTAMP '{NBM_FROM}' AND issue_ts < TIMESTAMP '{NBM_TO}'""").fetchone()
+      WHERE source = 'nbm' AND {BASE} AND (issue_ts IS NULL OR (issue_ts >= TIMESTAMP '{NBM_FROM}' AND issue_ts < TIMESTAMP '{NBM_TO}'))""").fetchone()
     out = dict(zip(("rows", "not_before_day", "bad_cycle", "no_issue_time", "min_lead_hours", "cycles"), r))
     if out["rows"] == 0:
         raise SystemExit("blend_nbm: no NBM pairs in 2024-11 → 2026-04. Has verify run since the backfill?")
@@ -115,7 +115,8 @@ def base(con, pairs: Path, rule: str) -> None:
         AND hour(issue_ts) IN (0, 12) AND lead_hours > 0
       QUALIFY row_number() OVER (PARTITION BY resort_id, local_date, lead_day ORDER BY issue_ts {order}) = 1)""")
     con.execute("""CREATE OR REPLACE TABLE both4 AS
-                   SELECT resort_id, local_date, lead FROM raw GROUP BY ALL HAVING count(DISTINCT model) = 4""")
+                   SELECT resort_id, local_date, lead FROM raw GROUP BY ALL
+                   HAVING count(DISTINCT model) = 4 AND bool_or(model = 'nbm')""")
     con.execute("CREATE OR REPLACE TABLE r4 AS SELECT raw.* FROM raw JOIN both4 USING (resort_id, local_date, lead)")
 
 
@@ -343,6 +344,8 @@ def main(pairs: Path, out: Path) -> None:
     (out / "blend_nbm_report.md").write_text("\n".join(L) + "\n")
     (out / "blend_nbm.json").write_text(json.dumps(result, default=float, indent=1))
     print("\n".join(L))
+    if va == "NO DATA":
+        raise SystemExit("blend_nbm: NO DATA under at least one cycle rule; nothing judged")
 
 
 if __name__ == "__main__":

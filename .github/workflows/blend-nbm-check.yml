@@ -39,10 +39,13 @@ jobs:
           ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" /tmp/pairs.parquet --endpoint-url "$ENDPOINT" --only-show-errors
           ls -la /tmp/pairs.parquet
+          # provenance: which verify output was scored (ETag + upload time), recorded in the report
+          aws s3api head-object --bucket "$R2_BUCKET" --key verify/latest/pairs.parquet --endpoint-url "$ENDPOINT" \
+            --query '{etag: ETag, last_modified: LastModified, bytes: ContentLength}' --output text | tee pairs_provenance.txt
       - name: Head-to-head
         run: |
           python3 scripts/model/blend_nbm.py /tmp/pairs.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
-          { echo; echo "## Parser audit (archive)"; cat parser_audit.md; } | tee -a out/blend_nbm_report.md >> "$GITHUB_STEP_SUMMARY"
+          { echo; echo "## Parser audit (archive)"; cat parser_audit.md; echo; echo "Scored pairs (verify/latest/pairs.parquet etag, uploaded, bytes): $(cat pairs_provenance.txt)"; } | tee -a out/blend_nbm_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Refuse if the report names a paid source
         run: |
           if grep -qi "snow-forecast" out/blend_nbm_report.md; then echo "::error::report names a paid source"; exit 1; fi
