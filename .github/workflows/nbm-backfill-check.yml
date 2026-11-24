@@ -31,4 +31,10 @@ jobs:
           MONTH: ${{ inputs.month }}
         run: python3 scripts/verify/nbm_backfill_check.py "$R2_BUCKET" "$R2_ACCOUNT_ID" "$MONTH" | tee check.txt
       - name: Summary
-        run: { echo '### NBM backfill check'; echo '```'; cat check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          {
+            echo '### NBM backfill check'
+            echo '```'
+            cat check.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
