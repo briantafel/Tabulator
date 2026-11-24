@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-24T01:17:43.631Z",
+ "generatedAt": "2026-11-24T04:17:42.929Z",
  "forecastGeneratedAt": "2026-11-23T21:07:43.685Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-24T01:17:39.265Z",
+ "blendGeneratedAt": "2026-11-24T04:17:40.168Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-24T01:17:43.631Z",
@@ -38,7 +38,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-24T01:17:39.265Z"
+   "issuedAt": "2026-11-24T04:17:40.168Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -50,7 +50,7 @@
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-23T22:51:00+00:00"
+   "issuedAt": "2026-11-24T01:52:00+00:00"
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
@@ -58,7 +58,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-24T01:17:43.631Z"
+   "issuedAt": "2026-11-24T04:17:42.929Z"
   }
  ],
  "api": {
