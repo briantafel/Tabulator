@@ -1,0 +1,53 @@
+name: Check Open-Meteo previous_day1 run timing (no app change)
+
+# 2026-11-24: which model run fills each hour of Open-Meteo Previous Runs previous_day1, and whether blend-v1's day-1
+# lead over NBM/HRRR is flattered by it. Test design and verdict rule pre-registered in the docstrings of
+# scripts/diag/om_prev_timing.py and scripts/diag/om_day1_tilt.py (commit 1c76008). Public models and SNOTEL only;
+# no paid source is read. Reports saved to the private bucket under verify/latest/.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 60
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas pytz
+      - name: Test on synthetic pairs
+        run: python3 scripts/diag/test_om_day1_tilt.py
+      - name: Which run fills each hour (Open-Meteo APIs + our archive)
+        run: python3 scripts/diag/om_prev_timing.py "$R2_BUCKET" "$R2_ACCOUNT_ID" out | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Fetch pairs from the latest verify run
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" /tmp/pairs.parquet --endpoint-url "$ENDPOINT" --only-show-errors
+          aws s3api head-object --bucket "$R2_BUCKET" --key verify/latest/pairs.parquet --endpoint-url "$ENDPOINT" \
+            --query '{etag: ETag, last_modified: LastModified, bytes: ContentLength}' --output text | tee pairs_provenance.txt
+      - name: Tilt (Part 1 arithmetic, Part 2 v1 from previous_day2 vs NBM/HRRR at lead 1)
+        run: |
+          python3 scripts/diag/om_day1_tilt.py /tmp/pairs.parquet out/om_prev_timing.json out | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Scored pairs (etag, uploaded, bytes): $(cat pairs_provenance.txt)" | tee -a out/om_day1_tilt.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Refuse if a report names a paid source
+        run: |
+          if grep -qi "snow-forecast" out/*.md out/*.json; then echo "::error::report names a paid source"; exit 1; fi
+      - name: Save
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
