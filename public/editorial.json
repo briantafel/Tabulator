@@ -1,59 +1,83 @@
 {
- "generatedAt": "2026-11-24T06:14:17.402Z",
- "forecastGeneratedAt": "2026-11-24T06:07:47.834Z",
+ "generatedAt": "2026-11-24T21:14:01.182Z",
+ "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-24T06:14:17.402Z",
+ "writtenAt": "2026-11-24T21:14:01.182Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-24",
-  "to": "2026-11-28",
-  "days": 5,
-  "toLabel": "Saturday Nov 28"
+  "to": "2026-11-29",
+  "days": 6,
+  "toLabel": "Sunday Nov 29"
  },
- "overview": "A run of systems moves through the Pacific Northwest this week, with rain and wind early and snow mainly at higher elevations. A building ridge may bring a brief drier spell by the weekend, though its placement is uncertain.",
+ "overview": "Systems keep moving onshore from the Pacific, favoring the Cascades and Coast Mountains through Thanksgiving, then a drier stretch. The northern Rockies get a band of snow Friday into Saturday. The Northeast gets a storm this week, then more snow later.",
  "regions": [
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "A low pressure system with a cold front brings widespread rain and gusty southeast winds through Tuesday, then another disturbance arrives Wednesday night into Thursday. Snow levels rise above most pass levels by Wednesday evening, so the upper slopes get the snow. Stevens Pass leads at 22\", with its biggest day Wednesday. The forecasters say a ridge may bring drier weather for the weekend, but its placement is uncertain.",
-   "basis": "1isunht"
-  },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Periods of rain and mild temperatures dominate through Thursday, with snow mostly confined to the highest terrain early in the week. Whistler has the most snow at 24\" and its peak day is Wednesday. The forecast turns to showers Thursday night through Friday. Cypress Mountain sees rain and strong easterly wind on Tuesday.",
-   "basis": "14slooj"
+   "text": "A wet, mild pattern takes over here. Rain falls with snow at times through Thursday, and snow levels sit high. The top resort, Whistler, has 34 inches on the books, but most of it came in the first two days, and the rest of the week leans toward rain. Expect slush at lower elevations and better conditions higher up.",
+   "basis": "1xqbq39"
+  },
+  {
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "A series of fronts keeps the Cascades unsettled through Thursday. Snow levels stay above the passes, so the mountains get rain and wet snow at the lower elevations. Mt. Baker is the top resort, with a 17 inch total, and a Winter Storm Watch starts Thursday. Expect wind as the systems pass. The weekend brings a brief lull before the next active spell.",
+   "basis": "nb9jjf"
+  },
+  {
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "The week starts dry and mild in Wyoming and Montana, with morning fog in the valleys. A system arrives Friday and brings snow to western Wyoming through Saturday, with a chance of snow east of the Divide Saturday. Jackson Hole has a 9 inch total, and the NWS is calling for more, 12 to 25 inches Thursday night through Sunday night. Grand Targhee sees a similar pattern, with the NWS forecasting 20 to 34 inches.",
+   "basis": "8eticq"
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Rain and mountain snow move through Tahoe overnight Tuesday into Wednesday, with snow levels around 6,000 to 7,000 feet. Wind picks up behind the front. Dry, seasonable weather follows through Thanksgiving and into the early weekend, with valley fog. The next chance of snow comes Sunday, when Kirkwood, Sugar Bowl and Palisades are all forecast about 7 inches.",
+   "basis": "4f4mb0"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "A powerful coastal storm brings heavy rain, high winds and some wintry mix to the region around Thanksgiving. Le Massif and Mont-Sainte-Anne each get several inches Thursday and Friday, with Friday as the peak day. Freezing rain or rain is the main precipitation, so snow totals depend on elevation. Blue Mountain in Ontario sees a moderate amount, with its peak on Thursday.",
-   "basis": "no3vph"
+   "text": "A Thanksgiving storm brings wintry precipitation to the Great Lakes and interior Northeast, and the coast deals with strong winds and flooding. Le Massif gets snow and rain Friday, then a mix of flurries and showers through the weekend. Mont-Sainte-Anne sees rain mixing with snow. A Special Weather Statement runs from Friday to Saturday. Blue Mountain in Ontario sees 4 inches Thursday.",
+   "basis": "tqjem4"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-24T06:07:47.834Z"
+   "issuedAt": "2026-11-24T21:07:42.295Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-24T06:14:17.165Z"
+   "issuedAt": "2026-11-24T21:14:00.914Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-24T04:36:00+00:00"
+   "issuedAt": "2026-11-24T17:02:00+00:00"
+  },
+  {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-24T20:34:00+00:00"
+  },
+  {
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-24T17:08:00+00:00"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-24T09:18:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-24T06:14:17.402Z"
+   "issuedAt": "2026-11-24T21:14:01.182Z"
   }
  ],
  "api": {
   "day": "2026-11-24",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
