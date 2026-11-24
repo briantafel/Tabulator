@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Which model run fills each hour of Open-Meteo Previous Runs `previous_day1`? (2026-11-24, Opus 5.5)
 
-    python3 scripts/diag/om_prev_timing.py <bucket> <account_id> <outDir>
+    python3 scripts/diag/om_prev_timing.py <archive dir> <outDir>
+
+<archive dir>: a local copy of archive/source=open-meteo-previous-runs/ (aws s3 sync, as previous-runs-probe.yml does).
 
 Read-only probe, report only. Public models only (Open-Meteo, our archive's open-meteo-previous-runs rows); no paid
 source is read. Writes om_prev_timing.md / .json.
@@ -85,6 +87,10 @@ DELAY = float(os.environ.get("OM_DELAY_S", "1.0"))
 CALLS = {"ok": 0, "400": 0}
 
 
+def log(msg: str) -> None:
+    print(msg, file=sys.stderr, flush=True)
+
+
 class NotOffered(Exception):
     pass
 
@@ -122,18 +128,21 @@ def series(j: dict, key: str) -> dict:
     return {ts(t): v for t, v in zip(j["hourly"]["time"], j["hourly"].get(key) or []) if isinstance(v, (int, float))}
 
 
-def archived(bucket: str, acct: str) -> tuple[dict, dict, dict]:
+def archived(archive_dir: str):
     """Coordinates/elevation of our archived previous-runs rows, archived hourly temp (live days) and 6-h precip blocks
     (January windows), previous_day1. Public-safe: Open-Meteo only."""
     import duckdb
+    files = sorted(str(p) for p in Path(archive_dir).rglob("*.parquet"))
+    if not files:
+        raise SystemExit(f"no parquet under {archive_dir}")
+    log(f"archive: {len(files)} parquet files")
     con = duckdb.connect()
-    con.execute("INSTALL httpfs; LOAD httpfs; SET TimeZone='UTC';")
-    con.execute(f"SET s3_region='auto'; SET s3_endpoint='{acct}.r2.cloudflarestorage.com'; SET s3_url_style='path';")
-    con.execute(f"SET s3_access_key_id='{os.environ['AWS_ACCESS_KEY_ID']}'; SET s3_secret_access_key='{os.environ['AWS_SECRET_ACCESS_KEY']}';")
+    con.execute("SET TimeZone='UTC'")
+    flist = "[" + ", ".join("'" + f.replace("'", "''") + "'" for f in files) + "]"
     ids = tuple(RESORTS)
     con.execute(f"""CREATE TABLE a AS SELECT resort_id, model, lat, lon, elevation_m, valid_start, valid_end, variable, value,
                            parser_version, run_id, fetched_at
-                    FROM read_parquet('s3://{bucket}/archive/source=open-meteo-previous-runs/*/*.parquet', union_by_name=true)
+                    FROM read_parquet({flist}, union_by_name=true, hive_partitioning=false)
                     WHERE resort_id IN {ids} AND period_label = 'previous_day1' AND variable IN ('temp', 'precip')
                       AND ((valid_start >= TIMESTAMP '2026-11-01' AND valid_start < TIMESTAMP '2026-11-23')
                         OR (valid_start >= TIMESTAMP '2025-01-05' AND valid_start < TIMESTAMP '2025-02-01')
@@ -178,6 +187,7 @@ def test_a(coords) -> dict:
     hours = [ts(f"{d}T00:00") + timedelta(hours=h + 1) for d in DAYS for h in range(24)]  # labels 01Z..24Z
     for r in RESORTS:
         for m, ids in MODELS.items():
+            log(f"test A {r} {m}")
             p = loc(coords, r, m)
             prev = None
             for mid in ids:
@@ -302,10 +312,12 @@ def test_b_c(coords, atemp, ablocks) -> tuple[dict, dict]:
     return b, c
 
 
-def main(bucket, acct, out: Path) -> int:
+def main(archive_dir: str, out: Path) -> int:
     out.mkdir(parents=True, exist_ok=True)
-    coords, atemp, ablocks, pv = archived(bucket, acct)
+    coords, atemp, ablocks, pv = archived(archive_dir)
+    log(f"archive read: {len(coords)} resort/models, {len(atemp)} hourly temps, {len(ablocks)} precip blocks")
     A = test_a(coords)
+    log("test A done")
     for k, v in A.items():
         v["verdict"] = classify(v)
     B, C = test_b_c(coords, atemp, ablocks)
@@ -344,6 +356,6 @@ def main(bucket, acct, out: Path) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         raise SystemExit(__doc__)
-    sys.exit(main(sys.argv[1], sys.argv[2], Path(sys.argv[3])))
+    sys.exit(main(sys.argv[1], Path(sys.argv[2])))

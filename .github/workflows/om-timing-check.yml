@@ -32,8 +32,13 @@ jobs:
       - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas pytz
       - name: Test on synthetic pairs
         run: python3 scripts/diag/test_om_day1_tilt.py
+      - name: Sync the archived Previous Runs rows (public model data)
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/source=open-meteo-previous-runs/" prev/ --endpoint-url "$ENDPOINT" --only-show-errors
+          echo "files: $(find prev -name '*.parquet' | wc -l), size: $(du -sh prev | cut -f1)"
       - name: Which run fills each hour (Open-Meteo APIs + our archive)
-        run: python3 scripts/diag/om_prev_timing.py "$R2_BUCKET" "$R2_ACCOUNT_ID" out | tee -a "$GITHUB_STEP_SUMMARY"
+        run: python3 scripts/diag/om_prev_timing.py prev out | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Fetch pairs from the latest verify run
         run: |
           ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
