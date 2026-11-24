@@ -124,6 +124,11 @@ jobs:
           ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
           DAY=$(date -u +%Y-%m-%d)
           rm -rf out/longrange_tmp
+          # 2026-11-24: pairs.parquet grew with the NBM backfill and R2 rejected the CLI's
+          # multipart upload (InvalidPart on CompleteMultipartUpload). Single PUTs are fine on
+          # R2 up to ~5 GB, so send every file in one piece and print sizes (public-safe).
+          aws configure set default.s3.multipart_threshold 4GB
+          ls -lh out/*.parquet
           aws s3 cp out/ "s3://$R2_BUCKET/verify/$DAY/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
           echo "saved to verify/$DAY/ and verify/latest/"
