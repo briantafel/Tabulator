@@ -22,7 +22,7 @@ con.execute(f"CREATE VIEW n AS SELECT parser_version, run_id, issued_at FROM rea
             "WHERE issued_at >= TIMESTAMP '2024-11-01' AND issued_at < TIMESTAMP '2026-05-01' AND hour(issued_at) IN (0, 12)")
 rows = con.execute("""SELECT coalesce(parser_version, '(none)') pv,
                              CASE WHEN run_id LIKE 'bf-nbm-%' THEN 'backfill (bf-nbm-*)' ELSE 'other run' END kind,
-                             count(*), count(DISTINCT issued_at), min(issued_at), max(issued_at)
+                             count(*), count(DISTINCT issued_at), strftime(min(issued_at), '%Y-%m-%d %HZ'), strftime(max(issued_at), '%Y-%m-%d %HZ')
                       FROM n GROUP BY ALL ORDER BY 1, 2""").fetchall()
 print("| parser | run kind | rows | cycles | first | last |\n|---|---|---|---|---|---|")
 for r in rows:

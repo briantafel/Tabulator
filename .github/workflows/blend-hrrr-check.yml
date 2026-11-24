@@ -12,6 +12,10 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # bash -eo pipefail: a step piped into tee must still fail when the script fails (failures are loud)
+    defaults:
+      run:
+        shell: bash
     timeout-minutes: 30
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
