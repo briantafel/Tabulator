@@ -1,0 +1,49 @@
+name: Check NBM as a blend member and as the US bar (no app change)
+
+# plan-near-term-models-2026-11-22, step 3. Reads the latest verify run's pairs (private bucket, verify/latest/pairs.parquet),
+# audits that the scored NBM rows are parser nbm-3, then runs scripts/model/blend_nbm.py (gate pre-registered in its docstring).
+# Public models and SNOTEL only; no paid source is read. Report also saved to verify/latest/blend_nbm_report.md.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas
+      - name: Test on synthetic pairs
+        run: python3 scripts/model/test_blend_nbm.py
+      - name: Audit the parser of the scored NBM rows (archive)
+        run: python3 scripts/verify/nbm_parser_audit.py "$R2_BUCKET" "$R2_ACCOUNT_ID" | tee parser_audit.md
+      - name: Fetch pairs from the latest verify run
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" /tmp/pairs.parquet --endpoint-url "$ENDPOINT" --only-show-errors
+          ls -la /tmp/pairs.parquet
+      - name: Head-to-head
+        run: |
+          python3 scripts/model/blend_nbm.py /tmp/pairs.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo; echo "## Parser audit (archive)"; cat parser_audit.md; } | tee -a out/blend_nbm_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Refuse if the report names a paid source
+        run: |
+          if grep -qi "snow-forecast" out/blend_nbm_report.md; then echo "::error::report names a paid source"; exit 1; fi
+      - name: Save
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws configure set default.s3.multipart_threshold 4GB
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
