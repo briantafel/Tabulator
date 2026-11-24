@@ -769,17 +769,17 @@
    "sierra-at-tahoe": 0,
    "homewood": 0,
    "mammoth": 0,
-   "mt-baker": 7,
-   "crystal": 8,
+   "mt-baker": 9,
+   "crystal": 12,
    "stevens-pass": 6,
    "mt-bachelor": 0,
    "telluride": 11,
-   "crested-butte": 1,
-   "aspen-highlands": 3,
-   "steamboat": 0,
+   "crested-butte": 2,
+   "aspen-highlands": 2,
+   "steamboat": 1,
    "vail": 4,
-   "breckenridge": 4,
-   "arapahoe-basin": 3,
+   "breckenridge": 5,
+   "arapahoe-basin": 4,
    "snowbird": 0,
    "alta": 0,
    "brighton": 0,
@@ -791,10 +791,10 @@
    "grand-targhee": 1,
    "sun-valley": 0,
    "big-sky": 0,
-   "taos": 1,
-   "wolf-creek": 4,
+   "taos": 3,
+   "wolf-creek": 5,
    "revelstoke": 0,
-   "whistler": 11,
+   "whistler": 12,
    "lake-louise": 0,
    "kicking-horse": 0,
    "fernie": 0,
@@ -808,7 +808,7 @@
    "sunshine": 0,
    "norquay": 0,
    "marmot": 0,
-   "cypress": 13,
+   "cypress": 14,
    "whiteface": 1,
    "stowe": 0,
    "killington": 0,
@@ -816,7 +816,7 @@
    "tremblant": 0,
    "le-massif": 0,
    "mont-sainte-anne": 0,
-   "blue-mountain": 4
+   "blue-mountain": 5
   }
  },
  "parts": {
@@ -4560,12 +4560,12 @@
    "mt-baker": {
     "am": 0,
     "pm": 0,
-    "night": 7
+    "night": 9
    },
    "crystal": {
     "am": 0,
-    "pm": 0,
-    "night": 8
+    "pm": 2,
+    "night": 10
    },
    "stevens-pass": {
     "am": 0,
@@ -4585,17 +4585,17 @@
    "crested-butte": {
     "am": 0,
     "pm": 1,
-    "night": 0
+    "night": 1
    },
    "aspen-highlands": {
     "am": 0,
     "pm": 1,
-    "night": 2
+    "night": 1
    },
    "steamboat": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "vail": {
     "am": 0,
@@ -4604,13 +4604,13 @@
    },
    "breckenridge": {
     "am": 0,
-    "pm": 2,
+    "pm": 3,
     "night": 2
    },
    "arapahoe-basin": {
     "am": 0,
     "pm": 2,
-    "night": 1
+    "night": 2
    },
    "snowbird": {
     "am": 0,
@@ -4669,13 +4669,13 @@
    },
    "taos": {
     "am": 0,
-    "pm": 0,
-    "night": 1
+    "pm": 1,
+    "night": 2
    },
    "wolf-creek": {
     "am": 1,
-    "pm": 2,
-    "night": 1
+    "pm": 4,
+    "night": 0
    },
    "revelstoke": {
     "am": 0,
@@ -4684,7 +4684,7 @@
    },
    "whistler": {
     "am": 2,
-    "pm": 2,
+    "pm": 3,
     "night": 7
    },
    "lake-louise": {
@@ -4754,7 +4754,7 @@
    },
    "cypress": {
     "am": 1,
-    "pm": 1,
+    "pm": 2,
     "night": 11
    },
    "whiteface": {
@@ -4795,9 +4795,9 @@
    "blue-mountain": {
     "am": 0,
     "pm": 0,
-    "night": 4
+    "night": 5
    }
   }
  },
- "updatedAt": "2026-11-23T21:07:43.685Z"
+ "updatedAt": "2026-11-24T06:07:47.834Z"
 }

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-23T21:14:06.096Z",
+ "generatedAt": "2026-11-24T06:14:17.165Z",
  "source": "api.weather.gov + api.weather.gc.ca",
  "note": "US resorts: National Weather Service, for a point on each mountain. Canadian resorts: Environment and Climate Change Canada, for the nearest forecast town; alerts for the resort's own point.",
  "resorts": {
@@ -13,20 +13,12 @@
    "office": "STO",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost. Mostly sunny. High near 34, with temperatures falling to around 29 in the afternoon. South southwest wind around 1 mph.",
-     "startTime": "2026-11-23T12:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 23,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 1am. Partly cloudy. Low around 23, with temperatures rising to around 27 overnight. South southwest wind 3 to 7 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Widespread frost before 1am. Partly cloudy. Low around 23, with temperatures rising to around 27 overnight. Southwest wind around 6 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -41,7 +33,7 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 30. South southwest wind 5 to 12 mph, with gusts as high as 26 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 30, with temperatures rising to around 32 overnight. South southwest wind 5 to 12 mph, with gusts as high as 26 mph.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
@@ -57,7 +49,7 @@
      "isDaytime": false,
      "temperature": 29,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 4am. Partly cloudy, with a low around 29.",
+     "detailedForecast": "Widespread frost before 4am. Partly cloudy, with a low around 29. Northeast wind 0 to 3 mph.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -123,6 +115,14 @@
      "shortForecast": "Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a low around 30. New snow accumulation of 4 to 8 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 33,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 33. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -137,116 +137,116 @@
    "office": "REV",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 30,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 30. Northwest wind around 5 mph.",
-     "startTime": "2026-11-23T08:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 20,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 20. South wind 5 to 15 mph, with gusts as high as 25 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "temperature": 21,
+     "shortForecast": "Mostly Clear",
+     "detailedForecast": "Mostly clear, with a low around 21. Southwest wind 15 to 25 mph, with gusts as high as 35 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. High near 36, with temperatures falling to around 28 in the afternoon. Southwest wind 15 to 30 mph, with gusts as high as 50 mph.",
+     "temperature": 39,
+     "shortForecast": "Partly Sunny",
+     "detailedForecast": "Partly sunny, with a high near 39. South wind 25 to 30 mph, with gusts as high as 45 mph.",
      "startTime": "2026-11-24T06:00:00-08:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 24,
      "shortForecast": "Chance Light Snow",
-     "detailedForecast": "A chance of snow after 10pm. Mostly cloudy, with a low around 23. Southwest wind 20 to 30 mph, with gusts as high as 50 mph. Chance of precipitation is 30%.",
+     "detailedForecast": "A chance of snow between 10pm and 4am. Mostly cloudy, with a low around 24. Southwest wind 20 to 30 mph, with gusts as high as 45 mph. Chance of precipitation is 30%.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Slight Chance Light Snow then Mostly Sunny",
-     "detailedForecast": "A slight chance of snow before 10am. Mostly sunny, with a high near 35. West wind 5 to 20 mph. Chance of precipitation is 20%.",
+     "temperature": 38,
+     "shortForecast": "Mostly Sunny",
+     "detailedForecast": "Mostly sunny, with a high near 38. Southwest wind 5 to 20 mph.",
      "startTime": "2026-11-25T06:00:00-08:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 24,
+     "temperature": 25,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 24. Southwest wind 5 to 15 mph.",
+     "detailedForecast": "Partly cloudy, with a low around 25. Southwest wind 5 to 15 mph.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 45,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 43.",
+     "detailedForecast": "Partly sunny, with a high near 45. Southwest wind 0 to 15 mph, with gusts as high as 25 mph.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 29.",
+     "detailedForecast": "Mostly cloudy, with a low around 30.",
      "startTime": "2026-11-26T18:00:00-08:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 45,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 44.",
+     "detailedForecast": "Partly sunny, with a high near 45.",
      "startTime": "2026-11-27T06:00:00-08:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 29,
+     "temperature": 30,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 29.",
+     "detailedForecast": "Mostly cloudy, with a low around 30.",
      "startTime": "2026-11-27T18:00:00-08:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Slight Chance Light Rain then Chance Light Snow",
-     "detailedForecast": "A slight chance of rain between 10am and 1pm, then a chance of snow. Partly sunny, with a high near 39.",
+     "temperature": 40,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow after 10am. Partly sunny, with a high near 40.",
      "startTime": "2026-11-28T06:00:00-08:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Chance Light Snow",
-     "detailedForecast": "A chance of snow before 7pm, then a chance of rain and snow. Mostly cloudy, with a low around 27.",
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a low around 27. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-28T18:00:00-08:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 34,
-     "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a high near 34. New snow accumulation of around one inch possible.",
+     "shortForecast": "Light Snow",
+     "detailedForecast": "Snow. Mostly cloudy, with a high near 34. New snow accumulation of 2 to 4 inches possible.",
      "startTime": "2026-11-29T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
      "temperature": 24,
-     "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 24. New snow accumulation of less than one inch possible.",
+     "shortForecast": "Light Snow",
+     "detailedForecast": "Snow. Mostly cloudy, with a low around 24. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 33,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow before 5pm. Mostly cloudy, with a high near 33.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -260,14 +260,6 @@
    "near": "Kirkwood, CA",
    "office": "STO",
    "periods": [
-    {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 3pm. Mostly sunny. High near 35, with temperatures falling to around 30 in the afternoon. South wind around 1 mph.",
-     "startTime": "2026-11-23T10:00:00-08:00"
-    },
     {
      "name": "Tonight",
      "isDaytime": false,
@@ -305,7 +297,7 @@
      "isDaytime": false,
      "temperature": 28,
      "shortForecast": "Widespread Frost then Partly Cloudy",
-     "detailedForecast": "Widespread frost before 11pm. Partly cloudy, with a low around 28.",
+     "detailedForecast": "Widespread frost before 11pm. Partly cloudy, with a low around 28. East wind 1 to 5 mph.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -371,6 +363,14 @@
      "shortForecast": "Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a low around 27. New snow accumulation of 7 to 11 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 33,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 33. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -385,20 +385,12 @@
    "office": "STO",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost after 2pm. Mostly sunny. High near 37, with temperatures falling to around 32 in the afternoon. South southeast wind around 2 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 25,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 5am. Partly cloudy, with a low around 25. South wind around 5 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Widespread frost before 5am. Partly cloudy, with a low around 25. South southwest wind around 5 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -429,7 +421,7 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost. Partly cloudy, with a low around 30.",
+     "detailedForecast": "Widespread frost. Partly cloudy, with a low around 30. South southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -495,6 +487,14 @@
      "shortForecast": "Rain And Snow",
      "detailedForecast": "Rain and snow. Mostly cloudy, with a low around 29. New snow accumulation of 4 to 8 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 36,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 36. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -509,27 +509,19 @@
    "office": "REV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": null,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. {{missing_temperature_data}}. East wind around 0 mph.",
-     "startTime": "2026-11-23T12:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 28,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 28. South wind 0 to 5 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Partly cloudy, with a low around 28. South wind around 5 mph.",
+     "startTime": "2026-11-23T20:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 47,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny. High near 47, with temperatures falling to around 38 in the afternoon. South wind around 5 mph.",
+     "detailedForecast": "Partly sunny. High near 47, with temperatures falling to around 39 in the afternoon. South wind around 5 mph.",
      "startTime": "2026-11-24T06:00:00-08:00"
     },
     {
@@ -561,15 +553,15 @@
      "isDaytime": true,
      "temperature": 54,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 54.",
+     "detailedForecast": "Partly sunny, with a high near 54. West wind 0 to 5 mph.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 33,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 34.",
+     "detailedForecast": "Mostly cloudy, with a low around 33.",
      "startTime": "2026-11-26T18:00:00-08:00"
     },
     {
@@ -592,8 +584,8 @@
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 49,
-     "shortForecast": "Slight Chance Light Rain then Chance Rain And Snow",
-     "detailedForecast": "A slight chance of rain between 10am and 4pm, then a chance of rain and snow. Partly sunny, with a high near 49.",
+     "shortForecast": "Chance Light Rain",
+     "detailedForecast": "A chance of rain after 10am. Partly sunny, with a high near 49.",
      "startTime": "2026-11-28T06:00:00-08:00"
     },
     {
@@ -601,7 +593,7 @@
      "isDaytime": false,
      "temperature": 33,
      "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely before 1am, then rain and snow likely. Mostly cloudy, with a low around 33. Little or no snow accumulation expected.",
+     "detailedForecast": "A chance of rain before 7pm, then rain and snow likely. Mostly cloudy, with a low around 33. Little or no snow accumulation expected.",
      "startTime": "2026-11-28T18:00:00-08:00"
     },
     {
@@ -619,6 +611,14 @@
      "shortForecast": "Rain And Snow",
      "detailedForecast": "Rain and snow. Mostly cloudy, with a low around 30. New snow accumulation of 1 to 2 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 41,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 10am, then a chance of rain and snow between 10am and 5pm. Mostly cloudy, with a high near 41. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -633,20 +633,12 @@
    "office": "REV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": null,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. {{missing_temperature_data}}. South wind 5 to 10 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 21. Southwest wind 10 to 30 mph, with gusts as high as 50 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Partly cloudy, with a low around 21. Southwest wind 25 to 30 mph, with gusts as high as 50 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -685,7 +677,7 @@
      "isDaytime": true,
      "temperature": 39,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 39.",
+     "detailedForecast": "Partly sunny, with a high near 39. Southwest wind 0 to 25 mph, with gusts as high as 40 mph.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
@@ -716,33 +708,41 @@
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 35,
-     "shortForecast": "Partly Sunny then Chance Rain And Snow",
-     "detailedForecast": "A chance of rain and snow after 4pm. Partly sunny, with a high near 35.",
+     "shortForecast": "Partly Sunny then Chance Light Snow",
+     "detailedForecast": "A chance of snow after 4pm. Partly sunny, with a high near 35.",
      "startTime": "2026-11-28T06:00:00-08:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Chance Rain And Snow",
-     "detailedForecast": "A chance of rain and snow. Mostly cloudy, with a low around 28.",
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow. Mostly cloudy, with a low around 28. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-28T18:00:00-08:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 31,
-     "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a high near 31. New snow accumulation of 1 to 2 inches possible.",
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 31. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T06:00:00-08:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
      "temperature": 25,
-     "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 25. New snow accumulation of 1 to 2 inches possible.",
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a low around 25. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 28,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow before 5pm. Mostly cloudy, with a high near 28.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -757,20 +757,12 @@
    "office": "STO",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 35,
-     "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost after 3pm. Mostly sunny. High near 35, with temperatures falling to around 28 in the afternoon. Wind around 0 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 22,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 2am. Partly cloudy. Low around 22, with temperatures rising to around 25 overnight. South southwest wind 1 to 6 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Widespread frost before 2am. Partly cloudy. Low around 22, with temperatures rising to around 25 overnight. South southwest wind around 6 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -801,7 +793,7 @@
      "isDaytime": false,
      "temperature": 26,
      "shortForecast": "Widespread Frost",
-     "detailedForecast": "Widespread frost before 3am. Partly cloudy, with a low around 26.",
+     "detailedForecast": "Widespread frost before 3am. Partly cloudy, with a low around 26. East southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -867,6 +859,14 @@
      "shortForecast": "Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a low around 26. New snow accumulation of 5 to 9 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 33,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 33. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -881,20 +881,12 @@
    "office": "REV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": null,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. {{missing_temperature_data}}. East wind around 0 mph.",
-     "startTime": "2026-11-23T12:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Partly Cloudy",
      "detailedForecast": "Partly cloudy, with a low around 30. South wind 0 to 5 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "startTime": "2026-11-23T20:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -933,7 +925,7 @@
      "isDaytime": true,
      "temperature": 49,
      "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 49.",
+     "detailedForecast": "Partly sunny, with a high near 49. Wind around 0 mph.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
@@ -964,8 +956,8 @@
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 44,
-     "shortForecast": "Chance Light Rain",
-     "detailedForecast": "A chance of rain after 10am. Partly sunny, with a high near 44.",
+     "shortForecast": "Chance Rain And Snow",
+     "detailedForecast": "A slight chance of rain between 10am and 1pm, then a chance of rain and snow. Partly sunny, with a high near 44.",
      "startTime": "2026-11-28T06:00:00-08:00"
     },
     {
@@ -973,7 +965,7 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "A chance of rain before 7pm, then rain and snow likely. Mostly cloudy, with a low around 34.",
+     "detailedForecast": "A chance of rain before 7pm, then rain and snow likely between 7pm and 1am, then rain and snow likely. Mostly cloudy, with a low around 34.",
      "startTime": "2026-11-28T18:00:00-08:00"
     },
     {
@@ -981,7 +973,7 @@
      "isDaytime": true,
      "temperature": 37,
      "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain likely before 7am, then rain and snow. Mostly cloudy, with a high near 37. New snow accumulation of less than one inch possible.",
+     "detailedForecast": "Rain and snow. Mostly cloudy, with a high near 37. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-29T06:00:00-08:00"
     },
     {
@@ -991,6 +983,14 @@
      "shortForecast": "Rain And Snow",
      "detailedForecast": "Rain and snow. Mostly cloudy, with a low around 31. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 37,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 37. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -1005,27 +1005,19 @@
    "office": "REV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": null,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. {{missing_temperature_data}}. West northwest wind around 5 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 20,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear. Low around 20, with temperatures rising to around 24 overnight. South southwest wind 5 to 15 mph, with gusts as high as 25 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Mostly clear. Low around 20, with temperatures rising to around 22 overnight. Wind chill values as low as 8. South southwest wind 10 to 15 mph, with gusts as high as 25 mph.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 34, with temperatures falling to around 28 in the afternoon. South southwest wind 15 to 20 mph, with gusts as high as 35 mph.",
+     "detailedForecast": "Mostly sunny. High near 34, with temperatures falling to around 27 in the afternoon. Wind chill values as low as 7. South southwest wind 15 to 20 mph, with gusts as high as 35 mph.",
      "startTime": "2026-11-24T06:00:00-08:00"
     },
     {
@@ -1033,7 +1025,7 @@
      "isDaytime": false,
      "temperature": 23,
      "shortForecast": "Slight Chance Light Snow",
-     "detailedForecast": "A slight chance of snow between 10pm and 4am. Mostly cloudy, with a low around 23. Southwest wind 15 to 25 mph, with gusts as high as 40 mph. Chance of precipitation is 20%.",
+     "detailedForecast": "A slight chance of snow between 10pm and 4am. Mostly cloudy. Low around 23, with temperatures rising to around 26 overnight. Wind chill values as low as 9. Southwest wind 15 to 25 mph, with gusts as high as 40 mph. Chance of precipitation is 20%.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
@@ -1041,7 +1033,7 @@
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 34. West southwest wind 0 to 15 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 34. Wind chill values as low as 12. West southwest wind 0 to 15 mph.",
      "startTime": "2026-11-25T06:00:00-08:00"
     },
     {
@@ -1104,8 +1096,8 @@
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 28,
-     "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "A chance of snow before 10am, then rain and snow likely. Mostly cloudy, with a high near 28. Southwest wind 10 to 20 mph, with gusts as high as 55 mph. Chance of precipitation is 70%. New snow accumulation of 3 to 5 inches possible.",
+     "shortForecast": "Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 28. Southwest wind 10 to 20 mph, with gusts as high as 55 mph. Chance of precipitation is 70%. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T06:00:00-08:00"
     },
     {
@@ -1115,6 +1107,14 @@
      "shortForecast": "Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 24. Southwest wind 10 to 20 mph, with gusts as high as 55 mph. Chance of precipitation is 70%. New snow accumulation of 2 to 4 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 27,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow before 5pm. Partly sunny, with a high near 27. Southwest wind 5 to 15 mph, with gusts as high as 40 mph. Chance of precipitation is 40%. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -1129,20 +1129,12 @@
    "office": "SEW",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 33,
-     "shortForecast": "Slight Chance Light Snow",
-     "detailedForecast": "A slight chance of snow before 4pm. Mostly cloudy. High near 33, with temperatures falling to around 31 in the afternoon. Wind chill values as low as 22. South wind 7 to 10 mph. Chance of precipitation is 20%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Light Snow",
-     "detailedForecast": "Snow before 4am, then rain and snow. Cloudy. Low around 30, with temperatures rising to around 32 overnight. Wind chill values as low as 19. South southwest wind 13 to 21 mph, with gusts as high as 36 mph. Chance of precipitation is 100%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Snow before 4am, then rain and snow. Cloudy. Low around 30, with temperatures rising to around 32 overnight. Wind chill values as low as 19. South southwest wind 16 to 21 mph, with gusts as high as 36 mph. Chance of precipitation is 100%. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-23T20:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -1157,7 +1149,7 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Cloudy, with a low around 34. Wind chill values as low as 24. Southeast wind 16 to 21 mph, with gusts as high as 40 mph. Chance of precipitation is 100%. New rainfall amounts between three quarters and one inch possible.",
+     "detailedForecast": "Rain and snow. Cloudy. Low around 34, with temperatures rising to around 37 overnight. Wind chill values as low as 24. Southeast wind 16 to 21 mph, with gusts as high as 40 mph. Chance of precipitation is 100%. New rainfall amounts between three quarters and one inch possible.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
@@ -1173,7 +1165,7 @@
      "isDaytime": false,
      "temperature": 35,
      "shortForecast": "Rain",
-     "detailedForecast": "Rain before 1am, then rain and snow. Cloudy, with a low around 35. Chance of precipitation is 100%. New rainfall amounts between 1 and 2 inches possible.",
+     "detailedForecast": "Rain before 1am, then rain and snow. Cloudy, with a low around 35. South southeast wind 9 to 23 mph, with gusts as high as 43 mph. Chance of precipitation is 100%. New rainfall amounts between 1 and 2 inches possible.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -1181,7 +1173,7 @@
      "isDaytime": true,
      "temperature": 39,
      "shortForecast": "Rain And Snow then Chance T-storms",
-     "detailedForecast": "Rain and snow before 7am, then a slight chance of thunderstorms and rain and snow showers between 7am and 10am, then a chance of thunderstorms and rain and snow showers between 10am and 4pm, then a slight chance of thunderstorms and rain and snow showers. Cloudy, with a high near 39.",
+     "detailedForecast": "Rain and snow before 7am, then a slight chance of thunderstorms and rain and snow showers between 7am and 10am, then a chance of thunderstorms and rain and snow showers between 10am and 4pm, then a slight chance of thunderstorms and rain and snow showers. Cloudy, with a high near 39. Chance of precipitation is 100%. New rainfall amounts between 1 and 2 inches possible.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
@@ -1239,12 +1231,20 @@
      "shortForecast": "Rain And Snow Likely",
      "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 32. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 34,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 7am, then rain and snow likely between 7am and 5pm. Mostly cloudy, with a high near 34. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": [
     {
      "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 11:50AM PST until November 24 at 10:00PM PST by NWS Seattle WA",
+     "headline": "Winter Weather Advisory issued November 23 at 3:53PM PST until November 24 at 10:00PM PST by NWS Seattle WA",
      "onset": "2026-11-23T20:00:00-08:00",
      "ends": "2026-11-24T22:00:00-08:00"
     }
@@ -1260,20 +1260,12 @@
    "office": "SEW",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. High near 28, with temperatures falling to around 26 in the afternoon. Wind chill values as low as 14. South southeast wind around 14 mph, with gusts as high as 28 mph. New snow accumulation of around one inch possible.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 26,
      "shortForecast": "Snow",
-     "detailedForecast": "Snow. Mostly cloudy. Low around 26, with temperatures rising to around 28 overnight. Wind chill values as low as 12. South southeast wind 16 to 24 mph, with gusts as high as 44 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Snow. Mostly cloudy. Low around 26, with temperatures rising to around 28 overnight. Wind chill values as low as 12. South southeast wind 21 to 24 mph, with gusts as high as 44 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-23T20:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -1288,7 +1280,7 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Light Snow Likely",
-     "detailedForecast": "Snow likely before 1am, then rain and snow. Cloudy, with a low around 30. Wind chill values as low as 18. South southeast wind 17 to 22 mph, with gusts as high as 45 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
+     "detailedForecast": "Snow likely before 1am, then rain and snow. Cloudy. Low around 30, with temperatures rising to around 33 overnight. Wind chill values as low as 18. South southeast wind 17 to 22 mph, with gusts as high as 45 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
@@ -1296,7 +1288,7 @@
      "isDaytime": true,
      "temperature": 36,
      "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Mostly cloudy, with a high near 36. South wind 7 to 17 mph, with gusts as high as 41 mph. Chance of precipitation is 80%. New snow accumulation of less than one inch possible.",
+     "detailedForecast": "Rain and snow. Mostly cloudy, with a high near 36. Wind chill values as low as 23. South wind 7 to 17 mph, with gusts as high as 41 mph. Chance of precipitation is 80%. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-25T06:00:00-08:00"
     },
     {
@@ -1304,7 +1296,7 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Cloudy, with a low around 34. Chance of precipitation is 100%. New snow accumulation of around one inch possible.",
+     "detailedForecast": "Rain and snow. Cloudy, with a low around 34. South wind 7 to 24 mph, with gusts as high as 48 mph. Chance of precipitation is 100%. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -1312,7 +1304,7 @@
      "isDaytime": true,
      "temperature": 35,
      "shortForecast": "Rain And Snow then Slight Chance T-storms",
-     "detailedForecast": "Rain and snow before 10am, then a slight chance of thunderstorms and rain and snow showers between 10am and 4pm, then rain and snow. Cloudy, with a high near 35. New snow accumulation of around one inch possible.",
+     "detailedForecast": "Rain and snow before 10am, then a slight chance of thunderstorms and rain and snow showers between 10am and 4pm, then rain and snow. Cloudy, with a high near 35. Chance of precipitation is 100%. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
@@ -1370,6 +1362,14 @@
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 29. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 31,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 31. New snow accumulation of 2 to 4 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -1384,20 +1384,12 @@
    "office": "SEW",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. High near 28, with temperatures falling to around 26 in the afternoon. Wind chill values as low as 16. East southeast wind around 10 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 26,
      "shortForecast": "Light Snow",
-     "detailedForecast": "Snow after 8pm. Cloudy. Low around 26, with temperatures rising to around 29 overnight. Wind chill values as low as 15. East southeast wind 12 to 16 mph, with gusts as high as 29 mph. Chance of precipitation is 80%. New snow accumulation of around one inch possible.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Snow. Cloudy. Low around 26, with temperatures rising to around 29 overnight. Wind chill values as low as 15. East southeast wind around 16 mph, with gusts as high as 29 mph. Chance of precipitation is 80%. New snow accumulation of around one inch possible.",
+     "startTime": "2026-11-23T22:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -1412,7 +1404,7 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Light Snow",
-     "detailedForecast": "Snow. Mostly cloudy, with a low around 30. Wind chill values as low as 19. East southeast wind 7 to 14 mph, with gusts as high as 25 mph. Chance of precipitation is 80%. New snow accumulation of around one inch possible.",
+     "detailedForecast": "Snow. Mostly cloudy. Low around 30, with temperatures rising to around 32 overnight. Wind chill values as low as 19. East southeast wind 7 to 14 mph, with gusts as high as 25 mph. Chance of precipitation is 80%. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-24T18:00:00-08:00"
     },
     {
@@ -1428,7 +1420,7 @@
      "isDaytime": false,
      "temperature": 33,
      "shortForecast": "Rain And Snow",
-     "detailedForecast": "Rain and snow. Cloudy, with a low around 33. Chance of precipitation is 100%. New snow accumulation of less than half an inch possible.",
+     "detailedForecast": "Rain and snow. Cloudy, with a low around 33. East southeast wind 3 to 10 mph. Chance of precipitation is 100%. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -1436,7 +1428,7 @@
      "isDaytime": true,
      "temperature": 35,
      "shortForecast": "Rain And Snow then Slight Chance T-storms",
-     "detailedForecast": "Rain and snow before 7am, then rain and snow between 7am and 10am, then a slight chance of thunderstorms and rain and snow showers between 10am and 4pm, then rain and snow. Cloudy, with a high near 35. New snow accumulation of less than half an inch possible.",
+     "detailedForecast": "Rain and snow before 7am, then rain and snow between 7am and 10am, then a slight chance of thunderstorms and rain and snow showers between 10am and 4pm, then rain and snow. Cloudy, with a high near 35. Chance of precipitation is 100%. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-26T06:00:00-08:00"
     },
     {
@@ -1494,6 +1486,14 @@
      "shortForecast": "Rain And Snow Likely",
      "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 29. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 30,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely before 5pm. Mostly cloudy, with a high near 30. New snow accumulation of 2 to 4 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -1508,20 +1508,12 @@
    "office": "PDT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 26,
-     "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny. High near 26, with temperatures falling to around 24 in the afternoon. South wind around 12 mph, with gusts as high as 21 mph.",
-     "startTime": "2026-11-23T13:00:00-08:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 24,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. Low around 24, with temperatures rising to around 26 overnight. South wind 14 to 26 mph, with gusts as high as 33 mph.",
-     "startTime": "2026-11-23T18:00:00-08:00"
+     "detailedForecast": "Mostly cloudy. Low around 24, with temperatures rising to around 26 overnight. South wind 21 to 26 mph, with gusts as high as 33 mph.",
+     "startTime": "2026-11-23T20:00:00-08:00"
     },
     {
      "name": "Tuesday",
@@ -1552,7 +1544,7 @@
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Light Snow",
-     "detailedForecast": "Snow after 10pm. Mostly cloudy, with a low around 30. Chance of precipitation is 90%. New snow accumulation of less than one inch possible.",
+     "detailedForecast": "Snow after 10pm. Mostly cloudy, with a low around 30. South wind 6 to 31 mph, with gusts as high as 37 mph. Chance of precipitation is 90%. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-25T18:00:00-08:00"
     },
     {
@@ -1576,7 +1568,7 @@
      "isDaytime": true,
      "temperature": 36,
      "shortForecast": "Rain And Snow Likely",
-     "detailedForecast": "Rain and snow likely. Cloudy, with a high near 36.",
+     "detailedForecast": "Rain and snow likely. Cloudy, with a high near 36. Chance of precipitation is 60%.",
      "startTime": "2026-11-27T06:00:00-08:00"
     },
     {
@@ -1618,6 +1610,14 @@
      "shortForecast": "Light Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a low around 25. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-08:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 29,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 29. New snow accumulation of 1 to 2 inches possible.",
+     "startTime": "2026-11-30T06:00:00-08:00"
     }
    ],
    "alerts": []
@@ -1632,59 +1632,51 @@
    "office": "GJT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Mostly cloudy, with a high near 28. West wind around 5 mph. Chance of precipitation is 90%. New snow accumulation of 3 to 5 inches possible.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 14,
-     "shortForecast": "Chance Snow Showers then Patchy Fog",
-     "detailedForecast": "A chance of snow showers before 8pm, then patchy fog between 10pm and 1am. Mostly cloudy, with a low around 14. North northeast wind 0 to 5 mph. Chance of precipitation is 40%. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 14. East northeast wind around 5 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 37,
+     "temperature": 38,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 37. East northeast wind 0 to 5 mph.",
+     "detailedForecast": "Sunny, with a high near 38. South southeast wind 0 to 5 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 18,
+     "temperature": 19,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 18. Southeast wind 0 to 5 mph.",
+     "detailedForecast": "Mostly clear, with a low around 19. South southeast wind around 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 44,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 43. North wind 0 to 5 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 44. South southwest wind 0 to 5 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 20,
+     "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 20.",
+     "detailedForecast": "Partly cloudy, with a low around 21. South wind around 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 42,
+     "temperature": 43,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 42.",
+     "detailedForecast": "Sunny, with a high near 43.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -1706,52 +1698,53 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 24,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 24.",
+     "temperature": 25,
+     "shortForecast": "Partly Cloudy then Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers after 5am. Partly cloudy, with a low around 25. Little or no snow accumulation expected.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Partly Sunny then Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers after 5pm. Partly sunny, with a high near 43.",
+     "temperature": 41,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 41. Little or no snow accumulation expected.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 24,
+     "temperature": 22,
      "shortForecast": "Chance Snow Showers then Mostly Cloudy",
-     "detailedForecast": "A chance of snow showers before 11pm. Mostly cloudy, with a low around 24.",
+     "detailedForecast": "A chance of snow showers before 11pm. Mostly cloudy, with a low around 22.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Partly Sunny then Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers after 5pm. Partly sunny, with a high near 41.",
+     "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers after 5pm. Mostly sunny, with a high near 41.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 23,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 23. New snow accumulation of around one inch possible.",
+     "temperature": 22,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 22.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 39,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 39.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 12:05PM MST until November 23 at 6:00PM MST by NWS Grand Junction CO",
-     "onset": "2026-11-23T12:05:00-07:00",
-     "ends": "2026-11-23T18:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "crested-butte": {
    "point": [
@@ -1763,59 +1756,51 @@
    "office": "GJT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 31,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 31. West northwest wind around 0 mph. Chance of precipitation is 70%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-11-23T13:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 16,
-     "shortForecast": "Chance Snow Showers then Patchy Fog",
-     "detailedForecast": "A chance of snow showers before 8pm, then patchy fog. Partly cloudy, with a low around 16. Northwest wind 0 to 5 mph. Chance of precipitation is 30%. Little or no snow accumulation expected.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 16. Northwest wind 0 to 5 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Patchy Fog then Sunny",
-     "detailedForecast": "Patchy fog before 9am. Sunny, with a high near 34. West northwest wind 0 to 5 mph.",
+     "temperature": 33,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny, with a high near 33. West northwest wind 0 to 5 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 16,
+     "temperature": 17,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 16. North northeast wind around 0 mph.",
+     "detailedForecast": "Mostly clear, with a low around 17. North northwest wind 0 to 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 42,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 41. North wind around 0 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 42. Southwest wind around 0 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 20,
+     "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 20.",
+     "detailedForecast": "Partly cloudy, with a low around 21. North wind 0 to 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 40,
+     "temperature": 41,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 40.",
+     "detailedForecast": "Sunny, with a high near 41.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -1829,60 +1814,61 @@
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Partly Sunny then Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers after 5pm. Partly sunny, with a high near 38.",
+     "temperature": 40,
+     "shortForecast": "Mostly Sunny",
+     "detailedForecast": "Mostly sunny, with a high near 40.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 24,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 24. New snow accumulation of less than half an inch possible.",
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely after 11pm. Mostly cloudy, with a low around 24. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 39. New snow accumulation of less than one inch possible.",
+     "temperature": 37,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Partly sunny, with a high near 37. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 21,
      "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 23. New snow accumulation of less than half an inch possible.",
+     "detailedForecast": "A chance of snow showers before 5am. Mostly cloudy, with a low around 21.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 38,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 38. Little or no snow accumulation expected.",
+     "shortForecast": "Mostly Sunny then Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers after 5pm. Mostly sunny, with a high near 38.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
      "temperature": 22,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 22. New snow accumulation of 1 to 2 inches possible.",
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 22. Little or no snow accumulation expected.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 36,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 36. New snow accumulation of less than half an inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 12:05PM MST until November 23 at 11:00PM MST by NWS Grand Junction CO",
-     "onset": "2026-11-23T13:00:00-07:00",
-     "ends": "2026-11-23T23:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "aspen-highlands": {
    "point": [
@@ -1894,35 +1880,27 @@
    "office": "GJT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 29,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 29. North northwest wind 0 to 5 mph. Chance of precipitation is 60%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 19,
-     "shortForecast": "Chance Snow Showers then Patchy Fog",
-     "detailedForecast": "A chance of snow showers before 10pm, then patchy fog. Mostly cloudy, with a low around 19. Northwest wind around 0 mph. Chance of precipitation is 40%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Mostly Cloudy",
+     "detailedForecast": "Mostly cloudy, with a low around 19. West southwest wind around 0 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 37,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 37. West northwest wind 0 to 5 mph.",
+     "detailedForecast": "Sunny, with a high near 37. West wind 0 to 5 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 19,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 19. South wind 0 to 5 mph.",
+     "temperature": 20,
+     "shortForecast": "Mostly Clear",
+     "detailedForecast": "Mostly clear, with a low around 20. South southwest wind around 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -1930,7 +1908,7 @@
      "isDaytime": true,
      "temperature": 46,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 46. Southwest wind 0 to 5 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 46. West southwest wind 0 to 5 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
@@ -1938,82 +1916,83 @@
      "isDaytime": false,
      "temperature": 24,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 24.",
+     "detailedForecast": "Partly cloudy, with a low around 24. South wind around 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 44,
+     "temperature": 46,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 44.",
+     "detailedForecast": "Sunny, with a high near 46.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
      "temperature": 24,
-     "shortForecast": "Partly Cloudy then Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers after 5am. Partly cloudy, with a low around 24.",
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 24.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 43.",
+     "temperature": 45,
+     "shortForecast": "Partly Sunny",
+     "detailedForecast": "Partly sunny, with a high near 45.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 27. Little or no snow accumulation expected.",
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely after 11pm. Mostly cloudy, with a low around 27. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 44,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 44. New snow accumulation of less than half an inch possible.",
+     "temperature": 42,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 42. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 26,
+     "temperature": 23,
      "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 26. Little or no snow accumulation expected.",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 23. Little or no snow accumulation expected.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 43.",
+     "temperature": 42,
+     "shortForecast": "Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers. Mostly sunny, with a high near 42.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 26,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 26. New snow accumulation of less than one inch possible.",
+     "temperature": 24,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 24. Little or no snow accumulation expected.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 41,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 41. New snow accumulation of less than half an inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 12:05PM MST until November 23 at 11:00PM MST by NWS Grand Junction CO",
-     "onset": "2026-11-23T13:00:00-07:00",
-     "ends": "2026-11-23T23:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "steamboat": {
    "point": [
@@ -2025,51 +2004,43 @@
    "office": "GJT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a high near 32. West northwest wind around 5 mph.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 19,
+     "temperature": 20,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 19. West southwest wind around 0 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Partly cloudy, with a low around 20. West southwest wind around 5 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 32,
+     "temperature": 31,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 32. Southwest wind 0 to 5 mph.",
+     "detailedForecast": "Sunny, with a high near 31. South southwest wind around 5 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 19,
+     "temperature": 20,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 19. Southeast wind 0 to 5 mph.",
+     "detailedForecast": "Partly cloudy, with a low around 20. East northeast wind around 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 39,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 41. South southwest wind 0 to 5 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 39. South southwest wind 0 to 5 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 23,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 23.",
+     "shortForecast": "Mostly Cloudy",
+     "detailedForecast": "Mostly cloudy, with a low around 23. East southeast wind 0 to 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2084,57 +2055,65 @@
      "name": "Thursday Night",
      "isDaytime": false,
      "temperature": 25,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely after 11pm. Partly cloudy, with a low around 25. New snow accumulation of less than half an inch possible.",
+     "shortForecast": "Partly Cloudy then Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers after 5am. Partly cloudy, with a low around 25.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 38,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 38. New snow accumulation of 1 to 2 inches possible.",
+     "temperature": 37,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 37. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 27. New snow accumulation of 2 to 4 inches possible.",
+     "shortForecast": "Snow Showers",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 27. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 40. New snow accumulation of 1 to 2 inches possible.",
+     "temperature": 35,
+     "shortForecast": "Snow Showers",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a high near 35. New snow accumulation of 1 to 2 inches possible.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 25. New snow accumulation of less than one inch possible.",
+     "temperature": 23,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 23. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 39. New snow accumulation of around one inch possible.",
+     "temperature": 35,
+     "shortForecast": "Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers. Partly sunny, with a high near 35.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 25,
+     "temperature": 24,
      "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 25. New snow accumulation of 2 to 4 inches possible.",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 24. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 35,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 35. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -2149,27 +2128,19 @@
    "office": "GJT",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a high near 28. West northwest wind 0 to 5 mph. Chance of precipitation is 30%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 19,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers before 3am. Mostly cloudy, with a low around 19. Wind around 0 mph. Chance of precipitation is 30%. New snow accumulation of less than one inch possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "temperature": 18,
+     "shortForecast": "Slight Chance Snow Showers",
+     "detailedForecast": "A slight chance of snow showers before 4am. Mostly cloudy, with a low around 18. West southwest wind 0 to 5 mph. Chance of precipitation is 20%.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 30,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 30. West southwest wind 0 to 5 mph.",
+     "detailedForecast": "Sunny, with a high near 30. West northwest wind 0 to 5 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
@@ -2177,15 +2148,15 @@
      "isDaytime": false,
      "temperature": 17,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 17. South wind around 0 mph.",
+     "detailedForecast": "Mostly clear, with a low around 17. South wind around 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 40,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 39. West wind around 0 mph.",
+     "detailedForecast": "Mostly sunny, with a high near 40. Southwest wind 0 to 5 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
@@ -2193,82 +2164,83 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 21.",
+     "detailedForecast": "Partly cloudy, with a low around 21. South wind 0 to 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 38,
+     "temperature": 39,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 38.",
+     "detailedForecast": "Sunny, with a high near 39.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
      "temperature": 25,
-     "shortForecast": "Partly Cloudy then Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers after 5am. Partly cloudy, with a low around 25.",
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 25.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 36.",
+     "temperature": 37,
+     "shortForecast": "Partly Sunny then Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers after 5pm. Partly sunny, with a high near 37.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 28. New snow accumulation of less than one inch possible.",
+     "temperature": 27,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 27. New snow accumulation of 1 to 2 inches possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 37. New snow accumulation of 1 to 2 inches possible.",
+     "temperature": 34,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 34. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 25. New snow accumulation of less than half an inch possible.",
+     "temperature": 23,
+     "shortForecast": "Snow Showers Likely",
+     "detailedForecast": "Snow showers likely. Mostly cloudy, with a low around 23. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers. Partly sunny, with a high near 37.",
+     "temperature": 35,
+     "shortForecast": "Slight Chance Snow Showers then Mostly Sunny",
+     "detailedForecast": "A slight chance of snow showers before 11am. Mostly sunny, with a high near 35.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
-     "temperature": 24,
+     "temperature": 23,
      "shortForecast": "Chance Snow Showers",
-     "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 24. New snow accumulation of less than one inch possible.",
+     "detailedForecast": "A chance of snow showers after 11pm. Partly cloudy, with a low around 23.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 35,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 35.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 12:05PM MST until November 23 at 11:00PM MST by NWS Grand Junction CO",
-     "onset": "2026-11-23T13:00:00-07:00",
-     "ends": "2026-11-23T23:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "breckenridge": {
    "point": [
@@ -2280,20 +2252,12 @@
    "office": "BOU",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 30,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy. High near 30, with temperatures falling to around 28 in the afternoon. West northwest wind around 6 mph. Chance of precipitation is 60%. New snow accumulation of 2 to 4 inches possible.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 13,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely before 5am. Mostly cloudy. Low around 13, with temperatures rising to around 16 overnight. Northwest wind 6 to 10 mph, with gusts as high as 16 mph. Chance of precipitation is 70%. New snow accumulation of 1 to 2 inches possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers before 5am. Mostly cloudy. Low around 13, with temperatures rising to around 16 overnight. West northwest wind 7 to 10 mph, with gusts as high as 16 mph. Chance of precipitation is 40%. Little or no snow accumulation expected.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -2324,7 +2288,7 @@
      "isDaytime": false,
      "temperature": 18,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 18.",
+     "detailedForecast": "Partly cloudy, with a low around 18. West southwest wind 3 to 7 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2390,16 +2354,17 @@
      "shortForecast": "Chance Snow Showers",
      "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 19. Little or no snow accumulation expected.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 34,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 34. Little or no snow accumulation expected.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 11:55AM MST until November 23 at 11:00PM MST by NWS Denver CO",
-     "onset": "2026-11-23T13:00:00-07:00",
-     "ends": "2026-11-23T23:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "arapahoe-basin": {
    "point": [
@@ -2410,14 +2375,6 @@
    "near": "Keystone, CO",
    "office": "BOU",
    "periods": [
-    {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 22,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 22. West southwest wind around 6 mph. Chance of precipitation is 60%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-11-23T12:00:00-07:00"
-    },
     {
      "name": "Tonight",
      "isDaytime": false,
@@ -2455,7 +2412,7 @@
      "isDaytime": false,
      "temperature": 17,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 17.",
+     "detailedForecast": "Partly cloudy, with a low around 17. West wind 5 to 8 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2521,16 +2478,17 @@
      "shortForecast": "Chance Snow Showers",
      "detailedForecast": "A chance of snow showers. Partly cloudy, with a low around 16. Little or no snow accumulation expected.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 25,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 25. Little or no snow accumulation expected.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 11:55AM MST until November 23 at 11:00PM MST by NWS Denver CO",
-     "onset": "2026-11-23T13:00:00-07:00",
-     "ends": "2026-11-23T23:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "snowbird": {
    "point": [
@@ -2542,20 +2500,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 34, with temperatures falling to around 28 in the afternoon. West wind around 3 mph.",
-     "startTime": "2026-11-23T11:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 18,
      "shortForecast": "Mostly Clear",
      "detailedForecast": "Mostly clear. Low around 18, with temperatures rising to around 20 overnight. West northwest wind around 3 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "startTime": "2026-11-23T19:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -2570,7 +2520,7 @@
      "isDaytime": false,
      "temperature": 24,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 24. Southeast wind around 6 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 24, with temperatures rising to around 26 overnight. Southeast wind around 6 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -2586,7 +2536,7 @@
      "isDaytime": false,
      "temperature": 23,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 23.",
+     "detailedForecast": "Partly cloudy, with a low around 23. East wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2652,6 +2602,14 @@
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 28. New snow accumulation of 3 to 7 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 35,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 35. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -2666,20 +2624,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 29,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 29, with temperatures falling to around 24 in the afternoon. West wind around 5 mph.",
-     "startTime": "2026-11-23T11:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 14,
      "shortForecast": "Mostly Clear",
      "detailedForecast": "Mostly clear. Low around 14, with temperatures rising to around 16 overnight. Wind chill values as low as 8. West northwest wind around 3 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "startTime": "2026-11-23T19:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -2694,7 +2644,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 21. Southeast wind around 6 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 21, with temperatures rising to around 23 overnight. Southeast wind around 6 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -2710,7 +2660,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 21.",
+     "detailedForecast": "Partly cloudy, with a low around 21. East southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2776,6 +2726,14 @@
      "shortForecast": "Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 25. New snow accumulation of 3 to 7 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 29,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 29. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -2790,20 +2748,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 24,
-     "shortForecast": "Sunny",
-     "detailedForecast": "Sunny. High near 24, with temperatures falling to around 20 in the afternoon. West wind around 5 mph.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 13,
-     "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 13. Wind chill values as low as 6. West northwest wind around 5 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 13. Wind chill values as low as 8. West northwest wind around 3 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -2834,7 +2784,7 @@
      "isDaytime": false,
      "temperature": 20,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 20.",
+     "detailedForecast": "Partly cloudy, with a low around 20. East southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -2900,6 +2850,14 @@
      "shortForecast": "Light Snow",
      "detailedForecast": "Snow. Mostly cloudy, with a low around 23. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 25,
+     "shortForecast": "Light Snow",
+     "detailedForecast": "Snow. Mostly cloudy, with a high near 25. New snow accumulation of 1 to 3 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -2914,20 +2872,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 29,
-     "shortForecast": "Sunny",
-     "detailedForecast": "Sunny. High near 29, with temperatures falling to around 24 in the afternoon. West wind around 3 mph.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 15,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 15. Wind chill values as low as 9. West wind around 3 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Mostly clear, with a low around 15. Wind chill values as low as 9. West southwest wind around 3 mph.",
+     "startTime": "2026-11-23T21:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -2958,7 +2908,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 21.",
+     "detailedForecast": "Partly cloudy, with a low around 21. East southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -3024,6 +2974,14 @@
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 26. New snow accumulation of 2 to 4 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 30,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 30. New snow accumulation of 1 to 2 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3038,20 +2996,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 27, with temperatures falling to around 23 in the afternoon. West northwest wind around 5 mph.",
-     "startTime": "2026-11-23T12:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 15,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 15. Wind chill values as low as 7. Southwest wind around 6 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Mostly clear, with a low around 15. Wind chill values as low as 8. Southwest wind around 5 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -3066,7 +3016,7 @@
      "isDaytime": false,
      "temperature": 22,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 22. South wind 5 to 8 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 22, with temperatures rising to around 24 overnight. South wind 5 to 8 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -3082,7 +3032,7 @@
      "isDaytime": false,
      "temperature": 22,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 22.",
+     "detailedForecast": "Partly cloudy, with a low around 22. Southeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -3148,6 +3098,14 @@
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 26. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 28,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 28. New snow accumulation of around one inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3162,20 +3120,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 32, with temperatures falling to around 30 in the afternoon. West wind around 2 mph.",
-     "startTime": "2026-11-23T13:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 18,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 18. Southwest wind 2 to 6 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Mostly clear, with a low around 18. South southeast wind around 6 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -3190,7 +3140,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 21. East wind around 5 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 21, with temperatures rising to around 23 overnight. East wind around 5 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -3206,7 +3156,7 @@
      "isDaytime": false,
      "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 21.",
+     "detailedForecast": "Partly cloudy, with a low around 21. Northeast wind around 2 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -3272,6 +3222,14 @@
      "shortForecast": "Rain And Snow Likely",
      "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 28. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 32,
+     "shortForecast": "Rain And Snow Likely",
+     "detailedForecast": "Rain and snow likely. Mostly cloudy, with a high near 32. New snow accumulation of 1 to 2 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3286,20 +3244,12 @@
    "office": "SLC",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 25,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 25, with temperatures falling to around 20 in the afternoon. West wind around 5 mph.",
-     "startTime": "2026-11-23T12:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 14,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 14. Wind chill values as low as 4. West southwest wind 3 to 7 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Mostly clear, with a low around 14. Wind chill values as low as 4. Southwest wind 3 to 7 mph.",
+     "startTime": "2026-11-23T21:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -3314,7 +3264,7 @@
      "isDaytime": false,
      "temperature": 19,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 19. Wind chill values as low as 9. East southeast wind around 8 mph.",
+     "detailedForecast": "Mostly cloudy. Low around 19, with temperatures rising to around 21 overnight. Wind chill values as low as 9. East southeast wind around 8 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -3330,7 +3280,7 @@
      "isDaytime": false,
      "temperature": 19,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 19.",
+     "detailedForecast": "Partly cloudy, with a low around 19. East wind around 3 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -3396,6 +3346,14 @@
      "shortForecast": "Light Snow Likely",
      "detailedForecast": "Snow likely. Mostly cloudy, with a low around 25. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 28,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 28. New snow accumulation of 2 to 4 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3410,27 +3368,19 @@
    "office": "RIW",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "Scattered Snow Showers",
-     "detailedForecast": "Scattered snow showers before 4pm, then patchy fog and isolated snow showers between 4pm and 5pm. Partly sunny. High near 27, with temperatures falling to around 22 in the afternoon. West southwest wind around 3 mph. Chance of precipitation is 30%.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 16,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 16. West northwest wind 1 to 9 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Partly cloudy, with a low around 16. West northwest wind around 2 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 31,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 31. Southwest wind around 2 mph.",
+     "detailedForecast": "Mostly sunny. High near 31, with temperatures falling to around 25 in the afternoon. Southwest wind around 2 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
@@ -3438,15 +3388,15 @@
      "isDaytime": false,
      "temperature": 17,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 17. Northeast wind around 3 mph.",
+     "detailedForecast": "Mostly cloudy, with a low around 17. South southwest wind around 3 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 34,
-     "shortForecast": "Partly Sunny",
-     "detailedForecast": "Partly sunny, with a high near 34. South southeast wind around 1 mph.",
+     "shortForecast": "Mostly Cloudy",
+     "detailedForecast": "Mostly cloudy, with a high near 34. South southeast wind around 2 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
@@ -3470,7 +3420,7 @@
      "isDaytime": false,
      "temperature": 28,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 28. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 28. Southwest wind 8 to 14 mph, with gusts as high as 28 mph. Chance of precipitation is 80%. New snow accumulation of 1 to 3 inches possible.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
@@ -3486,7 +3436,7 @@
      "isDaytime": false,
      "temperature": 29,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Cloudy, with a low around 29. New snow accumulation of 3 to 5 inches possible.",
+     "detailedForecast": "Snow showers. Cloudy, with a low around 29. Chance of precipitation is 80%. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
@@ -3520,6 +3470,14 @@
      "shortForecast": "Snow Showers",
      "detailedForecast": "Snow showers. Mostly cloudy, with a low around 25. New snow accumulation of 3 to 5 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 30,
+     "shortForecast": "Snow Showers",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a high near 30. New snow accumulation of 2 to 4 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3534,27 +3492,19 @@
    "office": "RIW",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 26,
-     "shortForecast": "Areas Of Fog",
-     "detailedForecast": "Areas of fog and scattered snow showers. Mostly cloudy. High near 26, with temperatures falling to around 19 in the afternoon. West wind around 3 mph. Chance of precipitation is 40%. Little or no snow accumulation expected.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 17,
-     "shortForecast": "Patchy Fog then Partly Cloudy",
-     "detailedForecast": "Patchy fog before 9pm. Partly cloudy, with a low around 17. South southeast wind 1 to 5 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Mostly Cloudy",
+     "detailedForecast": "Mostly cloudy, with a low around 17. South southeast wind around 2 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 29,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 29. South southeast wind around 3 mph.",
+     "detailedForecast": "Mostly sunny. High near 29, with temperatures falling to around 23 in the afternoon. South southeast wind around 3 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
@@ -3594,7 +3544,7 @@
      "isDaytime": false,
      "temperature": 28,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 28. Chance of precipitation is 80%. New snow accumulation of 2 to 4 inches possible.",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a low around 28. South southwest wind 12 to 15 mph, with gusts as high as 22 mph. Chance of precipitation is 80%. New snow accumulation of 2 to 4 inches possible.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
@@ -3610,7 +3560,7 @@
      "isDaytime": false,
      "temperature": 28,
      "shortForecast": "Snow Showers",
-     "detailedForecast": "Snow showers. Cloudy, with a low around 28. New snow accumulation of 3 to 7 inches possible.",
+     "detailedForecast": "Snow showers. Cloudy, with a low around 28. Chance of precipitation is 80%. New snow accumulation of 3 to 7 inches possible.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
@@ -3644,6 +3594,14 @@
      "shortForecast": "Snow Showers",
      "detailedForecast": "Snow showers. Mostly cloudy, with a low around 26. New snow accumulation of 4 to 8 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 29,
+     "shortForecast": "Snow Showers",
+     "detailedForecast": "Snow showers. Mostly cloudy, with a high near 29. New snow accumulation of 4 to 8 inches possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3658,20 +3616,12 @@
    "office": "PIH",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy. High near 28, with temperatures falling to around 26 in the afternoon. South southwest wind around 3 mph.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 14,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy. Low around 14, with temperatures rising to around 16 overnight. West northwest wind 2 to 6 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Mostly Clear",
+     "detailedForecast": "Mostly clear. Low around 14, with temperatures rising to around 16 overnight. Northwest wind around 6 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -3702,7 +3652,7 @@
      "isDaytime": false,
      "temperature": 22,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 22.",
+     "detailedForecast": "Partly cloudy, with a low around 22. North northwest wind 2 to 6 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -3768,6 +3718,14 @@
      "shortForecast": "Rain And Snow Likely",
      "detailedForecast": "Rain and snow likely. Mostly cloudy, with a low around 24. Chance of precipitation is 70%. New snow accumulation of 1 to 2 inches possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 30,
+     "shortForecast": "Light Snow Likely",
+     "detailedForecast": "Snow likely. Mostly cloudy, with a high near 30. Chance of precipitation is 60%. New snow accumulation of less than one inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3782,20 +3740,12 @@
    "office": "TFX",
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 25,
-     "shortForecast": "Patchy Fog",
-     "detailedForecast": "Patchy fog and a slight chance of snow. Partly sunny. High near 25, with temperatures falling to around 20 in the afternoon. West southwest wind around 6 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-11-23T11:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 13,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 13. Wind chill values as low as -2. Southwest wind 6 to 14 mph, with gusts as high as 20 mph.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "detailedForecast": "Partly cloudy, with a low around 13. Wind chill values as low as -2. South southwest wind 10 to 14 mph, with gusts as high as 20 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -3834,7 +3784,7 @@
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Light Snow Likely",
-     "detailedForecast": "Snow likely after 11am. Partly sunny, with a high near 34. South wind 7 to 12 mph, with gusts as high as 25 mph. New snow accumulation of less than half an inch possible.",
+     "detailedForecast": "Snow likely after 11am. Partly sunny, with a high near 34. South wind 7 to 12 mph, with gusts as high as 25 mph. Chance of precipitation is 60%. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -3850,7 +3800,7 @@
      "isDaytime": true,
      "temperature": 31,
      "shortForecast": "Chance Light Snow",
-     "detailedForecast": "A chance of snow. Mostly cloudy, with a high near 31. New snow accumulation of around one inch possible.",
+     "detailedForecast": "A chance of snow. Mostly cloudy, with a high near 31. Southwest wind 7 to 10 mph, with gusts as high as 22 mph. New snow accumulation of around one inch possible.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
@@ -3892,6 +3842,14 @@
      "shortForecast": "Chance Light Snow",
      "detailedForecast": "A chance of snow. Mostly cloudy, with a low around 24. New snow accumulation of less than one inch possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 31,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow. Mostly cloudy, with a high near 31. New snow accumulation of around one inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -3906,35 +3864,27 @@
    "office": "ABQ",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 22,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 22. Southwest wind 5 to 10 mph. Chance of precipitation is 70%. New snow accumulation of 2 to 4 inches possible.",
-     "startTime": "2026-11-23T13:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 16,
-     "shortForecast": "Snow Showers Likely then Mostly Cloudy",
-     "detailedForecast": "Snow showers likely before 11pm. Mostly cloudy, with a low around 16. West wind 5 to 10 mph. Chance of precipitation is 70%. New snow accumulation of 1 to 3 inches possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 16. West wind 5 to 10 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 27,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny. High near 27, with temperatures falling to around 23 in the afternoon. North wind around 15 mph.",
+     "detailedForecast": "Sunny. High near 27, with temperatures falling to around 23 in the afternoon. North wind 5 to 10 mph.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 16,
+     "temperature": 17,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 16. West wind 10 to 15 mph.",
+     "detailedForecast": "Mostly clear, with a low around 17. Southwest wind 5 to 10 mph.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -3942,39 +3892,39 @@
      "isDaytime": true,
      "temperature": 36,
      "shortForecast": "Sunny",
-     "detailedForecast": "Sunny, with a high near 36. Southwest wind 0 to 10 mph.",
+     "detailedForecast": "Sunny, with a high near 36. West wind 0 to 10 mph.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 20,
+     "temperature": 21,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 20.",
+     "detailedForecast": "Partly cloudy, with a low around 21. Northeast wind around 5 mph.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thanksgiving Day",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 34.",
+     "temperature": 35,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny, with a high near 35.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 20,
+     "temperature": 21,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 20.",
+     "detailedForecast": "Mostly clear, with a low around 21.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 36,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 35.",
+     "detailedForecast": "Mostly sunny, with a high near 36.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
@@ -3988,34 +3938,42 @@
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 35,
+     "temperature": 34,
      "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 35.",
+     "detailedForecast": "Mostly sunny, with a high near 34.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 24,
-     "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 24.",
+     "temperature": 21,
+     "shortForecast": "Mostly Clear",
+     "detailedForecast": "Mostly clear, with a low around 21.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
-     "temperature": 33,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny, with a high near 33.",
+     "temperature": 32,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny, with a high near 32.",
      "startTime": "2026-11-29T06:00:00-07:00"
     },
     {
      "name": "Sunday Night",
      "isDaytime": false,
      "temperature": 23,
-     "shortForecast": "Partly Cloudy then Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers after 5am. Partly cloudy, with a low around 23.",
+     "shortForecast": "Partly Cloudy",
+     "detailedForecast": "Partly cloudy, with a low around 23.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 31,
+     "shortForecast": "Mostly Sunny",
+     "detailedForecast": "Mostly sunny, with a high near 31.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
    "alerts": []
@@ -4030,20 +3988,12 @@
    "office": "PUB",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 22,
-     "shortForecast": "Snow Showers Likely",
-     "detailedForecast": "Snow showers likely. Mostly cloudy, with a high near 22. Southwest wind around 10 mph. Chance of precipitation is 70%. New snow accumulation of 2 to 4 inches possible.",
-     "startTime": "2026-11-23T14:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 11,
-     "shortForecast": "Slight Chance Snow Showers then Partly Cloudy",
-     "detailedForecast": "A slight chance of snow showers before 8pm. Partly cloudy, with a low around 11. Wind chill values as low as -5. West wind 5 to 15 mph. Chance of precipitation is 20%. New snow accumulation of less than half an inch possible.",
-     "startTime": "2026-11-23T18:00:00-07:00"
+     "shortForecast": "Mostly Clear",
+     "detailedForecast": "Mostly clear, with a low around 11. Wind chill values as low as -5. West northwest wind 5 to 15 mph.",
+     "startTime": "2026-11-23T23:00:00-07:00"
     },
     {
      "name": "Tuesday",
@@ -4140,16 +4090,17 @@
      "shortForecast": "Chance Snow Showers",
      "detailedForecast": "A chance of snow showers. Mostly cloudy, with a low around 21. Southwest wind around 15 mph. New snow accumulation of less than half an inch possible.",
      "startTime": "2026-11-29T18:00:00-07:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 28,
+     "shortForecast": "Chance Snow Showers",
+     "detailedForecast": "A chance of snow showers. Partly sunny, with a high near 28. Southwest wind 10 to 15 mph. New snow accumulation of less than half an inch possible.",
+     "startTime": "2026-11-30T06:00:00-07:00"
     }
    ],
-   "alerts": [
-    {
-     "event": "Winter Weather Advisory",
-     "headline": "Winter Weather Advisory issued November 23 at 12:05PM MST until November 23 at 8:00PM MST by NWS Pueblo CO",
-     "onset": "2026-11-23T12:05:00-07:00",
-     "ends": "2026-11-23T20:00:00-07:00"
-    }
-   ]
+   "alerts": []
   },
   "whiteface": {
    "point": [
@@ -4161,20 +4112,12 @@
    "office": "BTV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 40,
-     "shortForecast": "Slight Chance Snow Showers",
-     "detailedForecast": "A slight chance of snow showers after 5pm. Mostly sunny. High near 40, with temperatures falling to around 27 in the afternoon. West wind around 25 mph, with gusts as high as 38 mph. Chance of precipitation is 20%. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-11-23T15:00:00-05:00"
-    },
-    {
-     "name": "Tonight",
+     "name": "Overnight",
      "isDaytime": false,
      "temperature": 12,
      "shortForecast": "Mostly Cloudy",
-     "detailedForecast": "Mostly cloudy, with a low around 12. Wind chill values as low as -3. Northwest wind 14 to 21 mph. New rainfall amounts less than a tenth of an inch possible.",
-     "startTime": "2026-11-23T18:00:00-05:00"
+     "detailedForecast": "Mostly cloudy, with a low around 12. Wind chill values as low as -3. Northwest wind around 16 mph, with gusts as high as 26 mph.",
+     "startTime": "2026-11-24T01:00:00-05:00"
     },
     {
      "name": "Tuesday",
@@ -4189,7 +4132,7 @@
      "isDaytime": false,
      "temperature": 12,
      "shortForecast": "Mostly Clear",
-     "detailedForecast": "Mostly clear, with a low around 12. Wind chill values as low as 0. West wind 3 to 17 mph.",
+     "detailedForecast": "Mostly clear. Low around 12, with temperatures rising to around 18 overnight. Wind chill values as low as 0. West wind 3 to 17 mph.",
      "startTime": "2026-11-24T18:00:00-05:00"
     },
     {
@@ -4213,7 +4156,7 @@
      "isDaytime": true,
      "temperature": 34,
      "shortForecast": "Partly Sunny then Chance Light Snow",
-     "detailedForecast": "A chance of snow and a chance of freezing rain after 4pm. Partly sunny, with a high near 34. Southeast wind 5 to 26 mph. Chance of precipitation is 40%.",
+     "detailedForecast": "A chance of snow and a chance of freezing rain after 4pm. Partly sunny, with a high near 34. Southeast wind 5 to 26 mph. Chance of precipitation is 40%. New rainfall amounts less than a tenth of an inch possible.",
      "startTime": "2026-11-26T06:00:00-05:00"
     },
     {
@@ -4271,6 +4214,14 @@
      "shortForecast": "Chance Light Snow",
      "detailedForecast": "A chance of snow. Mostly cloudy, with a low around 31. Southwest wind 10 to 15 mph. Chance of precipitation is 40%.",
      "startTime": "2026-11-29T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 34,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow. Mostly cloudy, with a high near 34. Southwest wind 10 to 14 mph. Chance of precipitation is 40%.",
+     "startTime": "2026-11-30T06:00:00-05:00"
     }
    ],
    "alerts": []
@@ -4285,20 +4236,12 @@
    "office": "BTV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 49,
-     "shortForecast": "Slight Chance Rain Showers",
-     "detailedForecast": "A slight chance of rain showers before 2pm. Mostly sunny. High near 49, with temperatures falling to around 38 in the afternoon. Northwest wind 15 to 18 mph, with gusts as high as 33 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-11-23T13:00:00-05:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 23,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 23. Northwest wind 10 to 15 mph, with gusts as high as 33 mph.",
-     "startTime": "2026-11-23T18:00:00-05:00"
+     "detailedForecast": "Partly cloudy, with a low around 23. Northwest wind around 13 mph, with gusts as high as 29 mph.",
+     "startTime": "2026-11-23T23:00:00-05:00"
     },
     {
      "name": "Tuesday",
@@ -4395,6 +4338,14 @@
      "shortForecast": "Chance Light Snow",
      "detailedForecast": "A chance of snow before 7pm, then a chance of rain and snow. Mostly cloudy, with a low around 32. Southwest wind around 10 mph. Chance of precipitation is 40%.",
      "startTime": "2026-11-29T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 38,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow before 10am, then a chance of rain and snow. Mostly cloudy, with a high near 38. Southwest wind around 10 mph. Chance of precipitation is 40%.",
+     "startTime": "2026-11-30T06:00:00-05:00"
     }
    ],
    "alerts": []
@@ -4409,20 +4360,12 @@
    "office": "BTV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Slight Chance Rain Showers",
-     "detailedForecast": "A slight chance of rain showers before 2pm. Mostly sunny. High near 48, with temperatures falling to around 37 in the afternoon. West wind around 24 mph, with gusts as high as 39 mph. Chance of precipitation is 20%.",
-     "startTime": "2026-11-23T13:00:00-05:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 17,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 17. Northwest wind 14 to 22 mph, with gusts as high as 32 mph.",
-     "startTime": "2026-11-23T18:00:00-05:00"
+     "detailedForecast": "Partly cloudy, with a low around 17. Northwest wind 14 to 17 mph, with gusts as high as 29 mph.",
+     "startTime": "2026-11-23T23:00:00-05:00"
     },
     {
      "name": "Tuesday",
@@ -4461,7 +4404,7 @@
      "isDaytime": true,
      "temperature": 33,
      "shortForecast": "Light Snow Likely",
-     "detailedForecast": "Snow likely and a slight chance of freezing rain after 10am. Mostly cloudy, with a high near 33. East wind 10 to 32 mph. Chance of precipitation is 60%.",
+     "detailedForecast": "Snow likely and a slight chance of freezing rain after 10am. Mostly cloudy, with a high near 33. East wind 10 to 32 mph. Chance of precipitation is 60%. New rainfall amounts less than a tenth of an inch possible.",
      "startTime": "2026-11-26T06:00:00-05:00"
     },
     {
@@ -4519,6 +4462,14 @@
      "shortForecast": "Slight Chance Light Snow",
      "detailedForecast": "A slight chance of snow. Mostly cloudy, with a low around 33. Southwest wind 7 to 12 mph, with gusts as high as 23 mph.",
      "startTime": "2026-11-29T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 37,
+     "shortForecast": "Chance Light Snow",
+     "detailedForecast": "A chance of snow before 10am, then a chance of rain and snow. Partly sunny, with a high near 37. Southwest wind around 10 mph, with gusts as high as 23 mph. Chance of precipitation is 30%.",
+     "startTime": "2026-11-30T06:00:00-05:00"
     }
    ],
    "alerts": []
@@ -4533,20 +4484,12 @@
    "office": "BTV",
    "periods": [
     {
-     "name": "This Afternoon",
-     "isDaytime": true,
-     "temperature": 51,
-     "shortForecast": "Mostly Sunny",
-     "detailedForecast": "Mostly sunny. High near 51, with temperatures falling to around 35 in the afternoon. West wind 20 to 23 mph, with gusts as high as 40 mph.",
-     "startTime": "2026-11-23T13:00:00-05:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 17,
      "shortForecast": "Partly Cloudy",
-     "detailedForecast": "Partly cloudy, with a low around 17. Northwest wind 12 to 18 mph, with gusts as high as 35 mph.",
-     "startTime": "2026-11-23T18:00:00-05:00"
+     "detailedForecast": "Partly cloudy, with a low around 17. Northwest wind around 13 mph, with gusts as high as 26 mph.",
+     "startTime": "2026-11-23T22:00:00-05:00"
     },
     {
      "name": "Tuesday",
@@ -4643,6 +4586,14 @@
      "shortForecast": "Chance Rain And Snow",
      "detailedForecast": "A chance of rain and snow. Mostly cloudy, with a low around 33. Southwest wind around 8 mph. Chance of precipitation is 50%.",
      "startTime": "2026-11-29T18:00:00-05:00"
+    },
+    {
+     "name": "Monday",
+     "isDaytime": true,
+     "temperature": 38,
+     "shortForecast": "Rain And Snow Likely",
+     "detailedForecast": "A chance of snow before 7am, then rain and snow likely. Mostly cloudy, with a high near 38. Southwest wind around 8 mph. Chance of precipitation is 60%.",
+     "startTime": "2026-11-30T06:00:00-05:00"
     }
    ],
    "alerts": []
@@ -4657,35 +4608,27 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Mainly cloudy with 30 percent chance of flurries. Temperature steady near zero. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 30,
      "shortForecast": "Chance of flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries this evening. Temperature steady near minus 1.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries this evening. Low minus 1.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Mainly cloudy. Wind becoming south 20 km/h early in the afternoon. Temperature steady near plus 1. UV index 1 or low.",
+     "temperature": 36,
+     "shortForecast": "Chance of flurries or rain showers",
+     "detailedForecast": "Mainly cloudy. 60 percent chance of flurries or rain showers late in the afternoon. Wind becoming south 20 km/h early in the afternoon. High plus 2. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Flurries or rain showers",
-     "detailedForecast": "Flurries or rain showers. Low plus 1.",
+     "shortForecast": "A few flurries or rain showers",
+     "detailedForecast": "Flurries or rain showers. Wind south 20 km/h. Temperature steady near plus 1.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -4700,40 +4643,40 @@
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 37,
-     "shortForecast": "Snow or rain",
-     "detailedForecast": "Snow or rain. Low plus 3.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. Low plus 3.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. High plus 5.",
+     "shortForecast": "Rain",
+     "detailedForecast": "Rain. High plus 5.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 37,
+     "temperature": 39,
      "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. Low plus 3.",
+     "detailedForecast": "Periods of rain. Low plus 4.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 41,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 5.",
+     "temperature": 43,
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. High 6.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 32,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low zero.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
@@ -4748,8 +4691,8 @@
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 28,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. Low minus 2.",
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low minus 2.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
@@ -4773,19 +4716,11 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain mixed with wet snow. High zero.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 32,
      "shortForecast": "Periods of wet snow mixed with rain",
-     "detailedForecast": "Periods of wet snow or rain changing to periods of snow before morning. Snowfall amount 5 cm. Temperature steady near zero.",
+     "detailedForecast": "Periods of wet snow or rain changing to periods of snow before morning. Snowfall amount 2 to 4 cm. Temperature steady near zero.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
@@ -4799,17 +4734,17 @@
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 60 percent chance of showers. Low plus 2.",
+     "temperature": 37,
+     "shortForecast": "Periods of rain",
+     "detailedForecast": "Cloudy with 60 percent chance of rain. Temperature steady near plus 3.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Rain",
-     "detailedForecast": "Rain. High plus 5.",
+     "shortForecast": "Periods of rain",
+     "detailedForecast": "Periods of rain. High plus 5.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
@@ -4889,59 +4824,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind up to 15 km/h. High minus 3. Wind chill minus 14 this morning and minus 8 this afternoon.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 18,
-     "shortForecast": "A few clouds",
-     "detailedForecast": "A few clouds. Wind up to 15 km/h. Low minus 8. Wind chill minus 9 this evening and minus 14 overnight.",
+     "temperature": 16,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 9. Wind chill minus 10 this evening and minus 16 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Mainly sunny",
-     "detailedForecast": "Mainly sunny. Wind becoming southwest 20 km/h near noon. High zero. Wind chill minus 14 in the morning. UV index 1 or low.",
+     "temperature": 30,
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h gusting to 40 near noon. High minus 1. Wind chill minus 16 in the morning and minus 7 in the afternoon. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Clear",
-     "detailedForecast": "Clear. Low minus 4.",
+     "temperature": 28,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind southwest 20 km/h gusting to 40. Temperature steady near minus 2. Wind chill near minus 8.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low zero.",
+     "temperature": 34,
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "Cloudy periods with 30 percent chance of flurries. Low plus 1.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "A mix of sun and cloud with 40 percent chance of flurries or rain showers. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Periods of snow",
+     "detailedForecast": "Periods of snow. High plus 5.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
@@ -4949,31 +4876,31 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy periods with 30 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy periods with 40 percent chance of rain showers or flurries. Low plus 1.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 3.",
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "A mix of sun and cloud with 30 percent chance of flurries. High plus 3.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 21,
+     "temperature": 19,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 6.",
+     "detailedForecast": "Cloudy periods. Low minus 7.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 36,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 1.",
+     "detailedForecast": "A mix of sun and cloud. High plus 2.",
      "startTime": "2026-11-28T06:00:00-06:00"
     },
     {
@@ -5005,14 +4932,6 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Mainly cloudy with 30 percent chance of flurries. Wind up to 15 km/h. High minus 2. Wind chill minus 9 this afternoon. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 19,
@@ -5031,9 +4950,9 @@
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 2.",
+     "temperature": 30,
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "Partly cloudy. 30 percent chance of flurries before morning. Wind up to 15 km/h. Temperature steady near minus 1. Wind chill minus 6 in the evening.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
@@ -5047,41 +4966,41 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Rain showers or flurries",
-     "detailedForecast": "Rain showers or flurries. Low zero.",
+     "temperature": 34,
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 40 percent chance of showers. Low plus 1.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Periods of snow",
-     "detailedForecast": "Periods of snow. High plus 4.",
+     "shortForecast": "Showers",
+     "detailedForecast": "Showers. High plus 4.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 70 percent chance of rain showers or flurries. Low plus 1.",
+     "shortForecast": "Rain showers or flurries",
+     "detailedForecast": "Rain showers or flurries. Low plus 1.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 3.",
+     "temperature": 39,
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. High plus 4.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
      "temperature": 27,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. Low minus 3.",
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low minus 3.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
@@ -5095,9 +5014,9 @@
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 21,
+     "temperature": 19,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 6.",
+     "detailedForecast": "Cloudy periods. Low minus 7.",
      "startTime": "2026-11-28T18:00:00-06:00"
     },
     {
@@ -5121,83 +5040,75 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries early this afternoon then a mix of sun and cloud. Wind south 20 km/h. Temperature steady near zero. Wind chill minus 8 this morning. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 18,
-     "shortForecast": "Partly cloudy",
-     "detailedForecast": "Partly cloudy. Wind south 20 km/h becoming light this evening. Low minus 8. Wind chill minus 5 this evening and minus 12 overnight.",
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. Low minus 8. Wind chill minus 6 this evening and minus 13 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 32,
-     "shortForecast": "Mainly sunny",
-     "detailedForecast": "Clearing. Wind up to 15 km/h. High zero. Wind chill minus 8 in the afternoon. UV index 1 or low.",
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "Mainly cloudy. Clearing late in the morning. Wind up to 15 km/h. High zero. Wind chill minus 13 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
      "temperature": 25,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 4.",
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "A few clouds. Increasing cloudiness overnight. Wind up to 15 km/h. Low minus 4. Wind chill minus 9 in the evening.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. High plus 5.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 30 percent chance of showers. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 34,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. Low plus 1.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 30 percent chance of showers. Low plus 1.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries or rain showers. High plus 4.",
+     "shortForecast": "Snow or rain",
+     "detailedForecast": "Snow or rain. High plus 4.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 37,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy periods with 40 percent chance of showers. Low plus 2.",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. Low plus 3.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. High plus 4.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 28,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 1.",
+     "detailedForecast": "Cloudy periods. Low minus 2.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
@@ -5237,59 +5148,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Cloudy. Becoming a mix of sun and cloud this afternoon. High plus 3. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Partly cloudy",
-     "detailedForecast": "Partly cloudy. Low minus 1.",
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. Low minus 1. Wind chill near minus 3.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4. UV index 1 or low.",
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. High plus 4. Wind chill minus 3 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy periods with 40 percent chance of flurries. Low plus 2.",
+     "temperature": 37,
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Partly cloudy. Becoming cloudy after midnight with 40 percent chance of showers overnight. Snow level near valley bottom. Temperature steady near plus 3.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries or rain showers. High 6.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 40 percent chance of showers. High 6.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 39,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. Low plus 4.",
+     "shortForecast": "Rain",
+     "detailedForecast": "Rain. Low plus 4.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 43,
      "shortForecast": "Rain",
-     "detailedForecast": "Rain. High 7.",
+     "detailedForecast": "Rain. High 6.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -5303,41 +5206,41 @@
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 43,
      "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 5.",
+     "detailedForecast": "Cloudy. High 6.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 32,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy with 30 percent chance of rain showers or flurries. Low zero.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 4.",
+     "temperature": 37,
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High plus 3.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. Low minus 1.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. Low minus 1.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 34,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries. High plus 1.",
+     "shortForecast": "Periods of snow",
+     "detailedForecast": "Periods of snow. High plus 1.",
      "startTime": "2026-11-29T06:00:00-07:00"
     }
    ],
@@ -5353,59 +5256,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 37,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Cloudy. Becoming a mix of sun and cloud this afternoon. High plus 3. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Partly cloudy",
-     "detailedForecast": "Partly cloudy. Low minus 1.",
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. Low minus 1. Wind chill near minus 3.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4. UV index 1 or low.",
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. High plus 4. Wind chill minus 3 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy periods with 40 percent chance of flurries. Low plus 2.",
+     "temperature": 37,
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Partly cloudy. Becoming cloudy after midnight with 40 percent chance of showers overnight. Snow level near valley bottom. Temperature steady near plus 3.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries or rain showers. High 6.",
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 40 percent chance of showers. High 6.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 39,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. Low plus 4.",
+     "shortForecast": "Rain",
+     "detailedForecast": "Rain. Low plus 4.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 45,
+     "temperature": 43,
      "shortForecast": "Rain",
-     "detailedForecast": "Rain. High 7.",
+     "detailedForecast": "Rain. High 6.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -5419,41 +5314,41 @@
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 43,
      "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 5.",
+     "detailedForecast": "Cloudy. High 6.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 34,
+     "temperature": 32,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy with 30 percent chance of rain showers or flurries. Low zero.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 4.",
+     "temperature": 37,
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High plus 3.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. Low minus 1.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. Low minus 1.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 34,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of flurries. High plus 1.",
+     "shortForecast": "Periods of snow",
+     "detailedForecast": "Periods of snow. High plus 1.",
      "startTime": "2026-11-29T06:00:00-07:00"
     }
    ],
@@ -5469,19 +5364,11 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Cloudy. Becoming a mix of sun and cloud this afternoon. Wind up to 15 km/h. High plus 1. Wind chill minus 5 this morning.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 19,
-     "shortForecast": "Partly cloudy",
-     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 7. Wind chill minus 3 this evening and minus 10 overnight.",
+     "temperature": 23,
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. Low minus 5. Wind chill minus 9 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
@@ -5489,31 +5376,31 @@
      "isDaytime": true,
      "temperature": 32,
      "shortForecast": "Clearing",
-     "detailedForecast": "Mainly cloudy. Clearing late in the morning. Wind up to 15 km/h. High zero. Wind chill minus 9 in the morning. UV index 1 or low.",
+     "detailedForecast": "Mainly cloudy. Clearing late in the morning. Wind up to 15 km/h. High zero. Wind chill minus 8 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 2.",
+     "temperature": 30,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "A few clouds. Increasing cloudiness before morning. Wind up to 15 km/h. Temperature steady near minus 1. Wind chill near minus 6.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. High plus 5.",
+     "shortForecast": "Chance of flurries or rain showers",
+     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 32,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low zero.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. Low zero.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
@@ -5527,25 +5414,25 @@
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 32,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low minus 1.",
+     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low zero.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High plus 4.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 27,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 2.",
+     "detailedForecast": "Cloudy periods. Low minus 3.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
@@ -5559,17 +5446,17 @@
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 21,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 5.",
+     "detailedForecast": "Cloudy periods. Low minus 6.",
      "startTime": "2026-11-28T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 32,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High zero.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High zero.",
      "startTime": "2026-11-29T06:00:00-06:00"
     }
    ],
@@ -5585,19 +5472,11 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 34,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Cloudy. Becoming a mix of sun and cloud this afternoon. Wind up to 15 km/h. High plus 1. Wind chill minus 5 this morning.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 19,
-     "shortForecast": "Partly cloudy",
-     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 7. Wind chill minus 3 this evening and minus 10 overnight.",
+     "temperature": 23,
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind up to 15 km/h. Low minus 5. Wind chill minus 9 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
@@ -5605,31 +5484,31 @@
      "isDaytime": true,
      "temperature": 32,
      "shortForecast": "Clearing",
-     "detailedForecast": "Mainly cloudy. Clearing late in the morning. Wind up to 15 km/h. High zero. Wind chill minus 9 in the morning. UV index 1 or low.",
+     "detailedForecast": "Mainly cloudy. Clearing late in the morning. Wind up to 15 km/h. High zero. Wind chill minus 8 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 28,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 2.",
+     "temperature": 30,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "A few clouds. Increasing cloudiness before morning. Wind up to 15 km/h. Temperature steady near minus 1. Wind chill near minus 6.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
      "temperature": 41,
-     "shortForecast": "Chance of flurries",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries. High plus 5.",
+     "shortForecast": "Chance of flurries or rain showers",
+     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
      "temperature": 32,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low zero.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. Low zero.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
@@ -5643,25 +5522,25 @@
     {
      "name": "Thursday Night",
      "isDaytime": false,
-     "temperature": 30,
+     "temperature": 32,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low minus 1.",
+     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low zero.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High plus 4.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 28,
+     "temperature": 27,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 2.",
+     "detailedForecast": "Cloudy periods. Low minus 3.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
@@ -5675,17 +5554,17 @@
     {
      "name": "Saturday Night",
      "isDaytime": false,
-     "temperature": 23,
+     "temperature": 21,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 5.",
+     "detailedForecast": "Cloudy periods. Low minus 6.",
      "startTime": "2026-11-28T18:00:00-06:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 32,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High zero.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High zero.",
      "startTime": "2026-11-29T06:00:00-06:00"
     }
    ],
@@ -5701,35 +5580,27 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries near noon then 30 percent chance of rain showers or wet flurries early this afternoon. High plus 2. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 32,
      "shortForecast": "Chance of flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries before morning. Wind up to 15 km/h. Low zero. Wind chill minus 4 this evening.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries before morning. Temperature steady near zero.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 37,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries changing to 70 percent chance of flurries and then to 70 percent chance of rain showers late in the morning. Snow level rising to 800 metres near noon. Wind becoming southeast 20 km/h in the afternoon. High plus 4. UV index 1 or low.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries changing to 70 percent chance of rain showers in the morning. Snow level rising to 800 metres near noon. Wind becoming southeast 20 km/h in the afternoon. High plus 3. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 39,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 40 percent chance of showers. Low plus 2.",
+     "detailedForecast": "Mainly cloudy. 40 percent chance of showers late in the evening and overnight. Snow level 1200 metres. Wind southeast 20 km/h becoming light in the evening. Temperature steady near plus 4.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -5743,17 +5614,17 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 39,
      "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. Low plus 2.",
+     "detailedForecast": "Periods of rain. Low plus 4.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. High 6.",
+     "temperature": 46,
+     "shortForecast": "Showers",
+     "detailedForecast": "Showers. High 8.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -5775,33 +5646,33 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 30 percent chance of showers. Low plus 2.",
+     "temperature": 34,
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low plus 1.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 4.",
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. High plus 4.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. Low minus 1.",
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low minus 1.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 36,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 2.",
+     "shortForecast": "Chance of flurries or rain showers",
+     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 2.",
      "startTime": "2026-11-29T06:00:00-07:00"
     }
    ],
@@ -5817,35 +5688,27 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries near noon then 30 percent chance of rain showers or wet flurries early this afternoon. High plus 2. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 32,
      "shortForecast": "Chance of flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries before morning. Wind up to 15 km/h. Low zero. Wind chill minus 4 this evening.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries before morning. Temperature steady near zero.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 39,
+     "temperature": 37,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries changing to 70 percent chance of flurries and then to 70 percent chance of rain showers late in the morning. Snow level rising to 800 metres near noon. Wind becoming southeast 20 km/h in the afternoon. High plus 4. UV index 1 or low.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of flurries changing to 70 percent chance of rain showers in the morning. Snow level rising to 800 metres near noon. Wind becoming southeast 20 km/h in the afternoon. High plus 3. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 39,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 40 percent chance of showers. Low plus 2.",
+     "detailedForecast": "Mainly cloudy. 40 percent chance of showers late in the evening and overnight. Snow level 1200 metres. Wind southeast 20 km/h becoming light in the evening. Temperature steady near plus 4.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -5859,17 +5722,17 @@
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 39,
      "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. Low plus 2.",
+     "detailedForecast": "Periods of rain. Low plus 4.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Periods of rain",
-     "detailedForecast": "Periods of rain. High 6.",
+     "temperature": 46,
+     "shortForecast": "Showers",
+     "detailedForecast": "Showers. High 8.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
@@ -5891,33 +5754,33 @@
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 36,
-     "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 30 percent chance of showers. Low plus 2.",
+     "temperature": 34,
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low plus 1.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
      "temperature": 39,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 4.",
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. High plus 4.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
      "name": "Saturday Night",
      "isDaytime": false,
      "temperature": 30,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. Low minus 1.",
+     "shortForecast": "Cloudy periods",
+     "detailedForecast": "Cloudy periods. Low minus 1.",
      "startTime": "2026-11-28T18:00:00-07:00"
     },
     {
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 36,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. High plus 2.",
+     "shortForecast": "Chance of flurries or rain showers",
+     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High plus 2.",
      "startTime": "2026-11-29T06:00:00-07:00"
     }
    ],
@@ -5933,35 +5796,27 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 36,
-     "shortForecast": "Mainly cloudy",
-     "detailedForecast": "Mainly cloudy. Wind east 20 km/h. High plus 2. Wind chill minus 8 this morning. UV index 1 or low.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 36,
      "shortForecast": "Chance of wet flurries",
-     "detailedForecast": "Mainly cloudy with 30 percent chance of wet flurries. Wind east 20 km/h. Temperature steady near plus 2.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of wet flurries overnight. Wind east 20 km/h. Low plus 2.",
      "startTime": "2026-11-23T18:00:00-07:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 43,
+     "temperature": 45,
      "shortForecast": "Chance of wet flurries",
-     "detailedForecast": "Mainly cloudy. 30 percent chance of wet flurries early in the morning. Wind east 30 km/h gusting to 50. High 6. UV index 1 or low.",
+     "detailedForecast": "Mainly cloudy. 30 percent chance of wet flurries early in the morning. Wind east 30 km/h gusting to 50. High 7. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-07:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 41,
-     "shortForecast": "Cloudy",
-     "detailedForecast": "Cloudy. Windy. Low plus 5.",
+     "temperature": 43,
+     "shortForecast": "Mainly cloudy",
+     "detailedForecast": "Mainly cloudy. Wind east 30 km/h gusting to 50. Temperature steady near 6.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -5969,15 +5824,15 @@
      "isDaytime": true,
      "temperature": 46,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High 8.",
+     "detailedForecast": "A mix of sun and cloud. Windy. High 8.",
      "startTime": "2026-11-25T06:00:00-07:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 39,
+     "temperature": 45,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 60 percent chance of showers. Low plus 4.",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. Windy. Low 7.",
      "startTime": "2026-11-25T18:00:00-07:00"
     },
     {
@@ -5985,39 +5840,39 @@
      "isDaytime": true,
      "temperature": 50,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 30 percent chance of showers. High 10.",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. High 10.",
      "startTime": "2026-11-26T06:00:00-07:00"
     },
     {
      "name": "Thursday Night",
      "isDaytime": false,
      "temperature": 37,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low plus 3.",
+     "shortForecast": "Clear",
+     "detailedForecast": "Clear. Low plus 3.",
      "startTime": "2026-11-26T18:00:00-07:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High 6.",
+     "temperature": 45,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High 7.",
      "startTime": "2026-11-27T06:00:00-07:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 36,
+     "temperature": 34,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low plus 2.",
+     "detailedForecast": "Cloudy periods. Low plus 1.",
      "startTime": "2026-11-27T18:00:00-07:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 41,
+     "temperature": 39,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 5.",
+     "detailedForecast": "A mix of sun and cloud. High plus 4.",
      "startTime": "2026-11-28T06:00:00-07:00"
     },
     {
@@ -6032,8 +5887,8 @@
      "name": "Sunday",
      "isDaytime": true,
      "temperature": 36,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 2.",
+     "shortForecast": "Cloudy",
+     "detailedForecast": "Cloudy. High plus 2.",
      "startTime": "2026-11-29T06:00:00-07:00"
     }
    ],
@@ -6049,59 +5904,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind up to 15 km/h. High minus 3. Wind chill minus 14 this morning and minus 8 this afternoon.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 18,
-     "shortForecast": "A few clouds",
-     "detailedForecast": "A few clouds. Wind up to 15 km/h. Low minus 8. Wind chill minus 9 this evening and minus 14 overnight.",
+     "temperature": 16,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 9. Wind chill minus 10 this evening and minus 16 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Mainly sunny",
-     "detailedForecast": "Mainly sunny. Wind becoming southwest 20 km/h near noon. High zero. Wind chill minus 14 in the morning. UV index 1 or low.",
+     "temperature": 30,
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h gusting to 40 near noon. High minus 1. Wind chill minus 16 in the morning and minus 7 in the afternoon. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Clear",
-     "detailedForecast": "Clear. Low minus 4.",
+     "temperature": 28,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind southwest 20 km/h gusting to 40. Temperature steady near minus 2. Wind chill near minus 8.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low zero.",
+     "temperature": 34,
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "Cloudy periods with 30 percent chance of flurries. Low plus 1.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "A mix of sun and cloud with 40 percent chance of flurries or rain showers. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Periods of snow",
+     "detailedForecast": "Periods of snow. High plus 5.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
@@ -6109,31 +5956,31 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy periods with 30 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy periods with 40 percent chance of rain showers or flurries. Low plus 1.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 3.",
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "A mix of sun and cloud with 30 percent chance of flurries. High plus 3.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 21,
+     "temperature": 19,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 6.",
+     "detailedForecast": "Cloudy periods. Low minus 7.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 36,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 1.",
+     "detailedForecast": "A mix of sun and cloud. High plus 2.",
      "startTime": "2026-11-28T06:00:00-06:00"
     },
     {
@@ -6165,59 +6012,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 27,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind up to 15 km/h. High minus 3. Wind chill minus 14 this morning and minus 8 this afternoon.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 18,
-     "shortForecast": "A few clouds",
-     "detailedForecast": "A few clouds. Wind up to 15 km/h. Low minus 8. Wind chill minus 9 this evening and minus 14 overnight.",
+     "temperature": 16,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 9. Wind chill minus 10 this evening and minus 16 overnight.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 32,
-     "shortForecast": "Mainly sunny",
-     "detailedForecast": "Mainly sunny. Wind becoming southwest 20 km/h near noon. High zero. Wind chill minus 14 in the morning. UV index 1 or low.",
+     "temperature": 30,
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h gusting to 40 near noon. High minus 1. Wind chill minus 16 in the morning and minus 7 in the afternoon. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 25,
-     "shortForecast": "Clear",
-     "detailedForecast": "Clear. Low minus 4.",
+     "temperature": 28,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind southwest 20 km/h gusting to 40. Temperature steady near minus 2. Wind chill near minus 8.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High plus 5.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 32,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low zero.",
+     "temperature": 34,
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "Cloudy periods with 30 percent chance of flurries. Low plus 1.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 39,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "A mix of sun and cloud with 40 percent chance of flurries or rain showers. High plus 4.",
+     "temperature": 41,
+     "shortForecast": "Periods of snow",
+     "detailedForecast": "Periods of snow. High plus 5.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
@@ -6225,31 +6064,31 @@
      "isDaytime": false,
      "temperature": 34,
      "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy periods with 30 percent chance of rain showers or flurries. Low plus 1.",
+     "detailedForecast": "Cloudy periods with 40 percent chance of rain showers or flurries. Low plus 1.",
      "startTime": "2026-11-26T18:00:00-06:00"
     },
     {
      "name": "Friday",
      "isDaytime": true,
      "temperature": 37,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 3.",
+     "shortForecast": "Chance of flurries",
+     "detailedForecast": "A mix of sun and cloud with 30 percent chance of flurries. High plus 3.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
      "name": "Friday Night",
      "isDaytime": false,
-     "temperature": 21,
+     "temperature": 19,
      "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 6.",
+     "detailedForecast": "Cloudy periods. Low minus 7.",
      "startTime": "2026-11-27T18:00:00-06:00"
     },
     {
      "name": "Saturday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 36,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. High plus 1.",
+     "detailedForecast": "A mix of sun and cloud. High plus 2.",
      "startTime": "2026-11-28T06:00:00-06:00"
     },
     {
@@ -6281,59 +6120,51 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 28,
-     "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind up to 15 km/h. High minus 2. Wind chill minus 12 this morning and minus 6 this afternoon.",
-     "startTime": "2026-11-23T06:00:00-06:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
-     "temperature": 18,
-     "shortForecast": "A few clouds",
-     "detailedForecast": "Clear. Wind up to 15 km/h. Low minus 8. Wind chill minus 8 this evening and minus 13 overnight.",
+     "temperature": 16,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind up to 15 km/h. Low minus 9. Wind chill near minus 14.",
      "startTime": "2026-11-23T18:00:00-06:00"
     },
     {
      "name": "Tuesday",
      "isDaytime": true,
-     "temperature": 34,
+     "temperature": 37,
      "shortForecast": "A mix of sun and cloud",
-     "detailedForecast": "A mix of sun and cloud. Wind up to 15 km/h. High plus 1. Wind chill minus 13 in the morning. UV index 1 or low.",
+     "detailedForecast": "A mix of sun and cloud. Wind becoming southwest 20 km/h near noon. High plus 3. Wind chill minus 14 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-06:00"
     },
     {
      "name": "Tuesday Night",
      "isDaytime": false,
-     "temperature": 30,
-     "shortForecast": "Cloudy periods",
-     "detailedForecast": "Cloudy periods. Low minus 1.",
+     "temperature": 28,
+     "shortForecast": "Partly cloudy",
+     "detailedForecast": "Partly cloudy. Wind southwest 20 km/h. Low minus 2. Wind chill minus 8 in the evening.",
      "startTime": "2026-11-24T18:00:00-06:00"
     },
     {
      "name": "Wednesday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "A mix of sun and cloud with 40 percent chance of flurries or rain showers. High 6.",
+     "temperature": 46,
+     "shortForecast": "Sunny",
+     "detailedForecast": "Sunny. High 8.",
      "startTime": "2026-11-25T06:00:00-06:00"
     },
     {
      "name": "Wednesday Night",
      "isDaytime": false,
-     "temperature": 34,
-     "shortForecast": "Chance of rain showers or flurries",
-     "detailedForecast": "Cloudy with 40 percent chance of rain showers or flurries. Low plus 1.",
+     "temperature": 36,
+     "shortForecast": "Chance of showers",
+     "detailedForecast": "Cloudy with 40 percent chance of showers. Low plus 2.",
      "startTime": "2026-11-25T18:00:00-06:00"
     },
     {
      "name": "Thursday",
      "isDaytime": true,
-     "temperature": 43,
-     "shortForecast": "Chance of flurries or rain showers",
-     "detailedForecast": "Cloudy with 30 percent chance of flurries or rain showers. High 6.",
+     "temperature": 46,
+     "shortForecast": "Showers",
+     "detailedForecast": "Showers. High 8.",
      "startTime": "2026-11-26T06:00:00-06:00"
     },
     {
@@ -6348,8 +6179,8 @@
      "name": "Friday",
      "isDaytime": true,
      "temperature": 43,
-     "shortForecast": "Chance of showers",
-     "detailedForecast": "A mix of sun and cloud with 40 percent chance of showers. High 6.",
+     "shortForecast": "A mix of sun and cloud",
+     "detailedForecast": "A mix of sun and cloud. High 6.",
      "startTime": "2026-11-27T06:00:00-06:00"
     },
     {
@@ -6397,14 +6228,6 @@
    "office": null,
    "periods": [
     {
-     "name": "Today",
-     "isDaytime": true,
-     "temperature": 48,
-     "shortForecast": "Chance of showers",
-     "detailedForecast": "Periods of rain ending this afternoon then cloudy with 60 percent chance of showers. Amount 5 mm. Wind east 20 km/h gusting to 40. High 9.",
-     "startTime": "2026-11-23T06:00:00-07:00"
-    },
-    {
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 45,
@@ -6425,7 +6248,7 @@
      "isDaytime": false,
      "temperature": 48,
      "shortForecast": "Chance of showers",
-     "detailedForecast": "Cloudy with 60 percent chance of showers. Very windy. Low 9.",
+     "detailedForecast": "Cloudy with 60 percent chance of showers. Rain beginning before morning. Wind east 20 km/h gusting to 50 except gusting to 70 near the Strait of Georgia overnight. Low 9.",
      "startTime": "2026-11-24T18:00:00-07:00"
     },
     {
@@ -6840,8 +6663,8 @@
      "name": "Tonight",
      "isDaytime": false,
      "temperature": 16,
-     "shortForecast": "Flurries or snow squalls",
-     "detailedForecast": "Mainly cloudy. 60 percent chance of flurries or rain showers early this evening. Flurries and local snow squalls beginning early this evening. Local snowfall amount 15 cm west of Barrie. Wind northwest 30 km/h gusting to 50. Low minus 9. Wind chill minus 16 overnight.",
+     "shortForecast": "Flurries or rain showers",
+     "detailedForecast": "Flurries. Flurries with a few rain showers early this evening and with local snow squalls this evening and overnight. Local blowing snow. Local snowfall amount 15 cm west of Barrie. Wind northwest 30 km/h gusting to 50. Low minus 9. Wind chill minus 16 overnight.",
      "startTime": "2026-11-23T18:00:00-05:00"
     },
     {
@@ -6849,7 +6672,7 @@
      "isDaytime": true,
      "temperature": 32,
      "shortForecast": "Chance of flurries",
-     "detailedForecast": "Flurries ending in the morning then mainly cloudy with 60 percent chance of flurries. Risk of snow squalls early in the morning. Local amount 2 cm. Wind northwest 30 km/h gusting to 50 becoming light in the morning. High zero. Wind chill minus 18 in the morning. UV index 1 or low.",
+     "detailedForecast": "Flurries ending in the morning then mainly cloudy with 60 percent chance of flurries. Risk of snow squalls early in the morning. Local blowing snow early in the morning. Local amount 2 cm. Wind northwest 30 km/h gusting to 50 becoming light in the morning. High zero. Wind chill minus 18 in the morning. UV index 1 or low.",
      "startTime": "2026-11-24T06:00:00-05:00"
     },
     {
@@ -6938,7 +6761,7 @@
      "event": "Snow Squall Warning",
      "colour": "yellow",
      "headline": "Snow squalls off Georgian Bay tonight.",
-     "onset": "2026-11-24T02:00:00.000Z",
+     "onset": "2026-11-24T05:20:00.000Z",
      "ends": "2026-11-24T14:00:00.000Z"
     }
    ]
