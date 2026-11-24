@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-11-24T16:19:25.734Z",
+ "generatedAt": "2026-11-24T19:18:17.807Z",
  "forecastGeneratedAt": "2026-11-24T06:07:47.834Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-24T16:19:21.168Z",
+ "blendGeneratedAt": "2026-11-24T19:18:13.989Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-24T07:17:45.173Z",
+ "writtenAt": "2026-11-24T19:18:17.807Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-24",
@@ -13,32 +13,51 @@
   "days": 5,
   "toLabel": "Saturday Nov 28"
  },
- "overview": "A run of Pacific systems keeps the Cascades and Coast Mountains wet and windy through the week, with snow levels rising and falling with each one. The Northeast gets a separate storm around Thanksgiving, with mixed precipitation at its mountains.",
+ "overview": "A string of Pacific fronts keeps the West Coast wet through Thanksgiving, with the heaviest pulse Wednesday and Thursday. Quieter air arrives for the weekend before the pattern turns active again in early December.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of storms from the Pacific keeps the Cascades wet and breezy through midweek, with snow levels rising and falling with each front. Wednesday is the main snow day, and Crystal Mountain leads at 19\". Stevens Pass is at 22\" for the week. Snow turns to rain and snow later in the week, with a ridge of high pressure possible by the weekend.",
+   "text": "A front brings a lull Wednesday morning, then a stronger system arrives Wednesday with heavy precipitation through Thanksgiving. Snow levels stay above the passes, so the snow mostly falls at higher elevations. Stevens Pass leads with 22\" for the week, and Crystal Mountain is close behind. The weekend looks quieter, with a weak ridge offering a brief break.",
    "basis": "1isunht"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Rain and wind dominate here through midweek, and snow levels stay high. Whistler gets the most at 24\", mostly from Tuesday and Wednesday. The snow melts quickly from the base after that, with showers continuing through Friday.",
+   "text": "Whistler sees wet weather most of the week: rain and mixed snow Tuesday, then periods of rain from Wednesday through Thursday. Most of its 24\" lands early, before the warmer air arrives. Cypress Mountain sits lower and gets mostly rain, with strong east winds gusting to 50 km/h Tuesday.",
    "basis": "14slooj"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "A strong coastal storm brings heavy rain and high winds around Thanksgiving. Mountains in Quebec get a mix of freezing rain and snow Thursday and Friday. Le Massif leads at 9\" with the snow arriving Friday.",
+   "text": "A powerful Thanksgiving storm moves into Quebec Friday, bringing freezing rain, rain, and snow showers. Le Massif and Mont-Sainte-Anne both get rain-heavy snow, with Le Massif showing 9\" in total. Blue Mountain in Ontario gets snow on Thursday and Friday before the cold returns.",
    "basis": "no3vph"
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says wet weather continues along the West Coast through the holiday weekend, with high-elevation mountain snow. The Reno NWS office says a broad trough returns to bring more active weather as December arrives, around Tuesday Dec 1.",
+  "sources": [
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-24T17:02:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-24T08:00:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-23T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-24T16:19:21.168Z"
+   "issuedAt": "2026-11-24T19:18:13.989Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -46,16 +65,16 @@
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-24T09:36:00+00:00"
+   "issuedAt": "2026-11-24T17:02:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-24T16:19:25.734Z"
+   "issuedAt": "2026-11-24T19:18:17.807Z"
   }
  ],
  "api": {
   "day": "2026-11-24",
-  "calls": 6
+  "calls": 8
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
