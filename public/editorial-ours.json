@@ -1,52 +1,61 @@
 {
- "generatedAt": "2026-11-24T06:14:26.041Z",
+ "generatedAt": "2026-11-24T07:17:45.173Z",
  "forecastGeneratedAt": "2026-11-24T06:07:47.834Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-24T04:17:40.168Z",
+ "blendGeneratedAt": "2026-11-24T07:17:40.785Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "writtenAt": "2026-11-24T07:17:45.173Z",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-24",
   "to": "2026-11-28",
   "days": 5,
   "toLabel": "Saturday Nov 28"
  },
- "overview": null,
+ "overview": "A run of Pacific systems keeps the Cascades and Coast Mountains wet and windy through the week, with snow levels rising and falling with each one. The Northeast gets a separate storm around Thanksgiving, with mixed precipitation at its mountains.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Stevens Pass is forecast for about 22\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Stevens Pass Wednesday night."
+   "text": "A series of storms from the Pacific keeps the Cascades wet and breezy through midweek, with snow levels rising and falling with each front. Wednesday is the main snow day, and Crystal Mountain leads at 19\". Stevens Pass is at 22\" for the week. Snow turns to rain and snow later in the week, with a ridge of high pressure possible by the weekend.",
+   "basis": "1isunht"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 24\". Cypress Mountain follows."
+   "text": "Rain and wind dominate here through midweek, and snow levels stay high. Whistler gets the most at 24\", mostly from Tuesday and Wednesday. The snow melts quickly from the base after that, with showers continuing through Friday.",
+   "basis": "14slooj"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Le Massif is forecast for about 9\", 5\" of it Friday. Mont-Sainte-Anne and Blue Mountain follow. Environment Canada has rain mixed in at Le Massif Friday."
+   "text": "A strong coastal storm brings heavy rain and high winds around Thanksgiving. Mountains in Quebec get a mix of freezing rain and snow Thursday and Friday. Le Massif leads at 9\" with the snow arriving Friday.",
+   "basis": "no3vph"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-24T04:17:40.168Z"
+   "issuedAt": "2026-11-24T07:17:40.785Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-24T06:14:17.165Z"
   },
   {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-24T04:36:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-24T06:14:26.041Z"
+   "issuedAt": "2026-11-24T07:17:45.173Z"
   }
  ],
  "api": {
   "day": "2026-11-24",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
