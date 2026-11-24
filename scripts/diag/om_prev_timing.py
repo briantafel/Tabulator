@@ -113,10 +113,12 @@ def get(url: str, params: dict) -> dict:
                 raise NotOffered(body)
             if attempt == 3:
                 raise SystemExit(f"HTTP {e.code} from {url.split('/')[2]} after retries: {body}")
+            log(f"  HTTP {e.code} from {url.split('/')[2]}, retry {attempt + 1}: {body[:120]}")
             time.sleep(10 * (attempt + 1))
         except (urllib.error.URLError, TimeoutError) as e:
             if attempt == 3:
                 raise SystemExit(f"network error from {url.split('/')[2]} after retries: {e}")
+            log(f"  network error from {url.split('/')[2]}, retry {attempt + 1}: {e}")
             time.sleep(10 * (attempt + 1))
 
 
@@ -320,6 +322,7 @@ def main(archive_dir: str, out: Path) -> int:
     log("test A done")
     for k, v in A.items():
         v["verdict"] = classify(v)
+    log(f"calls so far: {CALLS}")
     B, C = test_b_c(coords, atemp, ablocks)
     models_verdict = {}
     for m in MODELS:
