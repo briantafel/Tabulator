@@ -14,7 +14,24 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/verify/**", "scripts/model/**", ".github/workflows/verify.yml"]
+    # Only files verify actually runs or imports. One-off checks that read its output (HRRR/NBM head-to-heads, parser audit,
+    # backfill check, coverage reports, diagnostics) have their own workflows and must not trigger a ~45 min rescore.
+    # promote_*.py stay in: verify/longrange.py and verify/digest.py import them.
+    paths:
+      - "scripts/verify/**"
+      - "scripts/model/**"
+      - ".github/workflows/verify.yml"
+      - "!scripts/model/blend_hrrr.py"
+      - "!scripts/model/test_blend_hrrr.py"
+      - "!scripts/model/blend_nbm.py"
+      - "!scripts/model/test_blend_nbm.py"
+      - "!scripts/model/bias_diag.py"
+      - "!scripts/model/diag_region.py"
+      - "!scripts/verify/nbm_backfill_check.py"
+      - "!scripts/verify/nbm_parser_audit.py"
+      - "!scripts/verify/member_coverage.py"
+      - "!scripts/verify/truth_coverage.py"
+      - "!scripts/verify/open-report.sh"
   # scheduled by workers/scheduler (Cloudflare); GitHub cron removed 2026-11-23
 
 permissions:
