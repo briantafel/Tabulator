@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-11-25T05:17:34.785Z",
+ "generatedAt": "2026-11-25T05:28:30.719Z",
  "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T05:17:30.232Z",
+ "blendGeneratedAt": "2026-11-25T05:28:25.813Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-25T05:17:34.785Z",
+ "writtenAt": "2026-11-25T05:28:30.719Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-25",
@@ -13,54 +13,54 @@
   "days": 5,
   "toLabel": "Sunday Nov 29"
  },
- "overview": "Systems keep arriving from the Pacific through the holiday, favoring the Cascades and Montana first, then Colorado and Wyoming on Friday and Saturday. Coastal regions stay wet and mild into the weekend.",
+ "overview": "Pacific systems keep the Northwest and Cascades wet through the weekend, with rain low and snow only up high. The northern Rockies and central Rockies get a stronger push of snow Friday into Saturday, while the Sierra and British Columbia stay mostly unsettled.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of disturbances keeps rain and wind going through Thursday, with snow levels high, so most falls as rain except on the upper mountain. Crystal Mountain leads the region with a 37\" total, and Thursday is its biggest day at 13\". The NWS is calling for more, 21 to 32 inches Saturday night through Monday, though it is unsure of timing.",
+   "text": "A series of Pacific disturbances keeps the Cascades busy. Rain falls on the lower slopes and snow stays up high, with strong winds Thursday. Crystal Mountain has the best total in the region at 37\". Snow comes back in heavier waves Friday and again Sunday.",
    "basis": "1vpd95m"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Dry, mild weather holds through Thanksgiving with fog in the valleys. A Pacific system brings wind along the Rocky Mountain Front, then snow to the Continental Divide from Friday into Saturday. Grand Targhee tops the region at 42\", with its best day Saturday at 24\".",
+   "text": "A system moves into western Wyoming Friday and brings snow through Saturday. Snow is also possible east of the Continental Divide Saturday, though forecasters say the band's exact position is still uncertain. Grand Targhee leads the region with a peak of 24 inches Saturday.",
    "basis": "h70th3"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Rain dominates Wednesday and Thursday, with snow only at the top of the mountains. Whistler's 32\" total is mostly from its early-week rain-and-snow run, and conditions turn showery and mixed through the weekend.",
-   "basis": "1106l2w"
+   "text": "Whistler and Cypress see rain and mixed showers through much of the week, with snow mostly restricted to the upper mountain. Whistler's biggest day is Wednesday, with 12 inches. Cypress picks up its best snow Sunday, when a stronger system pushes in.",
+   "basis": "1q266tr"
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weak front brings light rain and a dusting of snow by Wednesday, then dry weather returns. Sugar Bowl and Palisades both look to get 18\" on Sunday as a wetter system arrives, with rain mixing with snow.",
+   "text": "A weakening front brings rain to the Sierra before drying out Wednesday. The next real snow arrives Sunday, when rain turns to snow. Palisades and Sugar Bowl each have 18 inches forecast for Sunday.",
    "basis": "15ju0lo"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Showers and rain dominate Wednesday through Thursday, with a snow level near 1000 metres. Snow picks up again Sunday as cooler air arrives. Whitewater leads with 17\", most of it on Thursday.",
+   "text": "Mild, wet weather dominates the Kootenays this week. Snow levels run high, so most precipitation falls as rain at lower elevations. Whitewater's best day is Thursday, with 11 inches, and flurries return Sunday.",
    "basis": "t8ef1p"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Mild, dry weather continues through Thanksgiving, with patchy valley fog Wednesday. A system moves in from Friday into Saturday, with the heaviest snow in the Park Range and forecasters unsure how far south it reaches. Steamboat leads at 16\", with its best day Saturday at 12\".",
+   "text": "Thanksgiving stays mild and dry across Colorado. A system arrives Friday night and runs into Saturday, but forecasters disagree on how strong it will be. Steamboat leads with a peak of 12 inches Saturday, and Vail sees 8 inches that day. Higher totals are possible if the stronger scenario wins out.",
    "basis": "j7fd5a"
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers arrive Wednesday night and Thursday, then conditions turn drier and partly sunny Friday and Saturday. Big White has the best total at 10\", most of it falling Thursday.",
-   "basis": "gyq0cu"
+   "text": "Showers are the main story in the Okanagan, with the heaviest rain Wednesday and Thursday. Snow stays mostly up high. Big White's best day is Thursday, with 8 inches.",
+   "basis": "1myzt9"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Mixed snow and rain runs Thursday and Friday, with a special weather statement for Friday into Saturday in Quebec. Le Massif leads at 8\", with snow and rain showers continuing through Sunday.",
+   "text": "Quebec's ski areas see a mix of rain and snow Friday, with colder air arriving behind it. Le Massif leads with a peak of 4 inches Thursday. A special weather statement covers Mont-Sainte-Anne and Le Massif Friday into Saturday.",
    "basis": "tqjem4"
   }
  ],
@@ -68,7 +68,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T05:17:30.232Z"
+   "issuedAt": "2026-11-25T05:28:25.813Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -80,7 +80,7 @@
   },
   {
    "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-24T23:45:00+00:00"
+   "issuedAt": "2026-11-25T05:16:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
@@ -96,7 +96,7 @@
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T04:13:00+00:00"
+   "issuedAt": "2026-11-25T05:26:00+00:00"
   },
   {
    "name": "NWS BOU Area Forecast Discussion",
@@ -104,7 +104,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T05:17:34.785Z"
+   "issuedAt": "2026-11-25T05:28:30.719Z"
   }
  ],
  "api": {
