@@ -1,109 +1,82 @@
 {
- "generatedAt": "2026-11-25T06:14:11.933Z",
+ "generatedAt": "2026-11-25T06:17:35.275Z",
  "forecastGeneratedAt": "2026-11-25T06:07:43.317Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T05:28:25.813Z",
+ "blendGeneratedAt": "2026-11-25T06:17:32.030Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-25T05:28:30.719Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-25",
   "to": "2026-11-29",
   "days": 5,
   "toLabel": "Sunday Nov 29"
  },
- "overview": "Pacific systems keep the Northwest and Cascades wet through the weekend, with rain low and snow only up high. The northern Rockies and central Rockies get a stronger push of snow Friday into Saturday, while the Sierra and British Columbia stay mostly unsettled.",
+ "overview": null,
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of Pacific disturbances keeps the Cascades busy. Rain falls on the lower slopes and snow stays up high, with strong winds Thursday. Crystal Mountain has the best total in the region at 37\". Snow comes back in heavier waves Friday and again Sunday.",
-   "basis": "1vpd95m"
+   "text": "Crystal Mountain is forecast for about 38\". Mt. Bachelor and Stevens Pass follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A system moves into western Wyoming Friday and brings snow through Saturday. Snow is also possible east of the Continental Divide Saturday, though forecasters say the band's exact position is still uncertain. Grand Targhee leads the region with a peak of 24 inches Saturday.",
-   "basis": "h70th3"
+   "text": "Grand Targhee is forecast for about 41\", 23\" of it Saturday. Jackson Hole and Big Sky follow."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler and Cypress see rain and mixed showers through much of the week, with snow mostly restricted to the upper mountain. Whistler's biggest day is Wednesday, with 12 inches. Cypress picks up its best snow Sunday, when a stronger system pushes in.",
-   "basis": "1q266tr"
+   "text": "Whistler is forecast for about 33\". Cypress Mountain follows."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weakening front brings rain to the Sierra before drying out Wednesday. The next real snow arrives Sunday, when rain turns to snow. Palisades and Sugar Bowl each have 18 inches forecast for Sunday.",
-   "basis": "15ju0lo"
+   "text": "Sugar Bowl is forecast for about 21\", all of it Sunday. Palisades and Kirkwood follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Mild, wet weather dominates the Kootenays this week. Snow levels run high, so most precipitation falls as rain at lower elevations. Whitewater's best day is Thursday, with 11 inches, and flurries return Sunday.",
-   "basis": "t8ef1p"
+   "text": "Whitewater is forecast for about 20\", 11\" of it Thursday. RED Mountain and Revelstoke follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Thanksgiving stays mild and dry across Colorado. A system arrives Friday night and runs into Saturday, but forecasters disagree on how strong it will be. Steamboat leads with a peak of 12 inches Saturday, and Vail sees 8 inches that day. Higher totals are possible if the stronger scenario wins out.",
-   "basis": "j7fd5a"
+   "text": "Steamboat is forecast for about 18\", 13\" of it Saturday. Vail and Arapahoe Basin follow."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers are the main story in the Okanagan, with the heaviest rain Wednesday and Thursday. Snow stays mostly up high. Big White's best day is Thursday, with 8 inches.",
-   "basis": "1myzt9"
+   "text": "Big White is forecast for about 11\", 7\" of it Thursday. Sun Peaks and SilverStar follow."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Brighton is forecast for about 8\", all of it Saturday. Solitude and Alta follow."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
    "text": "Le Massif is forecast for about 9\". Mont-Sainte-Anne and Tremblant follow. Special Weather Statement at Le Massif from Friday to Saturday."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 7\", all of it Sunday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T05:28:25.813Z"
+   "issuedAt": "2026-11-25T06:17:32.030Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-25T06:14:01.884Z"
   },
   {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T04:04:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T05:16:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T05:04:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-25T06:11:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-24T21:11:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T05:26:00+00:00"
-  },
-  {
-   "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-25T05:27:00+00:00"
-  },
-  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T06:14:11.933Z"
+   "issuedAt": "2026-11-25T06:17:35.275Z"
   }
  ],
  "api": {
