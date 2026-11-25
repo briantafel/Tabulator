@@ -59,7 +59,7 @@ with _t.TemporaryDirectory() as _d:
     open(_p, "w").write("{broken"); assert nbm.six_hourly_map_enabled(_p) is False, "broken file = off"
     open(_p, "w").write(_j.dumps({"terrain.freshCycle": "preview"})); assert nbm.six_hourly_map_enabled(_p) is False
     open(_p, "w").write(_j.dumps({"terrain.freshCycle": "on"})); assert nbm.six_hourly_map_enabled(_p) is True
-assert nbm.six_hourly_map_enabled() is False, "the committed flags.json ships with it off"
+assert nbm.six_hourly_map_enabled() is True, "the committed flags.json has it on (flipped 2026-11-25); set off to restore the 00z/12z maps"
 print("cycle selection ok")
 
 
