@@ -1,0 +1,48 @@
+name: Check live NBM/HRRR/HRDPS coverage at interior Canada resorts (read-only, no app change)
+
+# 2026-11-25: live NBM and HRDPS precip is ~0 at most Kootenay/Rockies resorts. Real zero, no coverage, or missing stored as zero?
+# Rule fixed in the docstring of scripts/diag/interior_models_coverage.py. Public sources only; report saved to verify/latest/.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas pyarrow
+      - name: Test on synthetic data
+        run: python3 scripts/diag/test_interior_models_coverage.py > /dev/null
+      - name: Sync the four live sources
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          for s in nbm noaa-hrrr msc-hrdps open-meteo-forecast; do
+            aws s3 sync "s3://$R2_BUCKET/archive/source=$s/" "arch/source=$s/" --endpoint-url "$ENDPOINT" --only-show-errors
+          done
+          du -sh arch/*
+      - name: Check
+        run: python3 scripts/diag/interior_models_coverage.py arch out | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Refuse if the report names a paid source
+        run: |
+          if grep -qi "snow-forecast" out/*; then echo "::error::report names a paid source"; exit 1; fi
+      - name: Save
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
