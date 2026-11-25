@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { dailyFromHourly, blendDay, snowFrom, resortDays } from "../scripts/blend/lib.js";
-import { splitModels, forecastToRows } from "../scripts/archive/om-forecast.js";
+import { splitModels, forecastToRows, trimToFetchDay } from "../scripts/archive/om-forecast.js";
 import { applyOurs, applySnowfall } from "../src/lib/ours.js";
 import { dropPast } from "../src/lib/forecast.js";
 import { parseFlags } from "../src/lib/flags.js";
@@ -126,4 +126,23 @@ test("trace floor: a blended day under the promoted floor is dry; unpromoted lea
   assert.equal(blendDay({ a: { water: 2.4, t: -5 } }, { lead: 1, region: "Utah", params }).water, 0);
   assert.equal(blendDay({ a: { water: 3.2, t: -5 } }, { lead: 1, region: "Utah", params }).water, 3.2);
   assert.equal(blendDay({ a: { water: 2.4, t: -5 } }, { lead: 5, region: "Utah", params }).water, 2.4);
+});
+
+test("past_days: the archive keeps only the fetch day on, and the blend gets the whole local day (2026-11-25)", () => {
+  // 48 hourly stamps from 2026-11-24T00 to 2026-11-25T23; the fetch is on the 25th at 01:17Z.
+  const time = Array.from({ length: 48 }, (_, i) => new Date(Date.UTC(2026, 10, 24, i + 1)).toISOString().slice(0, 16));
+  const mk = (n) => ({ latitude: 1, lon: 2, longitude: 2, hourly: { time: time.slice(0, n), precipitation_gfs_seamless: Array(n).fill(0.1), temperature_2m_gfs_seamless: Array(n).fill(-3) },
+    hourly_units: { precipitation_gfs_seamless: "mm", temperature_2m_gfs_seamless: "°C" } });
+  const full = mk(48);
+  const opts = { resort: { id: "alta" }, elevation: 2600, fetchedAt: "2026-11-25T01:17:00Z", runId: "r" };
+  const trimmed = trimToFetchDay(full, opts.fetchedAt);
+  assert.ok(trimmed.hourly.time.every((t) => t >= "2026-11-25T00:00"), "no hour before the fetch day");
+  assert.equal(trimmed.hourly.precipitation_gfs_seamless.length, trimmed.hourly.time.length, "every series trimmed together");
+  // the archive rows from the long response equal those from a response that never had the extra day
+  const old = { ...full, hourly: Object.fromEntries(Object.entries(full.hourly).map(([k, v]) => [k, v.slice(trimmed.hourly.time.length * -1)])) };
+  assert.deepEqual(forecastToRows(full, opts), forecastToRows(old, opts));
+  // a Pacific resort at 01:17Z on the 25th is still on Nov 24: complete in the long response, dropped (<23 h) in the trimmed one
+  const la = (j) => dailyFromHourly(j.hourly.time, splitModels(j).gfs_seamless, "America/Los_Angeles");
+  assert.ok(la(full).has("2026-11-24"), "the local day is whole with the extra day");
+  assert.ok(!la(trimmed).has("2026-11-24"), "and was dropped without it (the bug)");
 });
