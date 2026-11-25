@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-25T01:32:52.548Z",
+ "generatedAt": "2026-11-25T02:23:02.710Z",
  "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T01:32:48.097Z",
+ "blendGeneratedAt": "2026-11-25T02:22:58.317Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-25T01:32:52.548Z",
@@ -18,8 +18,7 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A frontal system brings wind and mixed rain and snow Wednesday night into Thursday, with snow mainly at the high passes. Crystal Mountain leads at 39\" for the week, with its biggest day Thursday at 14\". Winds could make Thanksgiving travel on I-5 harder, so allow extra time. A Winter Storm Watch covers Washington Pass.",
-   "basis": "wy5jol"
+   "text": "Crystal Mountain is forecast for about 39\". Mt. Bachelor and Stevens Pass follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the northern Rockies",
@@ -30,26 +29,22 @@
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Cold, dry weather holds through early Thursday. A system brings mostly rain late Thanksgiving into Friday, with a brief wintry mix at higher elevations at the start. Snow is mainly limited to mountain summits over the weekend, with a clipper-type system passing well north. Stowe and Jay Peak both peak Friday at 12\" to 13\".",
-   "basis": "2fqqa5"
+   "text": "Stowe is forecast for about 20\", 12\" of it Friday. Jay Peak and Whiteface follow. The National Weather Service has rain mixed in at Stowe Friday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Rain and showers dominate Wednesday through Friday, with a mix of sun and cloud by Saturday. Snow returns Sunday and into Sunday night at higher elevations. Whistler's biggest day is Thursday at 13\".",
-   "basis": "1k4p6v7"
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Dry weather holds through Thanksgiving, with patchy freezing fog in the valleys. A system brings rain and high-elevation snow Sunday into Monday, with a stronger, colder storm possible Tuesday into Wednesday that could make Sierra passes difficult. Sugar Bowl leads the region with 18\" on Sunday.",
-   "basis": "aubybb"
+   "text": "Whistler is forecast for about 29\". Cypress Mountain follows."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Rain and showers continue Wednesday through Thursday, with snow levels rising Wednesday morning. Colder air brings flurries Sunday. Whitewater's biggest day is Thursday at 7\".",
-   "basis": "mhd96w"
+   "text": "Whitewater is forecast for about 17\", 11\" of it Thursday. RED Mountain and Revelstoke follow."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Sugar Bowl is forecast for about 18\", all of it Sunday. Kirkwood and Northstar follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night."
   },
   {
    "key": "the central Rockies",
@@ -60,15 +55,14 @@
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers arrive Wednesday night into Thursday, then give way to mixed sun and cloud Friday and Saturday. Snow returns Sunday night. Big White's biggest day is Thursday at 6\".",
-   "basis": "wmullk"
+   "text": "Big White is forecast for about 11\", 8\" of it Thursday. SilverStar and Sun Peaks follow."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T01:32:48.097Z"
+   "issuedAt": "2026-11-25T02:22:58.317Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -112,12 +106,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T01:32:52.548Z"
+   "issuedAt": "2026-11-25T02:23:02.710Z"
   }
  ],
  "api": {
   "day": "2026-11-25",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
