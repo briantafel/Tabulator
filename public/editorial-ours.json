@@ -1,173 +1,77 @@
 {
- "generatedAt": "2026-11-24T21:14:11.969Z",
+ "generatedAt": "2026-11-25T01:17:33.996Z",
  "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-24T19:18:13.989Z",
+ "blendGeneratedAt": "2026-11-25T01:17:29.189Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-24T21:14:11.969Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
-  "from": "2026-11-24",
+  "from": "2026-11-25",
   "to": "2026-11-29",
-  "days": 6,
+  "days": 5,
   "toLabel": "Sunday Nov 29"
  },
- "overview": "Wet, unsettled weather from the Pacific sets up across the Northwest and West Coast through Thanksgiving, then dries out for a few days in the interior West. Snow arrives in the northern Rockies Friday into Saturday, and the East gets a rain-to-snow storm after Thanksgiving.",
+ "overview": null,
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A series of Pacific fronts keeps the Cascades wet. The strongest front arrives Wednesday night and runs into Thanksgiving, with winds gusting to 48 mph at Crystal. Snow levels stay high, so the passes get rain and wet snow. Crystal Mountain has the biggest day so far, 13\" on Thursday. Mt. Baker is under a Winter Storm Watch from Thursday.",
-   "basis": "1bj927u"
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Mostly rain at the Coast Mountains with snow levels high. Whistler's snow comes Tuesday, 24\" in one day, before rain takes over Wednesday and Thursday. Clearing is expected by Saturday.",
-   "basis": "jyuf0v"
+   "text": "Crystal Mountain is forecast for about 40\". Mt. Bachelor and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Bachelor Friday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Dry, mild weather holds through Thanksgiving. A system brings snow to western Wyoming Friday and Saturday, with Jackson Hole and Grand Targhee both forecast to pick up snow. Grand Targhee has the bigger total, 40\" through Sunday. Some areas east of the Continental Divide may see snow on Saturday.",
-   "basis": "3pszfh"
+   "text": "Grand Targhee is forecast for about 42\", 23\" of it Friday. Jackson Hole and Big Sky follow."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Cold and dry until early Thursday. A storm then brings mostly rain to the region late Thanksgiving into Friday, starting as a brief wintry mix at higher elevations. Snow follows over the weekend, and Jay Peak leads the region with 21\" over the four days. The Weather Prediction Center expects the storm to cause coastal flooding and strong winds.",
-   "basis": "1ehz27m"
+   "text": "Stowe is forecast for about 23\", 13\" of it Friday. Jay Peak and Killington follow. The National Weather Service has rain mixed in at Stowe Friday night."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Whistler is forecast for about 31\". Cypress Mountain follows."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "A weak front brings rain and mountain snow to the Sierra through Wednesday morning. Snow levels stay high, around 6,000 to 7,000 feet. Winds are breezy south-southeast. Dry weather returns for Thanksgiving and into the weekend, then Sunday brings another system. Palisades and Sugar Bowl each forecast about 19\" that day.",
-   "basis": "wkp9hp"
+   "text": "Palisades is forecast for about 15\", all of it Sunday. Sugar Bowl and Kirkwood follow. The National Weather Service has rain mixed in at Palisades Sunday and Sunday night."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Mild and mostly wet. Snow levels stay near valley bottoms into Wednesday, then rise. Rain dominates Thursday and Thursday night, with showers continuing into the weekend. Whitewater has the best total, 14\" through Sunday.",
-   "basis": "1p6xx78"
+   "text": "Whitewater is forecast for about 13\". RED Mountain and Revelstoke follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Mild and dry through Thanksgiving, with patchy valley fog Wednesday morning. Snow returns Friday and Saturday, most likely in the northern mountains, and the Park Range could see the heaviest. Steamboat leads the region with 14\" through Saturday. Vail looks at 8\" Saturday, and forecasters say confidence in exact amounts is low.",
-   "basis": "rk4pqy"
+   "text": "Steamboat is forecast for about 11\", 9\" of it Saturday. Vail and Arapahoe Basin follow."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers and rain Wednesday and Thursday, with snow levels around 800 to 1,400 metres. Friday and Saturday turn drier with some sun. Big White has the best total, 10\" through Friday. Flurries are possible Sunday night.",
-   "basis": "13scub5"
+   "text": "Big White is forecast for about 10\", 6\" of it Thursday. SilverStar and Sun Peaks follow."
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center expects another round of wet weather for the West Coast early to mid next week, with a possible atmospheric river. Its forecast runs through December 1, and it says confidence on timing differs between models.",
-  "sources": [
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-24T17:02:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS PDT Area Forecast Discussion",
-    "issuedAt": "2026-11-24T18:02:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PDT&issuedby=PDT&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-24T20:34:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS TFX Area Forecast Discussion",
-    "issuedAt": "2026-11-24T17:08:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=TFX&issuedby=TFX&product=AFD"
-   },
-   {
-    "name": "NWS BTV Area Forecast Discussion",
-    "issuedAt": "2026-11-24T18:57:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=AFD"
-   },
-   {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-24T09:18:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-24T17:22:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "NWS BOU Area Forecast Discussion",
-    "issuedAt": "2026-11-24T18:38:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=BOU&issuedby=BOU&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-24T19:58:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-24T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-24T19:18:13.989Z"
+   "issuedAt": "2026-11-25T01:17:29.189Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-24T21:14:00.914Z"
   },
   {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-24T17:02:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-24T18:02:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-24T20:34:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-24T17:08:00+00:00"
-  },
-  {
-   "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-24T18:57:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-24T09:18:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-24T17:22:00+00:00"
-  },
-  {
-   "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-24T18:38:00+00:00"
-  },
-  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-24T21:14:11.969Z"
+   "issuedAt": "2026-11-25T01:17:33.996Z"
   }
  ],
  "api": {
-  "day": "2026-11-24",
-  "calls": 9
+  "day": "2026-11-25",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
