@@ -82,11 +82,10 @@ def forecasts(con, pairs: Path, blend: dict) -> None:
     """One row per resort x local day x lead: v1 (published), v1 with pooled factors, each raw model, mean day temp."""
     con.execute(f"""
     CREATE TABLE om AS
-    SELECT resort_id, any_value(region) AS region, split_part(source_label, ':', 2) AS model, lead_day AS lead, local_date,
-           any_value(fc_amount) AS fc, avg(fc_temp_c) AS t
-    FROM read_parquet('{pairs}')
-    WHERE source = '{SOURCE}' AND space = 'liquid' AND tier = 'mid' AND fc_amount IS NOT NULL
-      AND resort_id IN {POOL_SQL} AND lead_day BETWEEN 1 AND 7 AND {WINTER_SQL}
+    SELECT resort_id, any_value(region) AS region, model, lead, local_date, any_value(fc_amount) AS fc, avg(fc_temp_c) AS t
+    FROM (SELECT *, split_part(source_label, ':', 2) AS model, lead_day AS lead FROM read_parquet('{pairs}')
+          WHERE source = '{SOURCE}' AND space = 'liquid' AND tier = 'mid' AND fc_amount IS NOT NULL
+            AND resort_id IN {POOL_SQL} AND lead_day BETWEEN 1 AND 7 AND {WINTER_SQL})
     GROUP BY resort_id, model, lead, local_date""")
     rows = []
     for k, f in blend["factors"].items():
