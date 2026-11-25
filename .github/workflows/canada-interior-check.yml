@@ -1,0 +1,53 @@
+name: Check whether blend-v1 runs wet in the Kootenays / Canadian Rockies (no app change)
+
+# 2026-11-25: Panorama's live blend was ~3x NBM. Scores blend-v1 (published public/blend.json) against BC ASWS pillows,
+# ECCC gauges and resort-reported snow at eight interior resorts, 2024-25 and 2025-26. Rule pre-registered in the
+# docstring of scripts/diag/canada_interior_wet.py (commit 8dd76c0). Public sources only; the report goes to the
+# private bucket under verify/latest/.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3" pandas
+      - name: Test on synthetic pairs
+        run: python3 scripts/diag/test_canada_interior_wet.py > /dev/null
+      - name: Fetch pairs and ECCC truth from the latest verify run
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          for f in pairs.parquet eccc_truth.parquet; do
+            aws s3 cp "s3://$R2_BUCKET/verify/latest/$f" "/tmp/$f" --endpoint-url "$ENDPOINT" --only-show-errors
+            aws s3api head-object --bucket "$R2_BUCKET" --key "verify/latest/$f" --endpoint-url "$ENDPOINT" \
+              --query '{etag: ETag, last_modified: LastModified, bytes: ContentLength}' --output text | sed "s|^|$f |" | tee -a provenance.txt
+          done
+      - name: Score
+        run: |
+          python3 scripts/diag/canada_interior_wet.py /tmp/pairs.parquet /tmp/eccc_truth.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo; echo "Inputs: $(cat provenance.txt | tr '\n' ';')"; } | tee -a out/canada_interior_wet.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Refuse if the report names a paid source
+        run: |
+          if grep -qi "snow-forecast" out/*; then echo "::error::report names a paid source"; exit 1; fi
+      - name: Save
+        run: |
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp out/ "s3://$R2_BUCKET/verify/latest/" --recursive --endpoint-url "$ENDPOINT" --only-show-errors
