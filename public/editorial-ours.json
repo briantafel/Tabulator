@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-25T21:14:20.474Z",
+ "generatedAt": "2026-11-25T21:17:36.985Z",
  "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T20:17:31.737Z",
+ "blendGeneratedAt": "2026-11-25T21:17:32.375Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -21,54 +21,54 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain is forecast for about 45\". Mt. Bachelor and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
+   "text": "Crystal Mountain is forecast for about 44\". Mt. Bachelor and Mt. Baker follow."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 46\". Cypress Mountain follows."
+   "text": "Whistler is forecast for about 42\". Cypress Mountain follows."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 28\". RED Mountain and Revelstoke follow."
+   "text": "Whitewater is forecast for about 27\". RED Mountain and Revelstoke follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 31\", 24\" of it Saturday. Vail and Breckenridge follow."
+   "text": "Steamboat is forecast for about 32\", 24\" of it Saturday. Vail and Aspen Highlands follow."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 23\". Whiteface and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "text": "Jay Peak is forecast for about 21\". Whiteface and Stowe follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Palisades is forecast for about 18\", 10\" of it Sunday. Sugar Bowl and Kirkwood follow. The National Weather Service has rain mixed in at Palisades Sunday and Sunday night."
+   "text": "Palisades is forecast for about 17\", 10\" of it Sunday. Sugar Bowl and Kirkwood follow. The National Weather Service has rain mixed in at Palisades Sunday and Sunday night."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Big White is forecast for about 17\", 9\" of it Thursday. SilverStar and Sun Peaks follow."
+   "text": "Big White is forecast for about 18\", 9\" of it Thursday. SilverStar and Sun Peaks follow."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Powder Mountain is forecast for about 12\", 7\" of it Saturday. Alta and Snowbird follow."
+   "text": "Powder Mountain is forecast for about 14\", 7\" of it Saturday. Brighton and Solitude follow."
   },
   {
    "key": "the Canadian Rockies",
    "title": "Canadian Rockies",
-   "text": "Sunshine Village is forecast for about 9\", 7\" of it Thursday. Lake Louise and Marmot Basin follow."
+   "text": "Sunshine Village is forecast for about 9\", 6\" of it Thursday. Lake Louise and Norquay follow."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T20:17:31.737Z"
+   "issuedAt": "2026-11-25T21:17:32.375Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -76,7 +76,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T21:14:20.474Z"
+   "issuedAt": "2026-11-25T21:17:36.985Z"
   }
  ],
  "api": {
