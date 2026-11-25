@@ -90,38 +90,62 @@ export function forecastToRows(fullJson, { resort, elevation, fetchedAt, runId }
   return rows;
 }
 
-export async function collect({ resorts: all, elevations, sink, rawDir, fetchedAt, runId, log }) {
+export async function collect({ resorts: all, elevations, sink, rawDir, fetchedAt, runId, log, timing = {} }) {
+  const { retryDelayMs = 5000, pauseMs = 30000, gapMs = DELAY_MS } = timing;   // timing only so tests need not wait
   const resorts = all.filter((r) => !r.archiveOnly);
-  let ok = 0, tried = 0;
+  let ok = 0, tried = 0, stopped = false;
   const failures = [];
-  for (const resort of resorts) {
+  const failedResorts = [];
+
+  // One resort: true on success. A rate limit stops the whole run (stopped = true).
+  async function one(resort, attempt) {
     const c = coordsOf(resort);
-    if (!c) { failures.push(`${resort.id}: no coordinates`); continue; }
+    if (!c) { failures.push(`${resort.id}: no coordinates`); return "fail"; }
     const elevation = elevations[resort.id] ?? null;
-    tried++;
     const q = new URLSearchParams({
       latitude: c[0], longitude: c[1], models: MODELS.join(","), hourly: HOURLY.join(","),
       forecast_days: String(FORECAST_DAYS), past_days: String(PAST_DAYS), timezone: "GMT", timeformat: "iso8601",
     });
     if (elevation) q.set("elevation", String(elevation));
     try {
-      const { status, text } = await fetchText(`${URL_BASE}?${q}`, { retries: 3, delayMs: 5000, retry429: false });
+      const { status, text } = await fetchText(`${URL_BASE}?${q}`, { retries: 3, delayMs: retryDelayMs, retry429: false });
       if (status !== 200) throw new Error(`HTTP ${status}: ${text.slice(0, 200)}`);
       const json = JSON.parse(text);
       const rows = forecastToRows(json, { resort, elevation, fetchedAt, runId });
       await saveRaw(`${rawDir}/${resort.id}.json.gz`, text);
       rows.forEach((r) => sink.write(r));
-      ok++;
+      return "ok";
     } catch (e) {
       if (e.rateLimited) {
         failures.push(`RATE LIMITED at ${resort.id}: stopped`);
         log(`  ✗ open-meteo-forecast RATE LIMITED at ${resort.id} — stopping`);
-        break;
+        stopped = true;
+        return "fail";                                // not retried: stop, do not hammer a rate limit
       }
+      if (attempt === 1) { log(`  ! open-meteo-forecast ${resort.id} — ${e.message} (will retry once more at the end)`); return "retry"; }
       failures.push(`${resort.id}: ${e.message}`);
       log(`  ✗ open-meteo-forecast ${resort.id} — ${e.message}`);
+      return "fail";
     }
-    await sleep(DELAY_MS);
+  }
+
+  for (const resort of resorts) {
+    if (stopped) break;
+    tried++;
+    const r1 = await one(resort, 1);
+    if (r1 === "ok") ok++; else if (r1 === "retry") failedResorts.push(resort);
+    await sleep(gapMs);
+  }
+  // 2026-11-25: Open-Meteo connections time out now and then (a different 1–3 resorts per run), and a resort missing here
+  // is missing from the blend and the terrain map. One more pass after a pause; only what still fails is reported.
+  if (failedResorts.length && !stopped) {
+    log(`open-meteo-forecast: ${failedResorts.length} resort(s) failed the first pass; retrying after ${pauseMs / 1000} s`);
+    await sleep(pauseMs);
+    for (const resort of failedResorts) {
+      if (stopped) break;
+      if ((await one(resort, 2)) === "ok") ok++;
+      await sleep(gapMs);
+    }
   }
   log(`open-meteo-forecast: ${ok}/${resorts.length} resorts`);
   return { ok: ok / Math.max(resorts.length, 1) >= MIN_OK_RATIO, requests: ok, tried, failures };

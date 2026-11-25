@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { dailyFromHourly, blendDay, snowFrom, resortDays } from "../scripts/blend/lib.js";
-import { splitModels, forecastToRows, trimToFetchDay } from "../scripts/archive/om-forecast.js";
+import { splitModels, forecastToRows, trimToFetchDay, collect as omCollect } from "../scripts/archive/om-forecast.js";
 import { applyOurs, applySnowfall } from "../src/lib/ours.js";
 import { dropPast } from "../src/lib/forecast.js";
 import { parseFlags } from "../src/lib/flags.js";
@@ -145,4 +145,22 @@ test("past_days: the archive keeps only the fetch day on, and the blend gets the
   const la = (j) => dailyFromHourly(j.hourly.time, splitModels(j).gfs_seamless, "America/Los_Angeles");
   assert.ok(la(full).has("2026-11-24"), "the local day is whole with the extra day");
   assert.ok(!la(trimmed).has("2026-11-24"), "and was dropped without it (the bug)");
+});
+
+test("om-forecast collect: a resort that times out once is retried at the end; a repeat failure is reported", async () => {
+  const realFetch = globalThis.fetch, calls = {};
+  globalThis.fetch = async (url) => {
+    const lat = new URL(url).searchParams.get("latitude"); calls[lat] = (calls[lat] ?? 0) + 1;
+    if (lat === "1" && calls[lat] <= 4) throw Object.assign(new Error("fetch failed"), { cause: { code: "UND_ERR_CONNECT_TIMEOUT" } }); // first pass (1 try + 3 retries) fails
+    if (lat === "2") throw new Error("fetch failed");                                                                                     // never works
+    return new Response(JSON.stringify({ latitude: +lat, longitude: 0, hourly: { time: ["2026-11-25T00:00", "2026-11-25T01:00"], precipitation_ecmwf_ifs025: [0, 1], temperature_2m_ecmwf_ifs025: [-2, -3] } }), { status: 200 });
+  };
+  try {
+    const rows = [], logs = [];
+    const res = await omCollect({ resorts: [{ id: "a", latlon: [1, 0] }, { id: "b", latlon: [2, 0] }, { id: "c", latlon: [3, 0] }], elevations: {},
+      sink: { write: (r) => rows.push(r) }, rawDir: "/tmp/om-collect-test", fetchedAt: "2026-11-25T05:00:00Z", runId: "t", log: (m) => logs.push(m), timing: { retryDelayMs: 1, pauseMs: 1, gapMs: 1 } });
+    assert.equal(res.requests, 2);                       // a (second pass) and c
+    assert.deepEqual(res.failures.map((f) => f.split(":")[0]), ["b"]);
+    assert.ok(logs.some((l) => l.includes("retrying after")));
+  } finally { globalThis.fetch = realFetch; }
 });
