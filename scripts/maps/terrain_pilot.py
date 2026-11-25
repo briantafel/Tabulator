@@ -852,8 +852,22 @@ def export_live(out, rid, parts, anc, mask, marks, spl, fbox, px, left, Wc, box,
     chk = {"max_in": round(float(d.max()), 3), "p99_in": round(float(np.percentile(d, 99)), 3),
            "mean_in": round(float(d.mean()), 4), "range_py": [round(float(pyf[m2].min()), 2), round(float(pyf[m2].max()), 2)],
            "range_app": [round(float(twin[m2].min()), 2), round(float(twin[m2].max()), 2)]}
+    # Diagnostics only (2026-11-25): where the app's twin and this run disagree most, so a recurring max gap (Mt Baker, Palisades:
+    # 1.7-1.9 in on a ~25 in field with a tiny p99) can be traced to a cause instead of tolerated. Never changes the check below.
+    dm = np.where(m2, np.abs(twin - pyf), 0.0)
+    worst = []
+    for i in np.argsort(dm.ravel())[::-1][:5]:
+        wy, wx = divmod(int(i), gw)
+        worst.append({"x": wx, "y": wy, "h_kft": round(float(H2[wy, wx]), 3), "py_in": round(float(pyf[wy, wx]), 3),
+                      "app_in": round(float(twin[wy, wx]), 3), "diff_in": round(float(dm[wy, wx]), 3)})
+    chk["n_over_1in"] = int((dm > 1.0).sum())
+    chk["n_over_0p5in"] = int((dm > 0.5).sum())
+    chk["n_cells"] = int(m2.sum())
+    chk["worst"] = worst
     log(f"  live grid: {gw}x{gh} fine ({len(grid_png) / 1e3:.0f} KB), {cw}x{ch} x {2 * len(A)} coarse ({len(days_png) / 1e3:.0f} KB); "
         f"app vs this run inside the outline: max {chk['max_in']} in, p99 {chk['p99_in']} in; range {chk['range_app']} vs {chk['range_py']}")
+    log(f"  live grid gap: {chk['n_over_1in']} of {chk['n_cells']} cells over 1 in, {chk['n_over_0p5in']} over 0.5 in; worst "
+        + "; ".join(f"({w['x']},{w['y']}) {w['h_kft']} kft py {w['py_in']} app {w['app_in']}" for w in worst[:3]))
     (out / f"{rid}-live-check.json").write_text(json.dumps(chk))
     twin.astype("<f4").tofile(out / f"{rid}-live-twin.f32")
     # Packing error grows with the field's range (Whistler's reaches 171 in: p99 0.61, max 1.07 on 16-bit height),
