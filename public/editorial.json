@@ -1,77 +1,129 @@
 {
- "generatedAt": "2026-11-25T06:14:02.192Z",
- "forecastGeneratedAt": "2026-11-25T06:07:43.317Z",
+ "generatedAt": "2026-11-25T21:14:09.267Z",
+ "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-25T06:14:02.192Z",
+ "writtenAt": "2026-11-25T21:14:09.267Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-25",
-  "to": "2026-11-29",
-  "days": 5,
-  "toLabel": "Sunday Nov 29"
+  "to": "2026-11-30",
+  "days": 6,
+  "toLabel": "Monday Nov 30"
  },
- "overview": "Rain and high snow levels dominate the Pacific Northwest through Thursday, with cold air and snow arriving Friday. Western Wyoming and Montana get snow Friday into Saturday, while the Northeast sees mixed precipitation Friday before quieter, showery weather.",
+ "overview": "A Pacific storm track keeps the West busy through the holiday weekend. The Cascades and Coast Mountains get the first round Wednesday into Thursday, then a weaker system follows Friday. Wyoming and Colorado get snow mainly from Friday night through Saturday as northwest flow sets up.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Rain and strong winds lead the week, with snow levels high enough that the mountains see rain and snow mixed Wednesday through Thursday. Friday brings a shift to light snow, and Saturday is mostly quiet. Stevens Pass and Crystal Mountain both have 20\" on the chart for the week, with the biggest day Wednesday. Mt. Baker is close behind.",
-   "basis": "mht716"
+   "text": "A warm front and then a cold front cross Washington Wednesday night through Thursday, bringing rain and snow to the passes, with winds strongest along the coast and northern interior. Snow follows Friday. Crystal Mountain leads with 24\" total, and the NWS is calling for more, 20 to 39 inches Wednesday night through Monday night. A Winter Storm Warning runs for Mt. Baker from Wednesday night to Friday.",
+   "basis": "cr86a"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Wet, mild weather dominates, with rain at times heavy Wednesday night and showers most days after. Whistler leads the region at 22\" for the week, with its biggest day Wednesday. Snow is only likely near the peaks on Sunday night, as the rain line hangs on through the weekend.",
-   "basis": "1pceq1l"
+   "text": "Warm, wet air brings mostly rain to the Coast Mountains through Thursday and Friday, with a snow line that stays high. Whistler's 30\" total comes mostly from Wednesday's heavy rain and snow. Cypress Mountain sees rain Wednesday and Thursday with strong southerly winds, and its best snow arrives Monday.",
+   "basis": "1nt5om"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Dry, mostly clear weather holds through Thanksgiving, with morning fog likely in the valleys. A system arrives Friday and brings snow to western Wyoming through Saturday, with a chance of snow east of the Divide Saturday. Jackson Hole leads at 8\" on the chart. The NWS is calling for more, 12 to 25 inches Thursday night through Sunday night. Strong winds build along the Rocky Mountain Front before the snow arrives.",
-   "basis": "m98cgv"
+   "text": "Dry, mild weather holds through Thanksgiving. A Pacific system brings snow to western Wyoming Thursday night and Friday, then a stronger wave Friday night into Saturday brings strong westerly wind. Jackson Hole leads with 16\" total, and the NWS is calling for more, 15 to 28 inches Thursday night through Monday night. Grand Targhee's total is 15\" with an NWS forecast of 21 to 40 inches.",
+   "basis": "1oaot79"
   },
   {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Snow or rain returns Friday as the Thanksgiving storm passes north of the region, with strong winds and coastal flooding lingering into the weekend. A special weather statement covers Friday into Saturday. Le Massif leads with 9\" for the week, most of it Thursday and Friday. Saturday and Sunday turn showery, with flurries or rain at times.",
-   "basis": "1xt9siu"
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Mild and wet weather dominates through Thursday, with rain falling on lower slopes and the snow level around 1500 metres. Snow chances return Sunday and Monday as colder air arrives. Whitewater has the most at 10\" total, with its biggest day Monday.",
+   "basis": "1kv45cp"
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Mild and dry weather holds through Thanksgiving. Northwest flow brings snow Friday night through Saturday night, favoring the Park Range and northern Colorado mountains. Steamboat leads with 9\" total, and the NWS is calling for more, 8 to 17 inches Friday night through Monday night. Snow spreads south toward Vail with lighter amounts.",
+   "basis": "tloftz"
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Weather Prediction Center says the Pacific Northwest and northern Rockies will see another round of heavy precipitation around Tuesday Dec 1 and into the following days, with snow in the mountains and rain on the coast.",
+  "sources": [
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-25T18:04:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "NWS RIW Area Forecast Discussion",
+    "issuedAt": "2026-11-25T18:59:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
+   },
+   {
+    "name": "NWS PIH Area Forecast Discussion",
+    "issuedAt": "2026-11-25T20:48:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
+   },
+   {
+    "name": "NWS GJT Area Forecast Discussion",
+    "issuedAt": "2026-11-25T17:31:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-25T17:28:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-25T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-25T06:07:43.317Z"
+   "issuedAt": "2026-11-25T21:07:44.154Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-25T06:14:01.884Z"
+   "issuedAt": "2026-11-25T21:14:08.960Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T04:04:00+00:00"
+   "issuedAt": "2026-11-25T18:04:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T05:04:00+00:00"
+   "issuedAt": "2026-11-25T18:59:00+00:00"
   },
   {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-25T06:11:00+00:00"
+   "name": "NWS PIH Area Forecast Discussion",
+   "issuedAt": "2026-11-25T20:48:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-25T17:31:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T06:14:02.192Z"
+   "issuedAt": "2026-11-25T21:14:09.267Z"
   }
  ],
  "api": {
   "day": "2026-11-25",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
-  "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
+  "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
   "pops": [
+   {
+    "buoy": "51101",
+    "date": "2026-11-25"
+   },
+   {
+    "buoy": "51001",
+    "date": "2026-11-25"
+   },
    {
     "buoy": "51101",
     "date": "2026-11-11"
