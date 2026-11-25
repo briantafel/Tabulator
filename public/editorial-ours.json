@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-11-25T02:23:02.710Z",
+ "generatedAt": "2026-11-25T03:17:41.616Z",
  "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T02:22:58.317Z",
+ "blendGeneratedAt": "2026-11-25T03:17:38.441Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-25T01:32:52.548Z",
+ "writtenAt": "2026-11-25T03:17:41.616Z",
  "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-25",
@@ -13,56 +13,62 @@
   "days": 5,
   "toLabel": "Sunday Nov 29"
  },
- "overview": "Several storm systems move through the West this week, with the Pacific Northwest and Cascades getting the most snow and rain through Thursday and Friday. The Northern Rockies and Colorado see snow Friday into Saturday. The Northeast and Canada get a mix of rain and snow late in the week.",
+ "overview": "Most of the week's snow favors the Northern Rockies and Cascades, with a Friday system spreading snow across Wyoming and Montana. The Northeast gets rain Thanksgiving night into Friday, and California's storm arrives around Sunday.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain is forecast for about 39\". Mt. Bachelor and Stevens Pass follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
+   "text": "Storm systems keep moving through the Cascades. A Winter Storm Watch covers the North Cascades, including Washington Pass, from late Wednesday night into Thursday, with strong winds ahead of the front. Crystal Mountain leads the snow, with a 13-inch peak on Thursday and 39 inches for the week.",
+   "basis": "31hf6x"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Dry, mild weather holds through Thanksgiving. A system arrives Friday, with snow in western Wyoming through Saturday, and the snow band could shift depending on where the front stalls. Grand Targhee leads the region at 43\" for the week, with its biggest day Friday at 22\". Fog is likely in Jackson Hole and the Bighorn Basin Wednesday morning.",
+   "text": "Dry, mild weather holds through Thanksgiving, with fog possible in valleys Wednesday morning. A system arrives Friday, bringing snow to western Wyoming through Saturday, and a band of snow may reach central Wyoming. Grand Targhee leads with a 22-inch peak on Friday. Forecasters say the snow band's position is still uncertain.",
    "basis": "wwqvag"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Stowe is forecast for about 20\", 12\" of it Friday. Jay Peak and Whiteface follow. The National Weather Service has rain mixed in at Stowe Friday night."
+   "text": "Cold, dry weather holds through early Thursday. A system brings mostly rain late Thanksgiving into Friday, with some freezing rain possible at the start, especially at higher elevations. Stowe and Jay Peak each peak at around 12 to 13 inches on Friday, and Stowe's 20-inch total is mostly from that day.",
+   "basis": "1n0x29u"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 29\". Cypress Mountain follows."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Whitewater is forecast for about 17\", 11\" of it Thursday. RED Mountain and Revelstoke follow."
+   "text": "Rain and showers dominate the Coast Mountains. Whistler sees 11 inches on Wednesday and again on Thursday, and its total is 29 inches. Cypress Mountain gets most of its snow on Sunday.",
+   "basis": "ue4jfs"
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Sugar Bowl is forecast for about 18\", all of it Sunday. Kirkwood and Northstar follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night."
+   "text": "A front brings rain and light mountain snow through Wednesday morning, then dry weather returns. The Sierra sees little snow until Sunday, when a storm arrives. Palisades and Sugar Bowl each get 18 inches that day, while Kirkwood sees 11 inches. Forecasters expect an active pattern to return late this weekend.",
+   "basis": "15ju0lo"
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Rain dominates early in the week, with a rising snow level Wednesday. Snow becomes more likely over the weekend. Whitewater peaks at 11 inches on Thursday and totals 17 inches, while RED Mountain gets 7 inches that day.",
+   "basis": "uwcyod"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Mild, dry weather holds through Thanksgiving, and Friday is the warmest day along the Front Range. Northwest flow brings snow to the Park Range Friday and Saturday, and totals are uncertain. Steamboat peaks Saturday at 11\"; Vail gets 9\" that day.",
+   "text": "Mild, dry weather continues through Thanksgiving. Friday brings strong winds to the northern Front Range. Snow arrives in the northern mountains Friday and Saturday, with the Park Range most affected. Steamboat peaks at 11 inches Saturday, and Vail sees 9 inches that day. Forecasters have low confidence in exact amounts.",
    "basis": "1a8xpyj"
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Big White is forecast for about 11\", 8\" of it Thursday. SilverStar and Sun Peaks follow."
+   "text": "Showers arrive Wednesday night and continue through Thursday. Big White peaks at 8 inches Thursday, and SilverStar gets 3 inches that day. Dry, mostly cloudy weather follows through the weekend.",
+   "basis": "nmywwc"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T02:22:58.317Z"
+   "issuedAt": "2026-11-25T03:17:38.441Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -93,10 +99,6 @@
    "issuedAt": "2026-11-24T21:11:00+00:00"
   },
   {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-24T21:48:00+00:00"
-  },
-  {
    "name": "NWS GJT Area Forecast Discussion",
    "issuedAt": "2026-11-24T23:10:00+00:00"
   },
@@ -106,12 +108,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T02:23:02.710Z"
+   "issuedAt": "2026-11-25T03:17:41.616Z"
   }
  ],
  "api": {
   "day": "2026-11-25",
-  "calls": 4
+  "calls": 6
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
