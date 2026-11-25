@@ -217,7 +217,13 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
       CASE WHEN source = 'open-meteo-previous-runs' THEN CAST(regexp_extract(issue_key, '(\\d+)$', 1) AS INTEGER)
            WHEN kind = 'hindcast' THEN 0
            ELSE datediff('day', CAST(timezone(tz, issue_ts) AS DATE), local_date) END AS lead_day,
-      CASE WHEN source = 'open-meteo-previous-runs' THEN 24.0 * CAST(regexp_extract(issue_key, '(\\d+)$', 1) AS INTEGER)
+      -- previous_dayN: hour V comes from the newest run issued >= 24N h before V (init = floor6(V - 24N h); proven for gfs_seamless and
+      -- gem_seamless 2026-11-24, scripts/diag/om_prev_timing.py; ECMWF assumed). Mean run age at the start of a local day, after
+      -- verify's pro-rata 6-h block split, is 24(N-1) + 14 = 24N - 10 h (DST-free mid-winter, Mountain/Pacific). Day 0 is the current run: 0.
+      -- A label only: nothing here filters on it or scores by it, so no score moves.
+      CASE WHEN source = 'open-meteo-previous-runs' THEN
+             CASE WHEN CAST(regexp_extract(issue_key, '(\\d+)$', 1) AS INTEGER) = 0 THEN 0.0
+                  ELSE 24.0 * CAST(regexp_extract(issue_key, '(\\d+)$', 1) AS INTEGER) - 10.0 END
            WHEN kind = 'hindcast' THEN 0.0
            ELSE epoch(day_start - issue_ts) / 3600 END AS lead_hours
     FROM fday""")

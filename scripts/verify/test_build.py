@@ -255,6 +255,11 @@ def main():
         assert one("SELECT obs FROM p WHERE space = 'liquid' AND issue_key = 'previous_day0'AND resort_id = 'alta' "
                    "AND local_date = DATE '2025-01-02'")[0] == 0
         assert one("SELECT lead_day FROM p WHERE issue_key = 'previous_day1' LIMIT 1")[0] == 1
+        # lead_hours label for Open-Meteo previous_dayN = mean run age 24N - 10 h (day 0 = current run = 0); label only
+        assert one("SELECT count(DISTINCT lead_hours), min(lead_hours) FROM p WHERE issue_key = 'previous_day1' "
+                   "AND source = 'open-meteo-previous-runs'") == (1, 14.0)
+        assert one("SELECT count(DISTINCT lead_hours), min(lead_hours) FROM p WHERE issue_key = 'previous_day0' "
+                   "AND source = 'open-meteo-previous-runs'") == (1, 0.0)
         # Hindcast: lead 0, 25 cm on Jan 3; Jan 2 starts at 06:00 → partial → absent (not zero).
         assert one("SELECT fc_amount, lead_day, paid FROM p WHERE source = 'snow-forecast-hindcast' "
                    "AND resort_id = 'alta' AND local_date = DATE '2025-01-03'") == (25.0, 0, True)
