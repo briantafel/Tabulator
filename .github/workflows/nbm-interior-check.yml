@@ -4,6 +4,10 @@ name: Check NBM stored zeros at interior Canada resorts, backfilled winters (rea
 # before the run. Scores NBM (public) paired with observations in verify's pairs table; report to verify/latest/.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: strict (default) or loose (pair quality strict or loose, station within 40 km; rule amendment in the script docstring)
+        default: strict
 
 permissions:
   contents: read
@@ -37,7 +41,7 @@ jobs:
           aws s3api head-object --bucket "$R2_BUCKET" --key verify/latest/pairs.parquet --endpoint-url "$ENDPOINT" \
             --query '{last_modified: LastModified, bytes: ContentLength}' --output text | sed "s|^|pairs.parquet |"
       - name: Check
-        run: python3 scripts/diag/nbm_interior_zero.py /tmp/pairs.parquet out | tee -a "$GITHUB_STEP_SUMMARY"
+        run: python3 scripts/diag/nbm_interior_zero.py /tmp/pairs.parquet out ${{ github.event.inputs.mode == 'loose' && 'loose' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Refuse if the report names a paid source
         run: |
           if grep -qi "snow-forecast" out/*; then echo "::error::report names a paid source"; exit 1; fi
