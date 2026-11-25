@@ -795,11 +795,11 @@
    "taos": 0,
    "wolf-creek": 0,
    "revelstoke": 3,
-   "whistler": 36,
+   "whistler": 38,
    "lake-louise": 0,
-   "kicking-horse": 1,
+   "kicking-horse": 2,
    "fernie": 0,
-   "red-mountain": 0,
+   "red-mountain": 1,
    "whitewater": 1,
    "panorama": 0,
    "kimberley": 0,
@@ -4565,8 +4565,8 @@
    },
    "mt-baker": {
     "am": 0,
-    "pm": 1,
-    "night": 10
+    "pm": 0,
+    "night": 11
    },
    "crystal": {
     "am": 0,
@@ -4690,7 +4690,7 @@
    },
    "whistler": {
     "am": 6,
-    "pm": 8,
+    "pm": 10,
     "night": 22
    },
    "lake-louise": {
@@ -4701,7 +4701,7 @@
    "kicking-horse": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 2
    },
    "fernie": {
     "am": 0,
@@ -4711,12 +4711,12 @@
    "red-mountain": {
     "am": 0,
     "pm": 0,
-    "night": 0
+    "night": 1
    },
    "whitewater": {
     "am": 0,
-    "pm": 1,
-    "night": 0
+    "pm": 0,
+    "night": 1
    },
    "panorama": {
     "am": 0,
@@ -4805,5 +4805,5 @@
    }
   }
  },
- "updatedAt": "2026-11-24T21:07:42.295Z"
+ "updatedAt": "2026-11-25T06:07:43.317Z"
 }

@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-25T05:28:30.719Z",
- "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
+ "generatedAt": "2026-11-25T06:14:11.933Z",
+ "forecastGeneratedAt": "2026-11-25T06:07:43.317Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-25T05:28:25.813Z",
  "quiet": false,
@@ -60,8 +60,7 @@
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Quebec's ski areas see a mix of rain and snow Friday, with colder air arriving behind it. Le Massif leads with a peak of 4 inches Thursday. A special weather statement covers Mont-Sainte-Anne and Le Massif Friday into Saturday.",
-   "basis": "tqjem4"
+   "text": "Le Massif is forecast for about 9\". Mont-Sainte-Anne and Tremblant follow. Special Weather Statement at Le Massif from Friday to Saturday."
   }
  ],
  "ahead": null,
@@ -72,7 +71,7 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-24T21:14:00.914Z"
+   "issuedAt": "2026-11-25T06:14:01.884Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
@@ -88,7 +87,7 @@
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-24T23:54:00+00:00"
+   "issuedAt": "2026-11-25T06:11:00+00:00"
   },
   {
    "name": "NWS STO Area Forecast Discussion",
@@ -100,11 +99,11 @@
   },
   {
    "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-24T23:21:00+00:00"
+   "issuedAt": "2026-11-25T05:27:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T05:28:30.719Z"
+   "issuedAt": "2026-11-25T06:14:11.933Z"
   }
  ],
  "api": {
