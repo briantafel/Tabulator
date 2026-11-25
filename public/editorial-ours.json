@@ -1,72 +1,118 @@
 {
- "generatedAt": "2026-11-25T01:17:33.996Z",
+ "generatedAt": "2026-11-25T01:32:52.548Z",
  "forecastGeneratedAt": "2026-11-24T21:07:42.295Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T01:17:29.189Z",
+ "blendGeneratedAt": "2026-11-25T01:32:48.097Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "writtenAt": "2026-11-25T01:32:52.548Z",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-25",
   "to": "2026-11-29",
   "days": 5,
   "toLabel": "Sunday Nov 29"
  },
- "overview": null,
+ "overview": "Several storm systems move through the West this week, with the Pacific Northwest and Cascades getting the most snow and rain through Thursday and Friday. The Northern Rockies and Colorado see snow Friday into Saturday. The Northeast and Canada get a mix of rain and snow late in the week.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Crystal Mountain is forecast for about 40\". Mt. Bachelor and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Bachelor Friday night."
+   "text": "A frontal system brings wind and mixed rain and snow Wednesday night into Thursday, with snow mainly at the high passes. Crystal Mountain leads at 39\" for the week, with its biggest day Thursday at 14\". Winds could make Thanksgiving travel on I-5 harder, so allow extra time. A Winter Storm Watch covers Washington Pass.",
+   "basis": "wy5jol"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 42\", 23\" of it Friday. Jackson Hole and Big Sky follow."
+   "text": "Dry, mild weather holds through Thanksgiving. A system arrives Friday, with snow in western Wyoming through Saturday, and the snow band could shift depending on where the front stalls. Grand Targhee leads the region at 43\" for the week, with its biggest day Friday at 22\". Fog is likely in Jackson Hole and the Bighorn Basin Wednesday morning.",
+   "basis": "wwqvag"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Stowe is forecast for about 23\", 13\" of it Friday. Jay Peak and Killington follow. The National Weather Service has rain mixed in at Stowe Friday night."
+   "text": "Cold, dry weather holds through early Thursday. A system brings mostly rain late Thanksgiving into Friday, with a brief wintry mix at higher elevations at the start. Snow is mainly limited to mountain summits over the weekend, with a clipper-type system passing well north. Stowe and Jay Peak both peak Friday at 12\" to 13\".",
+   "basis": "2fqqa5"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 31\". Cypress Mountain follows."
+   "text": "Rain and showers dominate Wednesday through Friday, with a mix of sun and cloud by Saturday. Snow returns Sunday and into Sunday night at higher elevations. Whistler's biggest day is Thursday at 13\".",
+   "basis": "1k4p6v7"
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Palisades is forecast for about 15\", all of it Sunday. Sugar Bowl and Kirkwood follow. The National Weather Service has rain mixed in at Palisades Sunday and Sunday night."
+   "text": "Dry weather holds through Thanksgiving, with patchy freezing fog in the valleys. A system brings rain and high-elevation snow Sunday into Monday, with a stronger, colder storm possible Tuesday into Wednesday that could make Sierra passes difficult. Sugar Bowl leads the region with 18\" on Sunday.",
+   "basis": "aubybb"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 13\". RED Mountain and Revelstoke follow."
+   "text": "Rain and showers continue Wednesday through Thursday, with snow levels rising Wednesday morning. Colder air brings flurries Sunday. Whitewater's biggest day is Thursday at 7\".",
+   "basis": "mhd96w"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 11\", 9\" of it Saturday. Vail and Arapahoe Basin follow."
+   "text": "Mild, dry weather holds through Thanksgiving, and Friday is the warmest day along the Front Range. Northwest flow brings snow to the Park Range Friday and Saturday, and totals are uncertain. Steamboat peaks Saturday at 11\"; Vail gets 9\" that day.",
+   "basis": "1a8xpyj"
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Big White is forecast for about 10\", 6\" of it Thursday. SilverStar and Sun Peaks follow."
+   "text": "Showers arrive Wednesday night into Thursday, then give way to mixed sun and cloud Friday and Saturday. Snow returns Sunday night. Big White's biggest day is Thursday at 6\".",
+   "basis": "wmullk"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T01:17:29.189Z"
+   "issuedAt": "2026-11-25T01:32:48.097Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-24T21:14:00.914Z"
   },
   {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-24T22:25:00+00:00"
+  },
+  {
+   "name": "NWS PDT Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:45:00+00:00"
+  },
+  {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:51:00+00:00"
+  },
+  {
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:54:00+00:00"
+  },
+  {
+   "name": "NWS BTV Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:42:00+00:00"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-24T21:11:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-24T21:48:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:10:00+00:00"
+  },
+  {
+   "name": "NWS BOU Area Forecast Discussion",
+   "issuedAt": "2026-11-24T23:21:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T01:17:33.996Z"
+   "issuedAt": "2026-11-25T01:32:52.548Z"
   }
  ],
  "api": {
