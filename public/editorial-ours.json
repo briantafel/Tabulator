@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-25T19:17:44.502Z",
+ "generatedAt": "2026-11-25T20:17:34.975Z",
  "forecastGeneratedAt": "2026-11-25T06:07:43.317Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-25T19:17:41.916Z",
+ "blendGeneratedAt": "2026-11-25T20:17:31.737Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -38,7 +38,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-25T19:17:41.916Z"
+   "issuedAt": "2026-11-25T20:17:31.737Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -46,7 +46,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T19:17:44.502Z"
+   "issuedAt": "2026-11-25T20:17:34.975Z"
   }
  ],
  "api": {
@@ -54,8 +54,12 @@
   "calls": 10
  },
  "buoy": {
-  "text": "Buoys 51001 and 51101 near Hawaii popped Nov 11, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Nov 22–28. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
+  "text": "Buoy 51001 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
   "pops": [
+   {
+    "buoy": "51001",
+    "date": "2026-11-25"
+   },
    {
     "buoy": "51101",
     "date": "2026-11-11"
