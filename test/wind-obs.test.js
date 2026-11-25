@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { toKmh, swobRows, nwsRows, km, parsePkWnd } from "../scripts/archive/wind-obs.js";
+import { toKmh, swobRows, swobExtraRows, nwsRows, km, parsePkWnd } from "../scripts/archive/wind-obs.js";
 
 const ctx = { fetchedAt: "2026-11-23T14:07:00.000Z", runId: "r" };
 const swob = (p, g = [-118.17, 50.99, 445]) => ({ id: "x", geometry: { coordinates: g }, properties: { "msc_id-value": "1176749", "stn_nam-value": "REVELSTOKE AIRPORT AUTO", "date_tm-value": "2026-11-23T14:00:00.000Z", ...p } });
@@ -60,4 +60,22 @@ test("nwsRows: PK WND remark becomes its own wind_peak_gust row (km/h), never me
   assert.equal(pk.value, 83.34);
   assert.equal(pk.valid_end, "2026-11-23T14:56:00.000Z");
   assert.equal(rows.some((r) => r.variable === "wind_gust_max"), false);
+});
+
+test("swobExtraRows: partner station fields get their own variables and periods, never the 10-minute names", () => {
+  const f = swob({ stn_nam_dummy: 1, "stn_nam-value": "Caribou Corner", avg_wnd_spd: 14, "avg_wnd_spd-uom": "km/h", avg_wnd_dir: 210, "avg_wnd_dir-uom": "deg",
+    max_wnd_spd_pst1hr: 41, "max_wnd_spd_pst1hr-uom": "km/h", "stn_elev-value": 1561 }, [-118.1, 51.0, 1561]);
+  const rows = swobExtraRows(f, ctx);
+  assert.deepEqual(rows.map((r) => [r.variable, r.value, r.period_label]), [["wind_speed_mean_partner", 14, "partner-avg"], ["wind_dir_mean_partner", 210, "partner-avg"], ["wind_gust_hourly_max", 41, "1hr-max"]]);
+  assert.equal(rows[2].valid_start, "2026-11-23T13:00:00.000Z");
+  assert.equal(rows[0].elevation_m, 1561);
+  assert.ok(rows.every((r) => !["wind_speed_mean", "wind_gust_max", "wind_dir_mean"].includes(r.variable)));
+});
+
+test("swobExtraRows: true gust and hourly peak at Banff-type stations; m/s converted; missing is no row; unknown unit is loud", () => {
+  const rows = swobExtraRows(swob({ max_wnd_gst_spd_10m: 10, "max_wnd_gst_spd_10m-uom": "m/s", max_pk_wnd_spd_10m_pst1hr: 20, "max_pk_wnd_spd_10m_pst1hr-uom": "km/h" }), ctx);
+  assert.deepEqual(rows.map((r) => [r.variable, r.value]), [["wind_gust_true_10m", 36], ["wind_peak_gust_1h", 20]]);
+  assert.equal(swobExtraRows(swob({ avg_wnd_spd: null, "avg_wnd_spd-uom": "km/h" }), ctx).length, 0);
+  assert.throws(() => swobExtraRows(swob({ avg_wnd_spd: 5 }), ctx), /unknown wind unit/);
+  assert.equal(swobExtraRows(swob({ max_wnd_spd_pst1hr: 40, "max_wnd_spd_pst1hr-uom": "km/h", "max_wnd_spd_pst1hr-qa": -10 }), ctx).length, 0);
 });

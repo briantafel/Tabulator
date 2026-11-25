@@ -14,7 +14,7 @@
 import { readFile } from "node:fs/promises";
 import { UA, sleep, saveRaw, coordsOf } from "./common.js";
 
-export const PARSER_VERSION = "wind-obs-2";
+export const PARSER_VERSION = "wind-obs-3";
 const SWOB = "https://api.weather.gc.ca/collections/swob-realtime/items";
 const NWS = "https://api.weather.gov";
 const RADIUS_KM = 40;
@@ -40,6 +40,18 @@ const SWOB_FIELDS = [
   ["max_wnd_spd_10m_pst10mts", "wind_gust_max", true],
   ["avg_wnd_dir_10m_pst10mts", "wind_dir_mean", false],
 ];
+/* Fields ECCC partner and some climate stations send instead of (or beside) the 10-minute ones. Found by the 2026-11-25 W0 rerun
+ * (claude/state-2026-11-25-wind-w0-rerun.md): the stations closest to lift height (Caribou Corner, Lake Louise, Windy, Bryant, ...)
+ * use only the suffixless names. Their averaging period is NOT stated by the field name, so each has its own variable and
+ * period_label; none of them is ever written as wind_speed_mean / wind_gust_max, so definitions cannot mix downstream.
+ * [field, variable, is speed, period_label, window seconds]. Unit comes from the field's -uom; unknown unit is loud. */
+export const SWOB_EXTRA_FIELDS = [
+  ["avg_wnd_spd", "wind_speed_mean_partner", true, "partner-avg", 60],
+  ["avg_wnd_dir", "wind_dir_mean_partner", false, "partner-avg", 60],
+  ["max_wnd_spd_pst1hr", "wind_gust_hourly_max", true, "1hr-max", 3600],
+  ["max_wnd_gst_spd_10m", "wind_gust_true_10m", true, "10min-gust", 600],
+  ["max_pk_wnd_spd_10m_pst1hr", "wind_peak_gust_1h", true, "1hr-peak", 3600],
+];
 const num = (v) => (v === null || v === undefined || v === "" ? null : Number.isFinite(Number(v)) ? Number(v) : null);
 
 /** One SWOB-ML feature → rows. A value ECCC flags as bad (-qa below 0 = missing/erroneous) is dropped. */
@@ -63,6 +75,33 @@ export function swobRows(f, { fetchedAt, runId }) {
       elevation_m: num(p["stn_elev-value"]) !== null ? Math.round(num(p["stn_elev-value"])) : (Number.isFinite(g[2]) ? Math.round(g[2]) : null),
       fetched_at: fetchedAt, valid_start: new Date(end.getTime() - 600e3).toISOString(), valid_end: end.toISOString(),
       period_label: "10min", variable, value: v, unit, model: "eccc-swob", value_text: p["stn_nam-value"] ?? null,
+      run_id: runId, parser_version: PARSER_VERSION,
+    });
+  }
+  return rows;
+}
+
+/** Same feature, the extra fields only. Kept apart from swobRows so a bad value or unit here is reported without
+ *  discarding the 10-minute rows. Throws on an unknown unit or an implausible speed. */
+export function swobExtraRows(f, { fetchedAt, runId }) {
+  const p = f.properties ?? {}, g = f.geometry?.coordinates;
+  const end = new Date(p["date_tm-value"] ?? p.obs_date_tm);
+  if (!g || Number.isNaN(end.getTime())) throw new Error(`swob feature without time or position: ${f.id}`);
+  const id = p["msc_id-value"] ?? p["stn_nam-value"];
+  if (id == null) throw new Error(`swob feature without station id: ${f.id}`);
+  const rows = [];
+  for (const [field, variable, isSpeed, label, secs] of SWOB_EXTRA_FIELDS) {
+    let v = num(p[field]);
+    if (v === null) continue;
+    const qa = num(p[`${field}-qa`]);
+    if (qa !== null && qa < 0) continue;
+    if (isSpeed) v = Number(toKmh(v, p[`${field}-uom`]).toFixed(2));
+    if (isSpeed && (v < 0 || v > 400)) throw new Error(`implausible ${variable} ${v} at ${id}`);
+    rows.push({
+      source: "wind-obs", kind: "observation", resort_id: null, tier: null, station_id: `eccc:${id}`, lat: g[1], lon: g[0],
+      elevation_m: num(p["stn_elev-value"]) !== null ? Math.round(num(p["stn_elev-value"])) : (Number.isFinite(g[2]) ? Math.round(g[2]) : null),
+      fetched_at: fetchedAt, valid_start: new Date(end.getTime() - secs * 1000).toISOString(), valid_end: end.toISOString(),
+      period_label: label, variable, value: v, unit: isSpeed ? "km/h" : "deg", model: "eccc-swob-extra", value_text: p["stn_nam-value"] ?? null,
       run_id: runId, parser_version: PARSER_VERSION,
     });
   }
@@ -133,7 +172,7 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
   const failures = [];
   const now = Date.parse(fetchedAt), iso = (t) => new Date(t).toISOString().replace(/\.\d+Z$/, "Z");
   const from = iso(now - WINDOW_H * 3600e3), to = iso(now);
-  let rows = 0, ecStations = new Set(), ecQueries = 0, ecOk = 0;
+  let rows = 0, extraRows = 0, extraFails = 0, ecStations = new Set(), ecQueries = 0, ecOk = 0;
 
   // --- ECCC: one box query per Canadian resort, stations then picked by distance.
   for (const r of resorts.filter((x) => x.region === "Canada")) {
@@ -151,6 +190,8 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
           if (!ecStations.has(row.station_id)) { ecStations.add(row.station_id); }
           sink.write(row); rows++;
         }
+        try { for (const row of swobExtraRows(f, { fetchedAt, runId })) { ecStations.add(row.station_id); sink.write(row); rows++; extraRows++; } }
+        catch (e) { extraFails++; failures.push(`eccc-extra ${r.id}: ${e.message}`); log(`  ✗ wind-obs eccc extra fields ${r.id} — ${e.message}`); }
         const id = `eccc:${f.properties?.["msc_id-value"]}`;
         if (!ecStations.has(`map:${r.id}:${id}`)) {
           ecStations.add(`map:${r.id}:${id}`);
@@ -192,6 +233,9 @@ export async function collect({ resorts, sink, rawDir, fetchedAt, runId, log, ro
   }
   const ecCount = [...ecStations].filter((x) => x.startsWith("eccc:")).length;
   log(`wind-obs: eccc ${ecOk}/${ecQueries} resort queries, ${ecCount} stations; nws ${nwsOk}/${nwsTried} stations (${nwsEmpty} with nothing in ${WINDOW_H} h); ${rows} rows`);
+  // Loud about the partner fields: they are the stations nearest lift height. Zero rows means ECCC renamed them; failures mean a bad unit.
+  log(`wind-obs: eccc partner/gust fields ${extraRows} rows, ${extraFails} features failed`);
+  if (extraRows === 0 || extraFails > 0) log(`::warning title=wind-obs partner fields::${extraRows} rows, ${extraFails} failed features: check SWOB_EXTRA_FIELDS`);
   // Loud about the peak-wind remark: if NWS stops sending rawMessage, wind_peak_gust silently stops. Say how many carried it.
   log(`wind-obs: nws raw METAR text on ${nwsRaw}/${nwsFeats} observations, ${nwsPk} with a PK WND remark`);
   // Loud: no ECCC wind at all, or too many failed queries, is a fault (the ~28-day origin window makes gaps unrecoverable).
