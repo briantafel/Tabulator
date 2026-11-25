@@ -67,7 +67,7 @@ jobs:
           mkdir -p cache seed
           tags=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=30" --jq '.[].tag_name | select(startswith("terrain-pilot"))')
           for id in $IDS; do
-            gh release download terrain-base -p "$id-relief-cache.*" -D cache --clobber 2>/dev/null || true
+            gh release download terrain-base -p "$id-relief-cache.*" -p "$id-dem-cache.npz" -p "$id-demwide-cache.npz" -D cache --clobber 2>/dev/null || true
             if [ -f "cache/$id-relief-cache.json" ] && [ -f "cache/$id-relief-cache.png" ]; then echo "$id: cached relief"; continue; fi
             rm -f "cache/$id-relief-cache."*
             for t in $tags; do
@@ -87,7 +87,8 @@ jobs:
           for id in $IDS; do
             echo "::group::$id"
             before=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
-            if RELIEF_CACHE=cache RELIEF_SEED="seed/$id" NBM_CACHE=nbm OSM_DIR=osm \
+            dem_before=$(cat "cache/$id-dem-cache.npz" "cache/$id-demwide-cache.npz" 2>/dev/null | sha256sum | cut -d' ' -f1)
+            if DEM_CACHE=cache RELIEF_CACHE=cache RELIEF_SEED="seed/$id" NBM_CACHE=nbm OSM_DIR=osm \
                python3 scripts/maps/terrain_pilot.py "out/$id" "$id" --app \
                && python3 scripts/maps/app_vectors.py "out/$id" "$id" \
                && mkdir -p "stage/$id" \
@@ -97,6 +98,11 @@ jobs:
                     if [ -f "out/$id/$f" ]; then cp "out/$id/$f" "stage/$id/"; fi
                   done; then
               after=$(sha256sum "cache/$id-relief-cache.json" 2>/dev/null | cut -d' ' -f1)
+              dem_after=$(cat "cache/$id-dem-cache.npz" "cache/$id-demwide-cache.npz" 2>/dev/null | sha256sum | cut -d' ' -f1)
+              if [ "$dem_after" != "$dem_before" ]; then
+                gh release upload terrain-base --clobber $(ls "cache/$id-dem-cache.npz" "cache/$id-demwide-cache.npz" 2>/dev/null) \
+                  && echo "$id: DEM cache saved" || echo "::warning::$id: could not save the DEM cache (the next run reads the network again)"
+              fi
               if [ -n "$after" ] && [ "$after" != "$before" ]; then
                 gh release upload terrain-base --clobber "cache/$id-relief-cache.png" "cache/$id-relief-cache.json" \
                   && echo "$id: relief cache saved" || echo "::warning::$id: could not save the relief cache (the next run renders it again)"
