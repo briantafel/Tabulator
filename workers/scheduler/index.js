@@ -44,9 +44,10 @@ export const SCHEDULE = [
   // the app opened on the 19th still starting at the 18th. Same two slots.
   { file: "forecast.yml", every: 24, offset: 6 },
   { file: "forecast.yml", every: 24, offset: 21 },
-  // 2026-11-22 (Brian): our forecast about every 3 h, timed to model updates. This only WAKES blend.yml; its `check` job
-  // builds when a model has a run the last blend did not use (GFS and GEM every 6-12 h, ECMWF 12 h), so most wakes end there.
-  { file: "blend.yml", every: 3, offset: 1 },
+  // 2026-11-22 (Brian): our forecast timed to model updates. This only WAKES blend.yml; its `check` job builds when a model
+  // has a run the last blend did not use (GFS and GEM every 6-12 h, ECMWF 12 h), so most wakes end there.
+  // 2026-11-25 (Brian): wake it HOURLY (was every 3 h), so a new run is picked up within the hour, not up to 3 h late.
+  { file: "blend.yml", every: 1, offset: 0 },
   { file: "verify.yml", every: 24, offset: 9 },
   { file: "temps.yml", every: 6, offset: 5 },
   // 2026-11-23 (ops review): these were on GitHub's cron only, the clock the Worker exists to replace. Their GitHub

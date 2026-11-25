@@ -7,7 +7,7 @@ name: Our forecast (live blend, whenever a model has a new run)
 # Started by the Cloudflare scheduler at 07:07 UTC (after the 00z runs, an
 # hour before the Open-Meteo ensemble pass) and 21:07 UTC (after the 12z
 # runs) — twice a day like Snow-Forecast (Brian, 2026-11-18).
-# 2026-11-22 (Brian): about every 3 hours, timed to model updates. The scheduler wakes this every 3 h (01, 04, ... UTC) and
+# 2026-11-22 (Brian): timed to model updates. 2026-11-25: the scheduler wakes this HOURLY (was every 3 h) and
 # the `check` job asks Open-Meteo which run each model is on; the blend only builds when one of the three has a run the
 # last blend did not use (scripts/blend/model-runs.js). 2026-11-23: the gate used to be bypassed by EVERY workflow_dispatch,
 # and the Cloudflare scheduler dispatches, so it never gated anything. Now only `force=true` builds regardless:

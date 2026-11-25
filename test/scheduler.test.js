@@ -56,11 +56,11 @@ test("daily jobs start once a day, at their hour (2026-11-11)", () => {
   assert.deepEqual(hours("projections-dyn.yml"), [10]);
   // 2026-11-16: the scoring job and the temperature build, skipped by GitHub's cron.
   assert.deepEqual(hours("verify.yml"), [9]);
-  assert.deepEqual(hours("blend.yml"), [1, 4, 7, 10, 13, 16, 19, 22]); // woken every 3 h since 2026-11-22; builds only on a new model run
+  assert.deepEqual(hours("blend.yml"), [...Array(24).keys()]); // woken hourly since 2026-11-25 (every 3 h before); builds only on a new model run
   assert.deepEqual(hours("temps.yml"), [5, 11, 17, 23]);
 });
 
-test("our blend is woken every 3 h, 01 UTC on (2026-11-22)", () => {
+test("our blend is woken every hour (2026-11-25, Brian; every 3 h before)", () => {
   const hours = [...Array(24).keys()].filter((h) => due(h).includes("blend.yml"));
-  assert.deepEqual(hours, [1, 4, 7, 10, 13, 16, 19, 22]);
+  assert.deepEqual(hours, [...Array(24).keys()]);
 });
