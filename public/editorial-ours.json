@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-26T04:22:08.582Z",
+ "generatedAt": "2026-11-26T05:22:07.380Z",
  "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T04:22:04.576Z",
+ "blendGeneratedAt": "2026-11-26T05:22:03.905Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-26T04:22:08.582Z",
@@ -13,7 +13,7 @@
   "days": 5,
   "toLabel": "Monday Nov 30"
  },
- "overview": "A Pacific system brings snow to the northern Rockies, the Cascades and the Northeast on Thanksgiving weekend, with Friday and Saturday the main snow days. Several western ranges also see weaker systems and a more active pattern returns early next week.",
+ "overview": null,
  "regions": [
   {
    "key": "the northern Rockies",
@@ -24,20 +24,12 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A moderate atmospheric river brings rain and mountain snow Thursday and Friday, with the wet pattern lasting about 50 hours. Snow levels drop toward 4,500 feet in the eastern Cascades Friday night through Saturday. Mt. Bachelor leads at 45\" total, and Crystal Mountain sees rain mixing with snow Thursday before turning to snow Friday.",
-   "basis": "hativz"
+   "text": "Mt. Bachelor is forecast for about 45\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler and Cypress see a mix of rain and showers through Friday, with snow mostly confined to the higher terrain. A front brings more showers to the Coast Mountains Sunday and Monday, and the cooler air late Monday adds some flurries. Whistler leads at 31\" total.",
-   "basis": "bz2f75"
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "A strong low tracks north Thanksgiving Day and brings freezing rain to northern New York and Vermont Thursday evening into Friday, with slippery travel and a Winter Weather Advisory through Friday morning. Cold air is shallow, so the ice mainly stays above 1,500 feet. Jay Peak leads at 27\" total, and Whiteface sees a Winter Weather Advisory Thursday through Friday as well. A frontal system brings more rain and snow Sunday night into Monday.",
-   "basis": "og4wvb"
+   "text": "Whistler is forecast for about 30\". Cypress Mountain follows."
   },
   {
    "key": "the central Rockies",
@@ -66,21 +58,19 @@
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Showers end Thursday morning, leaving a mix of sun and cloud Friday and Saturday. Flurries and rain showers return Sunday, with cooler air and a chance of flurries Monday. Big White leads at 15\" total.",
-   "basis": "g0mr47"
+   "text": "Big White is forecast for about 14\", 10\" of it Thursday. SilverStar and Sun Peaks follow."
   },
   {
    "key": "the Canadian Rockies",
    "title": "Canadian Rockies",
-   "text": "Showers Thursday give way to a mix of sun and cloud Friday through Monday, with a chance of flurries Sunday and cold air by Monday night. Sunshine Village leads at 7\" total.",
-   "basis": "1q7yhoo"
+   "text": "Sunshine Village is forecast for about 6\", 5\" of it Thursday. Marmot Basin and Lake Louise follow."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T04:22:04.576Z"
+   "issuedAt": "2026-11-26T05:22:03.905Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -88,7 +78,7 @@
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T23:07:00+00:00"
+   "issuedAt": "2026-11-26T04:59:00+00:00"
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
@@ -103,16 +93,12 @@
    "issuedAt": "2026-11-26T03:41:00+00:00"
   },
   {
-   "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-25T23:19:00+00:00"
-  },
-  {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T23:08:00+00:00"
+   "issuedAt": "2026-11-26T05:10:00+00:00"
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-26T00:18:00+00:00"
+   "issuedAt": "2026-11-26T05:16:00+00:00"
   },
   {
    "name": "NWS STO Area Forecast Discussion",
@@ -124,7 +110,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T04:22:08.582Z"
+   "issuedAt": "2026-11-26T05:22:07.380Z"
   }
  ],
  "api": {
