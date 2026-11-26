@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-26T21:17:46.573Z",
+ "generatedAt": "2026-11-26T22:17:35.352Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T21:17:43.252Z",
+ "blendGeneratedAt": "2026-11-26T22:17:30.828Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,7 +16,7 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 46\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
+   "text": "Mt. Bachelor is forecast for about 47\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the northern Rockies",
@@ -31,7 +31,7 @@
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 32\". Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "text": "Jay Peak is forecast for about 31\". Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the Coast Mountains",
@@ -41,22 +41,22 @@
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Palisades is forecast for about 22\". Kirkwood and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
+   "text": "Kirkwood is forecast for about 24\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 24\", 13\" of it Thursday. RED Mountain and Revelstoke follow."
+   "text": "Whitewater is forecast for about 23\". RED Mountain and Revelstoke follow."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Brighton is forecast for about 18\", 10\" of it Tuesday. Alta and Solitude follow."
+   "text": "Brighton is forecast for about 18\", 10\" of it Tuesday. Alta and Snowbird follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 23\", 17\" of it Saturday. Vail and Breckenridge follow. Winter Weather Advisory at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 22\", 16\" of it Saturday. Vail and Breckenridge follow. Winter Weather Advisory at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Okanagan",
@@ -73,7 +73,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T21:17:43.252Z"
+   "issuedAt": "2026-11-26T22:17:30.828Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -81,12 +81,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T21:17:46.573Z"
+   "issuedAt": "2026-11-26T22:17:35.352Z"
   }
  ],
  "api": {
   "day": "2026-11-26",
-  "calls": 7
+  "calls": 9
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
