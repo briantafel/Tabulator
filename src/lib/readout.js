@@ -441,15 +441,21 @@ export const REUSE_HOURS = 12;
 
 /**
  * A short fingerprint of the numbers a region's text could quote: each
- * resort's total, its day-by-day inches (with dates), the NWS-higher range
- * and alert names. Saved with each region. If it differs, the forecast
+ * resort's total and its biggest day (day name + inches), the NWS-higher
+ * range and alert names. Saved with each region. If it differs, the forecast
  * moved and the old sentence can't be trusted: the validator only checks
  * that a number appears somewhere on today's sheet, so "Mt. Baker 15\""
  * would pass even with Mt. Baker now at 47\" (2026-11-21 replay).
+ *
+ * The writer is told to quote a total or the big day, never a smaller day
+ * (and the check allows two inch figures), so the other days of the
+ * day-by-day list are left out: they moved on almost every hourly blend
+ * (2026-11-26: the fingerprint changed every run and the day's calls were
+ * gone by 04:22Z).
  */
 export function regionBasis(g) {
   const src = JSON.stringify((g.resorts ?? []).map((r) => [
-    r.id, r.totalIn, (r.days ?? []).map((d) => [d.date, d.in]),
+    r.id, r.totalIn, r.peak ? [r.peak.dow, r.peak.in] : null,
     r.nwsHigher ? [r.nwsHigher.fromIn, r.nwsHigher.toIn] : null,
     (r.alerts ?? []).map((a) => a.event),
   ]));

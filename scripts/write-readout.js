@@ -44,6 +44,23 @@ export const blendStamp = (blend) => blend?.generatedAt ?? blend?.fetchedAt ?? n
 
 export const MAX_ATTEMPTS = 2;
 export const DAILY_CAP = 10; // was 6; raised 2026-11-18 (Brian) for the two read-outs and manual runs
+/**
+ * How many of the day's calls may be spent by `now` (UTC day, resets 7 PM ET).
+ * The blend now builds hourly and each rewrite can use 2 calls, so an
+ * unpaced cap was gone by 04:22Z (11:22 PM ET) and every run until 7 PM ET
+ * the next evening shipped the template (2026-11-26). Overnight (00:00–10:59Z,
+ * 7 PM–6 AM ET) gets at most 30 % of the cap; the rest unlocks through the
+ * ET daytime. Same total spend, spread to when the screen is read.
+ */
+export const NIGHT_END_UTC_H = 11;
+export const NIGHT_SHARE = 0.3;
+export function callsAllowedBy(now, cap = DAILY_CAP) {
+  const h = now.getUTCHours() + now.getUTCMinutes() / 60;
+  const share = h < NIGHT_END_UTC_H
+    ? NIGHT_SHARE * (Math.floor(h) + 1) / NIGHT_END_UTC_H
+    : NIGHT_SHARE + (1 - NIGHT_SHARE) * Math.min(1, (Math.floor(h) - NIGHT_END_UTC_H + 1) / (24 - NIGHT_END_UTC_H));
+  return Math.min(cap, Math.ceil(cap * share));
+}
 export const MAX_INPUT_CHARS = 60000; // the forecasters' discussions roughly double the fact sheet
 export const MAX_TOKENS = 2000;
 export const TIMEOUT_MS = 45000;
@@ -102,6 +119,7 @@ export async function run({
 
   const day = now.toISOString().slice(0, 10);
   const api = { day, calls: prev?.api?.day === day ? prev.api.calls ?? 0 : 0 };
+  const allowedNow = callsAllowedBy(now);
   const status = { fatal: null, warnings: [] };
   const debug = { attempts: [], compare: null };
 
@@ -141,6 +159,7 @@ export async function run({
     let user = `Fact sheet:\n${fitted.text}`;
     for (let attempt = 1; attempt <= MAX_ATTEMPTS && !out && !status.fatal; attempt++) {
       if (api.calls >= DAILY_CAP) { status.warnings.push(`daily cap of ${DAILY_CAP} API calls reached`); break; }
+      if (api.calls >= allowedNow) { status.warnings.push(`call budget for this hour used (${api.calls} of ${allowedNow} allowed by now, cap ${DAILY_CAP}/day)`); break; }
       api.calls++;
       const rec = { attempt, model };
       try {
@@ -149,6 +168,8 @@ export async function run({
         const parsed = parseReply(res.text);
         const problems = validateReadout(parsed, facts);
         rec.problems = problems;
+        // In the run log too: the debug artifact can't be downloaded from CI.
+        if (problems.length) log(`readout: attempt ${attempt} rejected — ${problems.slice(0, 4).join(" | ")}`);
         if (onlyAheadProblems(problems) && !noAhead) noAhead = { ...parsed, ahead: null };
         if (problems.length) {
           user = `Fact sheet:\n${fitted.text}\n\nYour previous reply was rejected:\n- ${problems.join("\n- ")}\nWrite it again, fixing those.`;
@@ -157,6 +178,7 @@ export async function run({
         }
       } catch (e) {
         rec.error = e.message;
+        log(`readout: attempt ${attempt} failed — ${String(e.message).slice(0, 200)}`);
         if (e.fatal) status.fatal = e.message;
       }
       debug.attempts.push(rec);

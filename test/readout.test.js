@@ -8,7 +8,7 @@ import { readoutFacts, templateReadout, validateReadout, readoutMatches, accumul
 import { outlook } from "../src/lib/outlook.js";
 import { issuedAt, isFresh, afdAhead, cpcAhead } from "../scripts/discussions.js";
 import { parseReply } from "../scripts/readout-api.js";
-import { run, DAILY_CAP, MAX_ATTEMPTS, MAX_INPUT_CHARS } from "../scripts/write-readout.js";
+import { run, DAILY_CAP, MAX_ATTEMPTS, MAX_INPUT_CHARS, callsAllowedBy } from "../scripts/write-readout.js";
 import resortData from "../src/data/resorts.json" with { type: "json" };
 
 const NOW = new Date("2026-10-30T22:30:00Z");
@@ -435,4 +435,50 @@ test("past the reuse window, a fresh draft still wins over a carried one", async
   assert.deepEqual(editorial.regions.map((r) => r.text), templateReadout(facts0()).regions.map((r) => r.text));
   assert.equal(editorial.writtenAt, NOW.toISOString());
   assert.equal(carryForward(null, facts0(), NOW), null);
+});
+
+// --- pacing the day's calls, and what the fingerprint watches (2026-11-26) ---
+
+test("the day's calls are paced: little overnight, all of them by the end of the UTC day", () => {
+  const at = (hhmm) => callsAllowedBy(new Date(`2026-11-26T${hhmm}:00Z`));
+  assert.equal(at("00:07"), 1);
+  assert.ok(at("04:22") <= 2, "04:22Z (11:22 PM ET) was when the cap ran out on 11-26");
+  assert.equal(at("10:59"), 3);   // 6 AM ET: the night's share is 30 %
+  assert.equal(at("11:07"), 4);
+  assert.ok(at("17:00") >= 6 && at("17:00") <= 8);
+  assert.equal(at("23:30"), DAILY_CAP);
+  let last = 0;
+  for (let h = 0; h < 24; h++) { const n = at(`${String(h).padStart(2, "0")}:30`); assert.ok(n >= last); last = n; }
+});
+
+test("overnight, a run past the hour's allowance makes no call and keeps the earlier text", async () => {
+  const root = await sandbox({ prev: { api: { day: "2026-10-30", calls: 3 } } });
+  const api = fakeApi(() => assert.fail("over the pace"));
+  const { status } = await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: new Date("2026-10-30T03:07:00Z"), fetchImpl: api.fetchImpl, gather: noAhead, log: quiet });
+  assert.equal(api.calls.length, 0);
+  assert.match(status.warnings.join(), /call budget for this hour/);
+});
+
+test("a rejected draft's problems go to the run log", async () => {
+  const root = await sandbox();
+  const lines = [];
+  const api = fakeApi(() => ({ text: "not json" }));
+  await run({ root, env: { ANTHROPIC_API_KEY: "k" }, now: NOW, fetchImpl: api.fetchImpl, gather: noAhead, log: (l) => lines.push(l) });
+  assert.ok(lines.some((l) => /attempt 1 (rejected|failed)/.test(l)));
+});
+
+test("the fingerprint ignores days the text may not quote, but not totals, the big day or alerts", () => {
+  const g = facts0().regions[0];
+  const base = regionBasis(g);
+  const small = structuredClone(g);
+  const r0 = small.resorts[0];
+  const minor = r0.days.find((d) => d.in < (r0.peak?.in ?? 0));
+  if (minor) minor.in += 1;
+  assert.equal(regionBasis(small), base, "a smaller day moving is not a reason to rewrite");
+  const total = structuredClone(g); total.resorts[0].totalIn += 1;
+  assert.notEqual(regionBasis(total), base);
+  const peak = structuredClone(g); peak.resorts[0].peak = { dow: peak.resorts[0].peak?.dow ?? "Sunday", in: (peak.resorts[0].peak?.in ?? 0) + 1 };
+  assert.notEqual(regionBasis(peak), base);
+  const alert = structuredClone(g); alert.resorts[0].alerts = [{ event: "Winter Storm Warning", from: "x", to: "y" }];
+  assert.notEqual(regionBasis(alert), base);
 });
