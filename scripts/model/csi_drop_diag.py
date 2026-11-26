@@ -17,7 +17,7 @@ import duckdb
 old, new, bj = sys.argv[1], sys.argv[2], json.load(open(sys.argv[3]))
 con = duckdb.connect()
 for tag, f in (("o", old), ("n", new)):
-    con.execute(f"""CREATE TABLE d{tag} AS SELECT split_part(source_label, ':', 2) AS model, region, resort_id,
+    con.execute(f"""CREATE TABLE p_{tag} AS SELECT split_part(source_label, ':', 2) AS model, region, resort_id,
       local_date, lead_day AS lead, fc_amount AS fc, obs FROM read_parquet('{f}')
       WHERE source_label LIKE 'open-meteo-previous-runs:%' AND space = 'liquid' AND pair_quality = 'strict'
         AND tier = 'mid' AND obs IS NOT NULL AND fc_amount IS NOT NULL AND lead_day BETWEEN 1 AND 3
@@ -31,7 +31,7 @@ con.executemany("INSERT INTO w VALUES (?,?,?)", [(int(l), m, v) for l, ws in bj[
 for tag in ("o", "n"):
     con.execute(f"""CREATE TABLE b{tag} AS SELECT resort_id, region, local_date, lead, any_value(obs) obs,
       sum(w.w * d.fc * coalesce(fac.f, pool.f, 1.0)) / sum(w.w) bl, count(*) nm
-      FROM d{tag} d JOIN w USING (lead, model) LEFT JOIN fac USING (model, lead, region) LEFT JOIN pool USING (model, lead)
+      FROM p_{tag} d JOIN w USING (lead, model) LEFT JOIN fac USING (model, lead, region) LEFT JOIN pool USING (model, lead)
       GROUP BY ALL""")
 S = """count(*) n, sum(CAST(obs>=2.5 AS INT)) wet, sum(CAST(bl>=2.5 AND obs>=2.5 AS INT)) h,
   sum(CAST(bl>=2.5 AND obs<2.5 AS INT)) fa, sum(CAST(bl<2.5 AND obs>=2.5 AS INT)) m,
