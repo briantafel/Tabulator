@@ -1,12 +1,10 @@
 {
- "generatedAt": "2026-11-26T06:14:17.293Z",
+ "generatedAt": "2026-11-26T06:17:44.633Z",
  "forecastGeneratedAt": "2026-11-26T06:07:44.428Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T05:22:03.905Z",
+ "blendGeneratedAt": "2026-11-26T06:17:41.777Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-26T04:22:08.582Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-26",
   "to": "2026-11-30",
@@ -18,42 +16,37 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A Pacific system moves into western Wyoming Thursday night and Friday, bringing light to moderate snow west of the Continental Divide. A second wave Friday night into Saturday brings wider snow and strong westerly wind, with the first light accumulating snow possible east of the Divide. Grand Targhee leads with 63\" total. The NWS is calling for more, 21 to 32 inches Saturday night through Monday, though the NWS forecast here is not a confirmed storm total.",
-   "basis": "q7jbvf"
+   "text": "Grand Targhee is forecast for about 52\". Jackson Hole and Big Sky follow."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 45\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
+   "text": "Mt. Bachelor is forecast for about 43\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler is forecast for about 30\". Cypress Mountain follows."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Thanksgiving stays mild and dry before a northwest flow sets up Friday through Saturday night. The Park Range looks favored for orographic snow, with confidence highest there and lower to the south. Snow may reach as far as Vail Pass, especially Saturday. Steamboat leads at 30\" total, and Vail sees snow showers Saturday.",
-   "basis": "1dkb9u4"
+   "text": "Whistler is forecast for about 28\". Cypress Mountain follows."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Rain Thursday turns to showers, with snow levels near 1,500 metres. Snow shows up again Sunday with a chance of flurries or rain showers, and a bit more is possible Monday. Whitewater leads at 23\" total.",
-   "basis": "k4ctqi"
+   "text": "Whitewater is forecast for about 25\", 15\" of it Thursday. RED Mountain and Revelstoke follow."
   },
   {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Dry, seasonable weather holds through Thanksgiving. A weak Pacific trough brings light valley rain and mountain snow mostly north of I-80 Friday night through early Saturday, and another weak system crosses northern Utah Monday. Powder Mountain and Brighton see light snow in that window.",
-   "basis": "h5err4"
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "Steamboat is forecast for about 32\", 24\" of it Saturday. Vail and Arapahoe Basin follow."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Dry and mild weather with dense valley and delta fog Thanksgiving through Saturday. Rain and high-elevation snow return Sunday and Monday, with snow levels near 7,000 feet. Sugar Bowl sees rain and snow Sunday and Monday, and Palisades gets rain and snow Sunday. The Sierra expects a more active pattern next week.",
-   "basis": "2rk2aj"
+   "text": "Sugar Bowl is forecast for about 21\", 13\" of it Sunday. Palisades and Kirkwood follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Powder Mountain is forecast for about 19\". Brighton and Solitude follow."
   },
   {
    "key": "the Okanagan",
@@ -66,56 +59,24 @@
    "text": "Mont-Sainte-Anne is forecast for about 8\". Le Massif and Blue Mountain follow. Special Weather Statement at Mont-Sainte-Anne from Friday to Saturday."
   },
   {
-   "key": "the Canadian Rockies",
-   "title": "Canadian Rockies",
-   "text": "Sunshine Village is forecast for about 6\", 5\" of it Thursday. Marmot Basin and Lake Louise follow. Environment Canada has rain mixed in at Sunshine Village Thursday."
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 6\", 5\" of it Monday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T05:22:03.905Z"
+   "issuedAt": "2026-11-26T06:17:41.777Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-26T06:14:06.593Z"
   },
   {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T04:59:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-26T05:26:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T05:38:00+00:00"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T03:41:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T05:10:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-26T05:50:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-25T22:02:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-25T22:03:00+00:00"
-  },
-  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T06:14:17.293Z"
+   "issuedAt": "2026-11-26T06:17:44.633Z"
   }
  ],
  "api": {
