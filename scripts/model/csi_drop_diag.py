@@ -69,3 +69,31 @@ print("\n   all live days: FA by forecast bucket (does light-forecast FA dominat
 for r in con.execute("""SELECT CASE WHEN bl<5 THEN '2.5-5' WHEN bl<10 THEN '5-10' ELSE '10+' END fcb, count(*),
    round(avg(obs),2) FROM bn WHERE bl>=2.5 AND obs<2.5 GROUP BY 1 ORDER BY 1""").fetchall():
     print("  ", r)
+
+print("\nE. new days, region x day: obs vs blend vs raw models (sums over resort-day-leads, mm)")
+print("region|day|n|obs|blend|ecmwf|gem|gfs|obs wet>=2.5|blend wet>=2.5")
+con.execute("""CREATE TABLE raw AS SELECT resort_id, region, local_date, lead, any_value(obs) obs,
+  max(CASE WHEN model='ecmwf_ifs025' THEN fc END) ec, max(CASE WHEN model='gem_seamless' THEN fc END) gm,
+  max(CASE WHEN model='gfs_seamless' THEN fc END) gf FROM p_n GROUP BY ALL""")
+for r in con.execute("""SELECT b.region, b.local_date, count(*), round(sum(b.obs),0), round(sum(b.bl),0), round(sum(ec),0),
+   round(sum(gm),0), round(sum(gf),0), sum(CAST(b.obs>=2.5 AS INT)), sum(CAST(b.bl>=2.5 AS INT))
+   FROM bn b JOIN raw USING (resort_id, local_date, lead) WHERE b.local_date >= DATE '2026-11-21'
+   GROUP BY 1, 2 HAVING sum(b.obs) > 0 OR sum(b.bl) > 5 ORDER BY 1, 2""").fetchall():
+    print("|".join(str(x) for x in r))
+print("\nF. timing test: 2-day windows (this day + next) at 2.5 mm, new days vs old days")
+con.execute("""CREATE TABLE w2 AS SELECT a.resort_id, a.region, a.local_date, a.lead, a.obs + b.obs obs2, a.bl + b.bl bl2
+   FROM bn a JOIN bn b ON a.resort_id=b.resort_id AND a.lead=b.lead AND b.local_date = a.local_date + 1""")
+for lab, cond in (("old days", "local_date < DATE '2026-11-21'"), ("new days", "local_date >= DATE '2026-11-21'")):
+    print(" ", lab, con.execute(f"""SELECT count(*), sum(CAST(bl2>=2.5 AND obs2>=2.5 AS INT)), sum(CAST(bl2>=2.5 AND obs2<2.5 AS INT)),
+      sum(CAST(bl2<2.5 AND obs2>=2.5 AS INT)),
+      round(sum(CAST(bl2>=2.5 AND obs2>=2.5 AS INT))/nullif(sum(CAST(bl2>=2.5 OR obs2>=2.5 AS INT)),0),3)
+      FROM w2 WHERE {cond}""").fetchone(), "(n, hits, FA, miss, CSI)")
+print("\nG. missing local days in the live window (NEW):",
+      [str(r[0]) for r in con.execute("""SELECT d::DATE FROM range(DATE '2026-11-01', (SELECT max(local_date) FROM bn) + 1, INTERVAL 1 DAY) t(d)
+        WHERE d::DATE NOT IN (SELECT local_date FROM bn) ORDER BY 1""").fetchall()])
+print("   rows on those days in p_n before the strict/obs filters? see build; obs NULL count by day:")
+for r in con.execute(f"""SELECT CAST(local_date AS DATE) d, count(*), count(obs) FROM read_parquet('{new}')
+   WHERE source_label LIKE 'open-meteo-previous-runs:%' AND space='liquid' AND tier='mid' AND split='live'
+     AND pair_quality='strict' AND lead_day BETWEEN 1 AND 3 AND local_date IN ('2026-11-07','2026-11-14','2026-11-21','2026-11-20')
+   GROUP BY 1 ORDER BY 1""").fetchall():
+    print("  ", r)
