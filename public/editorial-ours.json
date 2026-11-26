@@ -1,55 +1,72 @@
 {
- "generatedAt": "2026-11-26T20:17:39.482Z",
- "forecastGeneratedAt": "2026-11-26T06:07:44.428Z",
+ "generatedAt": "2026-11-26T21:14:26.036Z",
+ "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-26T20:17:34.947Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-26T13:21:27.991Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-26",
-  "to": "2026-11-30",
-  "days": 5,
-  "toLabel": "Monday Nov 30"
+  "to": "2026-12-01",
+  "days": 6,
+  "toLabel": "Tuesday Dec 1"
  },
- "overview": "A wet Pacific pattern runs through the week: a strong front soaks the Cascades today, a brief dry spell comes Saturday, then systems return Sunday into Monday. Interior Rockies get a Friday-into-Saturday snow event before a Monday-into-Tuesday pattern.",
+ "overview": null,
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A strong front brings rain and wind to the Cascades through Thursday, with snow levels high enough that the big snow arrives Thursday night and Friday. Saturday is a brief break before another system turns the mountains to snow Sunday and Monday. The NWS is calling for more, 19 to 36 inches at Crystal Mountain from Thanksgiving Day through Monday night.",
-   "basis": "xzi43j"
+   "text": "Mt. Bachelor is forecast for about 43\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A northwest flow brings the next Pacific system to western Wyoming late Friday, with winter storm watches posted for the western mountains. Snow is favored for the higher elevations Friday and Saturday, with Jackson Hole the top spot at 14 inches for the week. Colder air follows over the weekend. Snow in the valleys is not expected to stay.",
-   "basis": "1bm4k28"
+   "text": "Grand Targhee is forecast for about 36\". Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Quebec's Mont-Sainte-Anne and Le Massif see mostly rain Friday and Saturday, with a special weather statement for Friday through Saturday. Snow mixes in Sunday night. Totals stay modest, with Mont-Sainte-Anne at 8 inches for the week.",
-   "basis": "10jlfv7"
+   "text": "Jay Peak is forecast for about 31\". Mont-Sainte-Anne and Whiteface follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 27\", 25\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler gets rain and showers through Friday, turning to flurries by Sunday night and Monday. Its best day is Thursday, with 6 inches. Cypress Mountain stays mostly rain with little snow.",
-   "basis": "2e3kzi"
+   "text": "Whistler is forecast for about 29\". Cypress Mountain follows."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Kirkwood is forecast for about 26\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Revelstoke and Whitewater start the week with rain on Thursday, with the snow level around 1,300 to 1,500 metres. Snow comes back Sunday and Monday as flurries and showers. Fernie is in a similar pattern, with 4 inches over the period.",
-   "basis": "17g59m6"
+   "text": "Whitewater is forecast for about 25\", 13\" of it Thursday. RED Mountain and Fernie follow."
+  },
+  {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Brighton is forecast for about 23\", 15\" of it Tuesday. Solitude and Park City follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Mild, dry weather holds through Thanksgiving. Snow arrives late Friday and runs through Saturday, mostly on the Park Range and the high terrain. Steamboat and Aspen Highlands get the bulk, with Steamboat's NWS total forecast 7 to 15 inches from Friday through Monday night. The unsettled pattern may continue into next week, but details are uncertain.",
-   "basis": "zh3gmh"
+   "text": "Steamboat is forecast for about 26\", 17\" of it Saturday. Vail and Arapahoe Basin follow. Winter Weather Advisory at Steamboat from Friday to Sunday."
+  },
+  {
+   "key": "the Okanagan",
+   "title": "Okanagan",
+   "text": "Big White is forecast for about 18\", 9\" of it Thursday. SilverStar and Sun Peaks follow."
+  },
+  {
+   "key": "the Canadian Rockies",
+   "title": "Canadian Rockies",
+   "text": "Sunshine Village is forecast for about 7\". Lake Louise and Norquay follow. Environment Canada has rain mixed in at Sunshine Village Thursday."
   }
  ],
  "ahead": null,
@@ -60,32 +77,16 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-26T06:14:06.593Z"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T16:48:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:00:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:44:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:36:00+00:00"
+   "issuedAt": "2026-11-26T21:14:11.426Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T20:17:39.482Z"
+   "issuedAt": "2026-11-26T21:14:26.036Z"
   }
  ],
  "api": {
   "day": "2026-11-26",
-  "calls": 5
+  "calls": 7
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
