@@ -1,0 +1,35 @@
+name: truth-gap-diag
+# Read-only: hourly SNOTEL look at the 11-22..24 storm and the missing-Saturday trace. Prints only.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3"
+      - name: Fetch SNOTEL (Oct-Nov 2026) and the latest verify files
+        run: |
+          E="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 sync "s3://$R2_BUCKET/archive/source=snotel/month=2026-10/" archive/source=snotel/month=2026-10/ --endpoint-url "$E" --only-show-errors
+          aws s3 sync "s3://$R2_BUCKET/archive/source=snotel/month=2026-11/" archive/source=snotel/month=2026-11/ --endpoint-url "$E" --only-show-errors
+          mkdir -p ver
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" ver/pairs.parquet --endpoint-url "$E" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/station_pairs.csv" ver/station_pairs.csv --endpoint-url "$E" --only-show-errors
+          find archive -name '*.parquet' | wc -l; ls -la ver
+      - name: Diagnose
+        run: python3 scripts/verify/truth_gap_diag.py archive ver
