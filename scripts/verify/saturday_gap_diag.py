@@ -37,3 +37,14 @@ for r in con.execute("""SELECT CAST(valid_start AS DATE) d, dayname(CAST(valid_s
   AND period_label IN ('previous_day1','previous_day2','previous_day3') AND CAST(valid_start AS DATE) BETWEEN DATE '2026-11-05' AND DATE '2026-11-09'
   GROUP BY ALL ORDER BY 1, 3""").fetchall():
     print("|".join(str(v) for v in r))
+
+print("\n=== D. which UTC hour-blocks exist (all resorts, gfs previous_day1) for the Saturdays vs neighbours ===")
+for day in ("2026-11-06", "2026-11-07", "2026-11-08", "2026-11-13", "2026-11-14", "2026-11-15", "2026-11-21", "2026-11-22"):
+    print(day, con.execute(f"""SELECT string_agg(strftime(valid_start, '%H:%M') || ' (' || n || ')', ', ' ORDER BY valid_start) FROM (
+      SELECT valid_start, count(DISTINCT resort_id) n FROM x WHERE model='gfs_seamless' AND period_label='previous_day1'
+      AND CAST(valid_start AS DATE) = DATE '{day}' GROUP BY 1)""").fetchone()[0])
+print("\n=== E. block lengths for 11-07 (valid_end - valid_start), one resort ===")
+for r in con.execute(f"""SELECT strftime(valid_start, '%m-%d %H:%M'), strftime(valid_end, '%m-%d %H:%M') FROM {src}
+  WHERE variable='precip' AND tier='mid' AND model='gfs_seamless' AND period_label='previous_day1' AND resort_id = (SELECT min(resort_id) FROM x)
+  AND valid_start >= TIMESTAMP '2026-11-06 12:00' AND valid_start < TIMESTAMP '2026-11-08 12:00' GROUP BY 1,2 ORDER BY 1""").fetchall():
+    print("  ", r)
