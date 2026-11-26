@@ -1,117 +1,89 @@
 {
- "generatedAt": "2026-11-25T21:14:09.267Z",
- "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
+ "generatedAt": "2026-11-26T06:14:06.901Z",
+ "forecastGeneratedAt": "2026-11-26T06:07:44.428Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-25T21:14:09.267Z",
+ "writtenAt": "2026-11-26T06:14:06.901Z",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-25",
+  "from": "2026-11-26",
   "to": "2026-11-30",
-  "days": 6,
+  "days": 5,
   "toLabel": "Monday Nov 30"
  },
- "overview": "A Pacific storm track keeps the West busy through the holiday weekend. The Cascades and Coast Mountains get the first round Wednesday into Thursday, then a weaker system follows Friday. Wyoming and Colorado get snow mainly from Friday night through Saturday as northwest flow sets up.",
+ "overview": "A strong Pacific system brings rain and wind to the Cascades through Thursday, then a weak ridge gives a short break this weekend before the pattern turns active again. Snow favors the Rockies and Canadian ranges through Friday and Saturday, with the Northeast mostly rain.",
  "regions": [
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A warm front and then a cold front cross Washington Wednesday night through Thursday, bringing rain and snow to the passes, with winds strongest along the coast and northern interior. Snow follows Friday. Crystal Mountain leads with 24\" total, and the NWS is calling for more, 20 to 39 inches Wednesday night through Monday night. A Winter Storm Warning runs for Mt. Baker from Wednesday night to Friday.",
-   "basis": "cr86a"
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Warm, wet air brings mostly rain to the Coast Mountains through Thursday and Friday, with a snow line that stays high. Whistler's 30\" total comes mostly from Wednesday's heavy rain and snow. Cypress Mountain sees rain Wednesday and Thursday with strong southerly winds, and its best snow arrives Monday.",
-   "basis": "1nt5om"
+   "text": "A strong front brings rain and gusty wind to the Cascades through Thursday, with snow levels around 5,000 to 6,000 feet. Snow returns Friday as a weaker system moves through, and the forecasters expect a brief break this weekend under a weak ridge. Crystal Mountain leads the region with 14\" in the next five days. The NWS is calling for more, 19 to 36 inches Thanksgiving Day through Monday night.",
+   "basis": "1gzd1ze"
   },
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Dry, mild weather holds through Thanksgiving. A Pacific system brings snow to western Wyoming Thursday night and Friday, then a stronger wave Friday night into Saturday brings strong westerly wind. Jackson Hole leads with 16\" total, and the NWS is calling for more, 15 to 28 inches Thursday night through Monday night. Grand Targhee's total is 15\" with an NWS forecast of 21 to 40 inches.",
-   "basis": "1oaot79"
+   "text": "A Pacific system brings light to moderate snow west of the Divide Friday, with a stronger wave and strong westerly wind Friday night into Saturday. Jackson Hole leads the region with 14\" in the next five days. The NWS is calling for more, 15 to 28 inches Thursday night through Monday night.",
+   "basis": "1fdprph"
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Rain dominates the Northeast Friday through Monday, with a special weather statement for Friday into Saturday. Mont-Sainte-Anne leads with 8\" in the next five days, and Blue Mountain adds 5\" early in the week.",
+   "basis": "1yliyua"
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Showers and rain dominate the Coast Mountains through Friday, with some flurries returning Sunday and Monday. Whistler leads with 15\" in the next five days, mostly in the form of rain before the weekend.",
+   "basis": "njc13u"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Mild and wet weather dominates through Thursday, with rain falling on lower slopes and the snow level around 1500 metres. Snow chances return Sunday and Monday as colder air arrives. Whitewater has the most at 10\" total, with its biggest day Monday.",
-   "basis": "1kv45cp"
+   "text": "Rain Thursday turns to a mix of sun and cloud Friday and Saturday, with flurries returning Sunday. Revelstoke leads with 7\" in the next five days, and snow levels drop to around 1,000 metres late Thursday night.",
+   "basis": "srcv2k"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Mild and dry weather holds through Thanksgiving. Northwest flow brings snow Friday night through Saturday night, favoring the Park Range and northern Colorado mountains. Steamboat leads with 9\" total, and the NWS is calling for more, 8 to 17 inches Friday night through Monday night. Snow spreads south toward Vail with lighter amounts.",
-   "basis": "tloftz"
+   "text": "Mild and dry through Thanksgiving, then snow arrives late Friday and runs through Saturday, mainly over the Park Range. Steamboat leads with 6\" in the next five days. The NWS is calling for more, 7 to 15 inches Friday through Monday night.",
+   "basis": "16or3mx"
   }
  ],
- "ahead": {
-  "text": "The Weather Prediction Center says the Pacific Northwest and northern Rockies will see another round of heavy precipitation around Tuesday Dec 1 and into the following days, with snow in the mountains and rain on the coast.",
-  "sources": [
-   {
-    "name": "NWS SEW Area Forecast Discussion",
-    "issuedAt": "2026-11-25T18:04:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
-   },
-   {
-    "name": "NWS RIW Area Forecast Discussion",
-    "issuedAt": "2026-11-25T18:59:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=RIW&issuedby=RIW&product=AFD"
-   },
-   {
-    "name": "NWS PIH Area Forecast Discussion",
-    "issuedAt": "2026-11-25T20:48:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PIH&issuedby=PIH&product=AFD"
-   },
-   {
-    "name": "NWS GJT Area Forecast Discussion",
-    "issuedAt": "2026-11-25T17:31:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=GJT&issuedby=GJT&product=AFD"
-   },
-   {
-    "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-25T17:28:00.000Z",
-    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
-   },
-   {
-    "name": "CPC 6–10 and 8–14 Day Discussion",
-    "issuedAt": "2026-11-25T20:00:00.000Z",
-    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
-   }
-  ]
- },
+ "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-25T21:07:44.154Z"
+   "issuedAt": "2026-11-26T06:07:44.428Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-25T21:14:08.960Z"
+   "issuedAt": "2026-11-26T06:14:06.593Z"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T18:04:00+00:00"
+   "issuedAt": "2026-11-26T03:41:00+00:00"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-25T18:59:00+00:00"
+   "issuedAt": "2026-11-26T04:59:00+00:00"
   },
   {
-   "name": "NWS PIH Area Forecast Discussion",
-   "issuedAt": "2026-11-25T20:48:00+00:00"
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-26T05:26:00+00:00"
   },
   {
    "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T17:31:00+00:00"
+   "issuedAt": "2026-11-26T05:10:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-25T21:14:09.267Z"
+   "issuedAt": "2026-11-26T06:14:06.901Z"
   }
  ],
  "api": {
-  "day": "2026-11-25",
-  "calls": 4
+  "day": "2026-11-26",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

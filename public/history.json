@@ -771,9 +771,9 @@
    "sierra-at-tahoe": 0,
    "homewood": 0,
    "mammoth": 0,
-   "mt-baker": 14,
-   "crystal": 22,
-   "stevens-pass": 18,
+   "mt-baker": 15,
+   "crystal": 20,
+   "stevens-pass": 19,
    "mt-bachelor": 1,
    "telluride": 0,
    "crested-butte": 0,
@@ -795,8 +795,8 @@
    "big-sky": 0,
    "taos": 0,
    "wolf-creek": 0,
-   "revelstoke": 4,
-   "whistler": 38,
+   "revelstoke": 5,
+   "whistler": 40,
    "lake-louise": 1,
    "kicking-horse": 1,
    "fernie": 0,
@@ -804,7 +804,7 @@
    "whitewater": 5,
    "panorama": 0,
    "kimberley": 0,
-   "big-white": 2,
+   "big-white": 1,
    "silverstar": 3,
    "sun-peaks": 2,
    "sunshine": 1,
@@ -4572,17 +4572,17 @@
    "mt-baker": {
     "am": 0,
     "pm": 0,
-    "night": 14
+    "night": 15
    },
    "crystal": {
     "am": 0,
     "pm": 0,
-    "night": 22
+    "night": 20
    },
    "stevens-pass": {
     "am": 1,
-    "pm": 1,
-    "night": 16
+    "pm": 0,
+    "night": 18
    },
    "mt-bachelor": {
     "am": 0,
@@ -4691,13 +4691,13 @@
    },
    "revelstoke": {
     "am": 0,
-    "pm": 0,
+    "pm": 1,
     "night": 4
    },
    "whistler": {
     "am": 7,
     "pm": 6,
-    "night": 25
+    "night": 27
    },
    "lake-louise": {
     "am": 0,
@@ -4737,7 +4737,7 @@
    "big-white": {
     "am": 0,
     "pm": 0,
-    "night": 2
+    "night": 1
    },
    "silverstar": {
     "am": 0,
@@ -4811,5 +4811,5 @@
    }
   }
  },
- "updatedAt": "2026-11-25T21:07:44.154Z"
+ "updatedAt": "2026-11-26T06:07:44.428Z"
 }

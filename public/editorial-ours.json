@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-26T05:22:07.380Z",
- "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
+ "generatedAt": "2026-11-26T06:14:17.293Z",
+ "forecastGeneratedAt": "2026-11-26T06:07:44.428Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-26T05:22:03.905Z",
  "quiet": false,
@@ -61,9 +61,14 @@
    "text": "Big White is forecast for about 14\", 10\" of it Thursday. SilverStar and Sun Peaks follow."
   },
   {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Mont-Sainte-Anne is forecast for about 8\". Le Massif and Blue Mountain follow. Special Weather Statement at Mont-Sainte-Anne from Friday to Saturday."
+  },
+  {
    "key": "the Canadian Rockies",
    "title": "Canadian Rockies",
-   "text": "Sunshine Village is forecast for about 6\", 5\" of it Thursday. Marmot Basin and Lake Louise follow."
+   "text": "Sunshine Village is forecast for about 6\", 5\" of it Thursday. Marmot Basin and Lake Louise follow. Environment Canada has rain mixed in at Sunshine Village Thursday."
   }
  ],
  "ahead": null,
@@ -74,7 +79,7 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-25T21:14:08.960Z"
+   "issuedAt": "2026-11-26T06:14:06.593Z"
   },
   {
    "name": "NWS RIW Area Forecast Discussion",
@@ -82,11 +87,11 @@
   },
   {
    "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-25T23:47:00+00:00"
+   "issuedAt": "2026-11-26T05:26:00+00:00"
   },
   {
    "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-25T23:54:00+00:00"
+   "issuedAt": "2026-11-26T05:38:00+00:00"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
@@ -98,7 +103,7 @@
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-26T05:16:00+00:00"
+   "issuedAt": "2026-11-26T05:50:00+00:00"
   },
   {
    "name": "NWS STO Area Forecast Discussion",
@@ -110,7 +115,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T05:22:07.380Z"
+   "issuedAt": "2026-11-26T06:14:17.293Z"
   }
  ],
  "api": {
