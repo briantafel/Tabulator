@@ -39,3 +39,5 @@ jobs:
         run: python3 scripts/verify/truth_coverage.py archive | tee coverage.txt
       - name: Ensemble members kept? (sampled months, read straight from R2)
         run: python3 scripts/verify/member_coverage.py "$R2_BUCKET" "$R2_ACCOUNT_ID" | tee members.txt
+      - name: Resort reports, live season (JSON lines)
+        run: python3 scripts/verify/live_reports.py "$R2_BUCKET" "$R2_ACCOUNT_ID" | tee reports.txt
