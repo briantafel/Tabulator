@@ -15,7 +15,7 @@ from pathlib import Path
 import duckdb
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build import build  # noqa: E402
+from build import build, interior_holes  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 UTC = timezone.utc
@@ -47,7 +47,24 @@ def write_archive(rows, root: Path) -> None:
     con.execute(f"COPY t TO '{arch / 'test.parquet'}' (FORMAT parquet)")
 
 
+def test_interior_holes():
+    """A partial day with full days either side is a hole; a partial first/last day of an issue is not."""
+    con = duckdb.connect()
+    con.execute("CREATE TABLE fday(source VARCHAR, resort_id VARCHAR, tier VARCHAR, model VARCHAR, member VARCHAR, space VARCHAR, "
+                "issue_key VARCHAR, local_date DATE, cov_h DOUBLE, day_h DOUBLE)")
+    def series(src, rid, cov):
+        for i, c in enumerate(cov):
+            con.execute("INSERT INTO fday VALUES (?, ?, 'mid', 'm', '', 'liquid', 'k', DATE '2026-11-05' + ?, ?, 24)", [src, rid, i, c])
+    series("open-meteo-previous-runs", "alta", [24, 24, 18, 24, 24])   # the Saturday hole (index 2 = 11-07)
+    series("open-meteo-previous-runs", "brighton", [24, 24, 18, 24, 24])
+    series("open-meteo-previous-runs", "taos", [12, 24, 24, 24, 6])    # ordinary partial ends: not holes
+    series("snow-forecast", "alta", [24, 18, 24, 24, 24])              # paid: reported, name hidden
+    got = interior_holes(con, ("snow-forecast", "snow-forecast-hindcast"))
+    assert got == [("a paid source", "2026-11-06", 1), ("open-meteo-previous-runs", "2026-11-07", 2)], got
+
+
 def main():
+    test_interior_holes()
     rows = []
     fetched = datetime(2025, 2, 1, tzinfo=UTC)
     # SNOTEL: mapping + daily SWE/depth at local-standard midnight; storm on Jan 3 shows at Jan 4 00:00.

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { freshestFirst, runPool, liveShortfall } from "../scripts/archive/live-pieces.js";
+import { freshestFirst, runPool, liveShortfall, liveFetchEnd, cutToWindow, saturdayFixPieces } from "../scripts/archive/live-pieces.js";
 import { fetchText } from "../scripts/archive/common.js";
 
 const MODELS = ["ecmwf_ifs025", "gfs_seamless", "gem_seamless"];
@@ -69,4 +69,24 @@ test("fetchText: timeoutMs cuts a stalled attempt short and the attempts still r
   await new Promise((r) => srv2.listen(0, "127.0.0.1", r));
   await assert.rejects(fetchText(`http://127.0.0.1:${srv2.address().port}/`, { retries: 1, delayMs: 5, timeoutMs: 80 }), /timeout|aborted/i);
   srv2.closeAllConnections?.(); srv2.close();
+});
+
+test("liveFetchEnd asks for the day after the piece, across a month end", () => {
+  assert.equal(liveFetchEnd("2026-11-07"), "2026-11-08");
+  assert.equal(liveFetchEnd("2026-11-30"), "2026-12-01");
+});
+
+test("cutToWindow keeps the piece's own days, drops the extra day", () => {
+  const r = (t) => ({ valid_start: t });
+  const rows = [r("2026-11-07T12:00:00.000Z"), r("2026-11-07T18:00:00.000Z"), r("2026-11-08T00:00:00.000Z"), r("2026-11-06T18:00:00.000Z")];
+  assert.deepEqual(cutToWindow(rows, "2026-11-01", "2026-11-07").map((x) => x.valid_start),
+    ["2026-11-07T12:00:00.000Z", "2026-11-07T18:00:00.000Z", "2026-11-06T18:00:00.000Z"]);
+  // re-fetch piece: only the 18:00 block of the last day
+  assert.deepEqual(cutToWindow(rows, "2026-11-07", "2026-11-07", 18).map((x) => x.valid_start), ["2026-11-07T18:00:00.000Z"]);
+});
+
+test("saturdayFixPieces: last day of each finished week that began before the fix", () => {
+  const w = [["2026-11-01", "2026-11-07", true], ["2026-11-08", "2026-11-14", true], ["2026-11-15", "2026-11-21", true], ["2026-11-22", "2026-11-25", false]];
+  assert.deepEqual(saturdayFixPieces(w), ["2026-11-07", "2026-11-14", "2026-11-21"]);
+  assert.deepEqual(saturdayFixPieces([["2026-11-22", "2026-11-28", true]]), []); // fetched whole, nothing to repair
 });

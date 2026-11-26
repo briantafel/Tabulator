@@ -76,6 +76,22 @@ def log(lines: list[str], msg: str) -> None:
     print(msg, file=sys.stderr)
 
 
+def interior_holes(con, paid: tuple[str, ...]) -> list[tuple[str, str, int]]:
+    """Partial forecast days with a fully covered day on BOTH sides in the same series (source, resort, model, issue).
+    The first and last day of an issue are partial all the time; a hole in the middle means data went missing
+    (2026-11-26: every Saturday's 18:00 UTC block was dropped by the live collector and nothing said so).
+    Returns (source label, local_date, resorts). Paid source names are hidden: this feeds the public log."""
+    rows = con.execute(f"""
+      SELECT CASE WHEN source IN {paid} THEN 'a paid source' ELSE source END AS src, CAST(local_date AS VARCHAR), count(DISTINCT resort_id)
+      FROM (SELECT source, resort_id, local_date, partial,
+                   lag(local_date) OVER w AS pd, lead(local_date) OVER w AS nd, lag(partial) OVER w AS pp, lead(partial) OVER w AS np
+            FROM (SELECT source, resort_id, tier, model, member, space, issue_key, local_date, cov_h < day_h - 0.01 AS partial FROM fday)
+            WINDOW w AS (PARTITION BY source, resort_id, tier, model, member, space, issue_key ORDER BY local_date))
+      WHERE partial AND pd = local_date - 1 AND nd = local_date + 1 AND NOT pp AND NOT np
+      GROUP BY 1, 2 ORDER BY 1, 2""").fetchall()
+    return [(a, b, int(c)) for a, b, c in rows]
+
+
 def build(archive: Path, out: Path, resorts_path: Path) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     public_log: list[str] = []
@@ -209,6 +225,13 @@ def build(archive: Path, out: Path, resorts_path: Path) -> dict:
               ", ".join(f"{s} {n}" for s, n in by) + ". Details in the sealed report's diagnostics.csv."
         (out / "log.txt").write_text(msg + "\n")
         raise SystemExit(msg)
+    holes = interior_holes(con, PAID)
+    if holes:
+        shown = "; ".join(f"{src} {d} ({n} resorts)" for src, d, n in holes[:12]) + (" …" if len(holes) > 12 else "")
+        msg = (f"WARNING {len(holes)} forecast days have a hole inside an otherwise complete run (a partial day with full days "
+               f"either side). They are dropped, not scored as zero, but data is missing: {shown}")
+        log(public_log, msg)
+        print(f"::warning title=verify: forecast days with holes::{msg}")  # shows as an annotation on the Action run
     con.execute("DELETE FROM fday WHERE cov_h < day_h - 0.01")  # partial day: not zero, just not scorable
 
     con.execute("""

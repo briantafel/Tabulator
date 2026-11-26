@@ -33,3 +33,28 @@ export async function runPool(items, n, fn) {
 export function liveShortfall(attempted, ok) {
   return Math.max(0, attempted - ok);
 }
+
+/* 2026-11-26: the Saturday hole. Open-Meteo stamps each hour at its END, so a day's last 6-hour block (18:00-24:00 UTC)
+ * needs the next day's 00:00 stamp. A week piece asked only up to its last day (always a Saturday) got 5 hours for that
+ * block, toBlocks dropped it, and the verify build then dropped the whole partial day (11-07, 11-14, 11-21 never scored).
+ * So a live request runs one day past the piece and the rows are cut back to the piece's own days. */
+const DAY_MS = 864e5;
+
+/** end_date to send for a live piece ending on `to` (YYYY-MM-DD): the next day. */
+export function liveFetchEnd(to) {
+  return new Date(Date.parse(`${to}T00:00:00Z`) + DAY_MS).toISOString().slice(0, 10);
+}
+
+/** Keep rows whose block starts on [from, to] (UTC days); with `fromHourUtc`, only blocks starting at or after that hour
+ *  on day `from` (the re-fetch pieces add back just the missing 18:00 block). */
+export function cutToWindow(rows, from, to, fromHourUtc = 0) {
+  const lo = Date.parse(`${from}T00:00:00Z`) + fromHourUtc * 3600e3;
+  const hi = Date.parse(`${to}T00:00:00Z`) + DAY_MS;
+  return rows.filter((r) => { const t = Date.parse(r.valid_start); return t >= lo && t < hi; });
+}
+
+/** One re-fetch piece per resort, model and finished week: its last day, from 18:00 UTC. Fills the hole above in weeks
+ *  already marked done before the fix (week starts before `before`). `windows` = liveWindows() output [start, end, final]; only final weeks (whole week stored). */
+export function saturdayFixPieces(windows, before = "2026-11-22") {
+  return windows.filter(([from, , final]) => final && from < before).map(([from]) => new Date(Date.parse(`${from}T00:00:00Z`) + 6 * DAY_MS).toISOString().slice(0, 10));
+}

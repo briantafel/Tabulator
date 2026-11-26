@@ -60,7 +60,7 @@ import * as om from "./previous-runs.js";
 import * as cocorahs from "./cocorahs.js";
 import * as snodas from "./snodas.js";
 import { groupOf, makeBreakers } from "./breakers.js";
-import { freshestFirst, liveShortfall, runPool } from "./live-pieces.js";
+import { cutToWindow, freshestFirst, liveFetchEnd, liveShortfall, runPool, saturdayFixPieces } from "./live-pieces.js";
 
 const root = new URL("../..", import.meta.url).pathname;
 const work = process.argv[2];
@@ -260,6 +260,15 @@ const livePieces = om.MODELS.flatMap((model) => resorts.filter((r) => coordsOf(r
     key: `om-live-${r.id}-${model}-${from}`, kind: "om", live: true, final, resort: r, model, winter: [from, to],
     hourly: om.LIVE_HOURLY, weight: om.callWeight(om.LIVE_HOURLY.length, (Date.parse(to) - Date.parse(from)) / 864e5 + 1),
   }))));
+// 2026-11-26: weeks already marked done have no 18:00-24:00 UTC block on their last day (see live-pieces.js liveFetchEnd).
+// One small piece each re-fetches just that block; done once, never again. New weeks are fetched whole by the fix above.
+const FIX_FROM_HOUR = 18;
+const fixPieces = om.MODELS.flatMap((model) => resorts.filter((r) => coordsOf(r) && !r.archiveOnly && coordsOf(r)[0] > 0)
+  .flatMap((r) => saturdayFixPieces(liveWindows(LIVE_SEASON_START, todayMs)).map((day) => ({
+    key: `om-livefix-${r.id}-${model}-${day}`, kind: "om", live: true, fix: true, final: true, resort: r, model, winter: [day, day],
+    hourly: om.LIVE_HOURLY, weight: om.callWeight(om.LIVE_HOURLY.length, 2),
+  }))));
+livePieces.push(...fixPieces);
 pieces.unshift(...livePieces);
 
 const done = doneKeys();
@@ -405,7 +414,7 @@ async function runPiece(p) {
   let res;
   for (const id of ids) {
     const q = new URLSearchParams({ latitude: lat, longitude: lon, models: id, hourly: (p.hourly ?? om.HOURLY).join(","),
-      start_date: p.winter[0], end_date: p.winter[1], timezone: "GMT", timeformat: "iso8601" });
+      start_date: p.winter[0], end_date: p.live ? liveFetchEnd(p.winter[1]) : p.winter[1], timezone: "GMT", timeformat: "iso8601" });
     if (elevations[p.resort.id]) q.set("elevation", String(elevations[p.resort.id]));
     // Retry network faults. A connect timeout means the request never reached
     // Open-Meteo, so it cost nothing against the budget; the GFS pieces on
@@ -427,8 +436,9 @@ async function runPiece(p) {
     if (/limit exceeded/i.test(res.text)) err.rateLimited = true;
     throw err;
   }
-  const rows = om.previousRunsToRows(JSON.parse(res.text), {
+  let rows = om.previousRunsToRows(JSON.parse(res.text), {
     resort: p.resort, model: p.model, elevation: elevations[p.resort.id], fetchedAt, runId: `bf-${p.key}` });
+  if (p.live) rows = cutToWindow(rows, p.winter[0], p.winter[1], p.fix ? FIX_FROM_HOUR : 0);
   return finish(p, "open-meteo-previous-runs", rows, [[`${p.key}.json.gz`, res.text]]);
 }
 
