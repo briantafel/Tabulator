@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-26T22:17:35.352Z",
+ "generatedAt": "2026-11-26T23:17:32.556Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T22:17:30.828Z",
+ "blendGeneratedAt": "2026-11-26T23:17:27.833Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -21,7 +21,7 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 32\". Jackson Hole and Big Sky follow. The NWS is calling for more at Grand Targhee: 27 to 50 inches Thursday night through Tuesday night. Winter Storm Warning at Grand Targhee from Friday to Saturday."
+   "text": "Grand Targhee is forecast for about 33\". Jackson Hole and Big Sky follow. The NWS is calling for more at Grand Targhee: 27 to 50 inches Thursday night through Tuesday night. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "the Eastern Sierra",
@@ -31,7 +31,7 @@
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 31\". Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "text": "Jay Peak is forecast for about 32\". Le Massif and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the Coast Mountains",
@@ -46,7 +46,7 @@
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 23\". RED Mountain and Revelstoke follow."
+   "text": "Whitewater is forecast for about 25\". RED Mountain and Revelstoke follow."
   },
   {
    "key": "the Wasatch",
@@ -61,19 +61,19 @@
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Big White is forecast for about 13\", 8\" of it Thursday. Sun Peaks and SilverStar follow."
+   "text": "Big White is forecast for about 13\", 9\" of it Thursday. Sun Peaks and SilverStar follow."
   },
   {
    "key": "the Canadian Rockies",
    "title": "Canadian Rockies",
-   "text": "Lake Louise is forecast for about 6\". Sunshine Village and Marmot Basin follow."
+   "text": "Sunshine Village is forecast for about 7\", 4\" of it Thursday. Lake Louise and Marmot Basin follow. Environment Canada has rain mixed in at Sunshine Village Thursday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T22:17:30.828Z"
+   "issuedAt": "2026-11-26T23:17:27.833Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -81,12 +81,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T22:17:35.352Z"
+   "issuedAt": "2026-11-26T23:17:32.556Z"
   }
  ],
  "api": {
   "day": "2026-11-26",
-  "calls": 9
+  "calls": 10
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
