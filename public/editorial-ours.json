@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-26T00:22:39.500Z",
+ "generatedAt": "2026-11-26T01:18:02.031Z",
  "forecastGeneratedAt": "2026-11-25T21:07:44.154Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T00:22:35.791Z",
+ "blendGeneratedAt": "2026-11-26T01:17:58.852Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-26T00:22:39.500Z",
@@ -18,8 +18,7 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A Pacific system moves into western Wyoming Thursday night and Friday with light to moderate snow west of the Continental Divide. A second wave Friday night into Saturday brings wider snow and strong westerly wind, with the first accumulating snow of the season possible east of the Divide. Grand Targhee leads the region with 60\" for the week. Sunday turns colder and drier.",
-   "basis": "1cdlbcc"
+   "text": "Grand Targhee is forecast for about 61\". Jackson Hole and Big Sky follow."
   },
   {
    "key": "the Cascades",
@@ -30,20 +29,17 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Whistler sees rain and showers for much of the week, with a 60 percent chance of showers Thursday and Friday. Snow chances return Sunday night and Monday. The area is more of a rain story than a powder story, with Whistler at 32\" for the week.",
-   "basis": "t8dyig"
+   "text": "Whistler is forecast for about 32\", 16\" of it Thursday. Cypress Mountain follows."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Rain and mild temperatures dominate Thursday, with snow levels around 1,500 metres. Snow chances are modest through the weekend and only pick up into early next week. Whitewater leads the region at 25\" for the week.",
-   "basis": "w767q3"
+   "text": "Whitewater is forecast for about 25\", 13\" of it Thursday. RED Mountain and Revelstoke follow."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "A large storm passes to the south on Thanksgiving, leaving marginally cold air. Freezing rain is likely in northern New York and central Vermont Thanksgiving night, with slippery roads and winter weather advisories through Friday morning. Jay Peak leads the region at 24\" for the week, and a frontal system brings another round Sunday night into Monday.",
-   "basis": "19b00yh"
+   "text": "Jay Peak is forecast for about 24\". Whiteface and Killington follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the central Rockies",
@@ -80,7 +76,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T00:22:35.791Z"
+   "issuedAt": "2026-11-26T01:17:58.852Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -116,16 +112,16 @@
   },
   {
    "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-25T20:51:00+00:00"
+   "issuedAt": "2026-11-26T00:18:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T00:22:39.500Z"
+   "issuedAt": "2026-11-26T01:18:02.031Z"
   }
  ],
  "api": {
   "day": "2026-11-26",
-  "calls": 2
+  "calls": 4
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
