@@ -1,0 +1,35 @@
+name: csi-drop-diag
+# Read-only: compares the 11-22 and latest verify pairs to explain the live CSI drop. Prints only.
+on:
+  workflow_dispatch:
+    inputs:
+      old_day:
+        default: "2026-11-22"
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb==2.0.0 "numpy>=2,<3"
+      - name: Fetch both pairs files
+        run: |
+          E="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp "s3://$R2_BUCKET/verify/${{ inputs.old_day }}/pairs.parquet" old.parquet --endpoint-url "$E" --only-show-errors
+          aws s3 cp "s3://$R2_BUCKET/verify/latest/pairs.parquet" new.parquet --endpoint-url "$E" --only-show-errors
+          ls -la *.parquet
+      - name: Diagnose
+        run: python3 scripts/model/csi_drop_diag.py old.parquet new.parquet public/blend.json
