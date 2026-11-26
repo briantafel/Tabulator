@@ -15,7 +15,7 @@ con.execute("SET TimeZone='UTC'")
 src = f"read_parquet('s3://{bucket}/archive/source=open-meteo-previous-runs/month=2026-1*/*.parquet', union_by_name=true)"
 print("columns:", [r[0] for r in con.execute(f"DESCRIBE SELECT * FROM {src}").fetchall()])
 con.execute(f"""CREATE TABLE x AS SELECT resort_id, tier, model, variable, period_label, valid_start, fetched_at FROM {src}
-  WHERE variable = 'precipitation' AND tier = 'mid' AND CAST(valid_start AS DATE) BETWEEN DATE '2026-10-30' AND DATE '2026-11-26'""")
+  WHERE variable = 'precip' AND tier = 'mid' AND CAST(valid_start AS DATE) BETWEEN DATE '2026-10-30' AND DATE '2026-11-26'""")
 print("rows:", con.execute("SELECT count(*), count(DISTINCT resort_id) FROM x").fetchone())
 print("\nmodels:", con.execute("SELECT model, count(*) FROM x GROUP BY 1 ORDER BY 1").fetchall())
 print("\n=== A. distinct hours stored per UTC valid date, issue previous_day1, one model (gfs_seamless), all resorts ===")
