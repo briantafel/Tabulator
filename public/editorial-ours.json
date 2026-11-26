@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-26T07:17:32.422Z",
+ "generatedAt": "2026-11-26T08:17:40.556Z",
  "forecastGeneratedAt": "2026-11-26T06:07:44.428Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-26T07:17:29.269Z",
+ "blendGeneratedAt": "2026-11-26T08:17:37.236Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,12 +16,7 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 44\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Thursday night."
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Sugar Bowl is forecast for about 21\", 13\" of it Sunday. Palisades and Kirkwood follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night."
+   "text": "Crystal Mountain is forecast for about 14\". Stevens Pass and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Sunday night. The NWS is calling for more at Crystal Mountain: 19 to 36 inches Thanksgiving Day through Monday night."
   },
   {
    "key": "the northern Rockies",
@@ -44,11 +39,6 @@
    "text": "Revelstoke is forecast for about 7\". Whitewater and Fernie follow."
   },
   {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 6\", 5\" of it Monday."
-  },
-  {
    "key": "the central Rockies",
    "title": "Central Rockies",
    "text": "Steamboat is forecast for about 6\", 4\" of it Saturday. Aspen Highlands and Crested Butte follow. The NWS is calling for more at Steamboat: 7 to 15 inches Friday through Monday night."
@@ -58,7 +48,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-26T07:17:29.269Z"
+   "issuedAt": "2026-11-26T08:17:37.236Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -66,7 +56,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T07:17:32.422Z"
+   "issuedAt": "2026-11-26T08:17:40.556Z"
   }
  ],
  "api": {
