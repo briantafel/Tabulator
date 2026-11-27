@@ -1,134 +1,82 @@
 {
- "generatedAt": "2026-11-27T00:18:16.799Z",
+ "generatedAt": "2026-11-27T01:21:02.144Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T00:18:13.728Z",
+ "blendGeneratedAt": "2026-11-27T01:20:58.242Z",
  "quiet": false,
- "writer": "claude",
- "writtenAt": "2026-11-27T00:18:16.799Z",
- "model": "claude-haiku-5-5",
+ "writer": "template",
  "window": {
   "from": "2026-11-27",
   "to": "2026-12-01",
   "days": 5,
   "toLabel": "Tuesday Dec 1"
  },
- "overview": "A Pacific system brings snow to the northern Rockies Friday into Saturday, with more mountain snow in the Cascades and Sierra later this week. A stronger storm reaches the Sierra and Wasatch around Monday and Tuesday.",
+ "overview": null,
  "regions": [
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A Pacific system arrives late Friday with stronger northwest flow, favoring mountains west of the Divide through Saturday. Winter Storm Warnings cover the western mountains, with snow rates near an inch an hour. Jackson Hole and Grand Targhee are the top bets, with Jackson Hole at 29\" and Grand Targhee at 32\" for the week. Gusts near 60 mph are possible on the Wind Corridor Friday afternoon.",
-   "basis": "148dyx1"
+   "text": "Grand Targhee is forecast for about 32\". Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Freezing rain and rain hit northern New York and Vermont Thursday night into Friday, so expect slick travel and possible outages. Light mountain snow follows over the weekend. A frontal system brings another round of precipitation Sunday night into Monday. Jay Peak has the most snow of the Northeast resorts at 30\" for the week.",
-   "basis": "k6mvi4"
+   "text": "Jay Peak is forecast for about 26\". Le Massif and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Atmospheric river rain falls through Friday, with mountain snow above 4000 to 5500 feet and a Winter Weather Advisory likely for the pass areas. Snow levels stay high for the Oregon Blues, so expect mostly rain there. A more active pattern returns early next week. Mt. Bachelor leads at 26\" for the week.",
-   "basis": "1udjjcm"
-  },
-  {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "Dry, mild weather holds through Saturday, with fog possible in the valleys. A wet system arrives Sunday into Monday, bringing light snow above 7500 feet and thunderstorm chances. Snow levels then rise above 8000 feet. Kirkwood leads the area at 25\" for the week, with the heaviest snow expected Monday night into Tuesday.",
-   "basis": "eb88ee"
-  },
-  {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mild and dry through Saturday. Rain and high-elevation snow return Sunday into Tuesday, with strong ridgetop winds gusting 60 to 80 mph Sunday night into Monday. The NWS is calling for more, 22 to 37 inches Sunday night through Tuesday night. Mammoth leads at 21\" for the week, with the storm arriving late Monday night into Tuesday.",
-   "basis": "1hh4c60"
+   "text": "Mt. Bachelor is forecast for about 27\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Bachelor Friday and Friday night."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Dry through Friday, with a weak storm bringing mountain snow to northern Utah Friday night into Saturday. Dry weather returns Sunday, then a stronger storm arrives around Tuesday. Alta and Snowbird lead at about 21\" each for the week, with most of the total coming Tuesday.",
-   "basis": "163f4kd"
+   "text": "Brighton is forecast for about 24\", 14\" of it Tuesday. Alta and Solitude follow."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Kirkwood is forecast for about 25\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 20\", 18\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Showers and rain dominate Friday and through early next week, with snow levels too high for most of the terrain. Mixed rain and snow returns Monday before a cooler period. Cypress Mountain leads at 24\" for the week, with the bulk arriving Monday.",
-   "basis": "1ceoljw"
+   "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows. Environment Canada has rain mixed in at Whistler Monday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A fast shortwave brings snow to the northern and central Colorado mountains from Friday night into Saturday, with gusts of 45 to 60 mph above treeline. Winter Weather Advisories cover the Park, Elkhead, Flat Tops and Central mountains. The Park Range sees the least. Steamboat leads at 22\" for the week, with Saturday the big day.",
-   "basis": "113upyc"
+   "text": "Steamboat is forecast for about 22\", 16\" of it Saturday. Vail and Arapahoe Basin follow. Winter Weather Advisory at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Mostly mixed sun and cloud through Saturday, then rain or snow from Sunday night into Monday. Whitewater leads at 12\" for the week, with Monday the biggest day.",
-   "basis": "eqkpwo"
+   "text": "Whitewater is forecast for about 13\", 8\" of it Monday. RED Mountain and Revelstoke follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Snow arrives Sunday night, mixing with rain Monday. Expect light totals, with SilverStar leading at 7\" for the week and Sun Peaks close behind.",
-   "basis": "1a5ggbv"
+   "text": "SilverStar is forecast for about 9\". Sun Peaks and Big White follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T00:18:13.728Z"
+   "issuedAt": "2026-11-27T01:20:58.242Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-26T21:14:11.426Z"
   },
   {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T23:10:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-26T23:49:00+00:00"
-  },
-  {
-   "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-26T22:54:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T23:43:00+00:00"
-  },
-  {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T16:48:00+00:00"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-26T20:44:00+00:00"
-  },
-  {
-   "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-26T20:18:00+00:00"
-  },
-  {
-   "name": "NWS SLC Area Forecast Discussion",
-   "issuedAt": "2026-11-27T00:03:00+00:00"
-  },
-  {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T23:16:00+00:00"
-  },
-  {
-   "name": "NWS BOU Area Forecast Discussion",
-   "issuedAt": "2026-11-26T23:42:00+00:00"
-  },
-  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T00:18:16.799Z"
+   "issuedAt": "2026-11-27T01:21:02.144Z"
   }
  ],
  "api": {
