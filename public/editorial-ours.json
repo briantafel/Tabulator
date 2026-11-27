@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T03:17:33.698Z",
+ "generatedAt": "2026-11-27T04:17:40.961Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T03:17:31.222Z",
+ "blendGeneratedAt": "2026-11-27T04:17:36.406Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,12 +16,12 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Jackson Hole is forecast for about 30\", 16\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
+   "text": "Jackson Hole is forecast for about 31\", 16\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 26\". Le Massif and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "text": "Jay Peak is forecast for about 28\". Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the Wasatch",
@@ -31,17 +31,12 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 26\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Mt. Bachelor Monday."
+   "text": "Mt. Bachelor is forecast for about 26\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Bachelor Monday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 25\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows. Environment Canada has rain mixed in at Whistler Monday night."
+   "text": "Kirkwood is forecast for about 27\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
   },
   {
    "key": "the Eastern Sierra",
@@ -49,26 +44,31 @@
    "text": "Mammoth is forecast for about 20\", 18\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
   },
   {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows. Environment Canada has rain mixed in at Whistler Monday night."
+  },
+  {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 22\", 15\" of it Saturday. Arapahoe Basin and Vail follow. The NWS is calling for more at Arapahoe Basin: 10 to 18 inches Friday night through Saturday night. Winter Weather Advisory at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 24\", 17\" of it Saturday. Arapahoe Basin and Vail follow. The NWS is calling for more at Arapahoe Basin: 10 to 18 inches Friday night through Saturday night. Winter Weather Advisory at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 13\", 8\" of it Monday. RED Mountain and Revelstoke follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
+   "text": "Whitewater is forecast for about 12\", 8\" of it Monday. Revelstoke and RED Mountain follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "SilverStar is forecast for about 9\". Big White and Sun Peaks follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
+   "text": "SilverStar is forecast for about 7\", 4\" of it Monday. Big White and Sun Peaks follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T03:17:31.222Z"
+   "issuedAt": "2026-11-27T04:17:36.406Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -76,7 +76,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T03:17:33.698Z"
+   "issuedAt": "2026-11-27T04:17:40.961Z"
   }
  ],
  "api": {
