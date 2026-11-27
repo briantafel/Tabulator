@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T02:17:36.346Z",
+ "generatedAt": "2026-11-27T03:17:33.698Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T02:17:32.549Z",
+ "blendGeneratedAt": "2026-11-27T03:17:31.222Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,12 +16,12 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Jackson Hole is forecast for about 31\", 17\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
+   "text": "Jackson Hole is forecast for about 30\", 16\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 28\". Le Massif and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "text": "Jay Peak is forecast for about 26\". Le Massif and Mont-Sainte-Anne follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
   },
   {
    "key": "the Wasatch",
@@ -39,14 +39,14 @@
    "text": "Kirkwood is forecast for about 25\". Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
   },
   {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 20\", 18\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
-  },
-  {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
    "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows. Environment Canada has rain mixed in at Whistler Monday night."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 20\", 18\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
   },
   {
    "key": "the central Rockies",
@@ -56,19 +56,19 @@
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 14\", 8\" of it Monday. RED Mountain and Revelstoke follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
+   "text": "Whitewater is forecast for about 13\", 8\" of it Monday. RED Mountain and Revelstoke follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "SilverStar is forecast for about 10\". Big White and Sun Peaks follow."
+   "text": "SilverStar is forecast for about 9\". Big White and Sun Peaks follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T02:17:32.549Z"
+   "issuedAt": "2026-11-27T03:17:31.222Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -76,12 +76,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T02:17:36.346Z"
+   "issuedAt": "2026-11-27T03:17:33.698Z"
   }
  ],
  "api": {
   "day": "2026-11-27",
-  "calls": 1
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
