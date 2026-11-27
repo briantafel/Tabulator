@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T22:18:35.591Z",
+ "generatedAt": "2026-11-27T23:17:39.118Z",
  "forecastGeneratedAt": "2026-11-27T21:07:45.135Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T22:18:31.738Z",
+ "blendGeneratedAt": "2026-11-27T23:17:35.725Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-27T22:18:35.591Z",
@@ -18,14 +18,12 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "A fast cold front brings snow to the western and central Wyoming mountains through Saturday, with gusts of 50 to 60 mph over the wind corridor. Grand Targhee leads with 36 inches for the week, 13 of them on Saturday, and Jackson Hole has 30. A Winter Storm Warning runs Friday to Saturday at both. Another weak system arrives Sunday night into Monday.",
-   "basis": "tl9nbc"
+   "text": "Grand Targhee is forecast for about 36\". Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "A weak system crosses northern Utah late Friday into Saturday, bringing light snow to the mountains. Brighton leads with 25 inches for the week, and Solitude has 24. Dry weather returns Sunday. The forecasters expect a more substantial system to hit mainly southern Utah late next week.",
-   "basis": "15k2xxw"
+   "text": "Brighton is forecast for about 26\". Solitude and Alta follow."
   },
   {
    "key": "Tahoe",
@@ -36,20 +34,17 @@
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Rain and mountain snow from an atmospheric river ease Saturday, then a new low brings widespread precipitation Sunday and Monday. Mt. Bachelor leads with 27 inches for the week, 12 of them on Monday, and Mt. Baker has 16. Snow levels are high, so mountain snow falls mainly above the passes.",
-   "basis": "m3cf2f"
+   "text": "Mt. Bachelor is forecast for about 28\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Rain falls across the region through Saturday, mostly as snow showers on the high terrain. Saturday night a stronger storm brings wetter snow as snow levels fall to around 1,500 to 2,000 feet. Jay Peak leads with 25 inches for the week, 10 of them Friday. Monday brings rain, then snow showers on the higher terrain.",
-   "basis": "1lpqg7v"
+   "text": "Jay Peak is forecast for about 25\". Mont-Sainte-Anne and Whiteface follow. Environment Canada has rain mixed in at Mont-Sainte-Anne Friday night."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "A strong storm brings snow to the northern Colorado mountains through Saturday, with gusts of 40 to 60 mph over the high terrain. Steamboat leads the region with 23 inches, 19 of them Saturday, and a Winter Storm Warning runs through Sunday. Snow falls on the Denver area Saturday, with a 50 to 60 percent chance of the first measurable snowfall of the season.",
-   "basis": "1ek82v7"
+   "text": "Steamboat is forecast for about 21\", 18\" of it Saturday. Vail and Breckenridge follow. Winter Storm Warning at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Coast Mountains",
@@ -72,8 +67,7 @@
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Wet, cool weather with snow above about 4,000 feet. Big White leads with 7 inches for the week, 3 of them Monday, and Sun Peaks has 7. Tuesday and Wednesday are mostly sunny.",
-   "basis": "1g3l1hr"
+   "text": "Sun Peaks is forecast for about 7\", 4\" of it Monday. Big White and SilverStar follow. Environment Canada has rain mixed in at Big White Monday."
   },
   {
    "key": "the southern Rockies",
@@ -86,7 +80,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T22:18:31.738Z"
+   "issuedAt": "2026-11-27T23:17:35.725Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -130,7 +124,7 @@
   },
   {
    "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-27T21:11:00+00:00"
+   "issuedAt": "2026-11-27T22:25:00+00:00"
   },
   {
    "name": "NWS PUB Area Forecast Discussion",
@@ -142,12 +136,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T22:18:35.591Z"
+   "issuedAt": "2026-11-27T23:17:39.118Z"
   }
  ],
  "api": {
   "day": "2026-11-27",
-  "calls": 8
+  "calls": 10
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
