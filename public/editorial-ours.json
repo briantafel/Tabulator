@@ -1,92 +1,153 @@
 {
- "generatedAt": "2026-11-27T21:17:40.137Z",
+ "generatedAt": "2026-11-27T22:18:35.591Z",
  "forecastGeneratedAt": "2026-11-27T21:07:45.135Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T21:17:35.474Z",
+ "blendGeneratedAt": "2026-11-27T22:18:31.738Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "writtenAt": "2026-11-27T22:18:35.591Z",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-27",
   "to": "2026-12-02",
   "days": 6,
   "toLabel": "Wednesday Dec 2"
  },
- "overview": null,
+ "overview": "A chain of Pacific systems keeps the West snowy this week, with a strong storm Saturday in the northern Rockies and Sierra and a series of weaker ones after that. The Northeast gets rain first, then a wetter-than-usual Saturday night.",
  "regions": [
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 35\". Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
+   "text": "A fast cold front brings snow to the western and central Wyoming mountains through Saturday, with gusts of 50 to 60 mph over the wind corridor. Grand Targhee leads with 36 inches for the week, 13 of them on Saturday, and Jackson Hole has 30. A Winter Storm Warning runs Friday to Saturday at both. Another weak system arrives Sunday night into Monday.",
+   "basis": "tl9nbc"
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
-   "text": "Brighton is forecast for about 26\". Solitude and Alta follow."
+   "text": "A weak system crosses northern Utah late Friday into Saturday, bringing light snow to the mountains. Brighton leads with 25 inches for the week, and Solitude has 24. Dry weather returns Sunday. The forecasters expect a more substantial system to hit mainly southern Utah late next week.",
+   "basis": "15k2xxw"
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 25\". Palisades and Sugar Bowl follow. The National Weather Service has rain mixed in at Palisades Monday."
+   "text": "Sunday brings the first of several systems to the Sierra, with rain below about 8,000 feet and snow above. Gusts can reach 80 mph on the ridges. Kirkwood leads the region with 27 inches for the week, 10 of them Monday. Snow levels fall further Tuesday into Wednesday.",
+   "basis": "1cft5mb"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 26\". Mt. Baker and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Bachelor Friday and Friday night."
+   "text": "Rain and mountain snow from an atmospheric river ease Saturday, then a new low brings widespread precipitation Sunday and Monday. Mt. Bachelor leads with 27 inches for the week, 12 of them on Monday, and Mt. Baker has 16. Snow levels are high, so mountain snow falls mainly above the passes.",
+   "basis": "m3cf2f"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 25\". Le Massif and Mont-Sainte-Anne follow. Environment Canada has rain mixed in at Le Massif Friday night."
+   "text": "Rain falls across the region through Saturday, mostly as snow showers on the high terrain. Saturday night a stronger storm brings wetter snow as snow levels fall to around 1,500 to 2,000 feet. Jay Peak leads with 25 inches for the week, 10 of them Friday. Monday brings rain, then snow showers on the higher terrain.",
+   "basis": "1lpqg7v"
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 25\", 20\" of it Saturday. Vail and Breckenridge follow. Winter Storm Warning at Steamboat from Friday to Sunday."
+   "text": "A strong storm brings snow to the northern Colorado mountains through Saturday, with gusts of 40 to 60 mph over the high terrain. Steamboat leads the region with 23 inches, 19 of them Saturday, and a Winter Storm Warning runs through Sunday. Snow falls on the Denver area Saturday, with a 50 to 60 percent chance of the first measurable snowfall of the season.",
+   "basis": "1ek82v7"
   },
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 17\". Whistler follows."
+   "text": "A mild, wet pattern holds for the coast, with rain on most days. Cypress Mountain leads with 18 inches for the week, 7 of them Monday, and Whistler has 13.",
+   "basis": "hmhu9d"
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 15\". The NWS is calling for more at Mammoth: 12 to 24 inches Sunday night through Tuesday night."
+   "text": "Gusty winds of 55 to 65 mph hit the Sierra Friday night into Saturday morning, then a stronger storm arrives Sunday. Snow falls above about 7,000 feet by Monday, and Mammoth leads with 14 inches for the week. The National Weather Service says snowfall rises to 12 to 24 inches from Sunday night through Tuesday night.",
+   "basis": "2zgvq8"
   },
   {
    "key": "the Kootenays",
    "title": "Kootenays",
-   "text": "Whitewater is forecast for about 12\", 6\" of it Monday. Revelstoke and Fernie follow. Environment Canada has rain mixed in at Whitewater Monday."
+   "text": "Mixed rain and snow with frequent flurries through the week. Whitewater leads with 12 inches for the week, 6 of them Monday, and Fernie has 11. Snow levels stay low enough that most of the snow falls at the mountain tops.",
+   "basis": "9l00jn"
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Big White is forecast for about 8\". Sun Peaks and SilverStar follow. Environment Canada has rain mixed in at Big White Monday."
+   "text": "Wet, cool weather with snow above about 4,000 feet. Big White leads with 7 inches for the week, 3 of them Monday, and Sun Peaks has 7. Tuesday and Wednesday are mostly sunny.",
+   "basis": "1g3l1hr"
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 6\", all of it Wednesday. Taos follows. The NWS is calling for more at Wolf Creek: 6 to 13 inches Tuesday night through Wednesday night."
+   "text": "Snow and blowing snow hit the central Colorado mountains through Saturday night. Winds of 55 to 65 mph follow a strong front across the eastern plains Saturday. Wolf Creek leads with 6 inches for the week, all of it Wednesday. The National Weather Service says the next storm brings 6 to 13 inches Tuesday night through Wednesday night.",
+   "basis": "vjyequ"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T21:17:35.474Z"
+   "issuedAt": "2026-11-27T22:18:31.738Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-27T21:14:32.574Z"
   },
   {
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-27T19:11:00+00:00"
+  },
+  {
+   "name": "NWS TFX Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:27:00+00:00"
+  },
+  {
+   "name": "NWS SLC Area Forecast Discussion",
+   "issuedAt": "2026-11-27T16:51:00+00:00"
+  },
+  {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:45:00+00:00"
+  },
+  {
+   "name": "NWS PDT Area Forecast Discussion",
+   "issuedAt": "2026-11-27T21:06:00+00:00"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-27T18:10:00+00:00"
+  },
+  {
+   "name": "NWS BTV Area Forecast Discussion",
+   "issuedAt": "2026-11-27T19:37:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-27T18:04:00+00:00"
+  },
+  {
+   "name": "NWS BOU Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:55:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-27T21:11:00+00:00"
+  },
+  {
+   "name": "NWS PUB Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:30:00+00:00"
+  },
+  {
+   "name": "NWS ABQ Area Forecast Discussion",
+   "issuedAt": "2026-11-27T19:06:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T21:17:40.137Z"
+   "issuedAt": "2026-11-27T22:18:35.591Z"
   }
  ],
  "api": {
   "day": "2026-11-27",
-  "calls": 6
+  "calls": 8
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
