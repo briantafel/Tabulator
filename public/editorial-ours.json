@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T04:17:40.961Z",
+ "generatedAt": "2026-11-27T05:18:17.181Z",
  "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T04:17:36.406Z",
+ "blendGeneratedAt": "2026-11-27T05:18:14.041Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,22 +16,17 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Jackson Hole is forecast for about 31\", 16\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
+   "text": "Jackson Hole is forecast for about 31\", 17\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
   },
   {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Jay Peak is forecast for about 28\". Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Friday night. Winter Weather Advisory at Jay Peak from Thursday to Friday."
+   "key": "the Cascades",
+   "title": "Cascades",
+   "text": "Mt. Bachelor is forecast for about 27\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Bachelor Monday."
   },
   {
    "key": "the Wasatch",
    "title": "Wasatch",
    "text": "Brighton is forecast for about 24\", 14\" of it Tuesday. Alta and Snowbird follow."
-  },
-  {
-   "key": "the Cascades",
-   "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 26\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Bachelor Monday."
   },
   {
    "key": "Tahoe",
@@ -62,13 +57,18 @@
    "key": "the Okanagan",
    "title": "Okanagan",
    "text": "SilverStar is forecast for about 7\", 4\" of it Monday. Big White and Sun Peaks follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
+  },
+  {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Tremblant is forecast for about 6\". Jay Peak and Whiteface follow. The National Weather Service has rain mixed in at Jay Peak Sunday night. Freezing Rain Warning at Tremblant from Friday to Saturday."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T04:17:36.406Z"
+   "issuedAt": "2026-11-27T05:18:14.041Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -76,7 +76,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T04:17:40.961Z"
+   "issuedAt": "2026-11-27T05:18:17.181Z"
   }
  ],
  "api": {
