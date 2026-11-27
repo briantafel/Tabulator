@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T09:19:42.908Z",
+ "generatedAt": "2026-11-27T10:17:51.013Z",
  "forecastGeneratedAt": "2026-11-27T06:07:45.541Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T09:19:39.670Z",
+ "blendGeneratedAt": "2026-11-27T10:17:45.961Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -53,7 +53,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T09:19:39.670Z"
+   "issuedAt": "2026-11-27T10:17:45.961Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -61,7 +61,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T09:19:42.908Z"
+   "issuedAt": "2026-11-27T10:17:51.013Z"
   }
  ],
  "api": {
