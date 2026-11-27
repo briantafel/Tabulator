@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-27T05:18:17.181Z",
- "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
+ "generatedAt": "2026-11-27T06:15:45.320Z",
+ "forecastGeneratedAt": "2026-11-27T06:07:45.541Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-27T05:18:14.041Z",
  "quiet": false,
@@ -16,12 +16,12 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Jackson Hole is forecast for about 31\", 17\" of it Friday. Grand Targhee and Big Sky follow. The NWS is calling for more at Grand Targhee: 26 to 47 inches Friday through Tuesday night. Winter Storm Warning at Jackson Hole from Friday to Saturday."
+   "text": "Jackson Hole is forecast for about 31\", 17\" of it Friday. Grand Targhee and Big Sky follow. Winter Storm Warning at Jackson Hole from Friday to Saturday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 27\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Bachelor Monday."
+   "text": "Mt. Bachelor is forecast for about 27\". Mt. Baker and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
   },
   {
    "key": "the Wasatch",
@@ -41,12 +41,12 @@
   {
    "key": "the Coast Mountains",
    "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows. Environment Canada has rain mixed in at Whistler Monday night."
+   "text": "Cypress Mountain is forecast for about 22\", 13\" of it Monday. Whistler follows."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 24\", 17\" of it Saturday. Arapahoe Basin and Vail follow. The NWS is calling for more at Arapahoe Basin: 10 to 18 inches Friday night through Saturday night. Winter Weather Advisory at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 24\", 17\" of it Saturday. Arapahoe Basin and Vail follow. The NWS is calling for more at Arapahoe Basin: 10 to 18 inches Friday night through Saturday night. Winter Storm Warning at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Kootenays",
@@ -54,14 +54,14 @@
    "text": "Whitewater is forecast for about 12\", 8\" of it Monday. Revelstoke and RED Mountain follow. Environment Canada has rain mixed in at Whitewater Monday and Monday night."
   },
   {
+   "key": "the Northeast",
+   "title": "Northeast",
+   "text": "Le Massif is forecast for about 9\". Mont-Sainte-Anne and Jay Peak follow. Environment Canada has rain mixed in at Le Massif Friday night. Freezing Rain Warning at Le Massif from Friday to Saturday."
+  },
+  {
    "key": "the Okanagan",
    "title": "Okanagan",
    "text": "SilverStar is forecast for about 7\", 4\" of it Monday. Big White and Sun Peaks follow. Environment Canada has rain mixed in at SilverStar Monday and Monday night."
-  },
-  {
-   "key": "the Northeast",
-   "title": "Northeast",
-   "text": "Tremblant is forecast for about 6\". Jay Peak and Whiteface follow. The National Weather Service has rain mixed in at Jay Peak Sunday night. Freezing Rain Warning at Tremblant from Friday to Saturday."
   }
  ],
  "ahead": null,
@@ -72,11 +72,11 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-26T21:14:11.426Z"
+   "issuedAt": "2026-11-27T06:15:30.989Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T05:18:17.181Z"
+   "issuedAt": "2026-11-27T06:15:45.320Z"
   }
  ],
  "api": {

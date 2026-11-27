@@ -1,117 +1,111 @@
 {
- "generatedAt": "2026-11-26T21:14:11.619Z",
- "forecastGeneratedAt": "2026-11-26T21:07:41.827Z",
+ "generatedAt": "2026-11-27T06:15:31.231Z",
+ "forecastGeneratedAt": "2026-11-27T06:07:45.541Z",
  "quiet": false,
  "writer": "claude",
- "writtenAt": "2026-11-26T21:14:11.619Z",
+ "writtenAt": "2026-11-27T06:15:31.231Z",
  "model": "claude-haiku-5-5",
  "window": {
-  "from": "2026-11-26",
+  "from": "2026-11-27",
   "to": "2026-12-01",
-  "days": 6,
+  "days": 5,
   "toLabel": "Tuesday Dec 1"
  },
- "overview": "Dry and mild through Saturday across the West. A weak system brings rain and high snow Sunday into Monday, and a stronger, colder storm follows late Monday into Tuesday. Washington and Oregon see several rounds of snow and rain from Thursday into early next week.",
+ "overview": "Systems keep arriving from the Pacific through the week. Washington and the Sierra get rain and mountain snow Sunday into Monday, and the Rockies and Northeast see snow and freezing rain before a short dry spell.",
  "regions": [
-  {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Dry and mild through Sunday morning, with ridgetop gusts of 45 to 60 mph. A weak low brings snow above 8,000 feet Sunday night into Monday, then a colder storm arrives late Monday night into Tuesday, with snow levels falling to near 7,000 feet. Forecasters disagree on how wet that storm will be. Mammoth could see 14 inches Tuesday. The NWS is calling for more, 22 to 37 inches from Sunday night through Tuesday night.",
-   "basis": "1ox48n3"
-  },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "A moderate atmospheric river, a long band of moisture off the Pacific, brings widespread rain through Friday. A weaker system follows Friday, and a brief dry spell comes Saturday. Snow levels run high in Oregon, so the Cascades see little there. Crystal Mountain has 13 inches so far. The NWS is calling for more, 10 to 24 inches from Friday through Monday night.",
-   "basis": "hobize"
+   "text": "A weak system brings light snow to the Cascades Friday, then a brief ridge of high pressure dries things out Saturday. Snow returns Sunday as the next system moves in. Crystal Mountain is the top resort, with 11 inches expected through Monday. The NWS is calling for more, 10 to 23 inches from Friday through Monday night.",
+   "basis": "1q2fh1o"
   },
   {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "A Pacific system arrives Friday afternoon, bringing snow to western mountains through Saturday, with a winter storm warning in effect. Jackson Hole has 12 inches so far, and the NWS is calling for 20 to 40 more from Thursday night through Tuesday night. Winds gust near 60 mph along the Wind Corridor Friday.",
-   "basis": "bjr4xy"
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Dry, mild weather holds through Saturday. A low Sunday night into Monday brings mostly rain to the valleys and only light snow to the highest peaks. A stronger, colder storm arrives late Monday into Tuesday, with forecasters uncertain how wet it will be. Mammoth expects 11 inches through Tuesday, and the NWS is calling for more, 22 to 37 inches from Sunday night through Tuesday night.",
+   "basis": "1kfvcdh"
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Dry, mild weather holds through Saturday, with dense valley fog overnight. A wet system arrives Sunday, bringing light mountain snow above 7,500 feet and gusty south winds along the crest. Another storm follows Monday into Tuesday. Kirkwood has 10 inches so far. The NWS is calling for 20 to 31 inches from Sunday through Tuesday night.",
-   "basis": "1kec4sx"
+   "text": "Dry and mild through Saturday, with valley fog in the mornings. An unsettled pattern starts Sunday, with mountain snow above 7,500 feet and gusty southerly winds on the crest. Kirkwood is the top resort, with 11 inches expected through Tuesday. The NWS is calling for more, 20 to 31 inches from Sunday through Tuesday night.",
+   "basis": "z82ivo"
   },
   {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Mostly rain, heavy at times, through Friday, with winds gusting to 50 km/h. Snow is limited to higher terrain. Sun and cloud return Saturday and Sunday before rain returns Sunday night and Monday. Whistler has 13 inches so far.",
-   "basis": "dgogzd"
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Rain changes to showers Thursday, then a mix of sun and cloud through the weekend. Rain or snow returns Sunday night into Monday. Whitewater has 7 inches so far, with Fernie and Revelstoke also reporting snow and rain showers.",
-   "basis": "1nwkox4"
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Dry through Friday, with snow starting late Friday and running through Saturday across northern and central Colorado. A winter weather advisory covers the Park and Elkhead mountains, and another covers central mountains, where up to 8 inches is possible by Sunday morning. Steamboat could see 6 inches Saturday. The NWS is calling for more, 6 to 13 inches from Friday night through Tuesday night.",
-   "basis": "1dzuvdz"
+   "key": "the northern Rockies",
+   "title": "Northern Rockies",
+   "text": "Strong northwest flow brings a Pacific system to western Wyoming and Idaho Friday night through Saturday, with the heaviest snow west of the Divide. Jackson Hole is the top resort, with 10 inches expected through Monday, and a Winter Storm Warning runs Friday into Saturday. The NWS is calling for more, 18 to 37 inches from Friday through Tuesday night.",
+   "basis": "1ahpix8"
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Freezing rain and icy travel in Vermont and northern New York tonight, with a freezing rain warning for Tremblant Friday and Saturday. Light mountain snow follows over the weekend, with rain below 2,500 feet. Another frontal system brings rain and snow Sunday night into Monday. Jay Peak has 6 inches so far, and a winter weather advisory runs through Friday.",
-   "basis": "1eqq0pj"
+   "text": "A strong storm brings freezing rain to northern New York and Vermont Friday, with icy roads and possible power outages. Light mountain snow follows Saturday. Quebec's Le Massif is the top resort, with 9 inches expected through Monday, and freezing rain warnings run Friday into Saturday.",
+   "basis": "18ipny5"
+  },
+  {
+   "key": "the central Rockies",
+   "title": "Central Rockies",
+   "text": "A fast-moving system brings strong winds and snow to the northern mountains Friday night into Saturday, making travel hazardous, especially over passes and on I-70. Steamboat is the top resort, with 7 inches expected through Saturday. The NWS is calling for more, 6 to 13 inches from Friday night through Tuesday night, and a Winter Storm Warning runs Friday into Sunday.",
+   "basis": "1apa7ty"
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Mostly rain at lower elevations with showers and snow mixing in at times. Whistler is the top resort, with 6 inches expected through Monday.",
+   "basis": "1wmov1r"
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Snow-Forecast (totals)",
-   "issuedAt": "2026-11-26T21:07:41.827Z"
+   "issuedAt": "2026-11-27T06:07:45.541Z"
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-26T21:14:11.426Z"
+   "issuedAt": "2026-11-27T06:15:30.989Z"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-27T03:31:00+00:00"
   },
   {
    "name": "NWS REV Area Forecast Discussion",
    "issuedAt": "2026-11-26T20:18:00+00:00"
   },
   {
-   "name": "NWS SEW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T16:48:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T17:52:00+00:00"
-  },
-  {
-   "name": "NWS RIW Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:00:00+00:00"
-  },
-  {
-   "name": "NWS TFX Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:44:00+00:00"
-  },
-  {
    "name": "NWS STO Area Forecast Discussion",
    "issuedAt": "2026-11-26T20:44:00+00:00"
   },
   {
-   "name": "NWS GJT Area Forecast Discussion",
-   "issuedAt": "2026-11-26T19:36:00+00:00"
+   "name": "NWS RIW Area Forecast Discussion",
+   "issuedAt": "2026-11-27T05:32:00+00:00"
+  },
+  {
+   "name": "NWS PIH Area Forecast Discussion",
+   "issuedAt": "2026-11-27T05:48:00+00:00"
   },
   {
    "name": "NWS BTV Area Forecast Discussion",
-   "issuedAt": "2026-11-26T20:18:00+00:00"
+   "issuedAt": "2026-11-26T22:54:00+00:00"
+  },
+  {
+   "name": "NWS GJT Area Forecast Discussion",
+   "issuedAt": "2026-11-27T05:40:00+00:00"
+  },
+  {
+   "name": "NWS BOU Area Forecast Discussion",
+   "issuedAt": "2026-11-27T05:50:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-26T21:14:11.619Z"
+   "issuedAt": "2026-11-27T06:15:31.231Z"
   }
  ],
  "api": {
-  "day": "2026-11-26",
-  "calls": 4
+  "day": "2026-11-27",
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",

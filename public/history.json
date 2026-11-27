@@ -773,8 +773,8 @@
    "homewood": 0,
    "mammoth": 0,
    "mt-baker": 7,
-   "crystal": 9,
-   "stevens-pass": 6,
+   "crystal": 8,
+   "stevens-pass": 5,
    "mt-bachelor": 14,
    "telluride": 0,
    "crested-butte": 0,
@@ -790,22 +790,22 @@
    "park-city": 0,
    "snowbasin": 0,
    "powder-mountain": 0,
-   "jackson-hole": 3,
-   "grand-targhee": 3,
+   "jackson-hole": 2,
+   "grand-targhee": 2,
    "sun-valley": 0,
-   "big-sky": 2,
+   "big-sky": 3,
    "taos": 0,
    "wolf-creek": 0,
    "revelstoke": 5,
    "whistler": 12,
-   "lake-louise": 2,
-   "kicking-horse": 5,
+   "lake-louise": 3,
+   "kicking-horse": 6,
    "fernie": 5,
    "red-mountain": 2,
    "whitewater": 9,
    "panorama": 2,
    "kimberley": 3,
-   "big-white": 1,
+   "big-white": 0,
    "silverstar": 0,
    "sun-peaks": 0,
    "sunshine": 2,
@@ -4577,17 +4577,17 @@
    },
    "mt-baker": {
     "am": 0,
-    "pm": 2,
-    "night": 5
+    "pm": 3,
+    "night": 4
    },
    "crystal": {
     "am": 7,
-    "pm": 2,
+    "pm": 1,
     "night": 0
    },
    "stevens-pass": {
     "am": 5,
-    "pm": 1,
+    "pm": 0,
     "night": 0
    },
    "mt-bachelor": {
@@ -4668,12 +4668,12 @@
    "jackson-hole": {
     "am": 0,
     "pm": 0,
-    "night": 3
+    "night": 2
    },
    "grand-targhee": {
     "am": 0,
     "pm": 0,
-    "night": 3
+    "night": 2
    },
    "sun-valley": {
     "am": 0,
@@ -4683,7 +4683,7 @@
    "big-sky": {
     "am": 0,
     "pm": 0,
-    "night": 2
+    "night": 3
    },
    "taos": {
     "am": 0,
@@ -4702,17 +4702,17 @@
    },
    "whistler": {
     "am": 7,
-    "pm": 3,
-    "night": 2
+    "pm": 2,
+    "night": 3
    },
    "lake-louise": {
     "am": 1,
     "pm": 1,
-    "night": 0
+    "night": 1
    },
    "kicking-horse": {
     "am": 3,
-    "pm": 1,
+    "pm": 2,
     "night": 1
    },
    "fernie": {
@@ -4743,7 +4743,7 @@
    "big-white": {
     "am": 0,
     "pm": 0,
-    "night": 1
+    "night": 0
    },
    "silverstar": {
     "am": 0,
@@ -4817,5 +4817,5 @@
    }
   }
  },
- "updatedAt": "2026-11-26T21:07:41.827Z"
+ "updatedAt": "2026-11-27T06:07:45.541Z"
 }
