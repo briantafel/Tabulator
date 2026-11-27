@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-27T07:18:20.342Z",
+ "generatedAt": "2026-11-27T08:17:38.116Z",
  "forecastGeneratedAt": "2026-11-27T06:07:45.541Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-27T07:18:15.967Z",
+ "blendGeneratedAt": "2026-11-27T08:17:34.743Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -14,19 +14,19 @@
  "overview": null,
  "regions": [
   {
-   "key": "the Eastern Sierra",
-   "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 24\", 19\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
-  },
-  {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 25\". Crystal Mountain and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Monday."
+   "text": "Crystal Mountain is forecast for about 11\". Stevens Pass and Mt. Baker follow. The National Weather Service has rain mixed in at Crystal Mountain Sunday night. The NWS is calling for more at Crystal Mountain: 10 to 23 inches Friday through Monday night."
+  },
+  {
+   "key": "the Eastern Sierra",
+   "title": "Eastern Sierra",
+   "text": "Mammoth is forecast for about 11\", 6\" of it Tuesday. The National Weather Service has heavy snow at Mammoth Monday night and Tuesday. The NWS is calling for more at Mammoth: 22 to 37 inches Sunday night through Tuesday night."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 21\", 12\" of it Sunday. Palisades and Sugar Bowl follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday."
+   "text": "Kirkwood is forecast for about 11\", 8\" of it Monday. Sugar Bowl and Palisades follow. The National Weather Service has heavy snow at Kirkwood Monday night and Tuesday. The NWS is calling for more at Kirkwood: 20 to 31 inches Sunday through Tuesday night."
   },
   {
    "key": "the northern Rockies",
@@ -53,7 +53,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-27T07:18:15.967Z"
+   "issuedAt": "2026-11-27T08:17:34.743Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -61,7 +61,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-27T07:18:20.342Z"
+   "issuedAt": "2026-11-27T08:17:38.116Z"
   }
  ],
  "api": {
