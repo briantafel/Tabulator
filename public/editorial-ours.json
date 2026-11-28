@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-28T00:18:44.475Z",
+ "generatedAt": "2026-11-28T01:18:32.059Z",
  "forecastGeneratedAt": "2026-11-27T21:07:45.135Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T00:18:41.086Z",
+ "blendGeneratedAt": "2026-11-28T01:18:28.895Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -14,66 +14,66 @@
  "overview": null,
  "regions": [
   {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Brighton is forecast for about 25\". Solitude and Alta follow."
-  },
-  {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 25\", 13\" of it Saturday. Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
+   "text": "Grand Targhee is forecast for about 26\", 14\" of it Saturday. Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 21\". Palisades and Sugar Bowl follow. The National Weather Service has rain mixed in at Palisades Monday."
+   "text": "Kirkwood is forecast for about 21\". Palisades and Mt. Rose follow. The National Weather Service has rain mixed in at Palisades Monday."
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 18\", 13\" of it Monday. Mt. Baker and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
+   "text": "Mt. Bachelor is forecast for about 17\", 12\" of it Monday. Mt. Baker and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
   },
   {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 22\". Whistler follows."
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Brighton is forecast for about 17\". Solitude and Alta follow."
   },
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 19\", 18\" of it Saturday. Vail and Breckenridge follow. Winter Storm Warning at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 18\", 17\" of it Saturday. Telluride and Arapahoe Basin follow. Winter Storm Warning at Steamboat from Friday to Sunday."
+  },
+  {
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Cypress Mountain is forecast for about 19\". Whistler follows."
   },
   {
    "key": "the Northeast",
    "title": "Northeast",
-   "text": "Jay Peak is forecast for about 14\", 7\" of it Saturday. Mont-Sainte-Anne and Stowe follow. The National Weather Service has rain mixed in at Jay Peak Saturday and Saturday night."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Whitewater is forecast for about 12\", 7\" of it Monday. Revelstoke and RED Mountain follow. Environment Canada has rain mixed in at Whitewater Monday."
+   "text": "Jay Peak is forecast for about 15\", 8\" of it Saturday. Mont-Sainte-Anne and Le Massif follow. The National Weather Service has rain mixed in at Jay Peak Saturday and Saturday night."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 10\", 5\" of it Tuesday. The NWS is calling for more at Mammoth: 12 to 24 inches Sunday night through Tuesday night."
+   "text": "Mammoth is forecast for about 11\", 6\" of it Tuesday. The NWS is calling for more at Mammoth: 12 to 24 inches Sunday night through Tuesday night."
+  },
+  {
+   "key": "the Kootenays",
+   "title": "Kootenays",
+   "text": "Whitewater is forecast for about 11\", 6\" of it Monday. Revelstoke and Fernie follow. Environment Canada has rain mixed in at Whitewater Monday."
+  },
+  {
+   "key": "the southern Rockies",
+   "title": "Southern Rockies",
+   "text": "Wolf Creek is forecast for about 10\", all of it Wednesday. Taos follows."
   },
   {
    "key": "the Okanagan",
    "title": "Okanagan",
    "text": "Sun Peaks is forecast for about 7\", 4\" of it Monday. Big White and SilverStar follow. Environment Canada has rain mixed in at Big White Monday."
-  },
-  {
-   "key": "the southern Rockies",
-   "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 10\", 9\" of it Wednesday. Taos follows."
   }
  ],
  "ahead": null,
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T00:18:41.086Z"
+   "issuedAt": "2026-11-28T01:18:28.895Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -81,7 +81,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T00:18:44.475Z"
+   "issuedAt": "2026-11-28T01:18:32.059Z"
   }
  ],
  "api": {
