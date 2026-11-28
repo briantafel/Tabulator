@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-28T09:18:45.885Z",
+ "generatedAt": "2026-11-28T10:17:29.892Z",
  "forecastGeneratedAt": "2026-11-28T06:07:45.178Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T09:18:41.404Z",
+ "blendGeneratedAt": "2026-11-28T10:17:26.797Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-28T07:18:25.180Z",
@@ -53,7 +53,7 @@
    },
    {
     "name": "NWS REV Area Forecast Discussion",
-    "issuedAt": "2026-11-27T22:25:00+00:00",
+    "issuedAt": "2026-11-28T09:36:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
    },
    {
@@ -86,7 +86,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T09:18:41.404Z"
+   "issuedAt": "2026-11-28T10:17:26.797Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -98,7 +98,7 @@
   },
   {
    "name": "NWS REV Area Forecast Discussion",
-   "issuedAt": "2026-11-27T22:25:00+00:00"
+   "issuedAt": "2026-11-28T09:36:00+00:00"
   },
   {
    "name": "NWS STO Area Forecast Discussion",
@@ -114,7 +114,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T09:18:45.885Z"
+   "issuedAt": "2026-11-28T10:17:29.892Z"
   }
  ],
  "api": {
