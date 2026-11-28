@@ -1,87 +1,137 @@
 {
- "generatedAt": "2026-11-28T06:18:40.033Z",
+ "generatedAt": "2026-11-28T07:18:25.180Z",
  "forecastGeneratedAt": "2026-11-28T06:07:45.178Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T06:18:36.384Z",
+ "blendGeneratedAt": "2026-11-28T07:18:20.536Z",
  "quiet": false,
- "writer": "template",
+ "writer": "claude",
+ "writtenAt": "2026-11-28T07:18:25.180Z",
+ "model": "claude-haiku-5-5",
  "window": {
   "from": "2026-11-28",
   "to": "2026-12-02",
   "days": 5,
   "toLabel": "Wednesday Dec 2"
  },
- "overview": null,
+ "overview": "A wet, unsettled pattern builds from Sunday through midweek. Storms move in off the Pacific and favor the Sierra and Cascades first, then the Rockies by Tuesday and Wednesday, with cold air and snow levels dropping behind each system.",
  "regions": [
-  {
-   "key": "the northern Rockies",
-   "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 25\", 14\" of it Saturday. Jackson Hole and Big Sky follow. The National Weather Service has heavy snow at Grand Targhee Saturday. Winter Storm Warning at Grand Targhee from Friday to Saturday."
-  },
   {
    "key": "Tahoe",
    "title": "Tahoe",
-   "text": "Kirkwood is forecast for about 17\". Palisades and Sugar Bowl follow. The National Weather Service has rain mixed in at Kirkwood Sunday night."
-  },
-  {
-   "key": "the central Rockies",
-   "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 18\", 17\" of it Saturday. Telluride and Vail follow. Winter Storm Warning at Steamboat from Friday night to Sunday."
+   "text": "A series of systems arrives Sunday and runs into midweek, with gusty southerly winds and snow above about 7,500 feet. The forecasters are increasingly confident in this wet pattern. Kirkwood looks like the strongest spot, with Sunday the biggest day, and the NWS discussion notes gusts of 40 to 55 mph over the Sierra crest.",
+   "basis": "jvqyfj"
   },
   {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Mt. Bachelor is forecast for about 15\", 11\" of it Monday. Mt. Baker and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
-  },
-  {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Brighton is forecast for about 15\". Powder Mountain and Solitude follow."
-  },
-  {
-   "key": "the Coast Mountains",
-   "title": "Coast Mountains",
-   "text": "Cypress Mountain is forecast for about 17\". Whistler follows."
-  },
-  {
-   "key": "the Kootenays",
-   "title": "Kootenays",
-   "text": "Whitewater is forecast for about 13\". RED Mountain and Revelstoke follow. Environment Canada has rain mixed in at Whitewater Monday."
+   "text": "Showers and mountain snow arrive from the Pacific in a series of lows, with the second system bringing widespread precipitation Sunday and Monday. Snow levels fall, and the most snow likely falls on Monday. Mt. Bachelor is the top pick, with Monday the biggest day, and Mt. Baker sees snow on Tuesday and Wednesday.",
+   "basis": "x97uts"
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 9\", 5\" of it Tuesday."
+   "text": "Strong gusty winds arrive Sunday ahead of a storm, with gusts over the Sierra ridges reaching 80 mph or more. Valley rain and mountain snow follow, and snow levels drop sharply Monday night into Tuesday as a second low drops in from the north. Mammoth's biggest day is Tuesday.",
+   "basis": "1150wqy"
   },
   {
    "key": "the southern Rockies",
    "title": "Southern Rockies",
-   "text": "Wolf Creek is forecast for about 9\", all of it Wednesday. Taos follows."
+   "text": "A strong cold front brings hazardous winds Saturday, then a system moves into the Rockies midweek. The NWS in Albuquerque says rain and snow return to western and central New Mexico Wednesday and Thursday. Wolf Creek sees snow showers Wednesday, its peak day.",
+   "basis": "r6ijb7"
   },
   {
-   "key": "the Okanagan",
-   "title": "Okanagan",
-   "text": "Sun Peaks is forecast for about 7\", 4\" of it Monday. SilverStar and Big White follow. Environment Canada has rain mixed in at Sun Peaks Monday."
+   "key": "the Coast Mountains",
+   "title": "Coast Mountains",
+   "text": "Showers and rain dominate the Coast Mountains through the week, with snow mostly confined to higher terrain. Cypress Mountain gets its biggest day Monday, while Whistler sees mostly chances of showers. Environment Canada's forecast is mainly rain at lower elevations.",
+   "basis": "rrj916"
   }
  ],
- "ahead": null,
+ "ahead": {
+  "text": "The Climate Prediction Center expects above-normal precipitation across much of the Lower 48 for December 3 to 7, with a persistent western trough.",
+  "sources": [
+   {
+    "name": "NWS STO Area Forecast Discussion",
+    "issuedAt": "2026-11-27T20:45:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
+   },
+   {
+    "name": "NWS PDT Area Forecast Discussion",
+    "issuedAt": "2026-11-28T05:24:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PDT&issuedby=PDT&product=AFD"
+   },
+   {
+    "name": "NWS SEW Area Forecast Discussion",
+    "issuedAt": "2026-11-28T04:56:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
+   },
+   {
+    "name": "NWS REV Area Forecast Discussion",
+    "issuedAt": "2026-11-27T22:25:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
+   },
+   {
+    "name": "NWS PUB Area Forecast Discussion",
+    "issuedAt": "2026-11-28T05:36:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
+   },
+   {
+    "name": "NWS ABQ Area Forecast Discussion",
+    "issuedAt": "2026-11-28T05:38:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
+   },
+   {
+    "name": "WPC Extended Forecast Discussion",
+    "issuedAt": "2026-11-27T18:55:00.000Z",
+    "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
+   },
+   {
+    "name": "CPC 6–10 and 8–14 Day Discussion",
+    "issuedAt": "2026-11-27T20:00:00.000Z",
+    "url": "https://www.cpc.ncep.noaa.gov/products/predictions/610day/fxus06.html"
+   }
+  ]
+ },
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T06:18:36.384Z"
+   "issuedAt": "2026-11-28T07:18:20.536Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-28T06:14:24.177Z"
   },
   {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:45:00+00:00"
+  },
+  {
+   "name": "NWS PDT Area Forecast Discussion",
+   "issuedAt": "2026-11-28T05:24:00+00:00"
+  },
+  {
+   "name": "NWS SEW Area Forecast Discussion",
+   "issuedAt": "2026-11-28T04:56:00+00:00"
+  },
+  {
+   "name": "NWS REV Area Forecast Discussion",
+   "issuedAt": "2026-11-27T22:25:00+00:00"
+  },
+  {
+   "name": "NWS PUB Area Forecast Discussion",
+   "issuedAt": "2026-11-28T05:36:00+00:00"
+  },
+  {
+   "name": "NWS ABQ Area Forecast Discussion",
+   "issuedAt": "2026-11-28T05:38:00+00:00"
+  },
+  {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T06:18:40.033Z"
+   "issuedAt": "2026-11-28T07:18:25.180Z"
   }
  ],
  "api": {
   "day": "2026-11-28",
-  "calls": 2
+  "calls": 3
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
