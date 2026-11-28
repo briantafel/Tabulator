@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-28T07:18:25.180Z",
+ "generatedAt": "2026-11-28T08:17:40.015Z",
  "forecastGeneratedAt": "2026-11-28T06:07:45.178Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T07:18:20.536Z",
+ "blendGeneratedAt": "2026-11-28T08:17:35.442Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-28T07:18:25.180Z",
@@ -16,22 +16,19 @@
  "overview": "A wet, unsettled pattern builds from Sunday through midweek. Storms move in off the Pacific and favor the Sierra and Cascades first, then the Rockies by Tuesday and Wednesday, with cold air and snow levels dropping behind each system.",
  "regions": [
   {
-   "key": "Tahoe",
-   "title": "Tahoe",
-   "text": "A series of systems arrives Sunday and runs into midweek, with gusty southerly winds and snow above about 7,500 feet. The forecasters are increasingly confident in this wet pattern. Kirkwood looks like the strongest spot, with Sunday the biggest day, and the NWS discussion notes gusts of 40 to 55 mph over the Sierra crest.",
-   "basis": "jvqyfj"
-  },
-  {
    "key": "the Cascades",
    "title": "Cascades",
-   "text": "Showers and mountain snow arrive from the Pacific in a series of lows, with the second system bringing widespread precipitation Sunday and Monday. Snow levels fall, and the most snow likely falls on Monday. Mt. Bachelor is the top pick, with Monday the biggest day, and Mt. Baker sees snow on Tuesday and Wednesday.",
-   "basis": "x97uts"
+   "text": "Mt. Baker is forecast for about 9\", 6\" of it Monday. Stevens Pass and Crystal Mountain follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night. The NWS is calling for more at Mt. Baker: 8 to 16 inches Monday through Wednesday night."
   },
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Strong gusty winds arrive Sunday ahead of a storm, with gusts over the Sierra ridges reaching 80 mph or more. Valley rain and mountain snow follow, and snow levels drop sharply Monday night into Tuesday as a second low drops in from the north. Mammoth's biggest day is Tuesday.",
-   "basis": "1150wqy"
+   "text": "Mammoth is forecast for about 8\", 5\" of it Monday. The NWS is calling for more at Mammoth: 5 to 12 inches Sunday night through Tuesday night."
+  },
+  {
+   "key": "Tahoe",
+   "title": "Tahoe",
+   "text": "Sugar Bowl is forecast for about 8\", 5\" of it Sunday. Kirkwood and Palisades follow. The National Weather Service has rain mixed in at Sugar Bowl Sunday and Sunday night. The NWS is calling for more at Kirkwood: 5 to 15 inches Sunday through Tuesday."
   },
   {
    "key": "the southern Rockies",
@@ -50,16 +47,6 @@
   "text": "The Climate Prediction Center expects above-normal precipitation across much of the Lower 48 for December 3 to 7, with a persistent western trough.",
   "sources": [
    {
-    "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-27T20:45:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
-   },
-   {
-    "name": "NWS PDT Area Forecast Discussion",
-    "issuedAt": "2026-11-28T05:24:00+00:00",
-    "url": "https://forecast.weather.gov/product.php?site=PDT&issuedby=PDT&product=AFD"
-   },
-   {
     "name": "NWS SEW Area Forecast Discussion",
     "issuedAt": "2026-11-28T04:56:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=SEW&issuedby=SEW&product=AFD"
@@ -70,18 +57,23 @@
     "url": "https://forecast.weather.gov/product.php?site=REV&issuedby=REV&product=AFD"
    },
    {
+    "name": "NWS STO Area Forecast Discussion",
+    "issuedAt": "2026-11-27T20:45:00+00:00",
+    "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
+   },
+   {
     "name": "NWS PUB Area Forecast Discussion",
-    "issuedAt": "2026-11-28T05:36:00+00:00",
+    "issuedAt": "2026-11-28T07:50:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=PUB&issuedby=PUB&product=AFD"
    },
    {
     "name": "NWS ABQ Area Forecast Discussion",
-    "issuedAt": "2026-11-28T05:38:00+00:00",
+    "issuedAt": "2026-11-28T07:53:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=ABQ&issuedby=ABQ&product=AFD"
    },
    {
     "name": "WPC Extended Forecast Discussion",
-    "issuedAt": "2026-11-27T18:55:00.000Z",
+    "issuedAt": "2026-11-28T07:43:00.000Z",
     "url": "https://www.wpc.ncep.noaa.gov/discussions/hpcdiscussions.php?disc=pmdepd"
    },
    {
@@ -94,19 +86,11 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T07:18:20.536Z"
+   "issuedAt": "2026-11-28T08:17:35.442Z"
   },
   {
    "name": "National Weather Service point forecasts",
    "issuedAt": "2026-11-28T06:14:24.177Z"
-  },
-  {
-   "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-27T20:45:00+00:00"
-  },
-  {
-   "name": "NWS PDT Area Forecast Discussion",
-   "issuedAt": "2026-11-28T05:24:00+00:00"
   },
   {
    "name": "NWS SEW Area Forecast Discussion",
@@ -117,16 +101,20 @@
    "issuedAt": "2026-11-27T22:25:00+00:00"
   },
   {
+   "name": "NWS STO Area Forecast Discussion",
+   "issuedAt": "2026-11-27T20:45:00+00:00"
+  },
+  {
    "name": "NWS PUB Area Forecast Discussion",
-   "issuedAt": "2026-11-28T05:36:00+00:00"
+   "issuedAt": "2026-11-28T07:50:00+00:00"
   },
   {
    "name": "NWS ABQ Area Forecast Discussion",
-   "issuedAt": "2026-11-28T05:38:00+00:00"
+   "issuedAt": "2026-11-28T07:53:00+00:00"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T07:18:25.180Z"
+   "issuedAt": "2026-11-28T08:17:40.015Z"
   }
  ],
  "api": {
