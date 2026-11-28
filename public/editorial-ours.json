@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-28T05:18:30.396Z",
- "forecastGeneratedAt": "2026-11-27T21:07:45.135Z",
+ "generatedAt": "2026-11-28T06:14:36.069Z",
+ "forecastGeneratedAt": "2026-11-28T06:07:45.178Z",
  "snowfall": "tabulator",
  "blendGeneratedAt": "2026-11-28T05:18:27.357Z",
  "quiet": false,
@@ -16,7 +16,7 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 26\", 14\" of it Saturday. Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
+   "text": "Grand Targhee is forecast for about 26\", 14\" of it Saturday. Jackson Hole and Big Sky follow. The National Weather Service has heavy snow at Grand Targhee Saturday. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "Tahoe",
@@ -31,7 +31,7 @@
   {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 19\", 18\" of it Saturday. Vail and Telluride follow. Winter Storm Warning at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 19\", 18\" of it Saturday. Vail and Telluride follow. Winter Storm Warning at Steamboat from Friday night to Sunday."
   },
   {
    "key": "the Wasatch",
@@ -46,7 +46,7 @@
   {
    "key": "the Eastern Sierra",
    "title": "Eastern Sierra",
-   "text": "Mammoth is forecast for about 11\", 6\" of it Tuesday. The NWS is calling for more at Mammoth: 12 to 24 inches Sunday night through Tuesday night."
+   "text": "Mammoth is forecast for about 11\", 6\" of it Tuesday."
   },
   {
    "key": "the Kootenays",
@@ -61,7 +61,7 @@
   {
    "key": "the Okanagan",
    "title": "Okanagan",
-   "text": "Sun Peaks is forecast for about 6\", 4\" of it Monday. Big White and SilverStar follow. Environment Canada has rain mixed in at Big White Monday."
+   "text": "Sun Peaks is forecast for about 6\", 4\" of it Monday. Big White and SilverStar follow. Environment Canada has rain mixed in at Sun Peaks Monday."
   }
  ],
  "ahead": null,
@@ -72,11 +72,11 @@
   },
   {
    "name": "National Weather Service point forecasts",
-   "issuedAt": "2026-11-27T21:14:32.574Z"
+   "issuedAt": "2026-11-28T06:14:24.177Z"
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T05:18:30.396Z"
+   "issuedAt": "2026-11-28T06:14:36.069Z"
   }
  ],
  "api": {
