@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-28T08:17:40.015Z",
+ "generatedAt": "2026-11-28T09:18:45.885Z",
  "forecastGeneratedAt": "2026-11-28T06:07:45.178Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T08:17:35.442Z",
+ "blendGeneratedAt": "2026-11-28T09:18:41.404Z",
  "quiet": false,
  "writer": "claude",
  "writtenAt": "2026-11-28T07:18:25.180Z",
@@ -58,7 +58,7 @@
    },
    {
     "name": "NWS STO Area Forecast Discussion",
-    "issuedAt": "2026-11-27T20:45:00+00:00",
+    "issuedAt": "2026-11-28T08:30:00+00:00",
     "url": "https://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=AFD"
    },
    {
@@ -86,7 +86,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T08:17:35.442Z"
+   "issuedAt": "2026-11-28T09:18:41.404Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -102,7 +102,7 @@
   },
   {
    "name": "NWS STO Area Forecast Discussion",
-   "issuedAt": "2026-11-27T20:45:00+00:00"
+   "issuedAt": "2026-11-28T08:30:00+00:00"
   },
   {
    "name": "NWS PUB Area Forecast Discussion",
@@ -114,7 +114,7 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T08:17:40.015Z"
+   "issuedAt": "2026-11-28T09:18:45.885Z"
   }
  ],
  "api": {
