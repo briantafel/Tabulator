@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-28T02:17:34.186Z",
+ "generatedAt": "2026-11-28T03:17:48.998Z",
  "forecastGeneratedAt": "2026-11-27T21:07:45.135Z",
  "snowfall": "tabulator",
- "blendGeneratedAt": "2026-11-28T02:17:31.143Z",
+ "blendGeneratedAt": "2026-11-28T03:17:44.022Z",
  "quiet": false,
  "writer": "template",
  "window": {
@@ -16,7 +16,7 @@
   {
    "key": "the northern Rockies",
    "title": "Northern Rockies",
-   "text": "Grand Targhee is forecast for about 25\", 13\" of it Saturday. Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
+   "text": "Grand Targhee is forecast for about 25\", 14\" of it Saturday. Jackson Hole and Big Sky follow. Winter Storm Warning at Grand Targhee from Friday to Saturday."
   },
   {
    "key": "Tahoe",
@@ -24,19 +24,19 @@
    "text": "Kirkwood is forecast for about 21\". Palisades and Mt. Rose follow. The National Weather Service has rain mixed in at Palisades Monday."
   },
   {
-   "key": "the Wasatch",
-   "title": "Wasatch",
-   "text": "Brighton is forecast for about 17\", 9\" of it Saturday. Alta and Solitude follow."
-  },
-  {
    "key": "the Cascades",
    "title": "Cascades",
    "text": "Mt. Bachelor is forecast for about 16\", 12\" of it Monday. Mt. Baker and Stevens Pass follow. The National Weather Service has rain mixed in at Mt. Baker Monday and Monday night."
   },
   {
+   "key": "the Wasatch",
+   "title": "Wasatch",
+   "text": "Brighton is forecast for about 17\", 9\" of it Saturday. Alta and Solitude follow."
+  },
+  {
    "key": "the central Rockies",
    "title": "Central Rockies",
-   "text": "Steamboat is forecast for about 20\", 19\" of it Saturday. Telluride and Breckenridge follow. Winter Storm Warning at Steamboat from Friday to Sunday."
+   "text": "Steamboat is forecast for about 19\", all of it Saturday. Telluride and Breckenridge follow. Winter Storm Warning at Steamboat from Friday to Sunday."
   },
   {
    "key": "the Coast Mountains",
@@ -73,7 +73,7 @@
  "sources": [
   {
    "name": "Tabulator model (totals)",
-   "issuedAt": "2026-11-28T02:17:31.143Z"
+   "issuedAt": "2026-11-28T03:17:44.022Z"
   },
   {
    "name": "National Weather Service point forecasts",
@@ -81,12 +81,12 @@
   },
   {
    "name": "NOAA buoys 51001 / 51101 (method: Powder Buoy, Mike Ruzek)",
-   "issuedAt": "2026-11-28T02:17:34.186Z"
+   "issuedAt": "2026-11-28T03:17:48.998Z"
   }
  ],
  "api": {
   "day": "2026-11-28",
-  "calls": 1
+  "calls": 2
  },
  "buoy": {
   "text": "Buoys 51001 and 51101 near Hawaii popped Nov 25, the swell signal Powder Buoy watches for a Wasatch storm about two weeks later — here Dec 6–12. In past winters a pop raised the chance of a Wasatch storm in that window by roughly 6 to 12 points. Experimental: promising, not proven.",
